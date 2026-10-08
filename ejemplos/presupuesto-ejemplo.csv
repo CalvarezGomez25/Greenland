@@ -1,0 +1,11 @@
+capitulo;codigo;descripcion;unidad;cantidad;precio_unitario
+Preliminares;1.01;Localización y replanteo;m2;1.200;4.500
+Preliminares;2.01;Excavación mecánica;m3;850;28.000
+Cimentación y estructura;3.01;Concreto cimentación 3000 psi;m3;210;780.000
+Cimentación y estructura;3.02;Acero de refuerzo 60000 psi;kg;18.500;5.900
+Cimentación y estructura;3.03;Concreto columnas;m3;96;920.000
+Mampostería y placas;4.01;Mampostería en bloque;m2;2.400;68.000
+Mampostería y placas;4.02;Placa entrepiso aligerada;m2;1.800;215.000
+Acabados;5.01;Pañete de muros;m2;4.200;32.000
+Instalaciones;6.01;Instalaciones hidrosanitarias;gl;1;96.000.000
+Acabados;7.01;Pintura de muros;m2;4.200;14.500

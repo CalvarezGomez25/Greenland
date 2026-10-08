@@ -1,0 +1,9 @@
+capitulo;codigo;descripcion;unidad;cantidad;precio_unitario
+Preliminares;1.01;Localización y replanteo;m2;1.234,56;4.500,50
+Preliminares;1.02;Cerramiento provisional;ml;300;18.000
+;1.03;Fila sin capítulo;m2;10;1.000
+Estructura;2.01;Cantidad no numérica;m3;abc;780.000
+Estructura;2.02;Precio negativo;kg;100;-5.900
+Estructura;2.03;Fila incompleta;m3;50
+Preliminares;1.01;Código repetido;m2;5;1.000
+Acabados;3.01;Unidad vacía;;100;2.000
