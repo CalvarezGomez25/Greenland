@@ -1,26 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Paleta y tipografía del sistema de diseño GreenLand */
+@theme {
+  --color-leaf-50: #f4f9ea;
+  --color-leaf-100: #e6f1d1;
+  --color-leaf-200: #cfe3a8;
+  --color-leaf-300: #a9c96c;
+  --color-leaf-400: #7fa62e;
+  --color-leaf-500: #5d870e;
+  --color-leaf-600: #4c700b;
+  --color-leaf-700: #386631;
+  --color-leaf-800: #2f5517;
+  --color-leaf-900: #164504;
+  --color-earth-600: #7c401d;
+  --color-soil-border: #dcdcd8;
+  --color-muted: #555552;
+  --color-danger: #b23a22;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-display: 'Baloo 2', 'Varela Round', system-ui, sans-serif;
+  --font-body: 'Roboto', system-ui, -apple-system, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --radius-card: 16px;
+  --shadow-card: 0 4px 14px rgba(22, 69, 4, 0.1);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #ffffff;
+  color: var(--color-leaf-900);
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+/* Anillo de foco visible, igual al del sistema de diseño */
+:focus-visible {
+  outline: 3px solid rgba(93, 135, 14, 0.55);
+  outline-offset: 2px;
 }

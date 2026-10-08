@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# excepción: la plantilla de variables sí se versiona
+!.env.example
