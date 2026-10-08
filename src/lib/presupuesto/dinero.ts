@@ -39,6 +39,11 @@ export function desdeJson(valor: number | string, escala: number): bigint {
   if (!Number.isFinite(valor)) throw new RangeError("Número fuera de rango");
   const texto = String(valor);
   if (/e/i.test(texto)) throw new RangeError(`Número fuera de rango: ${texto}`);
+  // Un número de JavaScript solo conserva ~15 cifras significativas. Si hay más, pudo
+  // perder precisión al llegar: se falla en voz alta en vez de mostrar dinero incorrecto.
+  if (texto.replace(/^-|\./g, "").replace(/^0+/, "").length > 15) {
+    throw new RangeError(`Número con demasiada precisión para leerlo con seguridad: ${texto}`);
+  }
   return aEscalado(texto, escala);
 }
 

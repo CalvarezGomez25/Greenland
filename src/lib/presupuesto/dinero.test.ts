@@ -37,6 +37,13 @@ describe("aEscalado y desdeJson", () => {
     expect(() => desdeJson(1e21, 2)).toThrow(RangeError);
     expect(() => desdeJson(Number.NaN, 2)).toThrow(RangeError);
   });
+
+  it("falla en voz alta si un número trae más cifras de las que JavaScript conserva", () => {
+    expect(desdeJson(123456789012.34, 2)).toBe(12345678901234n); // 14 cifras: seguro
+    expect(desdeJson(123456789012345, 0)).toBe(123456789012345n); // 15 cifras: seguro
+    expect(() => desdeJson(1234567890123456, 0)).toThrow(/precisión/); // 16 cifras
+    expect(desdeJson("1234567890123456.78", 2)).toBe(123456789012345678n); // como texto sí es exacto
+  });
 });
 
 describe("dividirRedondeado", () => {

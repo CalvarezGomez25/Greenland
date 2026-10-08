@@ -53,8 +53,11 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
         ← Volver a proyectos
       </Link>
 
-      <div className="mt-4">
+      <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
         <Titulo>{p.nombre}</Titulo>
+        <Link href={`/proyectos/${p.id}/presupuesto`} className={claseBoton.primario}>
+          Presupuesto y costos
+        </Link>
       </div>
 
       <dl className="mt-6 grid gap-4 rounded-card bg-leaf-100 p-5 sm:grid-cols-2">
