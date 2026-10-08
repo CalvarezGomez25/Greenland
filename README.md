@@ -1,7 +1,7 @@
 # Plataforma de Obra (GreenLand)
 
 Plataforma web para gerentes de obra: control financiero, gestión de obra y archivos.
-La especificación completa está en `ESPECIFICACION.md` (documento de referencia) y se
+La especificación técnica (documento aparte) define los hitos y se
 construye por hitos.
 
 ## Estado
