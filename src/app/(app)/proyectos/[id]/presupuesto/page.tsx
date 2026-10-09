@@ -1,12 +1,11 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { obtenerSesion } from "@/lib/sesion";
-import { ES_UUID } from "@/lib/formato";
 import { calcularPresupuesto } from "@/lib/presupuesto/calculos";
+import { cargarContexto } from "@/lib/presupuesto/contexto";
 import { calcularIndicadores, serieCurvaS } from "@/lib/presupuesto/curva";
 import { cargarDatosPresupuesto } from "@/lib/presupuesto/datos";
-import { Titulo } from "@/components/ui";
+import { AvisoResultado } from "@/components/aviso-resultado";
+import { Titulo, claseBoton } from "@/components/ui";
 import {
   SeccionAdicionales,
   SeccionCurva,
@@ -15,26 +14,23 @@ import {
   SeccionPartidas,
 } from "./secciones";
 
-async function ContenidoPresupuesto({ params }: { params: Promise<{ id: string }> }) {
+async function ContenidoPresupuesto({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ ok?: string | string[] }>;
+}) {
   const { id } = await params;
-  if (!ES_UUID.test(id)) notFound();
-
-  const { supabase } = await obtenerSesion();
-
-  // Si la persona no tiene acceso al proyecto, la base de datos no devuelve la fila: 404.
-  const { data: proyecto } = await supabase
-    .from("proyectos")
-    .select("id, nombre, duracion_meses")
-    .eq("id", id)
-    .maybeSingle();
-  if (!proyecto) notFound();
-  const duracion = proyecto.duracion_meses as number;
+  const { ok } = await searchParams;
+  const { supabase, proyecto, permisos } = await cargarContexto(id);
 
   const datos = await cargarDatosPresupuesto(supabase, id);
   const presupuesto = calcularPresupuesto(datos);
-  const entradaCurva = { costoTotal: presupuesto.costoTotal, duracion, gastoPorMes: datos.gastoPorMes };
+  const entradaCurva = { costoTotal: presupuesto.costoTotal, duracion: proyecto.duracion, gastoPorMes: datos.gastoPorMes };
   const serie = serieCurvaS(entradaCurva);
   const indicadores = calcularIndicadores({ ...entradaCurva, costoDirecto: presupuesto.costoDirecto });
+  const base = `/proyectos/${id}/presupuesto`;
 
   return (
     <>
@@ -44,21 +40,41 @@ async function ContenidoPresupuesto({ params }: { params: Promise<{ id: string }
       <div className="mt-4">
         <Titulo>Presupuesto y costos</Titulo>
       </div>
-      <p className="mt-3 text-sm text-muted">{proyecto.nombre as string}</p>
+      <p className="mt-3 text-sm text-muted">{proyecto.nombre}</p>
+
+      {(permisos.editar || permisos.verAuditoria) && (
+        <div className="mt-5 flex flex-wrap gap-3">
+          {permisos.editar && (
+            <>
+              <Link href={`${base}/importar`} className={claseBoton.primario}>Importar CSV</Link>
+              <Link href={`${base}/partidas/nueva`} className={claseBoton.secundario}>Agregar partida</Link>
+              <Link href={`${base}/costos`} className={claseBoton.secundario}>Costos adicionales</Link>
+              <Link href={`${base}/gasto`} className={claseBoton.secundario}>Registrar gasto</Link>
+            </>
+          )}
+          {permisos.verAuditoria && (
+            <Link href={`${base}/cambios`} className={claseBoton.contorno}>Registro de cambios</Link>
+          )}
+        </div>
+      )}
+
+      <div className="mt-4">
+        <AvisoResultado ok={ok} />
+      </div>
 
       <SeccionIndicadores indicadores={indicadores} hayPresupuesto={presupuesto.costoTotal > 0n} />
       <SeccionCurva serie={serie} />
-      <SeccionPartidas presupuesto={presupuesto} />
+      <SeccionPartidas presupuesto={presupuesto} hrefEditar={permisos.editar ? (idPartida) => `${base}/partidas/${idPartida}` : undefined} />
       <SeccionAdicionales presupuesto={presupuesto} />
-      <SeccionGasto serie={serie} gastoPorMes={datos.gastoPorMes} duracion={duracion} />
+      <SeccionGasto serie={serie} gastoPorMes={datos.gastoPorMes} duracion={proyecto.duracion} />
     </>
   );
 }
 
-export default function PaginaPresupuesto({ params }: PageProps<"/proyectos/[id]/presupuesto">) {
+export default function PaginaPresupuesto({ params, searchParams }: PageProps<"/proyectos/[id]/presupuesto">) {
   return (
     <Suspense fallback={<p className="text-sm text-muted">Cargando presupuesto…</p>}>
-      <ContenidoPresupuesto params={params} />
+      <ContenidoPresupuesto params={params} searchParams={searchParams} />
     </Suspense>
   );
 }

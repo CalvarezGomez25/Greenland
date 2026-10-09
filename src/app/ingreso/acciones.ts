@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { crearClienteServidor } from "@/lib/supabase/servidor";
 
-export type EstadoIngreso = { error?: string };
+export type EstadoIngreso = { error?: string; correo?: string };
 
 export async function ingresar(
   _anterior: EstadoIngreso,
@@ -11,7 +11,7 @@ export async function ingresar(
 ): Promise<EstadoIngreso> {
   const correo = String(datos.get("correo") ?? "").trim();
   const clave = String(datos.get("clave") ?? "");
-  if (!correo || !clave) return { error: "Escribe tu correo y tu contraseña." };
+  if (!correo || !clave) return { error: "Escribe tu correo y tu contraseña.", correo };
 
   const supabase = await crearClienteServidor();
   const { error } = await supabase.auth.signInWithPassword({
@@ -19,7 +19,8 @@ export async function ingresar(
     password: clave,
   });
 
-  if (error) return { error: mensajeDeError(error) };
+  // se devuelve el correo para que no haya que volver a escribirlo (la contraseña nunca)
+  if (error) return { error: mensajeDeError(error), correo };
 
   redirect("/");
 }

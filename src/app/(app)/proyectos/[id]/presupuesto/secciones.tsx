@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import type { Presupuesto } from "@/lib/presupuesto/calculos";
 import type { Indicadores, SerieCurva } from "@/lib/presupuesto/curva";
 import { ESCALA, formatearDecimal, formatearPesos } from "@/lib/presupuesto/dinero";
@@ -112,13 +113,22 @@ export function SeccionCurva({ serie }: { serie: SerieCurva }) {
   );
 }
 
-export function SeccionPartidas({ presupuesto }: { presupuesto: Presupuesto }) {
+export function SeccionPartidas({
+  presupuesto,
+  hrefEditar,
+}: {
+  presupuesto: Presupuesto;
+  hrefEditar?: (idPartida: string) => string;
+}) {
+  const conAcciones = !!hrefEditar;
   return (
     <Seccion id="partidas" titulo="Presupuesto por capítulos" nota="Valores en pesos colombianos (COP).">
       {presupuesto.capitulos.length === 0 ? (
         <p className="rounded-card bg-leaf-50 p-6 text-center text-sm text-muted">
-          Este proyecto aún no tiene presupuesto. La carga de partidas (importar un CSV o agregarlas a mano) estará
-          disponible en la siguiente entrega.
+          Este proyecto aún no tiene presupuesto.{" "}
+          {conAcciones
+            ? "Impórtalo desde un archivo CSV o agrega las partidas una a una con los botones de arriba."
+            : "Quien administra el proyecto puede cargarlo."}
         </p>
       ) : (
         <div className="overflow-x-auto rounded-card border border-soil-border">
@@ -131,6 +141,11 @@ export function SeccionPartidas({ presupuesto }: { presupuesto: Presupuesto }) {
                 <th scope="col" className={`${NUMERO} font-medium`}>Cantidad</th>
                 <th scope="col" className={`${NUMERO} font-medium`}>Precio unitario</th>
                 <th scope="col" className={`${NUMERO} font-medium`}>Total</th>
+                {conAcciones && (
+                  <th scope="col" className={CELDA}>
+                    <span className="sr-only">Acciones</span>
+                  </th>
+                )}
               </tr>
             </thead>
             {presupuesto.capitulos.map((c) => (
@@ -141,6 +156,7 @@ export function SeccionPartidas({ presupuesto }: { presupuesto: Presupuesto }) {
                     <span className="font-normal text-muted">({porcentaje(c.participacion)} del costo directo)</span>
                   </th>
                   <td className={NUMERO}>{formatearPesos(c.subtotal)}</td>
+                  {conAcciones && <td />}
                 </tr>
                 {c.partidas.map((p) => (
                   <tr key={p.id} className="border-t border-soil-border">
@@ -150,6 +166,13 @@ export function SeccionPartidas({ presupuesto }: { presupuesto: Presupuesto }) {
                     <td className={NUMERO}>{formatearDecimal(p.cantidad, ESCALA.cantidad)}</td>
                     <td className={NUMERO}>{precio(p.precio)}</td>
                     <td className={NUMERO}>{formatearPesos(p.total)}</td>
+                    {conAcciones && (
+                      <td className={`${CELDA} text-right`}>
+                        <Link href={hrefEditar(p.id)} className="font-medium text-leaf-600 underline">
+                          Editar
+                        </Link>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -158,6 +181,7 @@ export function SeccionPartidas({ presupuesto }: { presupuesto: Presupuesto }) {
               <tr className="border-t-2 border-leaf-700 bg-leaf-50 font-bold text-leaf-900">
                 <th scope="row" colSpan={5} className={`${CELDA} text-left`}>Costo directo total</th>
                 <td className={NUMERO}>{formatearPesos(presupuesto.costoDirecto)}</td>
+                {conAcciones && <td />}
               </tr>
             </tfoot>
           </table>
@@ -177,8 +201,7 @@ export function SeccionAdicionales({ presupuesto }: { presupuesto: Presupuesto }
     >
       {presupuesto.lineas.length === 0 ? (
         <p className="rounded-card bg-leaf-50 p-6 text-center text-sm text-muted">
-          Aún no se han configurado costos adicionales; por ahora el costo total es igual al costo directo. La
-          configuración estará disponible en la siguiente entrega.
+          Aún no se han configurado costos adicionales; por ahora el costo total es igual al costo directo.
         </p>
       ) : (
         <div className="overflow-x-auto rounded-card border border-soil-border">

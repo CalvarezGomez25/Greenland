@@ -9,12 +9,13 @@ export function FormularioIngreso() {
   const [estado, accion] = useActionState<EstadoIngreso, FormData>(ingresar, {});
 
   return (
-    <form action={accion} className="flex flex-col gap-4">
+    <form action={accion} key={estado.correo ?? ""} className="flex flex-col gap-4">
       <Campo
         etiqueta="Correo"
         name="correo"
         type="email"
         autoComplete="username"
+        defaultValue={estado.correo ?? ""}
         required
       />
       <Campo
