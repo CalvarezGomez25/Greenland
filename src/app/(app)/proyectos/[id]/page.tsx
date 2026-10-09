@@ -36,6 +36,8 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
     .eq("proyecto_id", id)
     .order("creado_en");
   const miembros = (filas ?? []) as unknown as Miembro[];
+  const puedeEditar =
+    esAdmin || miembros.some((m) => m.usuario_id === perfil?.id && m.rol === "gerente");
 
   let candidatos: { id: string; nombre: string; correo: string | null }[] = [];
   if (esAdmin) {
@@ -56,7 +58,7 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
         <Titulo>{p.nombre}</Titulo>
         <div className="flex flex-wrap gap-3">
-          {esAdmin && (
+          {puedeEditar && (
             <Link href={`/proyectos/${p.id}/editar`} className={claseBoton.contorno}>
               Editar proyecto
             </Link>
