@@ -5,7 +5,7 @@
 -- verificar el gasto ya registrado dentro de la misma base de datos.
 -- =============================================================================
 
-create function public.proyecto_editar(
+create or replace function public.proyecto_editar(
   p_proyecto uuid,
   p_nombre text,
   p_cliente text,
