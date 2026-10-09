@@ -5,7 +5,8 @@ import { cargarContexto } from "@/lib/presupuesto/contexto";
 import { calcularIndicadores, serieCurvaS } from "@/lib/presupuesto/curva";
 import { cargarDatosPresupuesto } from "@/lib/presupuesto/datos";
 import { AvisoResultado } from "@/components/aviso-resultado";
-import { Titulo, claseBoton } from "@/components/ui";
+import { describirFallo } from "@/lib/presupuesto/fallos";
+import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import {
   SeccionAdicionales,
   SeccionCurva,
@@ -25,11 +26,36 @@ async function ContenidoPresupuesto({
   const { ok } = await searchParams;
   const { supabase, proyecto, permisos } = await cargarContexto(id);
 
-  const datos = await cargarDatosPresupuesto(supabase, id);
-  const presupuesto = calcularPresupuesto(datos);
-  const entradaCurva = { costoTotal: presupuesto.costoTotal, duracion: proyecto.duracion, gastoPorMes: datos.gastoPorMes };
-  const serie = serieCurvaS(entradaCurva);
-  const indicadores = calcularIndicadores({ ...entradaCurva, costoDirecto: presupuesto.costoDirecto });
+  let calculo;
+  try {
+    const datos = await cargarDatosPresupuesto(supabase, id);
+    const presupuesto = calcularPresupuesto(datos);
+    const entradaCurva = { costoTotal: presupuesto.costoTotal, duracion: proyecto.duracion, gastoPorMes: datos.gastoPorMes };
+    calculo = {
+      datos,
+      presupuesto,
+      serie: serieCurvaS(entradaCurva),
+      indicadores: calcularIndicadores({ ...entradaCurva, costoDirecto: presupuesto.costoDirecto }),
+    };
+  } catch (e) {
+    console.error("Fallo al preparar el presupuesto:", e);
+    return (
+      <>
+        <Link href={`/proyectos/${id}`} className="text-sm font-medium text-leaf-600 hover:underline">
+          ← Volver al proyecto
+        </Link>
+        <div className="mt-4">
+          <Titulo>Presupuesto y costos</Titulo>
+        </div>
+        <div className="mt-4">
+          <Aviso>
+            No se pudo preparar el presupuesto. Detalle técnico: {describirFallo(e)}. Avisa al administrador.
+          </Aviso>
+        </div>
+      </>
+    );
+  }
+  const { datos, presupuesto, serie, indicadores } = calculo;
   const base = `/proyectos/${id}/presupuesto`;
 
   return (

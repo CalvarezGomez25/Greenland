@@ -4,7 +4,13 @@ import { claseBoton } from "@/components/ui";
 
 // Se muestra si algo falla dentro del área interna (por ejemplo, una acción
 // que la base de datos rechaza). No expone detalles técnicos al usuario.
-export default function ErrorInterno({ reset }: { error: Error; reset: () => void }) {
+export default function ErrorInterno({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   return (
     <div className="mx-auto max-w-md rounded-card bg-leaf-50 p-8 text-center">
       <h1 className="mb-2 font-display text-2xl font-bold text-leaf-700">
@@ -17,6 +23,9 @@ export default function ErrorInterno({ reset }: { error: Error; reset: () => voi
       <button onClick={reset} className={claseBoton.primario}>
         Reintentar
       </button>
+      {error.digest && (
+        <p className="mt-4 text-xs text-muted">Referencia para el administrador: {error.digest}</p>
+      )}
     </div>
   );
 }

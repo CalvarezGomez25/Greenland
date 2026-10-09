@@ -5,9 +5,33 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Capitulo, LineaCosto, Partida } from "./calculos";
 import { gastoAMonto } from "./curva";
 import { desdeJson, ESCALA } from "./dinero";
-import { leerTodo } from "./paginar";
+import { ErrorDeBase, leerTodo } from "./paginar";
 
 type Numero = number | string;
+
+// Fallo al leer una tabla concreta: permite decir cuál y con qué código, sin exponer el mensaje interno.
+export class ErrorLecturaTabla extends Error {
+  constructor(
+    readonly tabla: string,
+    readonly codigo?: string,
+    mensaje?: string,
+  ) {
+    super(mensaje ?? `No se pudo leer ${tabla}`);
+    this.name = "ErrorLecturaTabla";
+  }
+}
+
+async function leerTabla<T>(
+  tabla: string,
+  pedir: Parameters<typeof leerTodo<T>>[0],
+): Promise<T[]> {
+  try {
+    return await leerTodo<T>(pedir);
+  } catch (e) {
+    if (e instanceof ErrorDeBase) throw new ErrorLecturaTabla(tabla, e.codigo, e.message);
+    throw e;
+  }
+}
 
 export type DatosPresupuesto = {
   capitulos: Capitulo[];
@@ -21,7 +45,7 @@ export async function cargarDatosPresupuesto(
   proyectoId: string,
 ): Promise<DatosPresupuesto> {
   const [capitulos, partidas, lineas, gastos] = await Promise.all([
-    leerTodo<{ id: string; codigo: string; nombre: string; orden: number }>((desde, hasta) =>
+    leerTabla<{ id: string; codigo: string; nombre: string; orden: number }>("capitulos", (desde, hasta) =>
       supabase
         .from("capitulos")
         .select("id, codigo, nombre, orden")
@@ -29,7 +53,7 @@ export async function cargarDatosPresupuesto(
         .order("orden")
         .range(desde, hasta),
     ),
-    leerTodo<{
+    leerTabla<{
       id: string;
       capitulo_id: string;
       codigo: string;
@@ -37,7 +61,7 @@ export async function cargarDatosPresupuesto(
       unidad: string;
       cantidad: Numero;
       precio_unitario: Numero;
-    }>((desde, hasta) =>
+    }>("apu_partidas", (desde, hasta) =>
       supabase
         .from("apu_partidas")
         .select("id, capitulo_id, codigo, descripcion, unidad, cantidad, precio_unitario")
@@ -45,14 +69,14 @@ export async function cargarDatosPresupuesto(
         .order("id")
         .range(desde, hasta),
     ),
-    leerTodo<{
+    leerTabla<{
       id: string;
       nombre: string;
       base: "costo_directo" | "linea";
       linea_base_id: string | null;
       porcentaje: Numero;
       orden: number;
-    }>((desde, hasta) =>
+    }>("costos_adicionales", (desde, hasta) =>
       supabase
         .from("costos_adicionales")
         .select("id, nombre, base, linea_base_id, porcentaje, orden")
@@ -60,7 +84,7 @@ export async function cargarDatosPresupuesto(
         .order("orden")
         .range(desde, hasta),
     ),
-    leerTodo<{ mes: number; valor_real: Numero }>((desde, hasta) =>
+    leerTabla<{ mes: number; valor_real: Numero }>("gasto_mensual", (desde, hasta) =>
       supabase
         .from("gasto_mensual")
         .select("mes, valor_real")
