@@ -55,9 +55,16 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
 
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
         <Titulo>{p.nombre}</Titulo>
-        <Link href={`/proyectos/${p.id}/presupuesto`} className={claseBoton.primario}>
-          Presupuesto y costos
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          {esAdmin && (
+            <Link href={`/proyectos/${p.id}/editar`} className={claseBoton.contorno}>
+              Editar proyecto
+            </Link>
+          )}
+          <Link href={`/proyectos/${p.id}/presupuesto`} className={claseBoton.primario}>
+            Presupuesto y costos
+          </Link>
+        </div>
       </div>
 
       <dl className="mt-6 grid gap-4 rounded-card bg-leaf-100 p-5 sm:grid-cols-2">
