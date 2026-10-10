@@ -6,6 +6,8 @@ import { cargarProyecto } from "@/lib/contexto-proyecto";
 import { ES_UUID } from "@/lib/formato";
 import { leerDatosCambio } from "@/lib/pmo/cambios-form";
 import type { Estado } from "@/lib/presupuesto/estado";
+import { avisarDecision } from "@/lib/alertas/inmediato";
+import { ETIQUETA_NIVEL_CAMBIO } from "@/lib/pmo/cambios";
 
 function valoresDe(datos: FormData): Record<string, string> {
   const v: Record<string, string> = {};
@@ -45,10 +47,23 @@ export async function actualizarCambio(proyectoId: string, cambioId: string, _pr
 }
 
 // Acciones de flujo: reciben una nota opcional y redirigen al detalle con el resultado.
-async function flujo(proyectoId: string, cambioId: string, llamada: (s: Awaited<ReturnType<typeof cargarProyecto>>["supabase"]) => PromiseLike<{ error: { code?: string; message: string } | null }>) {
+async function flujo(proyectoId: string, cambioId: string, llamada: (s: Awaited<ReturnType<typeof cargarProyecto>>["supabase"]) => PromiseLike<{ error: { code?: string; message: string } | null }>, avisarSiQuedaEnAprobacion = false) {
   if (!ES_UUID.test(cambioId)) redirect(`/proyectos/${proyectoId}/cambios`);
-  const { supabase } = await cargarProyecto(proyectoId);
+  const { supabase, proyecto } = await cargarProyecto(proyectoId);
   const { error } = await llamada(supabase);
+  if (!error && avisarSiQuedaEnAprobacion) {
+    // Si el cambio acaba de llegar a «En aprobación», se avisa por correo a quien debe decidir.
+    const { data: c } = await supabase.from("cambios").select("codigo, nivel, estado_flujo, descripcion_despues, impacto_costo").eq("id", cambioId).maybeSingle();
+    if (c?.estado_flujo === "aprobacion") {
+      const nivel = (c.nivel ?? "menor") as keyof typeof ETIQUETA_NIVEL_CAMBIO;
+      await avisarDecision(supabase, {
+        proyectoId, proyecto: proyecto.nombre, audiencia: nivel === "menor" ? "gerente" : "director",
+        titulo: `Cambio ${c.codigo} por aprobar`,
+        detalle: `Nivel ${ETIQUETA_NIVEL_CAMBIO[nivel] ?? nivel}. ${String(c.descripcion_despues ?? "").slice(0, 300)}`,
+        href: `/proyectos/${proyectoId}/cambios/${cambioId}`,
+      });
+    }
+  }
   revalidatePath(`/proyectos/${proyectoId}`, "layout");
   const base = `/proyectos/${proyectoId}/cambios/${cambioId}`;
   redirect(error ? `${base}?error=${encodeURIComponent(mensaje(error))}` : `${base}?ok=guardado`);
@@ -57,7 +72,7 @@ async function flujo(proyectoId: string, cambioId: string, llamada: (s: Awaited<
 const nota = (d: FormData) => String(d.get("nota") ?? "").trim() || null;
 
 export async function avanzarCambio(proyectoId: string, cambioId: string, datos: FormData): Promise<void> {
-  await flujo(proyectoId, cambioId, (s) => s.rpc("cambio_avanzar", { p_cambio: cambioId, p_nota: nota(datos) }));
+  await flujo(proyectoId, cambioId, (s) => s.rpc("cambio_avanzar", { p_cambio: cambioId, p_nota: nota(datos) }), true);
 }
 export async function devolverCambio(proyectoId: string, cambioId: string, datos: FormData): Promise<void> {
   await flujo(proyectoId, cambioId, (s) => s.rpc("cambio_devolver", { p_cambio: cambioId, p_nota: nota(datos) }));

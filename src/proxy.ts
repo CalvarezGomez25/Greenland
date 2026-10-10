@@ -47,6 +47,7 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     // todo, menos archivos estáticos e imágenes
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|jpg|jpeg|svg|webp|ico)$).*)",
+    // (el cron de alertas se autentica por sí mismo con CRON_SECRET)
+    "/((?!_next/static|_next/image|favicon.ico|api/cron/|.*\\.(?:png|jpg|jpeg|svg|webp|ico)$).*)",
   ],
 };

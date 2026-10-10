@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { NOMBRE_PLATAFORMA } from "@/lib/marca";
 import { FormularioIngreso } from "./formulario-ingreso";
 
 export default function PaginaIngreso() {
@@ -14,7 +15,7 @@ export default function PaginaIngreso() {
           priority
         />
         <h1 className="mb-1 text-center font-display text-2xl font-bold text-leaf-500">
-          Plataforma de Obra
+          {NOMBRE_PLATAFORMA}
         </h1>
         <p className="mb-6 text-center text-sm text-muted">
           Ingresa con el correo y la contraseña que te asignó el administrador.

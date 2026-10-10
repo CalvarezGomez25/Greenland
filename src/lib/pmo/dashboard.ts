@@ -49,3 +49,13 @@ export async function cargarDashboard(supabase: SupabaseClient, f: FiltrosDashbo
     hoy,
   };
 }
+
+// Solo las decisiones pendientes de todos los proyectos activos y quién es el gerente de cada uno
+// (lo usan las alertas por correo; no calcula KPIs ni resúmenes).
+export async function cargarDecisiones(supabase: SupabaseClient): Promise<{ decisiones: Decision[]; gerentes: Map<string, string> } | null> {
+  const datos = await cargarDatosPortafolio(supabase);
+  if (datos.error) return null;
+  const activos = datos.proyectos.filter((p) => p.estado === "activo");
+  const { filas } = armarPortafolio({ ...datos.entrada, proyectos: activos });
+  return { decisiones: requiereDecision(filas, datos.parametros), gerentes: datos.gerentes };
+}

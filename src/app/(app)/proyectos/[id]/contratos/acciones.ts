@@ -8,6 +8,7 @@ import { leerNumeroColombiano } from "@/lib/presupuesto/csv";
 import { esFechaValida, leerDecimalSimple } from "@/lib/registros/leer";
 import { TIPOS_CONTRATO } from "@/lib/obra/contratos";
 import type { Estado } from "@/lib/presupuesto/estado";
+import { avisarDecision } from "@/lib/alertas/inmediato";
 
 function mensaje(e: { code?: string; message: string }): string {
   if (e.code === "42501" || e.code === "22023") return e.message;
@@ -30,11 +31,19 @@ function datosContrato(d: FormData): { datos: Record<string, string> } | { error
 }
 
 export async function crearContrato(proyectoId: string, _p: Estado, d: FormData): Promise<Estado> {
-  const { supabase } = await cargarProyecto(proyectoId);
+  const { supabase, proyecto } = await cargarProyecto(proyectoId);
   const dc = datosContrato(d);
   if ("error" in dc) return { error: dc.error, valores: valoresDe(d) };
   const { data, error } = await supabase.rpc("contrato_crear", { p_proyecto: proyectoId, p_datos: dc.datos });
   if (error) return { error: mensaje(error), valores: valoresDe(d) };
+  // Un contrato nuevo espera la aprobación del director general: se le avisa por correo.
+  const { data: nuevo } = await supabase.from("contratos").select("estado_aprobacion").eq("id", data as string).maybeSingle();
+  if (nuevo?.estado_aprobacion === "pendiente") {
+    await avisarDecision(supabase, {
+      proyectoId, proyecto: proyecto.nombre, audiencia: "director", titulo: "Contrato nuevo por aprobar",
+      detalle: `${dc.datos.contratista}: ${dc.datos.objeto.slice(0, 300)}`, href: `${base(proyectoId)}/${data}`,
+    });
+  }
   revalidatePath(`/proyectos/${proyectoId}`, "layout");
   redirect(`${base(proyectoId)}/${data}?ok=guardado`);
 }

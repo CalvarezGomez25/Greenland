@@ -22,6 +22,23 @@ tipos, estilo, pruebas unitarias, compilación de producción y 404 comprobacion
 3. Despliega. Después, entra como administrador en `/usuarios`, asigna roles globales, y agrega
    miembros a cada proyecto. Revisa `/parametros` y `/festivos` (calendario de festivos de Colombia, cada año).
 
+## Alertas por correo
+
+Cuando una decisión queda pendiente, la plataforma avisa por correo al responsable:
+
+- **Aviso inmediato:** cambio que pasa a «En aprobación» (menor → gerente; moderado o crítico → director general), contrato nuevo por aprobar (director) y reporte semanal enviado con decisiones requeridas (director).
+- **Resumen diario (7:00 a. m. de Bogotá):** cada persona recibe solo lo suyo (el director, las decisiones de todos los proyectos; cada gerente, las de sus proyectos), mientras haya algo pendiente. Si no existe ningún usuario con rol Director general, las del director van a los administradores.
+- Se apagan con el parámetro `alertas_correo_activas = no` (en `/parametros`). Sin proveedor de correo configurado, no se envía nada y todo lo demás funciona igual.
+
+Configuración en Vercel (variables de entorno):
+
+1. **Cómo se envía** (una de dos): Gmail → `SMTP_USUARIO` (el correo) y `SMTP_CLAVE` (una «contraseña de aplicación» de Google, no la contraseña normal); o Resend → `RESEND_API_KEY` y `CORREO_REMITENTE` (dirección de un dominio verificado en Resend).
+2. `CRON_SECRET`: una clave larga inventada por ti. Vercel la envía sola al cron diario (`vercel.json`).
+3. `ALERTAS_USUARIO` y `ALERTAS_CLAVE`: un usuario de solo lectura. Créalo en Supabase → Authentication → Users → Add user (correo y contraseña, «Auto Confirm User») y en `/usuarios` asígnale el rol **Analista PMO**. Así el resumen no necesita la clave secreta de Supabase.
+4. Opcional: `URL_PUBLICA` (por defecto se usa la dirección de Vercel).
+
+Prueba manual del resumen: `curl -H "Authorization: Bearer TU_CRON_SECRET" https://tu-plataforma.vercel.app/api/cron/alertas`.
+
 ## Comandos
 
 ```

@@ -45,7 +45,7 @@ export type FilaPortafolio = {
   riesgoMaximo: NivelRiesgo | null;
   cambiosPendientes: number;
   cambioCriticoPendientes: number;
-  cambiosEnAprobacion: { codigo: string; dias: number | null }[];
+  cambiosEnAprobacion: { codigo: string; dias: number | null; nivel: NivelCambio }[];
   reporte: ReporteBase | null;
   sinReporteSemana: boolean;
   hitosVencidos: HitoVencido[];
@@ -97,7 +97,7 @@ export function armarPortafolio(e: EntradaPortafolio): { filas: FilaPortafolio[]
       riesgoMaximo,
       cambiosPendientes: cambios.length,
       cambioCriticoPendientes: cambios.filter((n) => n === "critico").length,
-      cambiosEnAprobacion: propios.filter((c) => c.estado === "aprobacion").map((c) => ({ codigo: c.codigo ?? "—", dias: diasDesde(c.desde ?? null) })),
+      cambiosEnAprobacion: propios.filter((c) => c.estado === "aprobacion").map((c) => ({ codigo: c.codigo ?? "—", dias: diasDesde(c.desde ?? null), nivel: c.nivel })),
       reporte: ultimoReporte.get(p.id) ?? null,
       sinReporteSemana: e.proyectosConReporteSemana ? !e.proyectosConReporteSemana.includes(p.id) : false,
       hitosVencidos: (e.hitosVencidos ?? []).filter((h) => h.proyecto_id === p.id),
@@ -138,11 +138,18 @@ export function armarPortafolio(e: EntradaPortafolio): { filas: FilaPortafolio[]
   };
 }
 
-export type Decision = { tipo: string; proyectoId: string; proyecto: string; detalle: string; href: string };
+// A quién corresponde: el director general, el gerente del proyecto o ambos (se usa para los correos de alerta).
+export type Audiencia = "director" | "gerente" | "ambos";
+export type Decision = { tipo: string; proyectoId: string; proyecto: string; detalle: string; href: string; audiencia: Audiencia };
+
+const AUDIENCIA_POR_TIPO: Record<string, Audiencia> = {
+  "TCPI alto": "ambos", "Riesgo crítico": "ambos", "Decisión requerida": "director", "Sin reporte de la semana": "gerente",
+  "Hallazgo escalado": "ambos", "Hitos vencidos": "gerente", "Contrato por aprobar": "director",
+};
 
 // Bloque "Requiere decisión". Cada hito agrega aquí sus fuentes (cambios, riesgos, reportes, hitos).
 export function requiereDecision(filas: FilaPortafolio[], parametros: FilaParametro[]): Decision[] {
-  const out: Decision[] = [];
+  const out: (Omit<Decision, "audiencia"> & { audiencia?: Audiencia })[] = [];
   for (const f of filas) {
     if (f.proyecto.estado !== "activo") continue;
     const ctx = { proyectoId: f.proyecto.id, portafolioId: f.proyecto.portafolio_id };
@@ -193,10 +200,11 @@ export function requiereDecision(filas: FilaPortafolio[], parametros: FilaParame
     for (const c of f.cambiosEnAprobacion) {
       out.push({
         tipo: "Cambio por aprobar", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre,
+        audiencia: c.nivel === "menor" ? "gerente" : "director", // menor: lo decide el gerente; moderado y crítico: el director
         detalle: `${c.codigo}${c.dias !== null ? ` · ${c.dias} día(s) esperando decisión` : ""}`,
         href: `/proyectos/${f.proyecto.id}/cambios`,
       });
     }
   }
-  return out;
+  return out.map((d) => ({ ...d, audiencia: d.audiencia ?? AUDIENCIA_POR_TIPO[d.tipo] ?? "ambos" }));
 }

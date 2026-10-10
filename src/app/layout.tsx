@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { NOMBRE_EMPRESA, NOMBRE_PLATAFORMA } from "@/lib/marca";
 
 export const metadata: Metadata = {
-  title: "Plataforma de Obra · GreenLand",
+  title: `${NOMBRE_PLATAFORMA} · ${NOMBRE_EMPRESA}`,
   description: "Gestión de obras: control financiero, avance y documentos.",
 };
 

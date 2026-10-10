@@ -6,6 +6,7 @@ import { cargarProyecto } from "@/lib/contexto-proyecto";
 import { ES_UUID } from "@/lib/formato";
 import { esFechaValida } from "@/lib/registros/leer";
 import type { Estado } from "@/lib/presupuesto/estado";
+import { avisarDecision } from "@/lib/alertas/inmediato";
 
 function mensaje(error: { code?: string; message: string }): string {
   if (error.code === "42501" || error.code === "22023") return error.message;
@@ -33,7 +34,7 @@ export async function crearReporte(proyectoId: string, _prev: Estado, datos: For
 
 export async function guardarReporte(proyectoId: string, reporteId: string, _prev: Estado, datos: FormData): Promise<Estado> {
   if (!ES_UUID.test(reporteId)) return { error: "Dirección no válida." };
-  const { supabase } = await cargarProyecto(proyectoId);
+  const { supabase, proyecto } = await cargarProyecto(proyectoId);
   const valores = valoresDe(datos);
   const t = (k: string) => String(datos.get(k) ?? "");
   const { error } = await supabase.rpc("reporte_guardar", {
@@ -44,6 +45,13 @@ export async function guardarReporte(proyectoId: string, reporteId: string, _pre
   if (datos.get("accion") === "enviar") {
     const { error: e2 } = await supabase.rpc("reporte_enviar", { p_reporte: reporteId });
     if (e2) return { error: mensaje(e2), valores };
+    // Un reporte enviado que pide decisiones a la dirección se avisa al director por correo.
+    if (t("decisiones_requeridas").trim()) {
+      await avisarDecision(supabase, {
+        proyectoId, proyecto: proyecto.nombre, audiencia: "director", titulo: "Reporte semanal con decisiones requeridas",
+        detalle: t("decisiones_requeridas").trim().slice(0, 400), href: `/proyectos/${proyectoId}/reportes/${reporteId}`,
+      });
+    }
   }
   revalidatePath("/", "layout");
   redirect(`/proyectos/${proyectoId}/reportes/${reporteId}?ok=${datos.get("accion") === "enviar" ? "enviado" : "guardado"}`);
