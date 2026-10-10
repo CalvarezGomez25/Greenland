@@ -21,7 +21,7 @@ export const MODULOS: Modulo[] = [
   { clave: "wbs", titulo: "WBS (EDT)", descripcion: "Estructura de entregables", ruta: "r/wbs", area: "gestion", disponible: true, ver: () => true },
   { clave: "riesgos", titulo: "Riesgos", descripcion: "Registro, score y nivel", ruta: "r/riesgos", area: "gestion", disponible: true, ver: general },
   { clave: "cambios", titulo: "Control de cambios", descripcion: "Solicitudes, niveles y aprobación", ruta: "cambios", area: "gestion", disponible: true, ver: () => true },
-  { clave: "reportes", titulo: "Reporte semanal y KPIs", descripcion: "Reportes, hitos, reuniones y KPIs de gestión", ruta: "reportes", area: "gestion", disponible: false, ver: general },
+  { clave: "reportes", titulo: "Reporte semanal y KPIs", descripcion: "Reportes, hitos, reuniones y KPIs de gestión", ruta: "reportes", area: "gestion", disponible: true, ver: general },
   { clave: "documentos", titulo: "Documentos", descripcion: "Planos, contratos, actas e informes", ruta: "documentos", area: "gestion", disponible: false, ver: () => true },
   { clave: "cierre", titulo: "Cierre y lecciones aprendidas", descripcion: "Acta de entrega y lecciones", ruta: "cierre", area: "gestion", disponible: false, ver: general },
   { clave: "presupuesto", titulo: "Presupuesto y costos", descripcion: "Capítulos, partidas, costos adicionales y gasto", ruta: "presupuesto", area: "obra", disponible: true, ver: (p, o) => o && !p.interventor },

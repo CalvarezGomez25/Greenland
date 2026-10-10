@@ -1,7 +1,9 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { obtenerSesion } from "@/lib/sesion";
-import { cargarDatosPortafolio } from "@/lib/pmo/cargar";
+import { cargarDatosKpi, cargarDatosPortafolio, hoyColombia } from "@/lib/pmo/cargar";
+import { calcularKpis } from "@/lib/pmo/kpis";
+import { TablaKpis } from "@/components/kpis";
 import { armarPortafolio, requiereDecision } from "@/lib/pmo/portafolio";
 import { centavos, indice, porcentaje } from "@/lib/pmo/formato";
 import { ETIQUETA_ESTADO, ETIQUETA_FASE, type EstadoProyecto, type FaseProyecto } from "@/lib/tipos";
@@ -35,6 +37,7 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
   );
   const { filas, resumen } = armarPortafolio({ ...datos.entrada, proyectos: visibles });
   const decisiones = requiereDecision(filas, datos.parametros);
+  const kpis = calcularKpis(await cargarDatosKpi(supabase, visibles.map((p) => p.id)), { hoy: hoyColombia(), parametros: datos.parametros });
   const esAdmin = perfil.rol_global === "administrador";
   const hayFiltro = Boolean(f.estado || f.fase || f.portafolio || f.gerente);
 
@@ -115,6 +118,7 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
                           <span className="flex flex-col gap-1">
                             <Semaforo color={r.reporte.estado_reportado} />
                             {r.semaforo.general && r.reporte.estado_reportado !== r.semaforo.general && <span className="text-xs text-danger">Difiere del calculado</span>}
+                            {r.reporte.alertas && <span className="max-w-[180px] truncate text-xs text-muted" title={r.reporte.alertas}>{r.reporte.alertas}</span>}
                           </span>
                         ) : <span className="text-muted">—</span>}
                       </td>
@@ -141,6 +145,12 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
             ))}
           </ul>
         )}
+      </section>
+
+      <section className="mt-10" aria-labelledby="t-kpis">
+        <h2 id="t-kpis" className="font-display text-2xl font-bold text-leaf-700">KPIs de gestión</h2>
+        <p className="mt-1 text-sm text-muted">Mensuales, de los proyectos que ves con los filtros actuales. Pasa el cursor sobre un mes para ver “n de m”.</p>
+        <div className="mt-3"><TablaKpis series={kpis} /></div>
       </section>
     </>
   );

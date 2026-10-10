@@ -17,7 +17,11 @@ export type MedicionBase = EntradaEvm & { proyecto_id: string; fecha_corte: stri
 export type ItemNivel<N> = { proyecto_id: string; nivel: N };
 export type CambioPendiente = ItemNivel<NivelCambio> & { estado?: string; codigo?: string; desde?: string | null };
 
-export type ReporteBase = { proyecto_id: string; semana_clave: string; estado_reportado: Color; comentario: string | null };
+export type ReporteBase = {
+  proyecto_id: string; anio: number; semana: number; estado_reportado: Color;
+  alertas: string | null; decisiones_requeridas: string | null;
+};
+export type HitoVencido = { proyecto_id: string; nombre: string; fecha_plan: string };
 
 export type EntradaPortafolio = {
   proyectos: ProyectoBase[];
@@ -25,7 +29,10 @@ export type EntradaPortafolio = {
   parametros: FilaParametro[];
   riesgosActivos: ItemNivel<NivelRiesgo>[];
   cambiosPendientes: CambioPendiente[];
-  ultimosReportes: ReporteBase[]; // el más reciente por proyecto
+  ultimosReportes: ReporteBase[]; // reportes ENVIADOS: se usa el más reciente de cada proyecto
+  hitosVencidos?: HitoVencido[];
+  // Proyectos con reporte enviado de la semana ISO en curso. null = no se sabe (no se marca a nadie).
+  proyectosConReporteSemana?: string[] | null;
 };
 
 export type FilaPortafolio = {
@@ -38,6 +45,8 @@ export type FilaPortafolio = {
   cambioCriticoPendientes: number;
   cambiosEnAprobacion: { codigo: string; dias: number | null }[];
   reporte: ReporteBase | null;
+  sinReporteSemana: boolean;
+  hitosVencidos: HitoVencido[];
 };
 
 export type ResumenPortafolio = {
@@ -54,6 +63,12 @@ export function armarPortafolio(e: EntradaPortafolio): { filas: FilaPortafolio[]
   for (const m of e.mediciones) {
     const actual = ultima.get(m.proyecto_id);
     if (!actual || m.fecha_corte > actual.fecha_corte) ultima.set(m.proyecto_id, m);
+  }
+
+  const ultimoReporte = new Map<string, ReporteBase>();
+  for (const r of e.ultimosReportes) {
+    const a = ultimoReporte.get(r.proyecto_id);
+    if (!a || r.anio * 100 + r.semana > a.anio * 100 + a.semana) ultimoReporte.set(r.proyecto_id, r);
   }
 
   const filas: FilaPortafolio[] = e.proyectos.map((p) => {
@@ -79,7 +94,9 @@ export function armarPortafolio(e: EntradaPortafolio): { filas: FilaPortafolio[]
       cambiosPendientes: cambios.length,
       cambioCriticoPendientes: cambios.filter((n) => n === "critico").length,
       cambiosEnAprobacion: propios.filter((c) => c.estado === "aprobacion").map((c) => ({ codigo: c.codigo ?? "—", dias: diasDesde(c.desde ?? null) })),
-      reporte: e.ultimosReportes.find((r) => r.proyecto_id === p.id) ?? null,
+      reporte: ultimoReporte.get(p.id) ?? null,
+      sinReporteSemana: e.proyectosConReporteSemana ? !e.proyectosConReporteSemana.includes(p.id) : false,
+      hitosVencidos: (e.hitosVencidos ?? []).filter((h) => h.proyecto_id === p.id),
     };
   });
 
@@ -133,6 +150,24 @@ export function requiereDecision(filas: FilaPortafolio[], parametros: FilaParame
     }
     if (f.riesgoMaximo === "critico") {
       out.push({ tipo: "Riesgo crítico", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre, detalle: "Hay al menos un riesgo crítico activo", href: `/proyectos/${f.proyecto.id}/r/riesgos` });
+    }
+    if (f.reporte?.decisiones_requeridas) {
+      const t = f.reporte.decisiones_requeridas;
+      out.push({
+        tipo: "Decisión requerida", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre,
+        detalle: `Reporte de la semana ${f.reporte.semana}: ${t.length > 120 ? `${t.slice(0, 120)}…` : t}`,
+        href: `/proyectos/${f.proyecto.id}/reportes`,
+      });
+    }
+    if (f.sinReporteSemana) {
+      out.push({ tipo: "Sin reporte de la semana", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre, detalle: "No se ha enviado el reporte semanal en curso", href: `/proyectos/${f.proyecto.id}/reportes` });
+    }
+    if (f.hitosVencidos.length > 0) {
+      out.push({
+        tipo: "Hitos vencidos", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre,
+        detalle: `${f.hitosVencidos.length} sin cumplir (el más antiguo: ${f.hitosVencidos.map((h) => h.nombre)[0]})`,
+        href: `/proyectos/${f.proyecto.id}/r/hitos`,
+      });
     }
     for (const c of f.cambiosEnAprobacion) {
       out.push({
