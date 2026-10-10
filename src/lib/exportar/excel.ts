@@ -1,3 +1,4 @@
+import { NOMBRE_EMPRESA, NOMBRE_PLATAFORMA } from "../marca";
 import ExcelJS from "exceljs";
 import type { DocExport } from "./tipos";
 
@@ -15,7 +16,7 @@ export const nombreHoja = (t: string, usados: Set<string>): string => {
 
 export async function aExcel(doc: DocExport): Promise<Buffer> {
   const libro = new ExcelJS.Workbook();
-  libro.creator = "Plataforma de gestión de proyectos GreenLand";
+  libro.creator = `${NOMBRE_PLATAFORMA} · ${NOMBRE_EMPRESA}`;
   libro.created = new Date();
   const usados = new Set<string>();
   for (const t of doc.tablas) {

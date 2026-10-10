@@ -1,4 +1,4 @@
-# Plataforma de Obra (GreenLand)
+# PMO360 · Control integral de Proyectos (GreenLand)
 
 Plataforma web de gestión de proyectos de construcción (PMO): portafolio, EVM, cambios, cronograma,
 contratos, bitácora, documentos, cierre e interventoría. La especificación vigente es `ESPECIFICACION.md`

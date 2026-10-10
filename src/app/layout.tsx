@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { NOMBRE_EMPRESA, NOMBRE_PLATAFORMA } from "@/lib/marca";
+import { LEMA_PLATAFORMA, NOMBRE_EMPRESA, NOMBRE_PLATAFORMA } from "@/lib/marca";
 
 export const metadata: Metadata = {
   title: `${NOMBRE_PLATAFORMA} · ${NOMBRE_EMPRESA}`,
-  description: "Gestión de obras: control financiero, avance y documentos.",
+  description: `${LEMA_PLATAFORMA}: portafolio, obra, contratos e interventoría.`,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

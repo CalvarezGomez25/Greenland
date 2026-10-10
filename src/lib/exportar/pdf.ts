@@ -1,5 +1,6 @@
 // PDF sencillo con tablas (pdf-lib, sin archivos externos). Las fuentes estándar solo admiten caracteres
 // latinos (WinAnsi): se sustituyen los símbolos que no existen en ellas.
+import { NOMBRE_EMPRESA, NOMBRE_PLATAFORMA } from "../marca";
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 import type { DocExport, TablaExport } from "./tipos";
 
@@ -51,7 +52,7 @@ const texto = (c: string | number | null, f?: string): string => {
 export async function aPdf(doc: DocExport): Promise<Uint8Array> {
   const pdf = await PDFDocument.create();
   pdf.setTitle(limpiar(doc.titulo));
-  pdf.setCreator("Plataforma de gestión de proyectos GreenLand");
+  pdf.setCreator(`${NOMBRE_PLATAFORMA} · ${NOMBRE_EMPRESA}`);
   const normal = await pdf.embedFont(StandardFonts.Helvetica);
   const negrita = await pdf.embedFont(StandardFonts.HelveticaBold);
   const paginas: PDFPage[] = [];
