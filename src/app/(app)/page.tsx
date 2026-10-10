@@ -30,7 +30,7 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
 
   const visibles = datos.proyectos.filter(
     (p) =>
-      (!f.estado || p.estado === f.estado) &&
+      (!f.estado ? p.estado === "activo" || p.estado === "en_pausa" : f.estado === "todos" || p.estado === f.estado) &&
       (!f.fase || p.fase === f.fase) &&
       (!f.portafolio || p.portafolio_id === f.portafolio) &&
       (!f.gerente || datos.gerentes.get(p.id) === f.gerente),
@@ -40,6 +40,7 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
   const kpis = calcularKpis(await cargarDatosKpi(supabase, visibles.map((p) => p.id)), { hoy: hoyColombia(), parametros: datos.parametros });
   const esAdmin = perfil.rol_global === "administrador";
   const hayFiltro = Boolean(f.estado || f.fase || f.portafolio || f.gerente);
+  const nCerrados = datos.proyectos.filter((p) => p.estado === "cerrado").length;
 
   return (
     <>
@@ -65,7 +66,8 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
 
       <form className="mt-8 flex flex-wrap items-end gap-3" aria-label="Filtros">
         <Selector etiqueta="Estado" name="estado" defaultValue={f.estado ?? ""}>
-          <option value="">Todos</option>
+          <option value="">Vigentes (activos y en pausa)</option>
+          <option value="todos">Todos, con el histórico</option>
           {Object.entries(ETIQUETA_ESTADO).map(([v, t]) => <option key={v} value={v}>{t}</option>)}
         </Selector>
         <Selector etiqueta="Fase" name="fase" defaultValue={f.fase ?? ""}>
@@ -82,6 +84,7 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
         </Selector>
         <button className={claseBoton.secundario}>Filtrar</button>
         {hayFiltro && <Link href="/" className={claseBoton.contorno}>Quitar filtros</Link>}
+        {!f.estado && nCerrados > 0 && <Link href="/?estado=cerrado" className="self-center text-sm font-medium text-leaf-600 hover:underline">Ver histórico ({nCerrados} cerrado{nCerrados === 1 ? "" : "s"})</Link>}
       </form>
 
       <section className="mt-6" aria-labelledby="t-semaforo">
