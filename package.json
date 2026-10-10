@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "migrar": "node scripts/migrar.mjs"
+    "migrar": "node scripts/migrar.mjs",
+    "verificar": "tsc --noEmit && eslint src scripts && vitest run && next build"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
