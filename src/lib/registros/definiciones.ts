@@ -2,6 +2,7 @@
 import type { Definicion } from "./tipos";
 import { RIESGOS, STAKEHOLDERS, WBS } from "./modulos/planificacion";
 import { HITOS, REUNIONES } from "./modulos/seguimiento";
+import { TAREAS } from "./modulos/cronograma";
 
 export const DEFINICIONES: Record<string, Definicion> = {
   stakeholders: STAKEHOLDERS,
@@ -9,6 +10,7 @@ export const DEFINICIONES: Record<string, Definicion> = {
   riesgos: RIESGOS,
   hitos: HITOS,
   reuniones: REUNIONES,
+  tareas: TAREAS,
 };
 
 export function obtenerDefinicion(clave: string): Definicion | null {

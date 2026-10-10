@@ -7,6 +7,7 @@ import { ES_UUID } from "@/lib/formato";
 import { leerNumeroColombiano } from "@/lib/presupuesto/csv";
 import { esFechaValida } from "@/lib/registros/leer";
 import type { Estado } from "@/lib/presupuesto/estado";
+import { refrescarMedicion } from "@/lib/obra/refrescar";
 
 export async function guardarMedicion(proyectoId: string, _prev: Estado, datos: FormData): Promise<Estado> {
   const { supabase, permisos } = await cargarProyecto(proyectoId);
@@ -39,4 +40,15 @@ export async function borrarMedicion(proyectoId: string, id: string): Promise<vo
   if (error) console.error("Fallo al borrar la medición:", error.code, error.message);
   revalidatePath("/", "layout");
   redirect(`/proyectos/${proyectoId}/evm?ok=${error ? "no_borrado" : "eliminado"}`);
+}
+
+// Calcula el valor ganado de hoy desde la línea base, el cronograma y el gasto (todo en la base de datos).
+export async function calcularAhora(proyectoId: string): Promise<void> {
+  const { supabase, permisos } = await cargarProyecto(proyectoId);
+  if (!permisos.reportar) redirect(`/proyectos/${proyectoId}/evm`);
+  const antes = await supabase.from("mediciones_evm").select("id", { count: "exact", head: true }).eq("proyecto_id", proyectoId).eq("origen", "calculado");
+  await refrescarMedicion(supabase, proyectoId);
+  const despues = await supabase.from("mediciones_evm").select("id", { count: "exact", head: true }).eq("proyecto_id", proyectoId).eq("origen", "calculado");
+  revalidatePath("/", "layout");
+  redirect(`/proyectos/${proyectoId}/evm?ok=${(despues.count ?? 0) >= 1 || (antes.count ?? 0) >= 1 ? "calculada" : "calculada_no"}`);
 }

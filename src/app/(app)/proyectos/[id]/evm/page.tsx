@@ -8,7 +8,7 @@ import { formatearFecha } from "@/lib/formato";
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { AvisoResultado } from "@/components/aviso-resultado";
-import { borrarMedicion, guardarMedicion } from "./acciones";
+import { borrarMedicion, calcularAhora, guardarMedicion } from "./acciones";
 import { FormularioMedicion } from "./formulario-medicion";
 
 type Fila = { id: string; fecha_corte: string; bac: number | string; pv: number | string; ev: number | string; ac: number | string; origen: string };
@@ -31,7 +31,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
     <>
       <Link href={`/proyectos/${id}`} className="text-sm font-medium text-leaf-600 hover:underline">← Volver al proyecto</Link>
       <div className="mt-4"><Titulo>Valor ganado (EVM)</Titulo></div>
-      <p className="mt-3 text-sm text-muted">{p.nombre} · captura manual de BAC, PV, EV y AC. En el hito de cronograma pasará a calcularse sola; la captura manual quedará para proyectos sin área de Obra.</p>
+      <p className="mt-3 text-sm text-muted">{p.nombre} · en proyectos con área de Obra, el valor ganado se calcula solo desde el presupuesto aprobado, el cronograma y el gasto; la captura manual sirve para proyectos sin esos datos.</p>
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
       {error && <div className="mt-4"><Aviso>No se pudieron leer las mediciones{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
 
@@ -64,12 +64,13 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           <div className="mt-3 overflow-x-auto rounded-card border border-soil-border">
             <table className="w-full min-w-[760px] text-left text-sm">
               <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
-                <tr>{["Corte", "BAC", "PV", "EV", "AC", "SPI", "CPI", ""].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr>
+                <tr>{["Corte", "Origen", "BAC", "PV", "EV", "AC", "SPI", "CPI", ""].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr>
               </thead>
               <tbody className="divide-y divide-soil-border">
                 {filas.map((f) => (
                   <tr key={f.id}>
                     <td className="whitespace-nowrap px-3 py-2">{formatearFecha(f.fecha_corte)}</td>
+                    <td className="px-3 py-2">{f.origen === "calculado" ? "Calculado" : "Manual"}</td>
                     <td className="px-3 py-2">{centavos(f.bac)}</td><td className="px-3 py-2">{centavos(f.pv)}</td>
                     <td className="px-3 py-2">{centavos(f.ev)}</td><td className="px-3 py-2">{centavos(f.ac)}</td>
                     <td className="px-3 py-2">{indice(f.r.spi)}</td><td className="px-3 py-2">{indice(f.r.cpi)}</td>
@@ -85,6 +86,14 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
               </tbody>
             </table>
           </div>
+        </section>
+      )}
+
+      {permisos.reportar && p.usa_obra && (
+        <section className="mt-8 rounded-card bg-leaf-50 p-5" aria-labelledby="t-calc">
+          <h2 id="t-calc" className="mb-1 font-display text-lg font-bold text-leaf-700">Calcular desde la obra</h2>
+          <p className="mb-3 text-sm text-muted">Toma el BAC de la línea base de costo, el planificado y el avance del cronograma y el gasto registrado. Se actualiza solo cuando cambian el avance o el gasto; este botón fuerza el cálculo de hoy.</p>
+          <form action={calcularAhora.bind(null, id)}><BotonEnviar className={claseBoton.secundario} textoEnviando="Calculando…">Calcular valor ganado de hoy</BotonEnviar></form>
         </section>
       )}
 

@@ -6,6 +6,10 @@ import { obtenerSesion } from "@/lib/sesion";
 import { ES_UUID } from "@/lib/formato";
 import { leerCsvPresupuesto, leerNumeroColombiano } from "@/lib/presupuesto/csv";
 import type { Estado } from "@/lib/presupuesto/estado";
+import { refrescarMedicion } from "@/lib/obra/refrescar";
+import { cargarDatosPresupuesto } from "@/lib/presupuesto/datos";
+import { calcularPresupuesto } from "@/lib/presupuesto/calculos";
+import { aTextoPunto, redondearAPesos } from "@/lib/presupuesto/dinero";
 
 // Todas las acciones llaman a las funciones de la base de datos, que vuelven a verificar
 // permisos y datos y dejan constancia en el registro de cambios.
@@ -186,6 +190,7 @@ export async function registrarGasto(proyectoId: string, _prev: Estado, datos: F
     p_motivo: campo(datos, "motivo") || null,
   });
   if (error) return conError(mensajeDeRpc(error), datos);
+  await refrescarMedicion(supabase, proyectoId);
   terminar(proyectoId, "/gasto", "gasto");
 }
 
@@ -199,5 +204,24 @@ export async function borrarGastoMes(proyectoId: string, _prev: Estado, datos: F
   const { supabase } = await obtenerSesion();
   const { error } = await supabase.rpc("gasto_borrar_mes", { p_proyecto: proyectoId, p_mes: mes, p_motivo: motivo });
   if (error) return conError(mensajeDeRpc(error), datos);
+  await refrescarMedicion(supabase, proyectoId);
   terminar(proyectoId, "/gasto", "gasto");
+}
+
+// Aprueba el presupuesto vigente como línea base de costo (BAC). El valor se calcula aquí, en el servidor,
+// con el presupuesto guardado: no se acepta ninguna cifra que venga de la pantalla.
+export async function aprobarPresupuesto(proyectoId: string): Promise<void> {
+  if (!ES_UUID.test(proyectoId)) redirect("/");
+  const { supabase } = await obtenerSesion();
+  const datos = await cargarDatosPresupuesto(supabase, proyectoId);
+  const total = calcularPresupuesto(datos).costoTotal;
+  const bac = aTextoPunto(redondearAPesos(total) * 100n, 2); // pesos enteros, con 2 decimales
+  const { error } = await supabase.rpc("linea_base_aprobar_presupuesto", { p_proyecto: proyectoId, p_bac: bac, p_nota: "Presupuesto aprobado" });
+  if (error) {
+    console.error("Fallo al aprobar el presupuesto:", error.code, error.message);
+    redirect(`/proyectos/${proyectoId}/presupuesto?ok=linea_base_no`);
+  }
+  await refrescarMedicion(supabase, proyectoId);
+  revalidatePath(`/proyectos/${proyectoId}`, "layout");
+  redirect(`/proyectos/${proyectoId}/presupuesto?ok=linea_base`);
 }

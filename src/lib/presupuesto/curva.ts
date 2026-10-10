@@ -40,6 +40,7 @@ export function serieCurvaS(entrada: {
   costoTotal: bigint;
   duracion: number;
   gastoPorMes: Map<number, bigint>; // mes → monto (escala 6)
+  planificado?: (mes: number) => bigint; // planificado acumulado desde el cronograma; sin él, 3t² − 2t³
 }): SerieCurva {
   const { costoTotal, duracion, gastoPorMes } = entrada;
   const mesesConDato = [...gastoPorMes.keys()].filter((m) => m >= 1);
@@ -57,7 +58,7 @@ export function serieCurvaS(entrada: {
     }
     puntos.push({
       mes,
-      planificado: planificadoAcumulado(costoTotal, mes, duracion),
+      planificado: entrada.planificado ? entrada.planificado(mes) : planificadoAcumulado(costoTotal, mes, duracion),
       real: mes <= ultimoMes ? acumulado : null,
     });
   }
@@ -80,9 +81,12 @@ export function calcularIndicadores(entrada: {
   costoTotal: bigint;
   duracion: number;
   gastoPorMes: Map<number, bigint>;
+  planificado?: (mes: number) => bigint;
 }): Indicadores {
   const serie = serieCurvaS(entrada);
-  const planificado = planificadoAcumulado(entrada.costoTotal, serie.ultimoMes, entrada.duracion);
+  const planificado = entrada.planificado
+    ? entrada.planificado(serie.ultimoMes)
+    : planificadoAcumulado(entrada.costoTotal, serie.ultimoMes, entrada.duracion);
   return {
     costoDirecto: entrada.costoDirecto,
     costoTotal: entrada.costoTotal,

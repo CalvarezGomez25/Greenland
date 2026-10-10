@@ -37,7 +37,7 @@ function Tarjeta({ titulo, valor, detalle }: { titulo: string; valor: string; de
   );
 }
 
-export function SeccionIndicadores({ indicadores: i, hayPresupuesto }: { indicadores: Indicadores; hayPresupuesto: boolean }) {
+export function SeccionIndicadores({ indicadores: i, hayPresupuesto, avanceFisico }: { indicadores: Indicadores; hayPresupuesto: boolean; avanceFisico?: number | null }) {
   return (
     <section aria-label="Indicadores" className="mt-6">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -66,7 +66,7 @@ export function SeccionIndicadores({ indicadores: i, hayPresupuesto }: { indicad
               : "Positivo: se ha gastado más de lo planificado"
           }
         />
-        <Tarjeta titulo="Avance físico" valor="Pendiente" detalle="Se calcula con el cronograma (Hito 3)" />
+        <Tarjeta titulo="Avance físico" valor={avanceFisico === null || avanceFisico === undefined ? "Pendiente" : porcentaje(avanceFisico)} detalle={avanceFisico === null || avanceFisico === undefined ? "Se calcula con el cronograma: crea las tareas y sus pesos" : "Del cronograma (peso × avance de cada tarea)"} />
       </div>
       {i.mesesSinRegistro.length > 0 && (
         <p role="status" className="mt-3 rounded-[10px] border border-leaf-300 bg-leaf-50 px-3.5 py-2.5 text-sm text-leaf-800">
@@ -78,12 +78,12 @@ export function SeccionIndicadores({ indicadores: i, hayPresupuesto }: { indicad
   );
 }
 
-export function SeccionCurva({ serie }: { serie: SerieCurva }) {
+export function SeccionCurva({ serie, desdeCronograma = false }: { serie: SerieCurva; desdeCronograma?: boolean }) {
   return (
     <Seccion
       id="curva"
       titulo="Curva S"
-      nota="El planificado usa una distribución teórica (3t² − 2t³) hasta que exista el cronograma (Hito 3)."
+      nota={desdeCronograma ? "El planificado se calcula desde el cronograma: cada tarea reparte su peso a lo largo de su duración." : "El planificado usa una distribución teórica (3t² − 2t³) mientras no haya cronograma con tareas y pesos."}
     >
       <CurvaS puntos={serie.puntos} mesesSinRegistro={serie.mesesSinRegistro} />
       <details className="mt-3 text-sm">

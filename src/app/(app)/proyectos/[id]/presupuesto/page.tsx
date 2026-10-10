@@ -5,6 +5,10 @@ import { cargarContexto } from "@/lib/presupuesto/contexto";
 import { calcularIndicadores, serieCurvaS } from "@/lib/presupuesto/curva";
 import { cargarDatosPresupuesto } from "@/lib/presupuesto/datos";
 import { AvisoResultado } from "@/components/aviso-resultado";
+import { BotonEnviar } from "@/components/boton-enviar";
+import { aprobarPresupuesto } from "./acciones";
+import { desdeJson, formatearPesos } from "@/lib/presupuesto/dinero";
+import { avanceFisico, planificadoDesdeCronograma, sumaPesos, type Tarea } from "@/lib/obra/cronograma";
 import { describirFallo } from "@/lib/presupuesto/fallos";
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import {
@@ -30,10 +34,22 @@ async function ContenidoPresupuesto({
   try {
     const datos = await cargarDatosPresupuesto(supabase, id);
     const presupuesto = calcularPresupuesto(datos);
-    const entradaCurva = { costoTotal: presupuesto.costoTotal, duracion: proyecto.duracion, gastoPorMes: datos.gastoPorMes };
+    // Cronograma: si hay tareas con pesos, el planificado sale de ahí (si no, distribución teórica).
+    const [{ data: tareasDb }, { data: pr }, { data: lb }] = await Promise.all([
+      supabase.from("tareas").select("id, nombre, semana_inicio, duracion_semanas, peso_pct, avance_pct, avance_verificado_pct").eq("proyecto_id", id),
+      supabase.from("proyectos").select("fecha_inicio").eq("id", id).maybeSingle(),
+      supabase.from("lineas_base").select("bac, version").eq("proyecto_id", id).eq("tipo", "costo").order("version", { ascending: false }).limit(1),
+    ]);
+    const tareas = (tareasDb ?? []) as Tarea[];
+    const desdeCronograma = tareas.length > 0 && sumaPesos(tareas) > 0 && Boolean(pr?.fecha_inicio);
+    const planificado = desdeCronograma ? planificadoDesdeCronograma(presupuesto.costoTotal, tareas, pr!.fecha_inicio as string) : undefined;
+    const entradaCurva = { costoTotal: presupuesto.costoTotal, duracion: proyecto.duracion, gastoPorMes: datos.gastoPorMes, planificado };
     calculo = {
       datos,
       presupuesto,
+      desdeCronograma,
+      avanceFisico: tareas.length > 0 ? avanceFisico(tareas).reportado : null,
+      lineaBase: ((lb ?? []) as { bac: number | string; version: number }[])[0] ?? null,
       serie: serieCurvaS(entradaCurva),
       indicadores: calcularIndicadores({ ...entradaCurva, costoDirecto: presupuesto.costoDirecto }),
     };
@@ -55,7 +71,7 @@ async function ContenidoPresupuesto({
       </>
     );
   }
-  const { datos, presupuesto, serie, indicadores } = calculo;
+  const { datos, presupuesto, serie, indicadores, desdeCronograma, avanceFisico: avance, lineaBase } = calculo;
   const base = `/proyectos/${id}/presupuesto`;
 
   return (
@@ -88,8 +104,21 @@ async function ContenidoPresupuesto({
         <AvisoResultado ok={ok} />
       </div>
 
-      <SeccionIndicadores indicadores={indicadores} hayPresupuesto={presupuesto.costoTotal > 0n} />
-      <SeccionCurva serie={serie} />
+      <section aria-label="Línea base de costo" className="mt-6 rounded-card border border-soil-border p-4 text-sm">
+        {lineaBase ? (
+          <p><strong>Línea base de costo (BAC):</strong> versión {lineaBase.version} · {formatearPesos(desdeJson(lineaBase.bac, 2) * 10_000n)} COP. Los ajustes posteriores nacen de cambios aprobados.</p>
+        ) : (
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p>El presupuesto aún no está aprobado como línea base. El BAC y el valor ganado calculado dependen de ese paso.</p>
+            {permisos.editar && presupuesto.costoTotal > 0n && (
+              <form action={aprobarPresupuesto.bind(null, id)}><BotonEnviar className={claseBoton.primario} textoEnviando="Aprobando…">Aprobar presupuesto como línea base</BotonEnviar></form>
+            )}
+          </div>
+        )}
+      </section>
+
+      <SeccionIndicadores indicadores={indicadores} hayPresupuesto={presupuesto.costoTotal > 0n} avanceFisico={avance} />
+      <SeccionCurva serie={serie} desdeCronograma={desdeCronograma} />
       <SeccionPartidas presupuesto={presupuesto} hrefEditar={permisos.editar ? (idPartida) => `${base}/partidas/${idPartida}` : undefined} />
       <SeccionAdicionales presupuesto={presupuesto} />
       <SeccionGasto serie={serie} gastoPorMes={datos.gastoPorMes} duracion={proyecto.duracion} />

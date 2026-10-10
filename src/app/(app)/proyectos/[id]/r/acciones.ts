@@ -42,8 +42,9 @@ export async function guardarRegistro(
   if (errBase) return { error: mensajeDeBase(errBase), valores: valoresDe(datos) };
   if (registroId && (!data || data.length === 0)) return { error: "No se encontró el registro o no tienes permiso.", valores: valoresDe(datos) };
 
+  if (def.despues) await def.despues(supabase, proyectoId);
   revalidatePath(`/proyectos/${proyectoId}`, "layout");
-  redirect(`/proyectos/${proyectoId}/r/${modulo}?ok=guardado`);
+  redirect(`/proyectos/${proyectoId}/${def.regreso ?? `r/${modulo}`}?ok=guardado`);
 }
 
 export async function borrarRegistro(modulo: string, proyectoId: string, registroId: string): Promise<void> {
@@ -54,8 +55,9 @@ export async function borrarRegistro(modulo: string, proyectoId: string, registr
   const { error } = await supabase.from(def.tabla).delete().eq("id", registroId).eq("proyecto_id", proyectoId);
   if (error) {
     console.error("Fallo al borrar un registro:", { modulo, codigo: error.code, mensaje: error.message });
-    redirect(`/proyectos/${proyectoId}/r/${modulo}?ok=no_borrado`);
+    redirect(`/proyectos/${proyectoId}/${def.regreso ?? `r/${modulo}`}?ok=no_borrado`);
   }
+  if (def.despues) await def.despues(supabase, proyectoId);
   revalidatePath(`/proyectos/${proyectoId}`, "layout");
-  redirect(`/proyectos/${proyectoId}/r/${modulo}?ok=eliminado`);
+  redirect(`/proyectos/${proyectoId}/${def.regreso ?? `r/${modulo}`}?ok=eliminado`);
 }

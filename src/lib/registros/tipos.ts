@@ -47,6 +47,8 @@ export type Definicion = {
   ver: (p: Permisos) => boolean;
   escribir: (p: Permisos) => boolean;
   borrar?: boolean;
+  regreso?: string; // ruta (bajo /proyectos/[id]/) a la que se vuelve tras guardar o borrar; por defecto la lista del módulo
+  despues?: (supabase: SupabaseClient, proyectoId: string) => Promise<void>; // tras guardar o borrar (p. ej. refrescar cálculos)
   opciones?: (supabase: SupabaseClient, proyectoId: string) => Promise<Record<string, Opcion[]>>;
   validar?: (valores: Valores, ctx: { supabase: SupabaseClient; proyectoId: string; registroId: string | null }) => Promise<string | null> | string | null;
 };

@@ -16,7 +16,7 @@ async function Contenido({ params }: { params: Promise<{ id: string; modulo: str
   const nuevo = registroId === "nuevo";
   if (!nuevo && !ES_UUID.test(registroId)) notFound();
   const { supabase, permisos } = await cargarProyecto(id);
-  if (!def.escribir(permisos)) redirect(`/proyectos/${id}/r/${modulo}`);
+  if (!def.escribir(permisos)) redirect(`/proyectos/${id}/${def.regreso ?? `r/${modulo}`}`);
 
   const iniciales: Record<string, string> = {};
   if (!nuevo) {
@@ -28,11 +28,11 @@ async function Contenido({ params }: { params: Promise<{ id: string; modulo: str
     }
   }
   const opciones = def.opciones ? await def.opciones(supabase, id) : {};
-  const volverA = `/proyectos/${id}/r/${modulo}`;
+  const volverA = `/proyectos/${id}/${def.regreso ?? `r/${modulo}`}`;
 
   return (
     <>
-      <Link href={volverA} className="text-sm font-medium text-leaf-600 hover:underline">← Volver a {def.titulo.toLowerCase()}</Link>
+      <Link href={volverA} className="text-sm font-medium text-leaf-600 hover:underline">← Volver</Link>
       <div className="mt-4"><Titulo>{nuevo ? `Agregar ${def.singular}` : `Editar ${def.singular}`}</Titulo></div>
       <div className="mt-6">
         <FormularioRegistro

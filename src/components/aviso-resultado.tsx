@@ -14,11 +14,16 @@ const MENSAJES: Record<string, string> = {
   parametro: "Parámetro actualizado.",
   rol: "Rol actualizado.",
   ficha: "Datos del proyecto actualizados.",
+  linea_base: "Presupuesto aprobado: quedó como línea base de costo (BAC).",
+  avance: "Avance actualizado.",
+  calculada: "Valor ganado calculado y guardado.",
 };
 
 export function AvisoResultado({ ok }: { ok?: string | string[] }) {
   const clave = Array.isArray(ok) ? ok[0] : ok;
   const mensaje = clave ? MENSAJES[clave] : undefined;
+  if (clave === "calculada_no") return <Aviso>No se pudo calcular: faltan la línea base de costo (aprueba el presupuesto) o las tareas del cronograma con sus pesos.</Aviso>;
+  if (clave === "linea_base_no") return <Aviso>No se pudo aprobar el presupuesto: revisa que tenga valor y que no esté ya aprobado.</Aviso>;
   if (clave === "no_borrado") return <Aviso>No se pudo eliminar: el registro está en uso o no tienes permiso.</Aviso>;
   return mensaje ? <Aviso tipo="ok">{mensaje}</Aviso> : null;
 }
