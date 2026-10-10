@@ -28,7 +28,7 @@ export const MODULOS: Modulo[] = [
   { clave: "cronograma", titulo: "Cronograma y avance", descripcion: "Gantt, pesos y avance físico", ruta: "cronograma", area: "obra", disponible: true, ver: (_p, o) => o },
   { clave: "contratos", titulo: "Contratos y pagos", descripcion: "Contratos, anticipo, actas y retención", ruta: "contratos", area: "obra", disponible: true, ver: (_p, o) => o },
   { clave: "bitacora", titulo: "Bitácora de obra", descripcion: "Registro diario con fotos", ruta: "bitacora", area: "obra", disponible: true, ver: (_p, o) => o },
-  { clave: "interventoria", titulo: "Interventoría", descripcion: "Conceptos, hallazgos, diseños, evaluaciones e informes", ruta: "interventoria", area: "interventoria", disponible: false, ver: () => true },
+  { clave: "interventoria", titulo: "Interventoría", descripcion: "Conceptos, hallazgos, diseños, evaluaciones e informes", ruta: "interventoria", area: "interventoria", disponible: true, ver: () => true },
 ];
 
 export function modulosVisibles(p: Permisos, usaObra: boolean): Modulo[] {

@@ -24,7 +24,8 @@ export type DatosCrudos = {
 
 export async function cargarDatosPortafolio(supabase: SupabaseClient): Promise<DatosCrudos & { error: boolean }> {
   const hoy = hoyColombia();
-  const [p, m, par, g, rs, cs, rp, hv] = await Promise.all([
+  await supabase.rpc("hallazgos_escalar_todos"); // los plazos vencidos pasan a Escalado antes de mostrar
+  const [p, m, par, g, rs, cs, rp, hv, hz] = await Promise.all([
     supabase.from("proyectos").select(COLUMNAS_BASE).order("nombre"),
     supabase.from("mediciones_evm").select("proyecto_id, fecha_corte, bac, pv, ev, ac").order("fecha_corte", { ascending: false }).limit(2000),
     supabase.from("parametros").select("ambito, ambito_id, clave, valor"),
@@ -33,6 +34,7 @@ export async function cargarDatosPortafolio(supabase: SupabaseClient): Promise<D
     supabase.from("cambios").select("proyecto_id, nivel, estado_flujo, codigo, en_aprobacion_desde").not("estado_flujo", "in", "(cerrado,rechazado)").limit(5000),
     supabase.from("reportes_semanales").select("proyecto_id, anio, semana, estado_reportado, alertas, decisiones_requeridas").not("enviado_en", "is", null).order("anio", { ascending: false }).order("semana", { ascending: false }).limit(3000),
     supabase.from("hitos").select("proyecto_id, nombre, fecha_plan").is("fecha_real", null).eq("cancelado", false).lt("fecha_plan", hoy).order("fecha_plan").limit(2000),
+    supabase.from("hallazgos").select("proyecto_id, severidad").eq("estado", "escalado").limit(2000),
   ]);
   const reportes = (rp.data ?? []) as ReporteBase[];
   const sem = semanaIso(hoy);
@@ -67,7 +69,7 @@ export async function cargarDatosPortafolio(supabase: SupabaseClient): Promise<D
     proyectos,
     parametros,
     gerentes: new Map(((g.data ?? []) as { proyecto_id: string; usuario_id: string }[]).map((x) => [x.proyecto_id, x.usuario_id])),
-    entrada: { mediciones, parametros, riesgosActivos, cambiosPendientes, ultimosReportes: reportes, hitosVencidos: (hv.data ?? []) as HitoVencido[],
+    entrada: { mediciones, parametros, riesgosActivos, cambiosPendientes, ultimosReportes: reportes, hitosVencidos: (hv.data ?? []) as HitoVencido[], hallazgosEscalados: (hz.data ?? []) as { proyecto_id: string; severidad: string }[],
       proyectosConReporteSemana: rp.error ? null : reportes.filter((r) => r.anio === sem.anio && r.semana === sem.semana).map((r) => r.proyecto_id) },
   };
 }

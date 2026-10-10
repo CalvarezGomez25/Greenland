@@ -33,6 +33,7 @@ export type EntradaPortafolio = {
   hitosVencidos?: HitoVencido[];
   // Proyectos con reporte enviado de la semana ISO en curso. null = no se sabe (no se marca a nadie).
   proyectosConReporteSemana?: string[] | null;
+  hallazgosEscalados?: { proyecto_id: string; severidad: string }[]; // hallazgos de interventoría con plazo vencido
 };
 
 export type FilaPortafolio = {
@@ -47,6 +48,7 @@ export type FilaPortafolio = {
   reporte: ReporteBase | null;
   sinReporteSemana: boolean;
   hitosVencidos: HitoVencido[];
+  hallazgosEscalados: { severidad: string }[];
 };
 
 export type ResumenPortafolio = {
@@ -97,6 +99,7 @@ export function armarPortafolio(e: EntradaPortafolio): { filas: FilaPortafolio[]
       reporte: ultimoReporte.get(p.id) ?? null,
       sinReporteSemana: e.proyectosConReporteSemana ? !e.proyectosConReporteSemana.includes(p.id) : false,
       hitosVencidos: (e.hitosVencidos ?? []).filter((h) => h.proyecto_id === p.id),
+      hallazgosEscalados: (e.hallazgosEscalados ?? []).filter((h) => h.proyecto_id === p.id),
     };
   });
 
@@ -161,6 +164,14 @@ export function requiereDecision(filas: FilaPortafolio[], parametros: FilaParame
     }
     if (f.sinReporteSemana) {
       out.push({ tipo: "Sin reporte de la semana", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre, detalle: "No se ha enviado el reporte semanal en curso", href: `/proyectos/${f.proyecto.id}/reportes` });
+    }
+    if (f.hallazgosEscalados.length > 0) {
+      const graves = f.hallazgosEscalados.filter((h) => h.severidad === "incumplimiento_grave").length;
+      out.push({
+        tipo: "Hallazgo escalado", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre,
+        detalle: `${f.hallazgosEscalados.length} sin respuesta a tiempo${graves ? `, ${graves} incumplimiento(s) grave(s)` : ""}`,
+        href: `/proyectos/${f.proyecto.id}/interventoria/hallazgos`,
+      });
     }
     if (f.hitosVencidos.length > 0) {
       out.push({

@@ -14,6 +14,7 @@ import { cargarDatosPortafolio } from "@/lib/pmo/cargar";
 import { armarPortafolio, type FilaPortafolio } from "@/lib/pmo/portafolio";
 import { indice, porcentaje } from "@/lib/pmo/formato";
 import { modulosVisibles, type Modulo } from "@/lib/modulos";
+import { diasDesde } from "@/lib/pmo/cambios";
 import { resumenBitacora, type EntradaResumen, type ResumenBitacora } from "@/lib/obra/bitacora";
 import { Semaforo } from "@/components/semaforo";
 import { Selector, Titulo, claseBoton } from "@/components/ui";
@@ -56,6 +57,26 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
     const { data: bs } = await supabase.from("bitacoras").select("fecha, es_interventoria, horas_perdidas_total, retraso_causa, incidente_tipo").eq("proyecto_id", id).limit(2000);
     if (bs && bs.length > 0) bit = resumenBitacora(bs as EntradaResumen[]);
   }
+  // Interventoría: actas y cambios esperando concepto (con su antigüedad) y hallazgos.
+  let pendientes: { texto: string; href: string }[] = [];
+  let hall: { abiertos: number; escalados: number } | null = null;
+  if (p.usa_obra) {
+    await supabase.rpc("hallazgos_escalar", { p_proyecto: id });
+    const dias = (iso: string) => diasDesde(iso) ?? 0;
+    const [{ data: ac }, { data: cm }, { data: hs }, { data: cs }] = await Promise.all([
+      supabase.from("actas_pago").select("id, numero, creado_en, contrato_id").eq("proyecto_id", id).in("estado", ["radicada", "en_revision_interventoria"]),
+      supabase.from("cambios").select("id, codigo, creado_en, contrato_id").eq("proyecto_id", id).eq("estado_flujo", "evaluacion_tecnica_financiera").not("contrato_id", "is", null),
+      supabase.from("hallazgos").select("estado").eq("proyecto_id", id).neq("estado", "cerrado"),
+      supabase.from("conceptos_interventoria").select("entidad_id, tipo").eq("proyecto_id", id).in("tipo", ["acta_pago", "cambio"]),
+    ]);
+    const conConcepto = new Set(((cs ?? []) as { entidad_id: string }[]).map((c) => c.entidad_id));
+    pendientes = [
+      ...((ac ?? []) as { id: string; numero: number; creado_en: string }[]).filter((a) => !conConcepto.has(a.id)).map((a) => ({ texto: `Acta de pago ${a.numero} sin concepto de interventoría · ${dias(a.creado_en)} día(s)`, href: `/proyectos/${id}/contratos` })),
+      ...((cm ?? []) as { id: string; codigo: string; creado_en: string }[]).filter((c) => !conConcepto.has(c.id)).map((c) => ({ texto: `Cambio ${c.codigo} sin concepto de interventoría · ${dias(c.creado_en)} día(s)`, href: `/proyectos/${id}/cambios/${c.id}` })),
+    ];
+    const lista = (hs ?? []) as { estado: string }[];
+    if (lista.length > 0) hall = { abiertos: lista.length, escalados: lista.filter((h) => h.estado === "escalado").length };
+  }
   const modulos = modulosVisibles(permisos, p.usa_obra);
   const areas: [Modulo["area"], string][] = [["gestion", "Gestión del proyecto"], ["obra", "Obra"], ["interventoria", "Interventoría"]];
 
@@ -97,6 +118,13 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
         <Link href={`/proyectos/${p.id}/bitacora`} className="mt-4 block rounded-card border border-soil-border p-4 text-sm hover:shadow-card" aria-label="Resumen de la bitácora">
           <strong className="text-leaf-700">Bitácora de obra:</strong> {bit.entradas} entrada(s) · {bit.horasPerdidas.toLocaleString("es-CO")} h perdidas · {bit.retrasos} retraso(s) · {bit.incidentes} incidente(s){bit.accidentes ? ` (${bit.accidentes} accidente(s))` : ""}{bit.ultimaFecha ? ` · última: ${formatearFecha(bit.ultimaFecha)}` : ""}
         </Link>
+      )}
+
+      {(pendientes.length > 0 || hall) && (
+        <section className="mt-4 rounded-card border border-soil-border p-4 text-sm" aria-label="Interventoría">
+          {hall && <p><Link href={`/proyectos/${p.id}/interventoria/hallazgos`} className="font-medium text-leaf-700 hover:underline">Hallazgos de interventoría:</Link> {hall.abiertos} sin cerrar{hall.escalados ? ` (${hall.escalados} escalado(s))` : ""}. <span className="text-muted">No cambian el semáforo; se muestran aparte.</span></p>}
+          {pendientes.map((x) => <p key={x.texto} className="mt-1"><Link href={x.href} className="text-leaf-700 hover:underline">{x.texto}</Link></p>)}
+        </section>
       )}
 
       <dl className="mt-6 grid gap-4 rounded-card bg-leaf-100 p-5 sm:grid-cols-2">

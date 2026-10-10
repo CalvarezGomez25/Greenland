@@ -61,6 +61,15 @@ describe("dashboard — reglas", () => {
   });
 });
 
+describe("hallazgos escalados en 'requiere decisión'", () => {
+  it("aparecen con su gravedad y NO cambian el semáforo (S13)", () => {
+    const r = armarPortafolio({ ...base, proyectos: [proy("a", "A")], mediciones: [med("a", 1000, 400, 400, 400)], hallazgosEscalados: [{ proyecto_id: "a", severidad: "incumplimiento_grave" }, { proyecto_id: "a", severidad: "observacion" }] });
+    const d = requiereDecision(r.filas, []);
+    expect(d.find((x) => x.tipo === "Hallazgo escalado")?.detalle).toBe("2 sin respuesta a tiempo, 1 incumplimiento(s) grave(s)");
+    expect(r.filas[0].semaforo.general).toBe("verde");
+  });
+});
+
 describe("semana ISO", () => {
   it("casos conocidos", () => {
     expect(semanaIso("2026-01-01")).toEqual({ anio: 2026, semana: 1 });
