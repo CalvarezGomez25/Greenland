@@ -13,6 +13,7 @@ type Props = {
   usuario: { nombre: string; rol: string | null };
   nombrePlataforma: string;
   salir: ReactNode; // botón «Salir» (formulario con acción del servidor)
+  cambiarUsuario: ReactNode; // botón de ícono «Cambiar de usuario»
 };
 
 // Íconos de trazo simple (24 × 24) por módulo.
@@ -58,7 +59,7 @@ const claseEnlace = (activo: boolean) =>
   `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${activo ? "bg-leaf-100 font-semibold text-leaf-900" : "text-leaf-800 hover:bg-leaf-50"}`;
 const etiquetaSeccion = "px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted";
 
-export function BarraLateral({ proyectos, administracion, puedeCrear, usuario, nombrePlataforma, salir }: Props) {
+export function BarraLateral({ proyectos, administracion, puedeCrear, usuario, nombrePlataforma, salir, cambiarUsuario }: Props) {
   const ruta = usePathname();
   const actualId = proyectoDeRuta(ruta);
   const actual = proyectos.find((p) => p.id === actualId) ?? null;
@@ -129,7 +130,7 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, usuario, n
         <nav aria-label="Principal" className="min-h-0 flex-1 overflow-y-auto px-3 pb-4">
           <p className={etiquetaSeccion}>Espacio de trabajo</p>
           <Link href="/" aria-current={ruta === "/" ? "page" : undefined} className={claseEnlace(ruta === "/")}><Icono clave="tablero" /> Tablero de control</Link>
-          <Link href="/glosario" aria-current={ruta === "/glosario" ? "page" : undefined} className={claseEnlace(ruta === "/glosario")}><Icono clave="glosario" /> Glosario y guías</Link>
+          <Link href="/glosario" aria-current={ruta === "/glosario" ? "page" : undefined} className={claseEnlace(ruta === "/glosario")}><Icono clave="glosario" /> Ayuda</Link>
 
           <div className="relative mt-2">
             <button type="button" onClick={() => setSelector((v) => !v)} aria-expanded={selector} aria-haspopup="listbox" className="flex w-full items-center gap-3 rounded-xl border border-soil-border bg-leaf-50/60 px-3 py-2.5 text-left hover:bg-leaf-50">
@@ -192,8 +193,13 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, usuario, n
         </nav>
 
         <div className="border-t border-soil-border p-3">
-          <p className="truncate text-sm font-medium text-leaf-900" title={usuario.nombre}>{usuario.nombre}</p>
-          {usuario.rol && <p className="truncate text-xs text-muted" title={usuario.rol}>{usuario.rol}</p>}
+          <div className="flex items-center justify-between gap-2">
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-leaf-900" title={usuario.nombre}>{usuario.nombre}</p>
+              {usuario.rol && <p className="truncate text-xs text-muted" title={usuario.rol}>{usuario.rol}</p>}
+            </div>
+            {cambiarUsuario}
+          </div>
           <div className="mt-2">{salir}</div>
         </div>
       </aside>

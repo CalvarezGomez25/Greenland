@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Image from "next/image";
 import { LEMA_PLATAFORMA, NOMBRE_PLATAFORMA } from "@/lib/marca";
 import { FormularioIngreso } from "./formulario-ingreso";
@@ -21,7 +22,7 @@ export default function PaginaIngreso() {
         <p className="mb-5 text-center text-sm text-muted">
           Ingresa con el correo y la contraseña que te asignó el administrador.
         </p>
-        <FormularioIngreso />
+        <Suspense fallback={null}><FormularioIngreso /></Suspense>
       </div>
     </main>
   );
