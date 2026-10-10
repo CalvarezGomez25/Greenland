@@ -10,7 +10,8 @@
     "test": "vitest run",
     "migrar": "node scripts/migrar.mjs",
     "verificar": "tsc --noEmit && eslint src scripts && vitest run && next build",
-    "test:sql": "node pruebas-sql/ejecutar.mjs"
+    "test:sql": "node pruebas-sql/ejecutar.mjs",
+    "generar:instalador": "node scripts/generar-instalador.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

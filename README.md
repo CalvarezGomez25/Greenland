@@ -16,7 +16,8 @@ tipos, estilo, pruebas unitarias, compilación de producción y 404 comprobacion
 2. **Vercel**: importa el repositorio y define estas variables de entorno:
    - `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` (Supabase → *Project settings → API*).
    - `DATABASE_URL`: Supabase → *Connect → Session pooler*, con la contraseña de la base de datos.
-     Con ella, **cada despliegue aplica solo las migraciones pendientes** (`scripts/migrar.mjs`); sin ella se omiten.
+     Con ella, **cada despliegue aplica solo las migraciones pendientes** (`scripts/migrar.mjs`); sin ella, o si la conexión falla, se omiten y el despliegue continúa (con `MIGRAR_ESTRICTO=1` se detiene).
+   - **Alternativa sin contraseña:** pega `supabase/instalar_todo.sql` completo en Supabase → *SQL Editor* → *Run*. Es repetible y deja la base al día. Se regenera con `npm run generar:instalador`.
    - Nunca uses la clave `service_role`.
 3. Despliega. Después, entra como administrador en `/usuarios`, asigna roles globales, y agrega
    miembros a cada proyecto. Revisa `/parametros` y `/festivos` (calendario de festivos de Colombia, cada año).

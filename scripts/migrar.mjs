@@ -102,7 +102,16 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const { default: pg } = await import("pg");
   const cliente = new pg.Client({ connectionString: url, ssl: { rejectUnauthorized: false }, connectionTimeoutMillis: 20000 });
   try {
-    await cliente.connect();
+    try {
+      await cliente.connect();
+    } catch (e) {
+      // Sin conexión no se pueden aplicar migraciones, pero eso no debe impedir publicar la aplicación.
+      // Con MIGRAR_ESTRICTO=1 el build se detiene. Alternativa: pegar supabase/instalar_todo.sql en el SQL Editor.
+      console.error("[migrar] ERROR:", e.message, e.code ? `(código ${e.code})` : "");
+      if (process.env.MIGRAR_ESTRICTO === "1") process.exit(1);
+      console.warn("[migrar] AVISO: no se pudo conectar a la base de datos; se omiten las migraciones y el despliegue continúa. Instala la base con supabase/instalar_todo.sql (SQL Editor de Supabase) o corrige DATABASE_URL.");
+      process.exit(0);
+    }
     await aplicarMigraciones({
       async sql(texto) {
         const r = await cliente.query(texto);
