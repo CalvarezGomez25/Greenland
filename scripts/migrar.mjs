@@ -86,6 +86,19 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     console.log("[migrar] DATABASE_URL no está definida: se omiten las migraciones de la base de datos.");
     process.exit(0);
   }
+  // Diagnóstico sin revelar la contraseña: ayuda a ver si la cadena de conexión está bien formada.
+  try {
+    const u = new URL(url.trim());
+    const clave = decodeURIComponent(u.password);
+    const avisos = [
+      url !== url.trim() && "la cadena tiene espacios o saltos de línea al inicio/final",
+      /^\[.*\]$/.test(clave) && "la contraseña conserva los corchetes [ ]",
+      clave === "" && "no hay contraseña en la cadena",
+    ].filter(Boolean);
+    console.log(`[migrar] Conectando como «${decodeURIComponent(u.username)}» a ${u.hostname}:${u.port || "5432"}/${u.pathname.slice(1)}; contraseña de ${clave.length} caracteres.${avisos.length ? " Aviso: " + avisos.join("; ") + "." : ""}`);
+  } catch {
+    console.log("[migrar] La cadena DATABASE_URL no se puede leer: probablemente la contraseña tiene símbolos (@ # / ? :) o hay texto extra. Usa una contraseña solo con letras y números.");
+  }
   const { default: pg } = await import("pg");
   const cliente = new pg.Client({ connectionString: url, ssl: { rejectUnauthorized: false }, connectionTimeoutMillis: 20000 });
   try {
@@ -98,7 +111,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       },
     });
   } catch (e) {
-    console.error("[migrar] ERROR:", e.message);
+    console.error("[migrar] ERROR:", e.message, e.code ? `(código ${e.code})` : "");
     process.exit(1);
   } finally {
     await cliente.end().catch(() => {});
