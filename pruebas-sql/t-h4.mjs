@@ -104,6 +104,7 @@ ok((await q("select count(*)::int n from public.auditoria where tabla='lineas_ba
 
 seccion("Contrato con cambio de plazo → Crítico; cronograma versionado");
 const CT = await como(G, () => q("select public.contrato_crear($1::uuid,$2::jsonb) as id", [P1, JSON.stringify({ tipo: "obra", contratista: "Constructora X", objeto: "Obra", valor: "480000000" })])).then(r => r[0].id);
+await como(D, () => q("select public.contrato_aprobar($1::uuid)", [CT]));
 const cp = await crear(G, P1, { impacto_costo: "0", impacto_dias: "30", contrato_id: CT });
 ok((await info(cp)).nivel === "critico", "Cambio de plazo ligado a un contrato es Crítico");
 const cs = await crear(G, P1, { impacto_costo: "1000", impacto_dias: "10" });

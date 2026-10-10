@@ -97,3 +97,12 @@ export async function liberarRetencion(proyectoId: string, contratoId: string, l
   const { error } = await supabase.rpc("contrato_retencion_liberar", { p_contrato: contratoId, p_liberar: liberar });
   return terminar(proyectoId, contratoId, liberar ? "retencion" : "retencion_revertida", error ? mensaje(error) : undefined);
 }
+
+// El director general aprueba un contrato nuevo (hasta entonces no admite anticipo ni actas de pago).
+export async function aprobarContrato(proyectoId: string, contratoId: string): Promise<void> {
+  const { supabase } = await cargarProyecto(proyectoId);
+  if (!ES_UUID.test(contratoId)) redirect(base(proyectoId));
+  const { error } = await supabase.rpc("contrato_aprobar", { p_contrato: contratoId });
+  revalidatePath("/", "layout");
+  redirect(`${base(proyectoId)}/${contratoId}?${error ? `error=${encodeURIComponent(mensaje(error))}` : "ok=guardado"}`);
+}

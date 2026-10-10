@@ -7,7 +7,11 @@ const P2 = (await como(A, () => q("insert into public.proyectos (nombre, fecha_i
 for (const [u, r] of [[G, "gerente"], [S, "supervisor"]]) await como(A, () => q("insert into public.miembros_proyecto values ($1,$2,$3)", [P1, u, r]));
 await como(A, () => q("insert into public.miembros_proyecto values ($1,$2,'gerente')", [P2, G2]));
 const fn = (u, n, ...a) => como(u, () => q(`select public.${n}(${a.map((x, i) => "$" + (i + 1) + (typeof x === "number" ? "::numeric" : "")).join(",")}) as r`, a));
-const crearC = (u, p, o = {}) => como(u, () => q("select public.contrato_crear($1::uuid,$2::jsonb) as id", [p, JSON.stringify({ tipo: "obra", contratista: "Constructora X", objeto: "Obra civil", valor: "480000000", ...o })])).then(r => r[0].id);
+const crearC = async (u, p, { pendiente = false, ...o } = {}) => {
+  const id = (await como(u, () => q("select public.contrato_crear($1::uuid,$2::jsonb) as id", [p, JSON.stringify({ tipo: "obra", contratista: "Constructora X", objeto: "Obra civil", valor: "480000000", ...o })])))[0].id;
+  if (!pendiente) await como(D, () => q("select public.contrato_aprobar($1::uuid)", [id]));
+  return id;
+};
 const cinfo = async (id) => (await q("select valor::text v, anticipo_pct::text ap, anticipo_valor::text av, retencion_pct::text rp, retencion_liberada rl, anticipo_autorizado_por aut from public.contratos where id=$1", [id]))[0];
 
 seccion("Contratos");
@@ -98,4 +102,24 @@ ok(info.b === "1000000000.00", "El % del cambio se mide sobre el valor del contr
 await fn(D, "cambio_decidir", cambio, "aprobar", null).catch(async (e) => { await fn(G, "cambio_decidir", cambio, "aprobar", null); });
 ok((await cinfo(C2)).v === "1020000000.00", "Aprobado el cambio, el contrato pasa de 1.000 M a 1.020 M");
 ok((await cinfo(C2)).av === "200000000.00", "El anticipo ya autorizado no cambia");
+seccion("Nueva contratación: la aprueba el director general");
+const CP = await crearC(G, P1, { pendiente: true, valor: "100000000" });
+const est = async (id) => (await q("select estado_aprobacion e from public.contratos where id=$1", [id]))[0].e;
+ok(await est(CP) === "pendiente", "El contrato que crea el gerente queda pendiente");
+await esperaError("Sin aprobar no se radican actas", como(G, () => q("select public.acta_pago_crear($1::uuid,'2026-10-01'::date,1000000)", [CP])), /aún no está aprobado/);
+await esperaError("Sin aprobar no se autoriza anticipo", como(D, () => q("select public.contrato_anticipo_autorizar($1::uuid, 10, 'Urgencia')", [CP])), /aún no está aprobado/);
+await esperaError("Un cambio no puede apoyarse en un contrato pendiente", como(G, () => q("select public.cambio_crear($1::uuid,$2::jsonb)", [P1, JSON.stringify({ tipo: "Costo", descripcion_despues: "x", justificacion: "x", impacto_costo: "1000", contrato_id: CP })])), /no está aprobado|aún no está aprobado/);
+await esperaError("El gerente no aprueba su propio contrato", como(G, () => q("select public.contrato_aprobar($1::uuid)", [CP])), /Solo el director general/);
+await esperaError("Ni el administrador por defecto", como(A, () => q("select public.contrato_aprobar($1::uuid)", [CP])), /Solo el director general/);
+await como(G, () => q("select public.contrato_actualizar($1::uuid,$2::jsonb)", [CP, JSON.stringify({ tipo: "obra", contratista: "X", objeto: "Obra", valor: "90000000" })]));
+ok((await q("select valor::text v from public.contratos where id=$1", [CP]))[0].v === "90000000.00", "Mientras está pendiente, el gerente puede corregir el valor");
+await como(D, () => q("select public.contrato_aprobar($1::uuid)", [CP]));
+ok(await est(CP) === "aprobado" && (await q("select aprobado_por from public.contratos where id=$1", [CP]))[0].aprobado_por === D, "El director lo aprueba y queda registrado quién");
+await como(G, () => q("select public.acta_pago_crear($1::uuid,'2026-10-01'::date,1000000)", [CP]));
+ok((await q("select count(*)::int n from public.actas_pago where contrato_id=$1", [CP]))[0].n === 1, "Aprobado, ya se radica el acta");
+await como(A, () => q("select public.parametro_guardar('global', null, 'contrato_admin_puede_aprobar', 'si')"));
+const CP2 = await crearC(G, P1, { pendiente: true });
+await como(A, () => q("select public.contrato_aprobar($1::uuid)", [CP2]));
+ok(await est(CP2) === "aprobado", "Con el parámetro en «si», el administrador también aprueba (pruebas)");
+await como(A, () => q("select public.parametro_guardar('global', null, 'contrato_admin_puede_aprobar', 'no')"));
 fin();

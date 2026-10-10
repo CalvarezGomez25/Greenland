@@ -10,7 +10,7 @@ for (const [u, r] of [[G, "gerente"], [S, "supervisor"], [IT, "interventoria"], 
 await como(A, () => q("insert into public.miembros_proyecto values ($1,$2,'gerente')", [P2, G2]));
 const J = (o) => JSON.stringify(o);
 const fn = (u, n, ...a) => como(u, () => q(`select public.${n}(${a.map((x, i) => "$" + (i + 1) + (typeof x === "number" ? "::numeric" : "")).join(",")}) as r`, a));
-const crearCt = async (proyecto, tipo, valor, nombre) => (await como(G, () => q("select public.contrato_crear($1::uuid,$2::jsonb) as id", [proyecto, J({ tipo, contratista: nombre, objeto: nombre, valor })])))[0].id;
+const crearCt = async (proyecto, tipo, valor, nombre) => { const id = (await como(G, () => q("select public.contrato_crear($1::uuid,$2::jsonb) as id", [proyecto, J({ tipo, contratista: nombre, objeto: nombre, valor })])))[0].id; await como(D, () => q("select public.contrato_aprobar($1::uuid)", [id])); return id; };
 
 // ---- Contratos: A (obra), B (obra), CI (interventoría)
 const A_ct = await crearCt(P1, "obra", "480000000", "Contrato A");

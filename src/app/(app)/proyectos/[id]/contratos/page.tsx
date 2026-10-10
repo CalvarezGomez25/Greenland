@@ -8,7 +8,7 @@ import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import { AvisoResultado } from "@/components/aviso-resultado";
 import { BotonesExportar } from "@/components/botones-exportar";
 
-type C = { id: string; tipo: string; contratista: string; objeto: string; valor: number | string; anticipo_pct: number | string; anticipo_valor: number | string; retencion_pct: number | string; retencion_liberada: boolean };
+type C = { id: string; tipo: string; contratista: string; objeto: string; valor: number | string; anticipo_pct: number | string; anticipo_valor: number | string; retencion_pct: number | string; retencion_liberada: boolean; estado_aprobacion?: string };
 type A = { contrato_id: string; valor_bruto: number | string; amortizacion: number | string; retencion: number | string; neto: number | string; estado: string };
 
 async function Contenido({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ ok?: string }> }) {
@@ -16,7 +16,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   const { ok } = await searchParams;
   const { supabase, proyecto, permisos } = await cargarProyecto(id);
   const [{ data: cs, error }, { data: as }] = await Promise.all([
-    supabase.from("contratos").select("id, tipo, contratista, objeto, valor, anticipo_pct, anticipo_valor, retencion_pct, retencion_liberada").eq("proyecto_id", id).order("creado_en"),
+    supabase.from("contratos").select("id, tipo, contratista, objeto, valor, anticipo_pct, anticipo_valor, retencion_pct, retencion_liberada, estado_aprobacion").eq("proyecto_id", id).order("creado_en"),
     supabase.from("actas_pago").select("contrato_id, valor_bruto, amortizacion, retencion, neto, estado").eq("proyecto_id", id),
   ]);
   const contratos = (cs ?? []) as C[];
@@ -46,7 +46,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
                 const r = resumenContrato({ valor: desdeJson(c.valor, 2), anticipoPct: Number(c.anticipo_pct), anticipoValor: desdeJson(c.anticipo_valor, 2), retencionPct: Number(c.retencion_pct) }, propias, c.retencion_liberada);
                 return (
                   <tr key={c.id}>
-                    <td className="px-3 py-2"><Link href={`/proyectos/${id}/contratos/${c.id}`} className="font-medium text-leaf-700 hover:underline">{c.contratista}</Link><p className="text-xs text-muted">{ETIQUETA_TIPO_CONTRATO[c.tipo]} · {c.objeto.length > 60 ? `${c.objeto.slice(0, 60)}…` : c.objeto}</p></td>
+                    <td className="px-3 py-2"><Link href={`/proyectos/${id}/contratos/${c.id}`} className="font-medium text-leaf-700 hover:underline">{c.contratista}</Link>{c.estado_aprobacion === "pendiente" && <span className="ml-2 rounded-full bg-leaf-100 px-2 py-0.5 text-xs font-medium text-leaf-800">Pendiente de aprobación</span>}<p className="text-xs text-muted">{ETIQUETA_TIPO_CONTRATO[c.tipo]} · {c.objeto.length > 60 ? `${c.objeto.slice(0, 60)}…` : c.objeto}</p></td>
                     <td className="px-3 py-2">{centavos(desdeJson(c.valor, 2))}</td>
                     <td className="px-3 py-2">{centavos(r.facturado)}</td>
                     <td className="px-3 py-2">{porcentaje(r.ejecutadoPct)}</td>

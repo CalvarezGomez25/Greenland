@@ -9,6 +9,9 @@ fácil de cambiar; deben validarse con el uso real.
 - Datos ficticios hasta decidir región y confidencialidad.
 - Anticipo: autorizado por el director general, tope 20 %. Cambios: menor → gerente; moderado/crítico → director.
 - Riesgos: Rojo solo con un riesgo Crítico.
+- Nueva contratación: el director general revisa y aprueba cada contrato nuevo (parámetro `contrato_admin_puede_aprobar`, «no» por defecto, solo para pruebas).
+- Asignaciones de interventoría ya creadas: solo las cambian o quitan el administrador o el director general.
+- El registro de cambios del presupuesto lo ven también finanzas y analista PMO.
 
 ## Supuestos aplicados
 | ID | Cómo quedó |

@@ -34,6 +34,7 @@ export type EntradaPortafolio = {
   // Proyectos con reporte enviado de la semana ISO en curso. null = no se sabe (no se marca a nadie).
   proyectosConReporteSemana?: string[] | null;
   hallazgosEscalados?: { proyecto_id: string; severidad: string }[]; // hallazgos de interventoría con plazo vencido
+  contratosPendientes?: { proyecto_id: string; contratista: string }[]; // contratos nuevos por aprobar del director
 };
 
 export type FilaPortafolio = {
@@ -49,6 +50,7 @@ export type FilaPortafolio = {
   sinReporteSemana: boolean;
   hitosVencidos: HitoVencido[];
   hallazgosEscalados: { severidad: string }[];
+  contratosPendientes: string[]; // contratistas de los contratos que esperan la aprobación del director
 };
 
 export type ResumenPortafolio = {
@@ -100,6 +102,7 @@ export function armarPortafolio(e: EntradaPortafolio): { filas: FilaPortafolio[]
       sinReporteSemana: e.proyectosConReporteSemana ? !e.proyectosConReporteSemana.includes(p.id) : false,
       hitosVencidos: (e.hitosVencidos ?? []).filter((h) => h.proyecto_id === p.id),
       hallazgosEscalados: (e.hallazgosEscalados ?? []).filter((h) => h.proyecto_id === p.id),
+      contratosPendientes: (e.contratosPendientes ?? []).filter((c) => c.proyecto_id === p.id).map((c) => c.contratista),
     };
   });
 
@@ -178,6 +181,13 @@ export function requiereDecision(filas: FilaPortafolio[], parametros: FilaParame
         tipo: "Hitos vencidos", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre,
         detalle: `${f.hitosVencidos.length} sin cumplir (el más antiguo: ${f.hitosVencidos.map((h) => h.nombre)[0]})`,
         href: `/proyectos/${f.proyecto.id}/r/hitos`,
+      });
+    }
+    if (f.contratosPendientes.length > 0) {
+      out.push({
+        tipo: "Contrato por aprobar", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre,
+        detalle: `${f.contratosPendientes.length} contrato(s) nuevo(s) esperan la aprobación del director: ${f.contratosPendientes.slice(0, 2).join(", ")}${f.contratosPendientes.length > 2 ? "…" : ""}`,
+        href: `/proyectos/${f.proyecto.id}/contratos`,
       });
     }
     for (const c of f.cambiosEnAprobacion) {

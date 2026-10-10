@@ -37,7 +37,7 @@ async function paginar<T>(armar: () => Consulta): Promise<{ data: T[] | null; er
 export async function cargarDatosPortafolio(supabase: SupabaseClient): Promise<DatosCrudos & { error: boolean }> {
   const hoy = hoyColombia();
   await supabase.rpc("hallazgos_escalar_todos"); // los plazos vencidos pasan a Escalado antes de mostrar
-  const [p, m, par, g, rs, cs, rp, hv, hz] = await Promise.all([
+  const [p, m, par, g, rs, cs, rp, hv, hz, ct] = await Promise.all([
     supabase.from("proyectos").select(COLUMNAS_BASE).order("nombre"),
     paginar<Record<string, unknown>>(() => supabase.from("mediciones_evm").select("id, proyecto_id, fecha_corte, bac, pv, ev, ac").order("fecha_corte", { ascending: false }).order("id")),
     supabase.from("parametros").select("ambito, ambito_id, clave, valor"),
@@ -47,6 +47,7 @@ export async function cargarDatosPortafolio(supabase: SupabaseClient): Promise<D
     paginar<Record<string, unknown>>(() => supabase.from("reportes_semanales").select("id, proyecto_id, anio, semana, estado_reportado, alertas, decisiones_requeridas").not("enviado_en", "is", null).order("anio", { ascending: false }).order("semana", { ascending: false }).order("id")),
     paginar<Record<string, unknown>>(() => supabase.from("hitos").select("id, proyecto_id, nombre, fecha_plan").is("fecha_real", null).eq("cancelado", false).lt("fecha_plan", hoy).order("fecha_plan").order("id")),
     paginar<Record<string, unknown>>(() => supabase.from("hallazgos").select("id, proyecto_id, severidad").eq("estado", "escalado").order("id")),
+    paginar<Record<string, unknown>>(() => supabase.from("contratos").select("id, proyecto_id, contratista").eq("estado_aprobacion", "pendiente").order("id")),
   ]);
   const reportes = (rp.data ?? []) as ReporteBase[];
   const sem = semanaIso(hoy);
@@ -82,6 +83,8 @@ export async function cargarDatosPortafolio(supabase: SupabaseClient): Promise<D
     parametros,
     gerentes: new Map(((g.data ?? []) as { proyecto_id: string; usuario_id: string }[]).map((x) => [x.proyecto_id, x.usuario_id])),
     entrada: { mediciones, parametros, riesgosActivos, cambiosPendientes, ultimosReportes: reportes, hitosVencidos: (hv.data ?? []) as HitoVencido[], hallazgosEscalados: (hz.data ?? []) as { proyecto_id: string; severidad: string }[],
+      // si la columna aún no existe (base sin migrar), simplemente no se muestra el aviso
+      contratosPendientes: ct.error ? [] : (ct.data ?? []) as { proyecto_id: string; contratista: string }[],
       proyectosConReporteSemana: rp.error ? null : reportes.filter((r) => r.anio === sem.anio && r.semana === sem.semana).map((r) => r.proyecto_id) },
   };
 }

@@ -11,7 +11,7 @@ import { ETIQUETA_ESTADO_ACTA, ETIQUETA_TIPO_CONTRATO, resumenContrato } from "@
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { AvisoResultado } from "@/components/aviso-resultado";
-import { autorizarAnticipo, borrarActa, cambiarEstadoActa, liberarRetencion, radicarActa } from "../acciones";
+import { aprobarContrato, autorizarAnticipo, borrarActa, cambiarEstadoActa, liberarRetencion, radicarActa } from "../acciones";
 import { FormularioActa, FormularioAnticipo } from "../formularios";
 
 type Acta = { id: string; numero: number; fecha: string; valor_bruto: number | string; amortizacion: number | string; retencion: number | string; neto: number | string; estado: string };
@@ -43,7 +43,9 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
     actas.map((a) => ({ valorBruto: desdeJson(a.valor_bruto, 2), amortizacion: desdeJson(a.amortizacion, 2), retencion: desdeJson(a.retencion, 2), neto: desdeJson(a.neto, 2) })),
     c.retencion_liberada,
   );
-  const puedeAnticipo = (permisos.director || (permisos.admin && parametros.find((p) => p.clave === "anticipo_admin_puede_autorizar")?.valor === "si")) && actas.length === 0;
+  const pendiente = c.estado_aprobacion === "pendiente";
+  const puedeAprobar = pendiente && (permisos.director || (permisos.admin && parametros.find((p) => p.clave === "contrato_admin_puede_aprobar")?.valor === "si"));
+  const puedeAnticipo = !pendiente && (permisos.director || (permisos.admin && parametros.find((p) => p.clave === "anticipo_admin_puede_autorizar")?.valor === "si")) && actas.length === 0;
   const base = `/proyectos/${id}/contratos/${contratoId}`;
   const ultima = actas[actas.length - 1];
 
@@ -60,6 +62,13 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         {errorUrl && <Aviso>{errorUrl.slice(0, 400)}</Aviso>}
       </div>
 
+      {pendiente && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-card border border-soil-border bg-leaf-50 p-4 text-sm">
+          <p><strong>Pendiente de aprobación.</strong> El director general de planificación y proyectos revisa y aprueba la nueva contratación. Hasta entonces el contrato no admite anticipo ni actas de pago{permisos.gestionar ? ", pero puedes corregirlo" : ""}.</p>
+          {puedeAprobar && <form action={aprobarContrato.bind(null, id, contratoId)}><BotonEnviar className={claseBoton.primario} textoEnviando="Aprobando…">Aprobar contrato</BotonEnviar></form>}
+        </div>
+      )}
+
       <section className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="Resumen del contrato">
         {([
           ["Valor del contrato", `${centavos(desdeJson(c.valor, 2))}`], ["Facturado (bruto)", centavos(r.facturado)],
@@ -73,6 +82,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
 
       <dl className="mt-6 grid gap-4 rounded-card border border-soil-border p-5 sm:grid-cols-2">
         <Dato t="Objeto" v={c.objeto} />
+        <Dato t="Aprobación" v={pendiente ? "Pendiente del director general" : c.aprobado_por ? `Aprobado por ${nombres.get(c.aprobado_por) ?? "—"}${c.aprobado_en ? ` el ${formatearFecha(String(c.aprobado_en).slice(0, 10))}` : ""}` : "Aprobado"} />
         <Dato t="Retención de garantía" v={`${Number(c.retencion_pct).toLocaleString("es-CO")} % (vigente al crear el contrato)${c.retencion_liberada ? " · liberada" : ""}`} />
         <Dato t="Anticipo" v={Number(c.anticipo_pct) > 0 ? `${Number(c.anticipo_pct).toLocaleString("es-CO")} % — autorizado por ${nombres.get(c.anticipo_autorizado_por) ?? "—"}${c.anticipo_autorizado_en ? ` el ${formatearFechaHora(c.anticipo_autorizado_en)}` : ""}. Motivo: ${c.anticipo_motivo ?? "—"}` : "Sin anticipo"} />
       </dl>
@@ -83,7 +93,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         {puedeAnticipo ? (
           <div className="mt-3 rounded-card bg-leaf-50 p-5"><FormularioAnticipo accion={autorizarAnticipo.bind(null, id, contratoId)} pctActual={Number(c.anticipo_pct) > 0 ? String(Number(c.anticipo_pct)).replace(".", ",") : ""} maximo={String(maxAnticipo)} /></div>
         ) : (
-          <p className="mt-2 text-sm text-muted">{actas.length > 0 ? "Ya hay actas de pago: el anticipo no se puede cambiar." : "Solo el director general de planificación y proyectos autoriza el anticipo."}</p>
+          <p className="mt-2 text-sm text-muted">{actas.length > 0 ? "Ya hay actas de pago: el anticipo no se puede cambiar." : pendiente ? "El anticipo se puede autorizar cuando el contrato esté aprobado." : "Solo el director general de planificación y proyectos autoriza el anticipo."}</p>
         )}
       </section>
 
@@ -119,7 +129,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
             </table>
           </div>
         )}
-        {permisos.gestionar && !c.retencion_liberada && (
+        {permisos.gestionar && !pendiente && !c.retencion_liberada && (
           <div className="mt-4 rounded-card bg-leaf-50 p-5"><h3 className="mb-3 font-display text-lg font-bold text-leaf-700">Radicar acta de pago</h3><FormularioActa accion={radicarActa.bind(null, id, contratoId)} hoy={hoyColombia()} /></div>
         )}
       </section>

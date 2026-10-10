@@ -7,7 +7,7 @@ const proy = async (n) => (await como(A, () => q("insert into public.proyectos (
 const P1 = await proy("Obra 1"), P2 = await proy("Obra 2");
 for (const [p, u, r] of [[P1, G, "gerente"], [P2, G2, "gerente"], [P1, C, "consulta"], [P1, IT, "interventoria"]]) await como(A, () => q("insert into public.miembros_proyecto values ($1,$2,$3)", [p, u, r]));
 const J = JSON.stringify;
-const contrato = async (u, p, valor) => (await como(u, () => q("select public.contrato_crear($1::uuid,$2::jsonb) as id", [p, J({ tipo: "obra", contratista: "X", objeto: "Obra", valor })])))[0].id;
+const contrato = async (u, p, valor) => { const id = (await como(u, () => q("select public.contrato_crear($1::uuid,$2::jsonb) as id", [p, J({ tipo: "obra", contratista: "X", objeto: "Obra", valor })])))[0].id; await como(D, () => q("select public.contrato_aprobar($1::uuid)", [id])); return id; };
 await como(A, () => q("select public.medicion_guardar($1::uuid, '2026-02-01'::date, 1000000000, 0, 0, 0)", [P1]).catch(() => {}));
 await q("insert into public.lineas_base (proyecto_id, tipo, version, bac) values ($1,'costo',1,1000000000), ($2,'costo',1,2000000000)", [P1, P2]);
 const CT1 = await contrato(G, P1, "480000000"), CT2 = await contrato(G2, P2, "5000000000");
@@ -35,7 +35,8 @@ await q("update public.proyectos set estado='activo' where id=$1", [P1]);
 seccion("4. Cambiar el valor del contrato mantiene el porcentaje de anticipo");
 await como(A, () => q("select public.parametro_guardar('global', null, 'anticipo_admin_puede_autorizar', 'si')"));
 await como(D, () => q("select public.contrato_anticipo_autorizar($1::uuid, 20, 'Urgencia')", [CT1]));
-await como(G, () => q("select public.contrato_actualizar($1::uuid,$2::jsonb)", [CT1, J({ tipo: "obra", contratista: "X", objeto: "Obra", valor: "240000000" })]));
+await esperaError("El gerente no cambia el valor de un contrato aprobado", como(G, () => q("select public.contrato_actualizar($1::uuid,$2::jsonb)", [CT1, J({ tipo: "obra", contratista: "X", objeto: "Obra", valor: "240000000" })])), /solo lo cambia el director/);
+await como(D, () => q("select public.contrato_actualizar($1::uuid,$2::jsonb)", [CT1, J({ tipo: "obra", contratista: "X", objeto: "Obra", valor: "240000000" })]));
 const c1 = (await q("select valor::text v, anticipo_valor::text a, anticipo_pct::text p from public.contratos where id=$1", [CT1]))[0];
 ok(c1.a === "48000000.00" && c1.p === "20.00", `Contrato de 240 M con anticipo del 20 % → anticipo 48 M (quedó ${c1.a}, ${c1.p} %)`);
 
