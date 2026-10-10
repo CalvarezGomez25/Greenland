@@ -42,7 +42,7 @@ export const REUNIONES: Definicion = {
   tabla: "reuniones",
   titulo: "Reuniones",
   singular: "reunión",
-  descripcion: "Alimentan el KPI de reuniones con acta",
+  descripcion: "Alimentan el indicador de reuniones con acta",
   campos: [
     { nombre: "fecha", etiqueta: "Fecha", tipo: "fecha", obligatorio: true },
     { nombre: "tipo", etiqueta: "Tipo de reunión", tipo: "seleccion", obligatorio: true, opcionesDe: "tipos" },

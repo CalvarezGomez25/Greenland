@@ -17,7 +17,7 @@ const MENSAJES: Record<string, string> = {
   linea_base: "Presupuesto aprobado: quedó como línea base de costo (BAC).",
   avance: "Avance actualizado.",
   anticipo: "Anticipo autorizado.",
-  cerrado: "Proyecto cerrado. Sale del dashboard y queda en el histórico.",
+  cerrado: "Proyecto cerrado. Sale del tablero de control y queda en el histórico.",
   reabierto: "Proyecto reabierto.",
   acta: "Acta de pago radicada.",
   estado_acta: "Estado del acta actualizado.",

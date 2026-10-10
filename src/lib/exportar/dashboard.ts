@@ -11,7 +11,7 @@ const pesos = (c: bigint) => Number(c) / 100; // sin truncar los centavos
 export function documentoDashboard(d: Dashboard, descripcionFiltros: string): DocExport {
   const r = d.resumen;
   return {
-    titulo: "Dashboard del portafolio",
+    titulo: "Tablero de control del portafolio",
     subtitulo: descripcionFiltros,
     generado: d.hoy,
     tablas: [
@@ -21,7 +21,7 @@ export function documentoDashboard(d: Dashboard, descripcionFiltros: string): Do
         columnas: ["Indicador", "Valor"],
         filas: [
           ["Proyectos activos", r.activos], ["En Verde", r.verdes], ["En Amarillo", r.amarillos], ["En Rojo", r.rojos], ["Sin datos", r.sinDatos],
-          ["BAC total (COP)", pesos(r.bac)], ["AC total (COP)", pesos(r.ac)], ["SPI del portafolio", num(r.spi)], ["CPI del portafolio", num(r.cpi)],
+          ["Presupuesto total - BAC (COP)", pesos(r.bac)], ["Costo real total - AC (COP)", pesos(r.ac)], ["Desempeño del cronograma - SPI del portafolio", num(r.spi)], ["Desempeño del costo - CPI del portafolio", num(r.cpi)],
         ],
         formatoFilas: ["entero", "entero", "entero", "entero", "entero", "pesos", "pesos", "decimal2", "decimal2"],
       },
@@ -42,9 +42,9 @@ export function documentoDashboard(d: Dashboard, descripcionFiltros: string): Do
         filas: d.decisiones.map((x) => [x.tipo, x.proyecto, x.detalle]),
       },
       {
-        titulo: "KPIs de gestión",
+        titulo: "Indicadores de gestión",
         nota: "Mensuales. Cada columna de mes muestra el valor de ese mes.",
-        columnas: ["KPI", "Meta", "Actual", "Cumple", "Tendencia", ...(d.kpis[0]?.puntos.map((p) => p.mes) ?? [])],
+        columnas: ["Indicador", "Meta", "Actual", "Cumple", "Tendencia", ...(d.kpis[0]?.puntos.map((p) => p.mes) ?? [])],
         filas: d.kpis.map((k) => [
           k.nombre, k.meta, k.actual, k.cumple === null ? "—" : k.cumple ? "Sí" : "No",
           k.tendencia === "sube" ? "Sube" : k.tendencia === "baja" ? "Baja" : k.tendencia === "igual" ? "Igual" : "—", ...k.puntos.map((p) => p.valor),

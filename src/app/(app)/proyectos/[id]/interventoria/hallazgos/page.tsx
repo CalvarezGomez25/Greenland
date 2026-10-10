@@ -38,7 +38,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
     <>
       <Link href={`/proyectos/${id}/interventoria`} className="text-sm font-medium text-leaf-600 hover:underline">← Interventoría</Link>
       <div className="mt-4"><Titulo>Hallazgos y requerimientos</Titulo></div>
-      <p className="mt-3 max-w-3xl text-sm text-muted">Observación: 5 días hábiles · No conformidad: 3 · Incumplimiento grave: 1 (configurable en Parámetros). Si el plazo vence sin respuesta, el hallazgo pasa a Escalado y aparece en el dashboard.</p>
+      <p className="mt-3 max-w-3xl text-sm text-muted">Observación: 5 días hábiles · No conformidad: 3 · Incumplimiento grave: 1 (configurable en Parámetros). Si el plazo vence sin respuesta, el hallazgo pasa a Escalado y aparece en el tablero de control.</p>
       <div className="mt-4 flex flex-col gap-2"><AvisoResultado ok={ok} />{errorUrl && <Aviso>{errorUrl.slice(0, 400)}</Aviso>}</div>
       {error && <div className="mt-4"><Aviso>No se pudieron leer los hallazgos{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
       {hallazgos.length === 0 && !error ? <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">No hay hallazgos.</p> : (

@@ -57,7 +57,7 @@ describe("dashboard — reglas", () => {
   });
   it("requiere decisión: TCPI alto", () => {
     const r = armarPortafolio({ ...base, proyectos: [proy("a", "A")], mediciones: [med("a", 1000, 700, 300, 800)] });
-    expect(requiereDecision(r.filas, [])[0].tipo).toBe("TCPI alto");
+    expect(requiereDecision(r.filas, [])[0].tipo).toBe("Desempeño requerido alto (TCPI)");
   });
 });
 

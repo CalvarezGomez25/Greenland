@@ -77,7 +77,7 @@ export function FormularioCambio({
           </fieldset>
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" name="detectado_sin_formato" defaultChecked={v("detectado_sin_formato") === "on" || v("detectado_sin_formato") === "true"} className="h-4 w-4" />
-            Es un cambio ya ejecutado que se detectó sin formato (cuenta contra el KPI de cambios controlados)
+            Es un cambio ya ejecutado que se detectó sin formato (cuenta contra el indicador de cambios controlados)
           </label>
         </>
       )}

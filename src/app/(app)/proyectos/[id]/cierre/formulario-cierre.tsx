@@ -9,7 +9,7 @@ export function FormularioCierre({ accion, hoy }: { accion: (a: Estado, d: FormD
   const [estado, enviar] = useActionState(accion, {} as Estado);
   const v = (k: string, r = "") => estado.valores?.[k] ?? r;
   return (
-    <form action={enviar} onSubmit={(e) => { if (!window.confirm("¿Cerrar el proyecto? Saldrá del dashboard activo y quedará en el histórico.")) e.preventDefault(); }} className="flex max-w-2xl flex-col gap-4">
+    <form action={enviar} onSubmit={(e) => { if (!window.confirm("¿Cerrar el proyecto? Saldrá del tablero de control activo y quedará en el histórico.")) e.preventDefault(); }} className="flex max-w-2xl flex-col gap-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <Campo etiqueta="Fecha de entrega" name="fecha_entrega" type="date" required defaultValue={v("fecha_entrega", hoy)} />
         <Campo etiqueta="Quién recibe el proyecto" name="receptor" required maxLength={200} defaultValue={v("receptor")} />

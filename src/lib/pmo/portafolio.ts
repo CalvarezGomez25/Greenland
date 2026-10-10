@@ -143,7 +143,7 @@ export type Audiencia = "director" | "gerente" | "ambos";
 export type Decision = { tipo: string; proyectoId: string; proyecto: string; detalle: string; href: string; audiencia: Audiencia };
 
 const AUDIENCIA_POR_TIPO: Record<string, Audiencia> = {
-  "TCPI alto": "ambos", "Riesgo crítico": "ambos", "Decisión requerida": "director", "Sin reporte de la semana": "gerente",
+  "Desempeño requerido alto (TCPI)": "ambos", "Riesgo crítico": "ambos", "Decisión requerida": "director", "Sin reporte de la semana": "gerente",
   "Hallazgo escalado": "ambos", "Hitos vencidos": "gerente", "Contrato por aprobar": "director",
 };
 
@@ -156,7 +156,7 @@ export function requiereDecision(filas: FilaPortafolio[], parametros: FilaParame
     const tcpiMax = numeroParametro(parametros, "tcpi_max", ctx, 1.1);
     if (f.evm?.tcpi != null && f.evm.tcpi > tcpiMax) {
       out.push({
-        tipo: "TCPI alto", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre,
+        tipo: "Desempeño requerido alto (TCPI)", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre,
         detalle: `TCPI ${f.evm.tcpi.toLocaleString("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} supera ${tcpiMax.toLocaleString("es-CO")}`,
         href: `/proyectos/${f.proyecto.id}/evm`,
       });

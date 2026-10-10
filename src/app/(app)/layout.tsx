@@ -1,70 +1,44 @@
 import { Suspense } from "react";
-import Image from "next/image";
-import Link from "next/link";
 import { obtenerSesion } from "@/lib/sesion";
-import { ETIQUETA_ROL_GLOBAL } from "@/lib/tipos";
+import { ETIQUETA_ROL_GLOBAL, type RolProyecto } from "@/lib/tipos";
 import { claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
+import { BarraLateral } from "@/components/barra-lateral";
+import { armarProyectosNav, enlacesAdministracion } from "@/lib/navegacion";
+import { NOMBRE_PLATAFORMA } from "@/lib/marca";
 import { salir } from "./acciones";
 
-async function DatosUsuario() {
-  const { perfil } = await obtenerSesion();
+async function MenuLateral() {
+  const { supabase, perfil } = await obtenerSesion();
+  const [{ data: proyectos }, { data: miembros }] = await Promise.all([
+    supabase.from("proyectos").select("id, nombre, codigo, estado, usa_obra").order("nombre"),
+    perfil ? supabase.from("miembros_proyecto").select("proyecto_id, rol").eq("usuario_id", perfil.id) : Promise.resolve({ data: [] }),
+  ]);
+  const roles = new Map(((miembros ?? []) as { proyecto_id: string; rol: RolProyecto }[]).map((m) => [m.proyecto_id, m.rol]));
+  const rolGlobal = perfil?.rol_global ?? null;
   return (
-    <div className="flex items-center gap-4">
-      <div className="hidden text-right text-sm sm:block">
-        <p className="font-medium text-leaf-900">{perfil?.nombre ?? "Usuario"}</p>
-        {perfil?.rol_global && (
-          <p className="text-xs text-muted">{ETIQUETA_ROL_GLOBAL[perfil.rol_global]}</p>
-        )}
-      </div>
-      <form action={salir}>
-        <BotonEnviar className={claseBoton.contorno} textoEnviando="Saliendo…">
-          Salir
-        </BotonEnviar>
-      </form>
-    </div>
-  );
-}
-
-async function Navegacion() {
-  const { perfil } = await obtenerSesion();
-  const enlaces: [string, string][] = [["/", "Inicio"]];
-  if (perfil?.rol_global === "administrador") enlaces.push(["/usuarios", "Usuarios"], ["/organizacion", "Organización"]);
-  if (perfil?.rol_global) enlaces.push(["/parametros", "Parámetros"]);
-  if (perfil?.rol_global === "administrador" || perfil?.rol_global === "director_general") enlaces.push(["/auditoria", "Auditoría"]);
-  return (
-    <nav aria-label="Principal" className="mx-auto flex w-full max-w-[1040px] flex-wrap gap-x-5 gap-y-1 px-6 pb-2 text-sm">
-      {enlaces.map(([href, texto]) => (
-        <Link key={href} href={href} className="font-medium text-leaf-700 hover:underline">{texto}</Link>
-      ))}
-    </nav>
+    <BarraLateral
+      proyectos={armarProyectosNav((proyectos ?? []) as { id: string; nombre: string; codigo: string | null; estado: string; usa_obra: boolean | null }[], roles, rolGlobal)}
+      administracion={enlacesAdministracion(rolGlobal)}
+      puedeCrear={rolGlobal === "administrador"}
+      usuario={{ nombre: perfil?.nombre ?? "Usuario", rol: rolGlobal ? ETIQUETA_ROL_GLOBAL[rolGlobal] : null }}
+      nombrePlataforma={NOMBRE_PLATAFORMA}
+      salir={
+        <form action={salir}>
+          <BotonEnviar className={`${claseBoton.contorno} !h-9 w-full`} textoEnviando="Saliendo…">Salir</BotonEnviar>
+        </form>
+      }
+    />
   );
 }
 
 export default function LayoutInterno({ children }: LayoutProps<"/">) {
   return (
-    <>
-      <header className="border-b border-soil-border bg-white">
-        <div className="mx-auto flex w-full max-w-[1040px] items-center justify-between px-6 py-3">
-          <Link href="/" aria-label="Ir al inicio">
-            <Image
-              src="/logo-greenland.png"
-              alt="GreenLand"
-              width={1737}
-              height={528}
-              className="h-auto w-32"
-              priority
-            />
-          </Link>
-          <Suspense fallback={<div className="h-10 w-40" />}>
-            <DatosUsuario />
-          </Suspense>
-        </div>
-        <Suspense fallback={<div className="h-6" />}>
-          <Navegacion />
-        </Suspense>
-      </header>
-      <main className="mx-auto w-full max-w-[1040px] flex-1 px-6 py-8">{children}</main>
-    </>
+    <div className="flex min-h-screen flex-1 flex-col lg:flex-row">
+      <Suspense fallback={<div className="h-12 border-b border-soil-border lg:h-auto lg:w-64 lg:shrink-0 lg:border-r lg:border-b-0" />}>
+        <MenuLateral />
+      </Suspense>
+      <main className="mx-auto w-full min-w-0 max-w-[1280px] flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
+    </div>
   );
 }

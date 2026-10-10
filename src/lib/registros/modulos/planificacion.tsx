@@ -70,8 +70,8 @@ function MatrizPoderInteres({ filas }: { filas: Fila[] }) {
 export const STAKEHOLDERS: Definicion = {
   clave: "stakeholders",
   tabla: "stakeholders",
-  titulo: "Stakeholders",
-  singular: "stakeholder",
+  titulo: "Interesados",
+  singular: "interesado",
   descripcion: "La estrategia se calcula con poder × interés",
   campos: [
     { nombre: "nombre", etiqueta: "Nombre u organización", tipo: "texto", obligatorio: true, max: 200 },
@@ -119,7 +119,7 @@ async function crearPlantillaWbs(proyectoId: string) {
   "use server";
   const { supabase } = await cargarProyecto(proyectoId);
   const { error } = await supabase.rpc("wbs_plantilla", { p_proyecto: proyectoId });
-  if (error) console.error("Fallo al crear la plantilla WBS:", error.code, error.message);
+  if (error) console.error("Fallo al crear la plantilla de la EDT:", error.code, error.message);
   revalidatePath(`/proyectos/${proyectoId}`, "layout");
   redirect(`/proyectos/${proyectoId}/r/wbs?ok=${error ? "no_borrado" : "guardado"}`);
 }
@@ -129,7 +129,7 @@ const ETIQUETA_ESTADO_WBS = { en_curso: "En curso", completado: "Completado", pe
 export const WBS: Definicion = {
   clave: "wbs",
   tabla: "wbs_elementos",
-  titulo: "WBS (EDT)",
+  titulo: "EDT (estructura de desglose del trabajo)",
   singular: "elemento",
   descripcion: "Estructura jerárquica de entregables",
   campos: [
@@ -174,7 +174,7 @@ export const WBS: Definicion = {
   extra: (filas, ctx) =>
     filas.length === 0 && ctx.permisos.gestionar ? (
       <form action={crearPlantillaWbs.bind(null, ctx.proyecto.id)} className="rounded-card bg-leaf-50 p-5">
-        <p className="mb-3 text-sm text-muted">La WBS está vacía. Puedes empezar con la plantilla estándar del libro (1.1 Gestión, 1.2 Ingeniería y diseño, 1.3 Permisos, 1.4 Adquisiciones, 1.5 Construcción, 1.6 Calidad y SST, 1.7 Entrega y cierre).</p>
+        <p className="mb-3 text-sm text-muted">La EDT está vacía. Puedes empezar con la plantilla estándar del libro (1.1 Gestión, 1.2 Ingeniería y diseño, 1.3 Permisos, 1.4 Adquisiciones, 1.5 Construcción, 1.6 Calidad y SST, 1.7 Entrega y cierre).</p>
         <BotonEnviar className={claseBoton.secundario} textoEnviando="Creando…">Usar la plantilla estándar</BotonEnviar>
       </form>
     ) : null,

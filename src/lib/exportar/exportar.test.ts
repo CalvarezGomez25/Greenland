@@ -26,8 +26,8 @@ describe("exportación del dashboard coincide con la pantalla (caso 13.4)", () =
   const doc = documentoDashboard(dash, "Vigentes");
   it("las cifras del documento son las del cálculo", () => {
     const resumenT = doc.tablas[0].filas;
-    expect(resumenT.find((f) => f[0] === "SPI del portafolio")?.[1]).toBeCloseTo(0.8833, 4);
-    expect(resumenT.find((f) => f[0] === "BAC total (COP)")?.[1]).toBe(2_400_000_000);
+    expect(resumenT.find((f) => f[0] === "Desempeño del cronograma - SPI del portafolio")?.[1]).toBeCloseTo(0.8833, 4);
+    expect(resumenT.find((f) => f[0] === "Presupuesto total - BAC (COP)")?.[1]).toBe(2_400_000_000);
     const semaforo = doc.tablas[1];
     expect(semaforo.filas.map((f) => [f[0], f[4]])).toEqual([["Planta", "Rojo"], ["Edificio Ñandú", "Amarillo"], ["Vía Cañón", "Verde"]]);
   });
@@ -35,10 +35,10 @@ describe("exportación del dashboard coincide con la pantalla (caso 13.4)", () =
     const buf = await aExcel(doc);
     const libro = new ExcelJS.Workbook();
     await libro.xlsx.load(buf as unknown as ArrayBuffer);
-    expect(libro.worksheets.map((h) => h.name)).toEqual(["Resumen del portafolio", "Semáforo de proyectos", "Requiere decisión", "KPIs de gestión"]);
+    expect(libro.worksheets.map((h) => h.name)).toEqual(["Resumen del portafolio", "Semáforo de proyectos", "Requiere decisión", "Indicadores de gestión"]);
     const hoja = libro.getWorksheet("Resumen del portafolio")!;
     let spi: number | null = null;
-    hoja.eachRow((r) => { if (r.getCell(1).value === "SPI del portafolio") spi = Number(r.getCell(2).value); });
+    hoja.eachRow((r) => { if (r.getCell(1).value === "Desempeño del cronograma - SPI del portafolio") spi = Number(r.getCell(2).value); });
     expect(spi).toBeCloseTo(0.8833, 4);
     expect(libro.getWorksheet("Semáforo de proyectos")!.getRow(6).getCell(1).value).toBe("Planta");
   });

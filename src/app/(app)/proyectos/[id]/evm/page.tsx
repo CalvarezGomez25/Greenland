@@ -31,7 +31,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   return (
     <>
       <Link href={`/proyectos/${id}`} className="text-sm font-medium text-leaf-600 hover:underline">← Volver al proyecto</Link>
-      <div className="mt-4"><Titulo>Valor ganado (EVM)</Titulo></div>
+      <div className="mt-4"><Titulo>Valor ganado</Titulo></div>
       <p className="mt-3 text-sm text-muted">{p.nombre} · en proyectos con área de Obra, el valor ganado se calcula solo desde el presupuesto aprobado, el cronograma y el gasto; la captura manual sirve para proyectos sin esos datos.</p>
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
       <div className="mt-3 flex flex-wrap items-center gap-3"><span className="text-sm text-muted">Exportar:</span><BotonesExportar base={`/proyectos/${id}/exportar/evm`} /></div>
@@ -42,10 +42,10 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           <p className="mb-3 text-sm text-muted">Última medición: {formatearFecha(ultima.fecha_corte)}</p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {([
-              ["SPI", indice(r.spi), "EV / PV · meta ≥ 0,95"], ["CPI", indice(r.cpi), "EV / AC · meta ≥ 0,95"],
-              ["SV (COP)", centavos(r.sv), "EV − PV"], ["CV (COP)", centavos(r.cv), "EV − AC"],
-              ["EAC (COP)", centavos(r.eac), "BAC / CPI"], ["ETC (COP)", centavos(r.etc), "EAC − AC"],
-              ["TCPI", indice(r.tcpi), "(BAC − EV) / (BAC − AC) · meta ≤ 1,10"], ["VAC (COP)", centavos(r.vac), "BAC − EAC"],
+              ["Desempeño del cronograma (SPI)", indice(r.spi), "EV / PV · meta ≥ 0,95"], ["Desempeño del costo (CPI)", indice(r.cpi), "EV / AC · meta ≥ 0,95"],
+              ["Variación del cronograma (SV, COP)", centavos(r.sv), "EV − PV"], ["Variación del costo (CV, COP)", centavos(r.cv), "EV − AC"],
+              ["Estimación a la conclusión (EAC, COP)", centavos(r.eac), "BAC / CPI"], ["Estimación para concluir (ETC, COP)", centavos(r.etc), "EAC − AC"],
+              ["Desempeño requerido (TCPI)", indice(r.tcpi), "(BAC − EV) / (BAC − AC) · meta ≤ 1,10"], ["Variación a la conclusión (VAC, COP)", centavos(r.vac), "BAC − EAC"],
               ["Avance físico", porcentaje(r.avanceFisico), "EV / BAC"], ["Avance plan", porcentaje(r.avancePlan), "PV / BAC"], ["Avance financiero", porcentaje(r.avanceFinanciero), "AC / BAC"],
             ] as [string, string, string][]).map(([t, v, n]) => (
               <div key={t} className="rounded-card bg-leaf-100 p-4">

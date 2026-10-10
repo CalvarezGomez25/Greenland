@@ -22,5 +22,5 @@ async function generar(req: NextRequest) {
     f.portafolio ? `Portafolio: ${d.portafolios.find((x) => x.id === f.portafolio)?.nombre ?? "—"}` : null,
     f.gerente ? `Gerente: ${d.gerentes.find((x) => x.id === f.gerente)?.nombre ?? "—"}` : null,
   ].filter(Boolean) as string[];
-  return respuestaDescarga(documentoDashboard(d, partes.join(" · ")), formatoDe(p.get("formato")), `dashboard-${d.hoy}`);
+  return respuestaDescarga(documentoDashboard(d, partes.join(" · ")), formatoDe(p.get("formato")), `tablero-de-control-${d.hoy}`);
 }

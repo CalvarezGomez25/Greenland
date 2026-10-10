@@ -18,9 +18,9 @@ type Foto = { fecha_corte?: string; bac?: number | string; pv?: number | string;
 
 function Indicadores({ foto, titulo }: { foto: Foto; titulo: string }) {
   const items: [string, string][] = [
-    ["SPI", indice(foto.spi ?? null)], ["CPI", indice(foto.cpi ?? null)],
+    ["Desempeño del cronograma (SPI)", indice(foto.spi ?? null)], ["Desempeño del costo (CPI)", indice(foto.cpi ?? null)],
     ["Avance físico", porcentaje(foto.avance_fisico ?? null)], ["Avance presupuestal", porcentaje(foto.avance_presupuestal ?? null)],
-    ["Ejecutado (AC, COP)", foto.ac !== undefined ? centavos(desdeJson(foto.ac, 2)) : "—"], ["Hitos cumplidos en la semana", String(foto.hitos_cumplidos_semana ?? 0)],
+    ["Costo real ejecutado (AC, COP)", foto.ac !== undefined ? centavos(desdeJson(foto.ac, 2)) : "—"], ["Hitos cumplidos en la semana", String(foto.hitos_cumplidos_semana ?? 0)],
   ];
   return (
     <section aria-label={titulo} className="mt-6">

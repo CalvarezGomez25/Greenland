@@ -33,12 +33,12 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   return (
     <>
       <Link href={`/proyectos/${id}`} className="text-sm font-medium text-leaf-600 hover:underline">← Volver al proyecto</Link>
-      <div className="mt-4"><Titulo>Reporte semanal y KPIs</Titulo></div>
+      <div className="mt-4"><Titulo>Reporte semanal e indicadores</Titulo></div>
       <p className="mt-3 text-sm text-muted">{proyecto.nombre} · semana calendario ISO (lunes a domingo)</p>
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
 
       <section className="mt-6" aria-labelledby="t-kpis">
-        <h2 id="t-kpis" className="font-display text-2xl font-bold text-leaf-700">KPIs de gestión del proyecto</h2>
+        <h2 id="t-kpis" className="font-display text-2xl font-bold text-leaf-700">Indicadores de gestión del proyecto</h2>
         <div className="mt-3"><TablaKpis series={kpis} /></div>
         <p className="mt-2 text-sm"><Link href={`/proyectos/${id}/r/hitos`} className="font-medium text-leaf-600 hover:underline">Hitos</Link> · <Link href={`/proyectos/${id}/r/reuniones`} className="font-medium text-leaf-600 hover:underline">Reuniones</Link></p>
       </section>

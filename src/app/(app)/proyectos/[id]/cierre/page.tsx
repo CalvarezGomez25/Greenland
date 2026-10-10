@@ -41,7 +41,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           <div className="mt-3 rounded-card bg-leaf-100 p-5 text-sm">
             <p><strong>Proyecto cerrado.</strong> Entregado el {formatearFecha(cierre.fecha_entrega)} a {cierre.receptor}.</p>
             {cierre.observaciones && <p className="mt-1 whitespace-pre-wrap text-muted">{cierre.observaciones}</p>}
-            <p className="mt-1 text-muted">Cerrado por {nombres.get(cierre.cerrado_por) ?? "—"} el {formatearFechaHora(cierre.cerrado_en)}. Ya no aparece en el dashboard activo; se consulta en el histórico.</p>
+            <p className="mt-1 text-muted">Cerrado por {nombres.get(cierre.cerrado_por) ?? "—"} el {formatearFechaHora(cierre.cerrado_en)}. Ya no aparece en el tablero de control activo; se consulta en el histórico.</p>
             {permisos.admin && <form action={reabrirProyecto.bind(null, id)} className="mt-3"><BotonEnviar className={claseBoton.contorno} textoEnviando="Reabriendo…">Reabrir el proyecto (administrador)</BotonEnviar></form>}
           </div>
         ) : permisos.gestionar ? (

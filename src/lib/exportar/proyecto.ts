@@ -23,8 +23,8 @@ export function documentoReporte(p: { proyecto: string; semana: number; anio: nu
         columnas: ["Indicador", "Valor"],
         filas: [
           ["Estado general reportado", ESTADO_REP[p.estado] ?? p.estado], ["Fecha del reporte", p.fecha], ["Medición de valor ganado", f.fecha_corte ?? "—"],
-          ["SPI", f.spi ?? null], ["CPI", f.cpi ?? null], ["Avance físico %", f.avance_fisico ?? null], ["Avance presupuestal %", f.avance_presupuestal ?? null],
-          ["Ejecutado - AC (COP)", f.ac !== undefined ? Number(f.ac) : null], ["Hitos cumplidos en la semana", f.hitos_cumplidos_semana ?? 0],
+          ["Desempeño del cronograma (SPI)", f.spi ?? null], ["Desempeño del costo (CPI)", f.cpi ?? null], ["Avance físico %", f.avance_fisico ?? null], ["Avance presupuestal %", f.avance_presupuestal ?? null],
+          ["Costo real ejecutado - AC (COP)", f.ac !== undefined ? Number(f.ac) : null], ["Hitos cumplidos en la semana", f.hitos_cumplidos_semana ?? 0],
         ],
         formatoFilas: ["texto", "texto", "texto", "decimal2", "decimal2", "porcentaje", "porcentaje", "pesos", "entero"],
       },
