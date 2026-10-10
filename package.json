@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "migrar": "node scripts/migrar.mjs",
-    "verificar": "tsc --noEmit && eslint src scripts && vitest run && next build"
+    "verificar": "tsc --noEmit && eslint src scripts && vitest run && next build",
+    "test:sql": "node pruebas-sql/ejecutar.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -22,6 +23,7 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^22.20.5",
     "@types/react": "^19",

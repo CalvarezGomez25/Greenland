@@ -1,0 +1,77 @@
+import { nuevaBase, ok, seccion, fin, asignarInterventor } from "./base.mjs";
+import { randomUUID } from "node:crypto";
+const { q, como, esperaError, usuario } = await nuevaBase();
+const A = await usuario("a@x.co", "administrador"), D = await usuario("d@x.co", "director_general"), AN = await usuario("an@x.co", "analista_pmo"),
+  G = await usuario("g@x.co"), S = await usuario("s@x.co"), I = await usuario("i@x.co"), G2 = await usuario("g2@x.co");
+const P1 = (await como(A, () => q("insert into public.proyectos (nombre, fecha_inicio, duracion_meses) values ('Obra 1','2026-01-01',12) returning id")))[0].id;
+const P2 = (await como(A, () => q("insert into public.proyectos (nombre, fecha_inicio, duracion_meses) values ('Obra 2','2026-01-01',12) returning id")))[0].id;
+for (const [u, r] of [[G, "gerente"], [S, "supervisor"], [I, "interventoria"]]) await como(A, () => q("insert into public.miembros_proyecto values ($1,$2,$3)", [P1, u, r]));
+await como(A, () => q("insert into public.miembros_proyecto values ($1,$2,'gerente')", [P2, G2]));
+await asignarInterventor(q, P1, I);
+const doc = (u, p, tipo, nombre, o = {}) => { const id = o.id ?? randomUUID(); return como(u, () => q("select public.documento_crear($1::uuid,$2::uuid,$3,$4,null,null,$5,'plano.pdf',$6::bigint,'application/pdf',null) as id", [id, p, tipo, nombre, o.ruta ?? `${p}/${id}/v1-plano.pdf`, o.tam ?? 1000])).then(() => id); };
+const ver = (u, d, ruta, tam = 2000) => como(u, () => q("select public.documento_nueva_version($1::uuid,$2,'plano-v2.pdf',$3::bigint,'application/pdf','Ajustes') as v", [d, ruta, tam])).then(r => r[0].v);
+
+seccion("Documentos y versiones");
+const d1 = await doc(G, P1, "plano", "Planta estructural");
+ok((await q("select version from public.documento_versiones where documento_id=$1", [d1]))[0].version === 1, "Se crea con la versión 1");
+const v2 = await ver(G, d1, `${P1}/${d1}/v2-plano.pdf`);
+ok(v2 === 2, "La siguiente subida es la versión 2");
+await esperaError("Una ruta ajena se rechaza", ver(G, d1, `${P1}/${randomUUID()}/x.pdf`), /no corresponde/);
+await esperaError("Más de 50 MB rechazado", doc(G, P1, "plano", "Pesado", { tam: 60_000_000 }), /50 MB/);
+await esperaError("Tipo inválido rechazado", doc(G, P1, "foto", "x"), /no es válido/);
+await esperaError("Supervisor no sube documentos", doc(S, P1, "plano", "x"), /permiso/);
+await esperaError("Otro gerente no sube a P1", doc(G2, P1, "plano", "x"), /permiso/);
+await doc(AN, P1, "acta", "Acta de comité");
+ok((await q("select count(*)::int n from public.documentos where proyecto_id=$1", [P1]))[0].n === 2, "El analista PMO puede subir documentos");
+await esperaError("Escritura directa prohibida", como(G, () => q("delete from public.documento_versiones")), /permission denied/);
+
+seccion("Interventoría: solo lo que se le abre y sus informes");
+ok((await como(I, () => q("select * from public.documentos"))).length === 0, "No ve documentos que no se le abrieron");
+await esperaError("Solo sube informes", doc(I, P1, "plano", "x"), /informes/);
+const di = await doc(I, P1, "informe", "Informe periódico 1");
+ok((await q("select visible_interventoria v from public.documentos where id=$1", [di]))[0].v === true, "Su informe queda visible para ella");
+ok((await como(I, () => q("select * from public.documentos"))).length === 1, "Ve su informe");
+await ver(I, di, `${P1}/${di}/v2-informe.pdf`);
+await esperaError("No versiona planos", ver(I, d1, `${P1}/${d1}/v3.pdf`), /Documento no encontrado|informes/);
+await como(G, () => q("select public.documento_visibilidad($1::uuid, true)", [d1]));
+ok((await como(I, () => q("select * from public.documentos"))).length === 2, "El gerente le abre un plano y ahora lo ve");
+await esperaError("El supervisor no cambia visibilidad", como(S, () => q("select public.documento_visibilidad($1::uuid, false)", [d1])), /Solo el gerente/);
+ok((await como(S, () => q("select * from public.documentos"))).length === 3, "El supervisor ve todos los documentos del proyecto");
+ok((await como(G2, () => q("select * from public.documentos where proyecto_id=$1", [P1]))).length === 0, "Otro gerente no ve los de P1");
+
+seccion("Archivos (Storage)");
+const rutaD = `${P1}/${d1}/v1-plano.pdf`;
+await q("insert into storage.objects (bucket_id, name) values ('documentos', $1)", [rutaD]);
+await q("insert into storage.objects (bucket_id, name) values ('documentos', $1)", [`${P1}/${randomUUID()}/otro.pdf`]);
+ok((await como(S, () => q("select * from storage.objects where bucket_id='documentos'"))).length === 2, "El supervisor lee los archivos de su proyecto");
+ok((await como(I, () => q("select * from storage.objects where bucket_id='documentos'"))).length === 1, "La interventoría lee solo el archivo del documento que se le abrió");
+ok((await como(G2, () => q("select * from storage.objects where bucket_id='documentos'"))).length === 0, "Otro gerente no lee archivos de P1");
+await esperaError("El supervisor no sube archivos", como(S, () => q("insert into storage.objects (bucket_id, name) values ('documentos', $1)", [`${P1}/${randomUUID()}/s.pdf`])), /row-level/);
+await como(G, () => q("insert into storage.objects (bucket_id, name) values ('documentos', $1)", [`${P1}/${randomUUID()}/g.pdf`]));
+ok((await q("select public from storage.buckets where id='documentos'"))[0].public === false, "Bucket privado");
+
+seccion("Cierre del proyecto");
+const cam = await como(G, () => q("select public.cambio_crear($1::uuid,$2::jsonb) as id", [P1, JSON.stringify({ tipo: "Costo", descripcion_despues: "x", justificacion: "y" })])).then(r => r[0].id);
+await esperaError("No se cierra con cambios pendientes", como(G, () => q("select public.proyecto_cerrar($1::uuid,'2026-12-01'::date,'Cliente S.A.',null)", [P1])), /sin cerrar/);
+await como(G, () => q("delete from public.cambios where id=$1", [cam]).catch(() => {}));
+for (const e of ["radicado", "evaluacion_tecnica_financiera", "analisis_impacto", "aprobacion"]) await como(G, () => q("select public.cambio_avanzar($1::uuid,null)", [cam]));
+await como(G, () => q("select public.cambio_decidir($1::uuid,'rechazar','No procede')", [cam]));
+await como(G, () => q("select public.cambio_avanzar($1::uuid,null)", [cam]));
+await esperaError("Receptor obligatorio", como(G, () => q("select public.proyecto_cerrar($1::uuid,'2026-12-01'::date,'',null)", [P1])), /quién recibe/);
+await esperaError("Supervisor no cierra", como(S, () => q("select public.proyecto_cerrar($1::uuid,'2026-12-01'::date,'X',null)", [P1])), /permiso/);
+await como(G, () => q("select public.proyecto_cerrar($1::uuid,'2026-12-01'::date,'Cliente S.A.','Entrega sin pendientes')", [P1]));
+const p = (await q("select estado, fase from public.proyectos where id=$1", [P1]))[0];
+ok(p.estado === "cerrado" && p.fase === "cierre", "El proyecto queda cerrado (fase Cierre)");
+ok((await q("select receptor from public.cierres where proyecto_id=$1", [P1]))[0].receptor === "Cliente S.A.", "Se guarda el acta de entrega");
+await esperaError("No se cierra dos veces", como(G, () => q("select public.proyecto_cerrar($1::uuid,'2026-12-01'::date,'X',null)", [P1])), /ya está cerrado/);
+await esperaError("El gerente no reabre", como(G, () => q("select public.proyecto_reabrir($1::uuid)", [P1])), /administrador/);
+await como(A, () => q("select public.proyecto_reabrir($1::uuid)", [P1]));
+ok((await q("select estado from public.proyectos where id=$1", [P1]))[0].estado === "activo", "El administrador reabre");
+ok((await q("select count(*)::int n from public.auditoria where tabla='proyectos' and campo='estado'"))[0].n >= 2, "Cerrar y reabrir quedan en auditoría");
+
+seccion("Lecciones aprendidas");
+await como(G, () => q("insert into public.lecciones_aprendidas (proyecto_id, categoria, descripcion) values ($1,'Técnica','Pedir ensayos antes')", [P1]));
+await esperaError("Supervisor no crea lecciones", como(S, () => q("insert into public.lecciones_aprendidas (proyecto_id, categoria, descripcion) values ($1,'Técnica','x')", [P1])), /row-level/);
+ok((await como(S, () => q("select * from public.lecciones_aprendidas"))).length === 1, "El equipo las lee");
+ok((await como(I, () => q("select * from public.lecciones_aprendidas"))).length === 0, "Interventoría no las ve");
+fin();

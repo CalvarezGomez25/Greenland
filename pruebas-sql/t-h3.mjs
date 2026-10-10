@@ -1,0 +1,55 @@
+import { nuevaBase, ok, seccion, fin, asignarInterventor } from "./base.mjs";
+const { q, como, esperaError, usuario } = await nuevaBase();
+const A = await usuario("a@x.co", "administrador"), D = await usuario("d@x.co", "director_general"),
+  G = await usuario("g@x.co"), S = await usuario("s@x.co"), I = await usuario("i@x.co"), G2 = await usuario("g2@x.co");
+const P1 = (await como(A, () => q("insert into public.proyectos (nombre, fecha_inicio, duracion_meses) values ('Obra 1','2026-01-01',12) returning id")))[0].id;
+const P2 = (await como(A, () => q("insert into public.proyectos (nombre, fecha_inicio, duracion_meses) values ('Obra 2','2026-01-01',12) returning id")))[0].id;
+for (const [u, r] of [[G, "gerente"], [S, "supervisor"], [I, "interventoria"]]) await como(A, () => q("insert into public.miembros_proyecto values ($1,$2,$3)", [P1, u, r]));
+await como(A, () => q("insert into public.miembros_proyecto values ($1,$2,'gerente')", [P2, G2]));
+await asignarInterventor(q, P1, I);
+const rie = (u, p, pr, im, extra = "") => como(u, () => q(`insert into public.riesgos (proyecto_id, categoria, descripcion, probabilidad, impacto${extra ? ", estado" : ""}) values ($1,'Técnico','x',$2,$3${extra ? ",'" + extra + "'" : ""}) returning codigo, score`, [p, pr, im]));
+
+seccion("Riesgos (caso 13.5)");
+const r1 = (await rie(G, P1, 3, 5))[0]; const r2 = (await rie(G, P1, 4, 4))[0]; const r3 = (await rie(G, P1, 3, 4))[0];
+ok(r1.codigo === "R01" && r2.codigo === "R02" && r3.codigo === "R03", "Códigos consecutivos R01, R02, R03");
+ok(r1.score === 15 && r2.score === 16 && r3.score === 12, "Score = probabilidad × impacto (15, 16, 12)");
+ok((await rie(G2, P2, 1, 1))[0].codigo === "R01", "El consecutivo es por proyecto");
+await esperaError("Probabilidad 6 rechazada", rie(G, P1, 6, 1), /check|violates/);
+await esperaError("Supervisor no crea riesgos", rie(S, P1, 1, 1), /row-level/);
+await esperaError("Otro gerente no crea en P1", rie(G2, P1, 1, 1), /row-level/);
+ok((await como(S, () => q("select * from public.riesgos"))).length === 3, "Supervisor ve los riesgos");
+ok((await como(I, () => q("select * from public.riesgos"))).length === 0, "Interventoría no ve riesgos");
+ok((await como(G2, () => q("select * from public.riesgos where proyecto_id=$1", [P1]))).length === 0, "Otro gerente no ve los de P1");
+ok((await como(D, () => q("select * from public.riesgos"))).length === 4, "Director ve todos");
+await como(G, () => q("update public.riesgos set estado='materializado' where codigo='R01' and proyecto_id=$1", [P1]));
+ok((await q("select estado from public.riesgos where codigo='R01' and proyecto_id=$1", [P1]))[0].estado === "materializado", "Gerente cambia estado");
+await esperaError("Score no se puede escribir", como(G, () => q("update public.riesgos set score=1 where codigo='R02'")), /DEFAULT|generated/i);
+await como(G, () => q("delete from public.riesgos where codigo='R03' and proyecto_id=$1", [P1]));
+ok((await rie(G, P1, 1, 1))[0].codigo === "R04", "Tras borrar R03 el siguiente es R04 (nunca repite)");
+
+seccion("Stakeholders (caso 13.6)");
+const st = (u, p, n, po, ie) => como(u, () => q("insert into public.stakeholders (proyecto_id, nombre, poder, interes) values ($1,$2,$3,$4) returning influencia", [p, n, po, ie]));
+const vals = [["Patrocinador", 5, 5, 25], ["Director de Obras", 4, 4, 16], ["Comunidad", 2, 4, 8], ["Contratista principal", 3, 5, 15], ["Ente regulador", 5, 3, 15]];
+for (const [n, po, ie, esp] of vals) ok((await st(G, P1, n, po, ie))[0].influencia === esp, `${n}: poder × interés = ${esp}`);
+await esperaError("Supervisor no crea stakeholders", st(S, P1, "x", 1, 1), /row-level/);
+ok((await como(I, () => q("select * from public.stakeholders"))).length === 0, "Interventoría no ve stakeholders");
+await esperaError("Interés 0 rechazado", st(G, P1, "x", 3, 0), /check|violates/);
+
+seccion("WBS");
+await como(G, () => q("select public.wbs_plantilla($1::uuid)", [P1]));
+const w = await q("select codigo, nombre from public.wbs_elementos where proyecto_id=$1 order by codigo", [P1]);
+ok(w.length === 8 && w[0].codigo === "1.0" && w[0].nombre === "Obra 1" && w[7].codigo === "1.7", "Plantilla crea raíz 1.0 y 7 capítulos");
+await esperaError("La plantilla no se repite", como(G, () => q("select public.wbs_plantilla($1::uuid)", [P1])), /ya tiene/);
+await esperaError("Supervisor no usa plantilla", como(S, () => q("select public.wbs_plantilla($1::uuid)", [P2])), /permiso/);
+ok((await como(I, () => q("select * from public.wbs_elementos"))).length === 8, "Interventoría SÍ lee la WBS");
+ok((await como(S, () => q("select * from public.wbs_elementos"))).length === 8, "Supervisor lee la WBS");
+await como(I, () => q("update public.wbs_elementos set nombre='HACK'"));
+ok((await q("select count(*)::int n from public.wbs_elementos where nombre='HACK'"))[0].n === 0, "Interventoría no puede editar la WBS (0 filas afectadas)");
+const raiz = (await q("select id from public.wbs_elementos where codigo='1.0' and proyecto_id=$1", [P1]))[0].id;
+await esperaError("Código duplicado rechazado", como(G, () => q("insert into public.wbs_elementos (proyecto_id, padre_id, codigo, nombre) values ($1,$2,'1.1','dup')", [P1, raiz])), /unique|duplicate/);
+await esperaError("Código mal formado rechazado", como(G, () => q("insert into public.wbs_elementos (proyecto_id, codigo, nombre) values ($1,'abc','x')", [P1])), /check|violates/);
+await esperaError("Fin antes del inicio rechazado", como(G, () => q("insert into public.wbs_elementos (proyecto_id, codigo, nombre, inicio_plan, fin_plan) values ($1,'2.0','x','2026-05-01','2026-04-01')", [P1])), /check|violates/);
+const otroPadre = (await como(G2, () => q("insert into public.wbs_elementos (proyecto_id, codigo, nombre) values ($1,'1.0','y') returning id", [P2])))[0].id;
+await esperaError("Padre de otro proyecto rechazado", como(G, () => q("insert into public.wbs_elementos (proyecto_id, padre_id, codigo, nombre) values ($1,$2,'1.9','x')", [P1, otroPadre])), /mismo proyecto/);
+await esperaError("No se borra un padre con hijos", como(G, () => q("delete from public.wbs_elementos where id=$1", [raiz])), /foreign key|violates/);
+fin();
