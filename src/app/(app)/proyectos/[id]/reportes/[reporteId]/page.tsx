@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { cargarProyecto } from "@/lib/contexto-proyecto";
 import { ES_UUID, formatearFecha, formatearFechaHora } from "@/lib/formato";
 import { desdeJson } from "@/lib/presupuesto/dinero";
-import { calcularEvm } from "@/lib/pmo/evm";
+import { indicadoresBorrador } from "@/lib/pmo/reporte";
+import { BotonesExportar } from "@/components/botones-exportar";
 import { centavos, indice, porcentaje } from "@/lib/pmo/formato";
 import { Aviso, Titulo } from "@/components/ui";
 import { Semaforo } from "@/components/semaforo";
@@ -42,24 +43,8 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   if (!data) notFound();
   const r = data as unknown as Reporte;
   const enviado = Boolean(r.enviado_en);
-  const lunes = (() => { const [a, m, d] = String(r.fecha_reporte).split("-").map(Number); const f = new Date(Date.UTC(a, m - 1, d)); f.setUTCDate(f.getUTCDate() - ((f.getUTCDay() + 6) % 7)); return f.toISOString().slice(0, 10); })();
-  const domingo = (() => { const f = new Date(`${lunes}T00:00:00Z`); f.setUTCDate(f.getUTCDate() + 6); return f.toISOString().slice(0, 10); })();
 
-  let foto: Foto;
-  if (enviado) {
-    foto = (r.foto ?? {}) as Foto;
-  } else {
-    // Borrador: indicadores prellenados del sistema (no se digitan). Se fijan al enviar.
-    const [{ data: m }, { count }] = await Promise.all([
-      supabase.from("mediciones_evm").select("fecha_corte, bac, pv, ev, ac").eq("proyecto_id", id).lte("fecha_corte", String(r.fecha_reporte)).order("fecha_corte", { ascending: false }).limit(1).maybeSingle(),
-      supabase.from("hitos").select("id", { count: "exact", head: true }).eq("proyecto_id", id).eq("cancelado", false).gte("fecha_real", lunes).lte("fecha_real", domingo),
-    ]);
-    foto = { hitos_cumplidos_semana: count ?? 0 };
-    if (m) {
-      const e = calcularEvm({ bac: desdeJson(m.bac, 2), pv: desdeJson(m.pv, 2), ev: desdeJson(m.ev, 2), ac: desdeJson(m.ac, 2) });
-      foto = { ...foto, fecha_corte: m.fecha_corte, ac: m.ac, spi: e.spi, cpi: e.cpi, avance_fisico: e.avanceFisico, avance_presupuestal: e.avanceFinanciero };
-    }
-  }
+  const foto: Foto = enviado ? ((r.foto ?? {}) as Foto) : await indicadoresBorrador(supabase, id, String(r.fecha_reporte));
 
   const iniciales: Record<string, string> = {};
   for (const k of ["estado_reportado", "proxima_revision", "logros", "alertas", "decisiones_requeridas", "proximos_hitos"]) iniciales[k] = (r[k] as string | null) ?? "";
@@ -69,7 +54,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <Link href={`/proyectos/${id}/reportes`} className="text-sm font-medium text-leaf-600 hover:underline">← Volver a los reportes</Link>
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
         <div><Titulo>{`Semana ${r.semana} de ${r.anio}`}</Titulo><p className="mt-2 text-sm text-muted">{proyecto.nombre} · {formatearFecha(String(r.fecha_reporte))}{enviado ? ` · Enviado el ${formatearFechaHora(String(r.enviado_en))}` : " · Borrador"}</p></div>
-        <Semaforo color={r.estado_reportado as "verde" | "amarillo" | "rojo"} />
+        <div className="flex flex-col items-end gap-2"><Semaforo color={r.estado_reportado as "verde" | "amarillo" | "rojo"} /><BotonesExportar base={`/proyectos/${id}/exportar/reporte?reporte=${reporteId}`} /></div>
       </div>
       <div className="mt-4"><AvisoResultado ok={ok === "enviado" ? "guardado" : ok} />{ok === "enviado" && <Aviso tipo="ok">Reporte enviado. Los indicadores quedaron fijos.</Aviso>}</div>
 

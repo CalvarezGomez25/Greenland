@@ -1,13 +1,12 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { obtenerSesion } from "@/lib/sesion";
-import { cargarDatosKpi, cargarDatosPortafolio, hoyColombia } from "@/lib/pmo/cargar";
-import { calcularKpis } from "@/lib/pmo/kpis";
+import { cargarDashboard } from "@/lib/pmo/dashboard";
 import { TablaKpis } from "@/components/kpis";
-import { armarPortafolio, requiereDecision } from "@/lib/pmo/portafolio";
 import { centavos, indice, porcentaje } from "@/lib/pmo/formato";
 import { ETIQUETA_ESTADO, ETIQUETA_FASE, type EstadoProyecto, type FaseProyecto } from "@/lib/tipos";
 import { Semaforo } from "@/components/semaforo";
+import { BotonesExportar } from "@/components/botones-exportar";
 import { Aviso, Selector, Titulo, claseBoton } from "@/components/ui";
 
 type Filtros = { estado?: string; fase?: string; portafolio?: string; gerente?: string };
@@ -18,29 +17,11 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
   const { supabase, perfil } = await obtenerSesion();
   if (!perfil) return <Aviso>Tu cuenta aún no tiene perfil en la plataforma. Avisa al administrador.</Aviso>;
 
-  const datos = await cargarDatosPortafolio(supabase);
-  if (datos.error) return <Aviso>No se pudieron cargar los proyectos. Intenta de nuevo.</Aviso>;
-
-  const [{ data: portafolios }, { data: perfiles }] = await Promise.all([
-    supabase.from("portafolios").select("id, nombre").order("nombre"),
-    supabase.from("perfiles").select("id, nombre").order("nombre"),
-  ]);
-  const nombrePerfil = new Map(((perfiles ?? []) as { id: string; nombre: string }[]).map((p) => [p.id, p.nombre]));
-  const gerentesIds = [...new Set(datos.gerentes.values())];
-
-  const visibles = datos.proyectos.filter(
-    (p) =>
-      (!f.estado ? p.estado === "activo" || p.estado === "en_pausa" : f.estado === "todos" || p.estado === f.estado) &&
-      (!f.fase || p.fase === f.fase) &&
-      (!f.portafolio || p.portafolio_id === f.portafolio) &&
-      (!f.gerente || datos.gerentes.get(p.id) === f.gerente),
-  );
-  const { filas, resumen } = armarPortafolio({ ...datos.entrada, proyectos: visibles });
-  const decisiones = requiereDecision(filas, datos.parametros);
-  const kpis = calcularKpis(await cargarDatosKpi(supabase, visibles.map((p) => p.id)), { hoy: hoyColombia(), parametros: datos.parametros });
+  const d = await cargarDashboard(supabase, f);
+  if (!d) return <Aviso>No se pudieron cargar los proyectos. Intenta de nuevo.</Aviso>;
+  const { filas, resumen, decisiones, kpis, portafolios, gerentes, nCerrados } = d;
   const esAdmin = perfil.rol_global === "administrador";
   const hayFiltro = Boolean(f.estado || f.fase || f.portafolio || f.gerente);
-  const nCerrados = datos.proyectos.filter((p) => p.estado === "cerrado").length;
 
   return (
     <>
@@ -54,6 +35,8 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
         </div>
         {esAdmin && <Link href="/proyectos/nuevo" className={claseBoton.primario}>Nuevo proyecto</Link>}
       </div>
+
+      <div className="mb-4 flex flex-wrap items-center gap-3"><span className="text-sm text-muted">Exportar lo que ves:</span><BotonesExportar base={`/exportar/dashboard?${new URLSearchParams(Object.entries(f).filter(([, v]) => v) as [string, string][]).toString()}`} /></div>
 
       <section aria-label="Resumen del portafolio" className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
         <Tarjeta titulo="Proyectos activos" valor={String(resumen.activos)} />
@@ -76,11 +59,11 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
         </Selector>
         <Selector etiqueta="Portafolio" name="portafolio" defaultValue={f.portafolio ?? ""}>
           <option value="">Todos</option>
-          {((portafolios ?? []) as { id: string; nombre: string }[]).map((p) => <option key={p.id} value={p.id}>{p.nombre}</option>)}
+          {portafolios.map((p) => <option key={p.id} value={p.id}>{p.nombre}</option>)}
         </Selector>
         <Selector etiqueta="Gerente" name="gerente" defaultValue={f.gerente ?? ""}>
           <option value="">Todos</option>
-          {gerentesIds.map((id) => <option key={id} value={id}>{nombrePerfil.get(id) ?? "—"}</option>)}
+          {gerentes.map((g) => <option key={g.id} value={g.id}>{g.nombre}</option>)}
         </Selector>
         <button className={claseBoton.secundario}>Filtrar</button>
         {hayFiltro && <Link href="/" className={claseBoton.contorno}>Quitar filtros</Link>}

@@ -8,6 +8,7 @@ import { formatearFecha } from "@/lib/formato";
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { AvisoResultado } from "@/components/aviso-resultado";
+import { BotonesExportar } from "@/components/botones-exportar";
 import { borrarMedicion, calcularAhora, guardarMedicion } from "./acciones";
 import { FormularioMedicion } from "./formulario-medicion";
 
@@ -33,6 +34,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <div className="mt-4"><Titulo>Valor ganado (EVM)</Titulo></div>
       <p className="mt-3 text-sm text-muted">{p.nombre} · en proyectos con área de Obra, el valor ganado se calcula solo desde el presupuesto aprobado, el cronograma y el gasto; la captura manual sirve para proyectos sin esos datos.</p>
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
+      <div className="mt-3 flex flex-wrap items-center gap-3"><span className="text-sm text-muted">Exportar:</span><BotonesExportar base={`/proyectos/${id}/exportar/evm`} /></div>
       {error && <div className="mt-4"><Aviso>No se pudieron leer las mediciones{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
 
       {r && ultima ? (

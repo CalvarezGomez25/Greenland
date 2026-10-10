@@ -7,6 +7,7 @@ import { diasDesde, ETIQUETA_ESTADO_CAMBIO, ETIQUETA_NIVEL_CAMBIO, esPendiente, 
 import { formatearFecha } from "@/lib/formato";
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import { AvisoResultado } from "@/components/aviso-resultado";
+import { BotonesExportar } from "@/components/botones-exportar";
 
 type Fila = { id: string; codigo: string; fecha_solicitud: string; tipo: string; descripcion_despues: string; impacto_costo: number | string; impacto_dias: number; nivel: keyof typeof ETIQUETA_NIVEL_CAMBIO | null; estado_flujo: EstadoCambio; en_aprobacion_desde: string | null; detectado_sin_formato: boolean };
 
@@ -26,6 +27,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       </div>
       <p className="mt-3 text-sm text-muted">{proyecto.nombre} · {pendientes} pendiente(s) · Ningún cambio se ejecuta sin aprobación formal.</p>
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
+      <div className="mt-3 flex flex-wrap items-center gap-3"><span className="text-sm text-muted">Exportar:</span><BotonesExportar base={`/proyectos/${id}/exportar/cambios`} /></div>
       {error && <div className="mt-4"><Aviso>No se pudieron leer los cambios{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
       {filas.length === 0 && !error ? (
         <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">Aún no hay cambios registrados.</p>

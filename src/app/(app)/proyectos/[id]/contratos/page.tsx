@@ -6,6 +6,7 @@ import { centavos, porcentaje } from "@/lib/pmo/formato";
 import { ETIQUETA_TIPO_CONTRATO, resumenContrato } from "@/lib/obra/contratos";
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import { AvisoResultado } from "@/components/aviso-resultado";
+import { BotonesExportar } from "@/components/botones-exportar";
 
 type C = { id: string; tipo: string; contratista: string; objeto: string; valor: number | string; anticipo_pct: number | string; anticipo_valor: number | string; retencion_pct: number | string; retencion_liberada: boolean };
 type A = { contrato_id: string; valor_bruto: number | string; amortizacion: number | string; retencion: number | string; neto: number | string; estado: string };
@@ -29,6 +30,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       </div>
       <p className="mt-3 text-sm text-muted">{proyecto.nombre} · la plataforma registra y calcula; no ejecuta pagos.</p>
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
+      <div className="mt-3 flex flex-wrap items-center gap-3"><span className="text-sm text-muted">Exportar:</span><BotonesExportar base={`/proyectos/${id}/exportar/contratos`} /></div>
       {error && <div className="mt-4"><Aviso>No se pudieron leer los contratos{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
       {contratos.length === 0 && !error ? (
         <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">Aún no hay contratos.</p>
