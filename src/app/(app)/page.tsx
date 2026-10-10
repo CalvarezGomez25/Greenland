@@ -7,6 +7,8 @@ import { centavos, indice, porcentaje } from "@/lib/pmo/formato";
 import { ETIQUETA_ESTADO, ETIQUETA_FASE, type EstadoProyecto, type FaseProyecto } from "@/lib/tipos";
 import { Semaforo } from "@/components/semaforo";
 import { BotonesExportar } from "@/components/botones-exportar";
+import { Ayuda } from "@/components/ayuda";
+import { temaDe } from "@/lib/glosario";
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
 
 type Filtros = { estado?: string; fase?: string; portafolio?: string; gerente?: string };
@@ -103,7 +105,7 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
           <div className="mt-3 overflow-x-auto rounded-card border border-soil-border">
             <table className="w-full min-w-[960px] text-left text-sm">
               <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
-                <tr>{["Proyecto", "Estado", "Presupuesto (BAC)", "Costo real (AC)", "Cronograma (SPI)", "Costo (CPI)", "Riesgos", "Cambios", "Avance físico", "Avance presup.", "Reportado"].map((h) => <th key={h} className="px-2.5 py-2 font-medium">{h}</th>)}</tr>
+                <tr>{["Proyecto", "Estado", "Presupuesto (BAC)", "Costo real (AC)", "Cronograma (SPI)", "Costo (CPI)", "Riesgos", "Cambios", "Avance físico", "Avance presup.", "Reportado"].map((h) => <th key={h} className="px-2.5 py-2 font-medium"><span className="inline-flex items-center gap-1">{h}{temaDe(h) && <Ayuda tema={temaDe(h)} />}</span></th>)}</tr>
               </thead>
               <tbody className="divide-y divide-soil-border">
                 {filas.map((r) => {
@@ -179,13 +181,16 @@ function FiltroCompacto({ etiqueta, children, ...resto }: { etiqueta: string; ch
 function Tarjeta({ titulo, valor, nota, href }: { titulo: string; valor: string; nota?: string; href?: string }) {
   const contenido = (
     <>
-      <p className="text-[11px] font-medium uppercase leading-tight tracking-wide text-leaf-800">{titulo}</p>
+      <p className="pr-5 text-[11px] font-medium uppercase leading-tight tracking-wide text-leaf-800">{titulo}</p>
       <p className="mt-0.5 font-display text-xl font-bold leading-tight text-leaf-700 [overflow-wrap:anywhere]">{valor}</p>
       {nota && <p className="text-[11px] leading-tight text-muted">{nota}</p>}
     </>
   );
-  if (!href) return <div className="rounded-card bg-leaf-100 px-3 py-2">{contenido}</div>;
-  return <Link href={href} className="block rounded-card bg-leaf-100 px-3 py-2 transition hover:shadow-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf-600">{contenido}</Link>;
+  return (
+    <Ayuda modo="tarjeta" tema={temaDe(titulo)} className="rounded-card bg-leaf-100">
+      {href ? <Link href={href} className="block rounded-card px-3 py-2 transition hover:shadow-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf-600">{contenido}</Link> : <div className="px-3 py-2">{contenido}</div>}
+    </Ayuda>
+  );
 }
 
 export default function PaginaInicio({ searchParams }: PageProps<"/">) {

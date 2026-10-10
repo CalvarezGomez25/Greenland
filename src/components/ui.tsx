@@ -1,4 +1,6 @@
-import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
+import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes } from "react";
+import { Ayuda } from "./ayuda";
+import type { TemaAyuda } from "@/lib/glosario";
 
 // Estilos compartidos con el sistema de diseño GreenLand.
 // Nota de accesibilidad: el botón principal usa leaf-600 (contraste 5,8:1 con
@@ -16,38 +18,55 @@ export const claseBoton = {
 const claseCampo =
   "h-[42px] w-full rounded-[10px] border border-soil-border bg-white px-3.5 text-[15px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30";
 
-type PropsCampo = { etiqueta: string; ayuda?: string; className?: string };
+type PropsCampo = { etiqueta: string; ayuda?: string; className?: string; tema?: TemaAyuda };
+
+// Rótulo del campo con su ayuda emergente (si tiene tema).
+function Rotulo({ id, etiqueta, tema }: { id: string; etiqueta: string; tema?: TemaAyuda }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <label htmlFor={id} className="text-[13px] font-medium text-leaf-800">{etiqueta}</label>
+      {tema && <Ayuda tema={tema} />}
+    </div>
+  );
+}
 
 export function Campo({
   etiqueta,
   ayuda,
+  tema,
   className = "",
   ...resto
 }: PropsCampo & InputHTMLAttributes<HTMLInputElement>) {
+  const idAuto = useId();
+  const id = resto.id ?? idAuto;
   return (
-    <label className={`flex flex-col gap-1.5 ${className}`}>
-      <span className="text-[13px] font-medium text-leaf-800">{etiqueta}</span>
-      <input {...resto} className={claseCampo} />
+    <div className={`flex flex-col gap-1.5 ${className}`}>
+      <Rotulo id={id} etiqueta={etiqueta} tema={tema} />
+      {/* min-w-0 y sin apariencia nativa: en el iPhone los campos de fecha se salían de la tarjeta */}
+      <input {...resto} id={id} className={`${claseCampo} min-w-0 max-w-full [&[type=date]]:appearance-none [&[type=month]]:appearance-none`} />
       {ayuda && <span className="text-xs text-muted">{ayuda}</span>}
-    </label>
+    </div>
   );
 }
 
 export function Selector({
   etiqueta,
   ayuda,
+  tema,
   className = "",
   children,
   ...resto
 }: PropsCampo & SelectHTMLAttributes<HTMLSelectElement> & { children: ReactNode }) {
+  const idAuto = useId();
+  const id = resto.id ?? idAuto;
   return (
-    <label className={`flex flex-col gap-1.5 ${className}`}>
-      <span className="text-[13px] font-medium text-leaf-800">{etiqueta}</span>
-      <select {...resto} className={claseCampo}>
+    <div className={`flex flex-col gap-1.5 ${className}`}>
+      <Rotulo id={id} etiqueta={etiqueta} tema={tema} />
+      <select {...resto} id={id} className={claseCampo}>
         {children}
       </select>
       {ayuda && <span className="text-xs text-muted">{ayuda}</span>}
-    </label>
+    </div>
   );
 }
 

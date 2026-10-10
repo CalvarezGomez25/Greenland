@@ -1,4 +1,6 @@
 import { Suspense } from "react";
+import { Ayuda } from "@/components/ayuda";
+import { temaDe } from "@/lib/glosario";
 import Link from "next/link";
 import { cargarProyecto } from "@/lib/contexto-proyecto";
 import { hoyColombia } from "@/lib/pmo/cargar";
@@ -51,7 +53,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           ["Avance usado en el EV", pct(av.usado), usaVerificado ? "verificado si existe" : "reportado"],
           ["Planificado a hoy", pct(planificadoPct(tareas, k)), "según el cronograma"],
         ] as [string, string, string][]).map(([t, v, n]) => (
-          <div key={t} className="rounded-card bg-leaf-100 p-4"><p className="text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</p><p className="mt-1 font-display text-xl font-bold text-leaf-700">{v}</p><p className="text-xs text-muted">{n}</p></div>
+          <Ayuda key={t} modo="tarjeta" tema={temaDe(t)} className="rounded-card bg-leaf-100 p-4"><p className="pr-6 text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</p><p className="mt-1 font-display text-xl font-bold text-leaf-700">{v}</p><p className="text-xs text-muted">{n}</p></Ayuda>
         ))}
       </section>
 

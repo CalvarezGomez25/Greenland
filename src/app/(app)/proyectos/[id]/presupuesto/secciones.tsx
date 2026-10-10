@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { Ayuda } from "@/components/ayuda";
+import { temaDe, type TemaAyuda } from "@/lib/glosario";
 import Link from "next/link";
 import type { Presupuesto } from "@/lib/presupuesto/calculos";
 import type { Indicadores, SerieCurva } from "@/lib/presupuesto/curva";
@@ -15,11 +17,12 @@ export const porcentaje = (n: number | null, conSigno = false) =>
 
 const precio = (p: bigint) => formatearDecimal(p, ESCALA.precio, p % 100n === 0n ? 0 : 2);
 
-function Seccion({ id, titulo, children, nota }: { id: string; titulo: string; children: ReactNode; nota?: ReactNode }) {
+function Seccion({ id, titulo, children, nota, tema }: { id: string; titulo: string; children: ReactNode; nota?: ReactNode; tema?: TemaAyuda }) {
   return (
     <section className="mt-10" aria-labelledby={id}>
-      <h2 id={id} className="font-display text-2xl font-bold text-leaf-700">
+      <h2 id={id} className="flex items-center gap-2 font-display text-2xl font-bold text-leaf-700">
         {titulo}
+        {tema && <Ayuda tema={tema} />}
       </h2>
       {nota && <p className="mt-1 text-sm text-muted">{nota}</p>}
       <div className="mt-4">{children}</div>
@@ -29,11 +32,11 @@ function Seccion({ id, titulo, children, nota }: { id: string; titulo: string; c
 
 function Tarjeta({ titulo, valor, detalle }: { titulo: string; valor: string; detalle?: string }) {
   return (
-    <div className="rounded-card bg-leaf-100 p-4">
-      <p className="text-xs font-medium uppercase tracking-wider text-leaf-800">{titulo}</p>
+    <Ayuda modo="tarjeta" tema={temaDe(titulo)} className="rounded-card bg-leaf-100 p-4">
+      <p className="pr-6 text-xs font-medium uppercase tracking-wider text-leaf-800">{titulo}</p>
       <p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-900 tabular-nums">{valor}</p>
       {detalle && <p className="mt-1 text-xs text-muted">{detalle}</p>}
-    </div>
+    </Ayuda>
   );
 }
 
@@ -83,6 +86,7 @@ export function SeccionCurva({ serie, desdeCronograma = false }: { serie: SerieC
     <Seccion
       id="curva"
       titulo="Curva S"
+      tema="curva_s"
       nota={desdeCronograma ? "El planificado se calcula desde el cronograma: cada tarea reparte su peso a lo largo de su duración." : "El planificado usa una distribución teórica (3t² − 2t³) mientras no haya cronograma con tareas y pesos."}
     >
       <CurvaS puntos={serie.puntos} mesesSinRegistro={serie.mesesSinRegistro} />

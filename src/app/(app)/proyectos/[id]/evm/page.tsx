@@ -6,6 +6,8 @@ import { calcularEvm } from "@/lib/pmo/evm";
 import { centavos, indice, porcentaje } from "@/lib/pmo/formato";
 import { formatearFecha } from "@/lib/formato";
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
+import { Ayuda } from "@/components/ayuda";
+import { temaDe } from "@/lib/glosario";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { AvisoResultado } from "@/components/aviso-resultado";
 import { BotonesExportar } from "@/components/botones-exportar";
@@ -48,11 +50,11 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
               ["Desempeño requerido (TCPI)", indice(r.tcpi), "(BAC − EV) / (BAC − AC) · meta ≤ 1,10"], ["Variación a la conclusión (VAC, COP)", centavos(r.vac), "BAC − EAC"],
               ["Avance físico", porcentaje(r.avanceFisico), "EV / BAC"], ["Avance plan", porcentaje(r.avancePlan), "PV / BAC"], ["Avance financiero", porcentaje(r.avanceFinanciero), "AC / BAC"],
             ] as [string, string, string][]).map(([t, v, n]) => (
-              <div key={t} className="rounded-card bg-leaf-100 p-4">
-                <p className="text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</p>
+              <Ayuda key={t} modo="tarjeta" tema={temaDe(t)} className="rounded-card bg-leaf-100 p-4">
+                <p className="pr-6 text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</p>
                 <p className="mt-1 font-display text-xl font-bold text-leaf-700">{v}</p>
                 <p className="text-xs text-muted">{n}</p>
-              </div>
+              </Ayuda>
             ))}
           </div>
         </section>
@@ -66,7 +68,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           <div className="mt-3 overflow-x-auto rounded-card border border-soil-border">
             <table className="w-full min-w-[760px] text-left text-sm">
               <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
-                <tr>{["Corte", "Origen", "BAC", "PV", "EV", "AC", "SPI", "CPI", ""].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr>
+                <tr>{["Corte", "Origen", "BAC", "PV", "EV", "AC", "SPI", "CPI", ""].map((h) => <th key={h} className="px-3 py-2 font-medium"><span className="inline-flex items-center gap-1">{h}{temaDe(h) && <Ayuda tema={temaDe(h)} />}</span></th>)}</tr>
               </thead>
               <tbody className="divide-y divide-soil-border">
                 {filas.map((f) => (
@@ -93,7 +95,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
 
       {permisos.reportar && p.usa_obra && (
         <section className="mt-8 rounded-card bg-leaf-50 p-5" aria-labelledby="t-calc">
-          <h2 id="t-calc" className="mb-1 font-display text-lg font-bold text-leaf-700">Calcular desde la obra</h2>
+          <h2 id="t-calc" className="mb-1 flex items-center gap-2 font-display text-lg font-bold text-leaf-700">Calcular desde la obra <Ayuda tema="calculo_obra" /></h2>
           <p className="mb-3 text-sm text-muted">Toma el BAC de la línea base de costo, el planificado y el avance del cronograma y el gasto registrado. Se actualiza solo cuando cambian el avance o el gasto; este botón fuerza el cálculo de hoy.</p>
           <form action={calcularAhora.bind(null, id)}><BotonEnviar className={claseBoton.secundario} textoEnviando="Calculando…">Calcular valor ganado de hoy</BotonEnviar></form>
         </section>
@@ -101,7 +103,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
 
       {permisos.reportar && (
         <section className="mt-8 rounded-card bg-leaf-50 p-5" aria-labelledby="t-nueva">
-          <h2 id="t-nueva" className="mb-3 font-display text-xl font-bold text-leaf-700">Registrar medición</h2>
+          <h2 id="t-nueva" className="mb-3 flex items-center gap-2 font-display text-xl font-bold text-leaf-700">Registrar medición <Ayuda tema="medicion" /></h2>
           <FormularioMedicion accion={guardarMedicion.bind(null, id)} iniciales={iniciales} />
         </section>
       )}

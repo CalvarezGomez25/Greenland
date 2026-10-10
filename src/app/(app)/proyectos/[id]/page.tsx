@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { Ayuda } from "@/components/ayuda";
 import { cargarProyecto } from "@/lib/contexto-proyecto";
 import { formatearFecha } from "@/lib/formato";
 import {
@@ -101,14 +102,14 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
       {resumen && (
         <section className="mt-6" aria-label="Estado del proyecto">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <div className="rounded-card bg-leaf-100 p-4">
-              <p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Estado calculado</p>
+            <Ayuda modo="tarjeta" tema="semaforo" className="rounded-card bg-leaf-100 p-4">
+              <p className="pr-5 text-xs font-medium uppercase tracking-wider text-leaf-800">Estado calculado</p>
               <div className="mt-2"><Semaforo color={resumen.semaforo.general} /></div>
               {resumen.reporte && <p className="mt-2 text-xs text-muted">Reportado por el gerente: {resumen.reporte.estado_reportado}</p>}
-            </div>
-            <Link href={`/proyectos/${p.id}/evm`} className="rounded-card bg-leaf-100 p-4 hover:shadow-card"><p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Cronograma (SPI)</p><p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{indice(resumen.evm?.spi ?? null)}</p></Link>
-            <Link href={`/proyectos/${p.id}/evm`} className="rounded-card bg-leaf-100 p-4 hover:shadow-card"><p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Costo (CPI)</p><p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{indice(resumen.evm?.cpi ?? null)}</p></Link>
-            <Link href={`/proyectos/${p.id}/evm`} className="rounded-card bg-leaf-100 p-4 hover:shadow-card"><p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Avance físico / financiero</p><p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{porcentaje(resumen.evm?.avanceFisico ?? null)} / {porcentaje(resumen.evm?.avanceFinanciero ?? null)}</p></Link>
+            </Ayuda>
+            <Ayuda modo="tarjeta" tema="spi" className="rounded-card bg-leaf-100"><Link href={`/proyectos/${p.id}/evm`} className="block rounded-card p-4 hover:shadow-card"><p className="pr-5 text-xs font-medium uppercase tracking-wider text-leaf-800">Cronograma (SPI)</p><p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{indice(resumen.evm?.spi ?? null)}</p></Link></Ayuda>
+            <Ayuda modo="tarjeta" tema="cpi" className="rounded-card bg-leaf-100"><Link href={`/proyectos/${p.id}/evm`} className="block rounded-card p-4 hover:shadow-card"><p className="pr-5 text-xs font-medium uppercase tracking-wider text-leaf-800">Costo (CPI)</p><p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{indice(resumen.evm?.cpi ?? null)}</p></Link></Ayuda>
+            <Ayuda modo="tarjeta" tema="avance_fisico" className="rounded-card bg-leaf-100"><Link href={`/proyectos/${p.id}/evm`} className="block rounded-card p-4 hover:shadow-card"><p className="pr-5 text-xs font-medium uppercase tracking-wider text-leaf-800">Avance físico / financiero</p><p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{porcentaje(resumen.evm?.avanceFisico ?? null)} / {porcentaje(resumen.evm?.avanceFinanciero ?? null)}</p></Link></Ayuda>
           </div>
           {!resumen.medicion && <p className="mt-2 text-sm text-muted">Aún no hay mediciones de valor ganado. Se registran en “Valor ganado”.</p>}
         </section>

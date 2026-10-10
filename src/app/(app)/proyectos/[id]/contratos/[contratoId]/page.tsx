@@ -1,4 +1,6 @@
 import { Suspense } from "react";
+import { Ayuda } from "@/components/ayuda";
+import { temaDe } from "@/lib/glosario";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cargarProyecto } from "@/lib/contexto-proyecto";
@@ -76,7 +78,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           ["Anticipo autorizado", centavos(desdeJson(c.anticipo_valor, 2))], ["Anticipo por amortizar", centavos(r.anticipoPendiente)],
           ["Retención acumulada", centavos(r.retenido)], ["Desembolsado", centavos(r.desembolsado)],
         ] as [string, string][]).map(([t, v]) => (
-          <div key={t} className="rounded-card bg-leaf-100 p-4"><p className="text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</p><p className="mt-1 font-display text-xl font-bold text-leaf-700">{v}</p>{t === "Valor del contrato" && <p className="text-xs text-muted">COP</p>}</div>
+          <Ayuda key={t} modo="tarjeta" tema={temaDe(t)} className="rounded-card bg-leaf-100 p-4"><p className="pr-6 text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</p><p className="mt-1 font-display text-xl font-bold text-leaf-700">{v}</p>{t === "Valor del contrato" && <p className="text-xs text-muted">COP</p>}</Ayuda>
         ))}
       </section>
 
