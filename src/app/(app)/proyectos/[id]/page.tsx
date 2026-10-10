@@ -14,6 +14,7 @@ import { cargarDatosPortafolio } from "@/lib/pmo/cargar";
 import { armarPortafolio, type FilaPortafolio } from "@/lib/pmo/portafolio";
 import { indice, porcentaje } from "@/lib/pmo/formato";
 import { modulosVisibles, type Modulo } from "@/lib/modulos";
+import { resumenBitacora, type EntradaResumen, type ResumenBitacora } from "@/lib/obra/bitacora";
 import { Semaforo } from "@/components/semaforo";
 import { Selector, Titulo, claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
@@ -48,6 +49,12 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
       const r = armarPortafolio({ ...datos.entrada, proyectos: [base] });
       resumen = r.filas[0] ?? null;
     }
+  }
+  // La bitácora alimenta el nivel N1: horas perdidas, retrasos e incidentes.
+  let bit: ResumenBitacora | null = null;
+  if (p.usa_obra) {
+    const { data: bs } = await supabase.from("bitacoras").select("fecha, es_interventoria, horas_perdidas_total, retraso_causa, incidente_tipo").eq("proyecto_id", id).limit(2000);
+    if (bs && bs.length > 0) bit = resumenBitacora(bs as EntradaResumen[]);
   }
   const modulos = modulosVisibles(permisos, p.usa_obra);
   const areas: [Modulo["area"], string][] = [["gestion", "Gestión del proyecto"], ["obra", "Obra"], ["interventoria", "Interventoría"]];
@@ -84,6 +91,12 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
           </div>
           {!resumen.medicion && <p className="mt-2 text-sm text-muted">Aún no hay mediciones de valor ganado. Se registran en “Valor ganado (EVM)”.</p>}
         </section>
+      )}
+
+      {bit && (
+        <Link href={`/proyectos/${p.id}/bitacora`} className="mt-4 block rounded-card border border-soil-border p-4 text-sm hover:shadow-card" aria-label="Resumen de la bitácora">
+          <strong className="text-leaf-700">Bitácora de obra:</strong> {bit.entradas} entrada(s) · {bit.horasPerdidas.toLocaleString("es-CO")} h perdidas · {bit.retrasos} retraso(s) · {bit.incidentes} incidente(s){bit.accidentes ? ` (${bit.accidentes} accidente(s))` : ""}{bit.ultimaFecha ? ` · última: ${formatearFecha(bit.ultimaFecha)}` : ""}
+        </Link>
       )}
 
       <dl className="mt-6 grid gap-4 rounded-card bg-leaf-100 p-5 sm:grid-cols-2">
