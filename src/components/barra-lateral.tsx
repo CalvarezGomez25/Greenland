@@ -132,7 +132,7 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, usuario, n
           <div className="relative mt-2">
             <button type="button" onClick={() => setSelector((v) => !v)} aria-expanded={selector} aria-haspopup="listbox" className="flex w-full items-center gap-3 rounded-xl border border-soil-border bg-leaf-50/60 px-3 py-2.5 text-left hover:bg-leaf-50">
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-semibold text-leaf-900">{actual ? actual.nombre : "Mis proyectos"}</span>
+                <span className="block truncate text-sm font-semibold text-leaf-900">{actual ? actual.nombre : "Proyectos"}</span>
                 <span className="block truncate text-xs text-muted">{actual ? (actual.codigo ?? "Proyecto actual") : `${proyectos.length} ${proyectos.length === 1 ? "proyecto" : "proyectos"} · elige uno`}</span>
               </span>
               <ChevronAbajo abierta={selector} />
