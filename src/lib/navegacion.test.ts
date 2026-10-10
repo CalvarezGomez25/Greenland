@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { armarProyectosNav, enlacesAdministracion, proyectoDeRuta } from "./navegacion";
+import { armarProyectosNav, enlacesAdministracion, ordenarPorCodigo, proyectoDeRuta } from "./navegacion";
 
 const ID = "8e6e8184-2e51-41ee-a903-2396c5a42212";
 const p = (usa_obra: boolean | null = true) => [{ id: ID, nombre: "Obra", codigo: "GL-001", estado: "activo", usa_obra }];
@@ -36,5 +36,13 @@ describe("menú lateral", () => {
     expect(proyectoDeRuta(`/proyectos/${ID}`)).toBe(ID);
     expect(proyectoDeRuta("/proyectos/nuevo")).toBeNull();
     expect(proyectoDeRuta("/")).toBeNull();
+  });
+
+  it("los proyectos se ordenan por código y no por nombre ni por creación", () => {
+    const l = ordenarPorCodigo([
+      { codigo: "GL-010", nombre: "Alfa" }, { codigo: "GL-002", nombre: "Zeta" }, { codigo: null, nombre: "Sin código" },
+      { codigo: "GL-001", nombre: "Muy tarde" }, { codigo: "GL-002", nombre: "Beta" },
+    ]);
+    expect(l.map((x) => `${x.codigo ?? "—"} ${x.nombre}`)).toEqual(["GL-001 Muy tarde", "GL-002 Beta", "GL-002 Zeta", "GL-010 Alfa", "— Sin código"]);
   });
 });

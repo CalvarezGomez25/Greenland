@@ -57,7 +57,7 @@ export function GlosarioBuscable({ terminos, guias }: { terminos: Termino[]; gui
           <h2 id="t-guias" className="font-display text-2xl font-bold text-leaf-700">Cómo diligenciar cada módulo</h2>
           <div className="mt-4 grid gap-4 lg:grid-cols-2">
             {gs.map((g) => (
-              <article key={g.clave} id={`guia-${g.clave}`} className="scroll-mt-4 rounded-card border border-soil-border p-5">
+              <article key={g.clave} id={`guia-${g.clave}`} className="scroll-mt-4 rounded-card border border-soil-border p-5 target:border-leaf-600 target:ring-2 target:ring-leaf-500/40">
                 <h3 className="font-display text-lg font-bold text-leaf-700">{g.titulo}</h3>
                 <p className="mt-0.5 text-xs text-muted"><b>Quién:</b> {g.quien}</p>
                 <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-sm">{g.pasos.map((p, i) => <li key={i}>{p}</li>)}</ol>
