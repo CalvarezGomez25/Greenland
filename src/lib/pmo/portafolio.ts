@@ -2,6 +2,7 @@
 // Función pura: recibe los datos ya leídos y devuelve lo que se muestra.
 
 import { calcularEvm, sumarEvm, type EntradaEvm, type ResultadoEvm } from "./evm";
+import { diasDesde } from "./cambios";
 import { semanaIso } from "./formato";
 import { numeroParametro, type FilaParametro } from "./parametros";
 import {
@@ -14,6 +15,7 @@ export type ProyectoBase = {
 };
 export type MedicionBase = EntradaEvm & { proyecto_id: string; fecha_corte: string };
 export type ItemNivel<N> = { proyecto_id: string; nivel: N };
+export type CambioPendiente = ItemNivel<NivelCambio> & { estado?: string; codigo?: string; desde?: string | null };
 
 export type ReporteBase = { proyecto_id: string; semana_clave: string; estado_reportado: Color; comentario: string | null };
 
@@ -22,7 +24,7 @@ export type EntradaPortafolio = {
   mediciones: MedicionBase[]; // cualquier cantidad: se usa la más reciente de cada proyecto
   parametros: FilaParametro[];
   riesgosActivos: ItemNivel<NivelRiesgo>[];
-  cambiosPendientes: ItemNivel<NivelCambio>[];
+  cambiosPendientes: CambioPendiente[];
   ultimosReportes: ReporteBase[]; // el más reciente por proyecto
 };
 
@@ -34,6 +36,7 @@ export type FilaPortafolio = {
   riesgoMaximo: NivelRiesgo | null;
   cambiosPendientes: number;
   cambioCriticoPendientes: number;
+  cambiosEnAprobacion: { codigo: string; dias: number | null }[];
   reporte: ReporteBase | null;
 };
 
@@ -65,7 +68,8 @@ export function armarPortafolio(e: EntradaPortafolio): { filas: FilaPortafolio[]
     const evm = medicion ? calcularEvm(medicion) : null;
     const niveles = e.riesgosActivos.filter((r) => r.proyecto_id === p.id).map((r) => r.nivel);
     const riesgoMaximo = niveles.length === 0 ? null : niveles.reduce((m, n) => (ORDEN_NIVEL_RIESGO[n] > ORDEN_NIVEL_RIESGO[m] ? n : m));
-    const cambios = e.cambiosPendientes.filter((c) => c.proyecto_id === p.id).map((c) => c.nivel);
+    const propios = e.cambiosPendientes.filter((c) => c.proyecto_id === p.id);
+    const cambios = propios.map((c) => c.nivel);
     return {
       proyecto: p,
       medicion,
@@ -74,6 +78,7 @@ export function armarPortafolio(e: EntradaPortafolio): { filas: FilaPortafolio[]
       riesgoMaximo,
       cambiosPendientes: cambios.length,
       cambioCriticoPendientes: cambios.filter((n) => n === "critico").length,
+      cambiosEnAprobacion: propios.filter((c) => c.estado === "aprobacion").map((c) => ({ codigo: c.codigo ?? "—", dias: diasDesde(c.desde ?? null) })),
       reporte: e.ultimosReportes.find((r) => r.proyecto_id === p.id) ?? null,
     };
   });
@@ -129,10 +134,10 @@ export function requiereDecision(filas: FilaPortafolio[], parametros: FilaParame
     if (f.riesgoMaximo === "critico") {
       out.push({ tipo: "Riesgo crítico", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre, detalle: "Hay al menos un riesgo crítico activo", href: `/proyectos/${f.proyecto.id}/r/riesgos` });
     }
-    if (f.cambiosPendientes > 0) {
+    for (const c of f.cambiosEnAprobacion) {
       out.push({
-        tipo: "Cambios pendientes", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre,
-        detalle: `${f.cambiosPendientes} cambio(s) sin cerrar${f.cambioCriticoPendientes ? `, ${f.cambioCriticoPendientes} crítico(s)` : ""}`,
+        tipo: "Cambio por aprobar", proyectoId: f.proyecto.id, proyecto: f.proyecto.nombre,
+        detalle: `${c.codigo}${c.dias !== null ? ` · ${c.dias} día(s) esperando decisión` : ""}`,
         href: `/proyectos/${f.proyecto.id}/cambios`,
       });
     }
