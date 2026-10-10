@@ -122,3 +122,12 @@ const POR_ROTULO: Record<string, TemaAyuda> = {
 
 // Tema de ayuda de un rótulo (si lo hay).
 export const temaDe = (rotulo: string): TemaAyuda | undefined => POR_ROTULO[rotulo];
+
+// Orden y agrupación de los términos en la pantalla «Glosario y guías».
+export const CATEGORIAS_GLOSARIO: { titulo: string; temas: TemaAyuda[] }[] = [
+  { titulo: "Valor ganado e indicadores", temas: ["bac", "pv", "ev", "ac", "spi", "cpi", "sv", "cv", "eac", "etc", "tcpi", "vac", "avance_fisico", "avance_plan", "avance_financiero", "fecha_corte", "medicion", "calculo_obra"] },
+  { titulo: "Semáforo, riesgos y cambios", temas: ["semaforo", "proyectos_activos", "reportado", "riesgo_puntaje", "cambios_pendientes", "nivel_cambio"] },
+  { titulo: "Presupuesto y costos", temas: ["linea_base", "costo_directo", "costo_total", "gastado", "gasto_plan", "curva_s"] },
+  { titulo: "Contratos y pagos", temas: ["facturado", "ejecutado_contrato", "saldo_contrato", "anticipo", "anticipo_pendiente", "retencion", "desembolsado"] },
+  { titulo: "Cronograma y avance", temas: ["avance_reportado", "avance_verificado", "avance_diferencia", "avance_usado", "planificado_hoy"] },
+];
