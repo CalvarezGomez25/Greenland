@@ -16,6 +16,11 @@ const MENSAJES: Record<string, string> = {
   ficha: "Datos del proyecto actualizados.",
   linea_base: "Presupuesto aprobado: quedó como línea base de costo (BAC).",
   avance: "Avance actualizado.",
+  anticipo: "Anticipo autorizado.",
+  acta: "Acta de pago radicada.",
+  estado_acta: "Estado del acta actualizado.",
+  retencion: "Retención liberada.",
+  retencion_revertida: "Liberación de la retención revertida.",
   calculada: "Valor ganado calculado y guardado.",
 };
 

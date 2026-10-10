@@ -18,12 +18,13 @@ function Area({ nombre, etiqueta, valor, obligatorio }: { nombre: string; etique
 }
 
 export function FormularioCambio({
-  accion, iniciales, tipos, riesgos, volverA, soloNotas = false,
+  accion, iniciales, tipos, riesgos, contratos, volverA, soloNotas = false,
 }: {
   accion: (a: Estado, d: FormData) => Promise<Estado>;
   iniciales: Record<string, string>;
   tipos: string[];
   riesgos: { id: string; etiqueta: string }[];
+  contratos: { id: string; etiqueta: string }[];
   volverA: string;
   soloNotas?: boolean; // desde la aprobación solo se editan notas
 }) {
@@ -52,6 +53,10 @@ export function FormularioCambio({
               {riesgos.map((r) => <option key={r.id} value={r.id}>{r.etiqueta}</option>)}
             </Selector>
           </div>
+          <Selector etiqueta="Contrato al que afecta (otrosí, opcional)" name="contrato_id" defaultValue={v("contrato_id")}>
+            <option value="">— Ninguno (se mide sobre el BAC) —</option>
+            {contratos.map((c) => <option key={c.id} value={c.id}>{c.etiqueta}</option>)}
+          </Selector>
           <Area nombre="descripcion_antes" etiqueta="Descripción: cómo está hoy" valor={v("descripcion_antes")} />
           <Area nombre="descripcion_despues" etiqueta="Descripción: cómo quedaría" valor={v("descripcion_despues")} obligatorio />
           <Area nombre="justificacion" etiqueta="Justificación" valor={v("justificacion")} obligatorio />

@@ -19,7 +19,7 @@ async function Contenido({ params }: { params: Promise<{ id: string; cambioId: s
   const volverA = `/proyectos/${id}/cambios/${cambioId}`;
   const editable = esEditable(data.estado_flujo);
   if (!(permisos.gestionar || (editable && permisos.reportar)) || data.estado_flujo === "cerrado") redirect(volverA);
-  const { tipos, riesgos } = await cargarOpcionesCambio(supabase, id, proyecto.portafolio_id);
+  const { tipos, riesgos, contratos } = await cargarOpcionesCambio(supabase, id, proyecto.portafolio_id);
 
   const iniciales: Record<string, string> = {};
   for (const k of ["tipo", "descripcion_antes", "descripcion_despues", "justificacion", "impacto_alcance", "responsable_implementacion", "observaciones", "lecciones", "riesgo_id", "contrato_id"]) iniciales[k] = data[k] ?? "";
@@ -33,7 +33,7 @@ async function Contenido({ params }: { params: Promise<{ id: string; cambioId: s
     <>
       <Link href={volverA} className="text-sm font-medium text-leaf-600 hover:underline">← Volver al cambio</Link>
       <div className="mt-4"><Titulo>Editar {data.codigo}</Titulo></div>
-      <div className="mt-6"><FormularioCambio accion={actualizarCambio.bind(null, id, cambioId)} iniciales={iniciales} tipos={tipos} riesgos={riesgos} volverA={volverA} soloNotas={!editable} /></div>
+      <div className="mt-6"><FormularioCambio accion={actualizarCambio.bind(null, id, cambioId)} iniciales={iniciales} tipos={tipos} riesgos={riesgos} contratos={contratos} volverA={volverA} soloNotas={!editable} /></div>
     </>
   );
 }

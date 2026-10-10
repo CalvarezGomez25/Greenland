@@ -26,7 +26,7 @@ export const MODULOS: Modulo[] = [
   { clave: "cierre", titulo: "Cierre y lecciones aprendidas", descripcion: "Acta de entrega y lecciones", ruta: "cierre", area: "gestion", disponible: false, ver: general },
   { clave: "presupuesto", titulo: "Presupuesto y costos", descripcion: "Capítulos, partidas, costos adicionales y gasto", ruta: "presupuesto", area: "obra", disponible: true, ver: (p, o) => o && !p.interventor },
   { clave: "cronograma", titulo: "Cronograma y avance", descripcion: "Gantt, pesos y avance físico", ruta: "cronograma", area: "obra", disponible: true, ver: (_p, o) => o },
-  { clave: "contratos", titulo: "Contratos y pagos", descripcion: "Contratos, anticipo, actas y retención", ruta: "contratos", area: "obra", disponible: false, ver: (_p, o) => o },
+  { clave: "contratos", titulo: "Contratos y pagos", descripcion: "Contratos, anticipo, actas y retención", ruta: "contratos", area: "obra", disponible: true, ver: (_p, o) => o },
   { clave: "bitacora", titulo: "Bitácora de obra", descripcion: "Registro diario con fotos", ruta: "bitacora", area: "obra", disponible: false, ver: (_p, o) => o },
   { clave: "interventoria", titulo: "Interventoría", descripcion: "Conceptos, hallazgos, diseños, evaluaciones e informes", ruta: "interventoria", area: "interventoria", disponible: false, ver: () => true },
 ];
