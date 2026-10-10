@@ -3,7 +3,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { desdeJson } from "../presupuesto/dinero";
 import type { FilaParametro, } from "./parametros";
-import type { EntradaPortafolio, MedicionBase, ProyectoBase } from "./portafolio";
+import type { EntradaPortafolio, ItemNivel, MedicionBase, ProyectoBase } from "./portafolio";
+import { numeroParametro } from "./parametros";
+import { CORTES_RIESGO } from "./planificacion";
+import { nivelDeRiesgo, type NivelRiesgo } from "./semaforo";
 
 export const COLUMNAS_BASE = "id, nombre, codigo, estado, fase, portafolio_id, organizacion_id";
 
@@ -15,12 +18,28 @@ export type DatosCrudos = {
 };
 
 export async function cargarDatosPortafolio(supabase: SupabaseClient): Promise<DatosCrudos & { error: boolean }> {
-  const [p, m, par, g] = await Promise.all([
+  const [p, m, par, g, rs] = await Promise.all([
     supabase.from("proyectos").select(COLUMNAS_BASE).order("nombre"),
     supabase.from("mediciones_evm").select("proyecto_id, fecha_corte, bac, pv, ev, ac").order("fecha_corte", { ascending: false }).limit(2000),
     supabase.from("parametros").select("ambito, ambito_id, clave, valor"),
     supabase.from("miembros_proyecto").select("proyecto_id, usuario_id").eq("rol", "gerente"),
+    supabase.from("riesgos").select("proyecto_id, score").eq("estado", "activo").limit(5000),
   ]);
+  const proyectos = (p.data ?? []) as ProyectoBase[];
+  const parametros = (par.data ?? []) as FilaParametro[];
+  // Nivel de cada riesgo activo con los cortes del proyecto (parámetros).
+  const riesgosActivos: ItemNivel<NivelRiesgo>[] = ((rs.data ?? []) as { proyecto_id: string; score: number }[]).map((r) => {
+    const pr = proyectos.find((x) => x.id === r.proyecto_id);
+    const ctx = { proyectoId: r.proyecto_id, portafolioId: pr?.portafolio_id ?? null };
+    return {
+      proyecto_id: r.proyecto_id,
+      nivel: nivelDeRiesgo(r.score, {
+        critico: numeroParametro(parametros, "riesgo_critico_min", ctx, CORTES_RIESGO.critico),
+        alto: numeroParametro(parametros, "riesgo_alto_min", ctx, CORTES_RIESGO.alto),
+        medio: numeroParametro(parametros, "riesgo_medio_min", ctx, CORTES_RIESGO.medio),
+      }),
+    };
+  });
   const mediciones: MedicionBase[] = ((m.data ?? []) as { proyecto_id: string; fecha_corte: string; bac: number | string; pv: number | string; ev: number | string; ac: number | string }[]).map((x) => ({
     proyecto_id: x.proyecto_id,
     fecha_corte: x.fecha_corte,
@@ -31,9 +50,9 @@ export async function cargarDatosPortafolio(supabase: SupabaseClient): Promise<D
   }));
   return {
     error: Boolean(p.error),
-    proyectos: (p.data ?? []) as ProyectoBase[],
-    parametros: (par.data ?? []) as FilaParametro[],
+    proyectos,
+    parametros,
     gerentes: new Map(((g.data ?? []) as { proyecto_id: string; usuario_id: string }[]).map((x) => [x.proyecto_id, x.usuario_id])),
-    entrada: { mediciones, parametros: (par.data ?? []) as FilaParametro[], riesgosActivos: [], cambiosPendientes: [], ultimosReportes: [] },
+    entrada: { mediciones, parametros, riesgosActivos, cambiosPendientes: [], ultimosReportes: [] },
   };
 }
