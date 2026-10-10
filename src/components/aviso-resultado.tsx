@@ -9,10 +9,16 @@ const MENSAJES: Record<string, string> = {
   costos: "Costos adicionales actualizados.",
   plantilla: "Se crearon los conceptos habituales. Ahora completa sus porcentajes.",
   gasto: "Gasto actualizado.",
+  guardado: "Guardado.",
+  eliminado: "Registro eliminado.",
+  parametro: "Parámetro actualizado.",
+  rol: "Rol actualizado.",
+  ficha: "Datos del proyecto actualizados.",
 };
 
 export function AvisoResultado({ ok }: { ok?: string | string[] }) {
   const clave = Array.isArray(ok) ? ok[0] : ok;
   const mensaje = clave ? MENSAJES[clave] : undefined;
+  if (clave === "no_borrado") return <Aviso>No se pudo eliminar: el registro está en uso o no tienes permiso.</Aviso>;
   return mensaje ? <Aviso tipo="ok">{mensaje}</Aviso> : null;
 }

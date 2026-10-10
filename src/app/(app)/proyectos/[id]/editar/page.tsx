@@ -15,7 +15,7 @@ async function ContenidoEditar({ params }: { params: Promise<{ id: string }> }) 
 
   const { data: p } = await supabase
     .from("proyectos")
-    .select("nombre, cliente, ubicacion, fecha_inicio, duracion_meses")
+    .select("nombre, cliente, ubicacion, fecha_inicio, duracion_meses, tipo, fase, estado, usa_obra, codigo, organizacion_id, portafolio_id")
     .eq("id", id)
     .maybeSingle();
   if (!p) notFound();
@@ -33,6 +33,11 @@ async function ContenidoEditar({ params }: { params: Promise<{ id: string }> }) 
   }
   if (!puede) redirect(`/proyectos/${id}`);
 
+  const [{ data: orgs }, { data: ports }] = await Promise.all([
+    supabase.from("organizaciones").select("id, nombre").order("nombre"),
+    supabase.from("portafolios").select("id, nombre, organizacion_id").order("nombre"),
+  ]);
+
   return (
     <>
       <Link href={`/proyectos/${id}`} className="text-sm font-medium text-leaf-600 hover:underline">
@@ -44,6 +49,11 @@ async function ContenidoEditar({ params }: { params: Promise<{ id: string }> }) 
       <div className="mt-6">
         <FormularioProyecto
           inicial={p}
+          ficha={{
+            organizaciones: (orgs ?? []) as { id: string; nombre: string }[],
+            portafolios: (ports ?? []) as { id: string; nombre: string; organizacion_id: string }[],
+            esAdmin: perfil.rol_global === "administrador",
+          }}
           accionServidor={editarProyecto.bind(null, id)}
           textoBoton="Guardar cambios"
           textoEnviando="Guardando…"

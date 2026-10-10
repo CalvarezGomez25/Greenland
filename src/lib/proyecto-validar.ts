@@ -35,3 +35,42 @@ export function validarProyecto(datos: FormData): { error: string } | { datos: D
   }
   return { datos: { nombre, cliente, ubicacion, fecha_inicio: fecha, duracion_meses: duracion } };
 }
+
+export type FichaProyecto = {
+  tipo: string;
+  fase: string;
+  estado: string;
+  usa_obra: boolean;
+  codigo: string | null;
+  organizacion_id: string | null;
+  portafolio_id: string | null;
+};
+
+const TIPOS = ["obra_civil", "industrial", "logistico", "agroindustrial", "otro"];
+const FASES = ["inicio", "planificacion", "ejecucion", "cierre"];
+const ESTADOS = ["activo", "en_pausa", "cerrado", "cancelado"];
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export function validarFicha(datos: FormData): { error: string } | { ficha: FichaProyecto } {
+  const tipo = String(datos.get("tipo") ?? "obra_civil");
+  const fase = String(datos.get("fase") ?? "inicio");
+  const estado = String(datos.get("estado") ?? "activo");
+  if (!TIPOS.includes(tipo)) return { error: "Tipo de proyecto no válido." };
+  if (!FASES.includes(fase)) return { error: "Fase no válida." };
+  if (!ESTADOS.includes(estado)) return { error: "Estado no válido." };
+  const codigo = String(datos.get("codigo") ?? "").trim();
+  if (codigo.length > 30) return { error: "El código no puede superar 30 caracteres." };
+  const org = String(datos.get("organizacion_id") ?? "");
+  const por = String(datos.get("portafolio_id") ?? "");
+  if (org && !UUID.test(org)) return { error: "Organización no válida." };
+  if (por && !UUID.test(por)) return { error: "Portafolio no válido." };
+  return {
+    ficha: {
+      tipo, fase, estado,
+      usa_obra: datos.get("usa_obra") === "on",
+      codigo: codigo || null,
+      organizacion_id: org || null,
+      portafolio_id: por || null,
+    },
+  };
+}

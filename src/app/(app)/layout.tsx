@@ -26,6 +26,21 @@ async function DatosUsuario() {
   );
 }
 
+async function Navegacion() {
+  const { perfil } = await obtenerSesion();
+  const enlaces: [string, string][] = [["/", "Inicio"]];
+  if (perfil?.rol_global === "administrador") enlaces.push(["/usuarios", "Usuarios"], ["/organizacion", "Organización"]);
+  if (perfil?.rol_global) enlaces.push(["/parametros", "Parámetros"]);
+  if (perfil?.rol_global === "administrador" || perfil?.rol_global === "director_general") enlaces.push(["/auditoria", "Auditoría"]);
+  return (
+    <nav aria-label="Principal" className="mx-auto flex w-full max-w-[1040px] flex-wrap gap-x-5 gap-y-1 px-6 pb-2 text-sm">
+      {enlaces.map(([href, texto]) => (
+        <Link key={href} href={href} className="font-medium text-leaf-700 hover:underline">{texto}</Link>
+      ))}
+    </nav>
+  );
+}
+
 export default function LayoutInterno({ children }: LayoutProps<"/">) {
   return (
     <>
@@ -45,6 +60,9 @@ export default function LayoutInterno({ children }: LayoutProps<"/">) {
             <DatosUsuario />
           </Suspense>
         </div>
+        <Suspense fallback={<div className="h-6" />}>
+          <Navegacion />
+        </Suspense>
       </header>
       <main className="mx-auto w-full max-w-[1040px] flex-1 px-6 py-8">{children}</main>
     </>
