@@ -165,7 +165,7 @@ describe("leerNumeroColombiano", () => {
   });
 
   it("rechaza el punto decimal al estilo inglés en vez de adivinar", () => {
-    for (const t of ["1234.56", "1.5", "12.34", "1.2345,1", "1,234.56"]) {
+    for (const t of ["1234.56", "1.5", "12.34", "1.2345,1", "1,234.56", "0.123", "0.250", "00.500"]) {
       const r = num(t);
       expect(r.ok, t).toBe(false);
       if (!r.ok) expect(r.motivo).toMatch(/formato no reconocido/);

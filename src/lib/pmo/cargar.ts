@@ -2,6 +2,7 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { desdeJson } from "../presupuesto/dinero";
+import { leerTodo } from "../presupuesto/paginar";
 import type { FilaParametro, } from "./parametros";
 import type { CambioPendiente, EntradaPortafolio, HitoVencido, ItemNivel, MedicionBase, ProyectoBase, ReporteBase } from "./portafolio";
 import { semanaIso } from "./formato";
@@ -22,19 +23,30 @@ export type DatosCrudos = {
   gerentes: Map<string, string>; // proyecto_id → usuario_id del gerente
 };
 
+// Lee todas las filas por páginas (Supabase entrega como máximo 1.000 por consulta) sin lanzar errores:
+// devuelve el error para que quien llama decida. Cada consulta debe traer un orden estable que desempate con "id".
+type Consulta = { range(desde: number, hasta: number): PromiseLike<{ data: unknown[] | null; error: { message: string; code?: string } | null }> };
+async function paginar<T>(armar: () => Consulta): Promise<{ data: T[] | null; error: Error | null }> {
+  try {
+    return { data: await leerTodo<T>((d, h) => armar().range(d, h) as never), error: null };
+  } catch (e) {
+    return { data: null, error: e instanceof Error ? e : new Error("Error de lectura") };
+  }
+}
+
 export async function cargarDatosPortafolio(supabase: SupabaseClient): Promise<DatosCrudos & { error: boolean }> {
   const hoy = hoyColombia();
   await supabase.rpc("hallazgos_escalar_todos"); // los plazos vencidos pasan a Escalado antes de mostrar
   const [p, m, par, g, rs, cs, rp, hv, hz] = await Promise.all([
     supabase.from("proyectos").select(COLUMNAS_BASE).order("nombre"),
-    supabase.from("mediciones_evm").select("proyecto_id, fecha_corte, bac, pv, ev, ac").order("fecha_corte", { ascending: false }).limit(2000),
+    paginar<Record<string, unknown>>(() => supabase.from("mediciones_evm").select("id, proyecto_id, fecha_corte, bac, pv, ev, ac").order("fecha_corte", { ascending: false }).order("id")),
     supabase.from("parametros").select("ambito, ambito_id, clave, valor"),
     supabase.from("miembros_proyecto").select("proyecto_id, usuario_id").eq("rol", "gerente"),
-    supabase.from("riesgos").select("proyecto_id, score").eq("estado", "activo").limit(5000),
-    supabase.from("cambios").select("proyecto_id, nivel, estado_flujo, codigo, en_aprobacion_desde").not("estado_flujo", "in", "(cerrado,rechazado)").limit(5000),
-    supabase.from("reportes_semanales").select("proyecto_id, anio, semana, estado_reportado, alertas, decisiones_requeridas").not("enviado_en", "is", null).order("anio", { ascending: false }).order("semana", { ascending: false }).limit(3000),
-    supabase.from("hitos").select("proyecto_id, nombre, fecha_plan").is("fecha_real", null).eq("cancelado", false).lt("fecha_plan", hoy).order("fecha_plan").limit(2000),
-    supabase.from("hallazgos").select("proyecto_id, severidad").eq("estado", "escalado").limit(2000),
+    paginar<Record<string, unknown>>(() => supabase.from("riesgos").select("id, proyecto_id, score").eq("estado", "activo").order("id")),
+    paginar<Record<string, unknown>>(() => supabase.from("cambios").select("id, proyecto_id, nivel, estado_flujo, codigo, en_aprobacion_desde").not("estado_flujo", "in", "(cerrado,rechazado)").order("id")),
+    paginar<Record<string, unknown>>(() => supabase.from("reportes_semanales").select("id, proyecto_id, anio, semana, estado_reportado, alertas, decisiones_requeridas").not("enviado_en", "is", null).order("anio", { ascending: false }).order("semana", { ascending: false }).order("id")),
+    paginar<Record<string, unknown>>(() => supabase.from("hitos").select("id, proyecto_id, nombre, fecha_plan").is("fecha_real", null).eq("cancelado", false).lt("fecha_plan", hoy).order("fecha_plan").order("id")),
+    paginar<Record<string, unknown>>(() => supabase.from("hallazgos").select("id, proyecto_id, severidad").eq("estado", "escalado").order("id")),
   ]);
   const reportes = (rp.data ?? []) as ReporteBase[];
   const sem = semanaIso(hoy);
@@ -77,10 +89,13 @@ export async function cargarDatosPortafolio(supabase: SupabaseClient): Promise<D
 // Datos para los KPIs de gestión. `proyectos` limita a ciertos proyectos (vacío = todos los visibles).
 export async function cargarDatosKpi(supabase: SupabaseClient, proyectos?: string[]): Promise<DatosKpi> {
   const lee = async <T,>(tabla: string, columnas: string): Promise<T[]> => {
-    let q = supabase.from(tabla).select(columnas);
-    if (proyectos?.length) q = q.in("proyecto_id", proyectos);
-    const { data } = await q.limit(10000);
-    return (data ?? []) as T[];
+    const { data } = await paginar<T>(() => {
+      let q = supabase.from(tabla).select(columnas);
+      if (proyectos?.length) q = q.in("proyecto_id", proyectos);
+      // orden estable para paginar: todas tienen proyecto_id; "id" desempata (evaluaciones usa su clave: proyecto_id + mes)
+      return (tabla === "evaluaciones_patrocinador" ? q.order("proyecto_id").order("mes") : q.order("proyecto_id").order("id")) as unknown as Consulta;
+    });
+    return data ?? [];
   };
   const [hitos, riesgos, cambios, reuniones, evaluaciones, reportes] = await Promise.all([
     lee<DatosKpi["hitos"][number]>("hitos", "proyecto_id, fecha_plan, fecha_real, cancelado"),

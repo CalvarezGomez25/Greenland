@@ -26,8 +26,9 @@ export function validarProyecto(datos: FormData): { error: string } | { datos: D
   if (cliente === undefined) return { error: "El cliente no puede superar 120 caracteres." };
   if (ubicacion === undefined) return { error: "La ubicación no puede superar 160 caracteres." };
 
+  // El día debe existir (no se acepta 2026-02-31): la fecha leída debe volver a dar el mismo texto.
   const fechaValida =
-    /^\d{4}-\d{2}-\d{2}$/.test(fecha) && !Number.isNaN(new Date(`${fecha}T00:00:00`).getTime());
+    /^\d{4}-\d{2}-\d{2}$/.test(fecha) && !Number.isNaN(new Date(`${fecha}T00:00:00Z`).getTime()) && new Date(`${fecha}T00:00:00Z`).toISOString().slice(0, 10) === fecha;
   if (!fechaValida) return { error: "Indica una fecha de inicio válida." };
 
   if (!Number.isInteger(duracion) || duracion < 1 || duracion > 120) {

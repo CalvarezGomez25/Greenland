@@ -59,6 +59,12 @@ describe("PDF y Excel con muchas filas", () => {
     const pdf = await PDFDocument.load(await aPdf(grande));
     expect(pdf.getPageCount()).toBeGreaterThan(3);
   });
+  it("una celda con más texto que una hoja se reparte en varias hojas sin cortarse", async () => {
+    const texto = Array.from({ length: 6000 }, (_, i) => `palabra${i}`).join(" ");
+    const doc: DocExport = { titulo: "Larga", generado: "2026-10-09", tablas: [{ titulo: "Texto", columnas: ["Campo", "Contenido"], filas: [["Descripción", texto]] }] };
+    const pdf = await PDFDocument.load(await aPdf(doc));
+    expect(pdf.getPageCount()).toBeGreaterThanOrEqual(5);
+  });
   it("símbolos fuera del alfabeto latino se sustituyen", () => {
     expect(limpiar("≥ 0,95 → 😀 – ok…")).toBe(">= 0,95 - ok...");
   });
@@ -75,7 +81,7 @@ describe("documentos de proyecto", () => {
     const d = documentoEvm("Obra", [{ fecha_corte: "2026-03-31", origen: "manual", bac: 1_000_000_000, pv: 400_000_000, ev: 360_000_000, ac: 400_000_000 }], "2026-10-09");
     const f = d.tablas[0].filas[0];
     expect(f.slice(6, 9)).toEqual([0.9, 0.9, -40_000_000]);
-    expect(f[10]).toBe(1_111_111_111);
+    expect(f[10]).toBe(1_111_111_111.11); // el EAC conserva los centavos (antes se truncaba)
   });
   it("contratos caso 13.1", () => {
     const c = { id: "1", tipo: "obra", contratista: "X", objeto: "Obra", valor: 480_000_000, anticipo_pct: 20, anticipo_valor: 96_000_000, retencion_pct: 10, retencion_liberada: false };

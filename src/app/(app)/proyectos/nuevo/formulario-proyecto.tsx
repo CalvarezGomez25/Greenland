@@ -79,7 +79,8 @@ export function FormularioProyecto({
               {Object.entries(ETIQUETA_FASE).map(([v, t]) => <option key={v} value={v}>{t}</option>)}
             </Selector>
             <Selector etiqueta="Estado" name="estado" defaultValue={inicial?.estado ?? "activo"}>
-              {Object.entries(ETIQUETA_ESTADO).map(([v, t]) => <option key={v} value={v}>{t}</option>)}
+              {/* «Cerrado» no se elige aquí: el cierre y la reapertura se hacen desde el módulo Cierre */}
+              {Object.entries(ETIQUETA_ESTADO).filter(([v]) => v !== "cerrado" || inicial?.estado === "cerrado").map(([v, t]) => <option key={v} value={v}>{t}</option>)}
             </Selector>
           </div>
           <label className="flex items-center gap-2 text-sm text-leaf-900">

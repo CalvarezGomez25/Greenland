@@ -9,6 +9,9 @@ export const etiquetaTipo = (t: string) => TIPOS_DOCUMENTO.find(([k]) => k === t
 export function nombreSeguro(nombre: string): string {
   const base = nombre.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^A-Za-z0-9._-]+/g, "-").replace(/-+(\.[A-Za-z0-9]+)$/, "$1").replace(/^[-.]+|-+$/g, "");
   const recortado = base.length > 120 ? `${base.slice(0, 100)}${base.slice(base.lastIndexOf(".") > 0 ? base.lastIndexOf(".") : base.length)}`.slice(0, 120) : base;
+  // Nombre sin letras latinas (por ejemplo «資料.pdf»): se conserva la extensión.
+  const ext = nombre.match(/\.([A-Za-z0-9]{1,8})$/)?.[1];
+  if (ext && recortado === ext) return `archivo.${ext}`;
   return recortado || "archivo";
 }
 

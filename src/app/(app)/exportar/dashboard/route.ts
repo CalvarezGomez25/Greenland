@@ -2,10 +2,14 @@ import type { NextRequest } from "next/server";
 import { obtenerSesion } from "@/lib/sesion";
 import { cargarDashboard } from "@/lib/pmo/dashboard";
 import { documentoDashboard } from "@/lib/exportar/dashboard";
-import { formatoDe, respuestaDescarga } from "@/lib/exportar/respuesta";
+import { formatoDe, protegerDescarga, respuestaDescarga } from "@/lib/exportar/respuesta";
 import { ETIQUETA_ESTADO, ETIQUETA_FASE } from "@/lib/tipos";
 
-export async function GET(req: NextRequest) {
+export function GET(req: NextRequest) {
+  return protegerDescarga(() => generar(req));
+}
+
+async function generar(req: NextRequest) {
   const { supabase, perfil } = await obtenerSesion();
   if (!perfil) return new Response("Sin perfil", { status: 403 });
   const p = req.nextUrl.searchParams;

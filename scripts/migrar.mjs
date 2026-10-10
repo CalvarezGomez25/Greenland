@@ -56,6 +56,14 @@ export async function aplicarMigraciones(db, { carpeta = CARPETA, log = console.
         }
       } else {
         // El presupuesto no está completo en la base: se instala todo de una vez (idempotente).
+        // Nunca se borra un presupuesto que ya tiene datos: se detiene y se avisa.
+        for (const t of ["apu_partidas", "gasto_mensual", "costos_adicionales", "capitulos", "cambios_presupuesto"]) {
+          const [{ existe }] = await db.sql(`select to_regclass('public.${t}') is not null as existe`);
+          if (existe) {
+            const [{ n }] = await db.sql(`select count(*)::int as n from public.${t}`);
+            if (n > 0) throw new Error(`El presupuesto está incompleto pero «${t}» tiene datos: no se reinstala para no perderlos. Avisa al administrador.`);
+          }
+        }
         log("El presupuesto no está completo: se instala 0003 y 0004 desde cero.");
         const todo = fs.readFileSync(path.join(carpeta, "instalar_hito2.sql"), "utf8");
         await db.sql(`${bloqueo}\n${todo}\n${marcar("0003_presupuesto.sql")}${marcar("0004_editar_proyecto.sql")}`);
@@ -112,6 +120,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       console.warn("[migrar] AVISO: no se pudo conectar a la base de datos; se omiten las migraciones y el despliegue continúa. Instala la base con supabase/instalar_todo.sql (SQL Editor de Supabase) o corrige DATABASE_URL.");
       process.exit(0);
     }
+    // Un solo despliegue a la vez: si hay dos compilaciones simultáneas, la segunda espera a la primera.
+    await cliente.query("select pg_advisory_lock(871002)");
     await aplicarMigraciones({
       async sql(texto) {
         const r = await cliente.query(texto);

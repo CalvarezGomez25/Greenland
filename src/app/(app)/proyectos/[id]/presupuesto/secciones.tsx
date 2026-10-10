@@ -31,7 +31,7 @@ function Tarjeta({ titulo, valor, detalle }: { titulo: string; valor: string; de
   return (
     <div className="rounded-card bg-leaf-100 p-4">
       <p className="text-xs font-medium uppercase tracking-wider text-leaf-800">{titulo}</p>
-      <p className="mt-1 font-display text-2xl font-bold text-leaf-900 tabular-nums">{valor}</p>
+      <p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-900 tabular-nums">{valor}</p>
       {detalle && <p className="mt-1 text-xs text-muted">{detalle}</p>}
     </div>
   );

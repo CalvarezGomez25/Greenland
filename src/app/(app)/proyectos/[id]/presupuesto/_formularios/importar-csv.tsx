@@ -109,15 +109,15 @@ export function ImportarCsv({
               <div className="grid gap-3 sm:grid-cols-3">
                 <div className="rounded-card bg-leaf-100 p-4">
                   <p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Partidas</p>
-                  <p className="mt-1 font-display text-2xl font-bold text-leaf-900">{lectura.filas.length}</p>
+                  <p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-900">{lectura.filas.length}</p>
                 </div>
                 <div className="rounded-card bg-leaf-100 p-4">
                   <p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Capítulos</p>
-                  <p className="mt-1 font-display text-2xl font-bold text-leaf-900">{resumen.capitulos.length}</p>
+                  <p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-900">{resumen.capitulos.length}</p>
                 </div>
                 <div className="rounded-card bg-leaf-100 p-4">
                   <p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Costo directo</p>
-                  <p className="mt-1 font-display text-2xl font-bold tabular-nums text-leaf-900">$ {formatearPesos(resumen.costoDirecto)}</p>
+                  <p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl tabular-nums text-leaf-900">$ {formatearPesos(resumen.costoDirecto)}</p>
                 </div>
               </div>
 

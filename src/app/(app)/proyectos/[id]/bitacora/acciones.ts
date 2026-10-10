@@ -54,6 +54,11 @@ export async function guardarBitacora(proyectoId: string, datos: FormData): Prom
   if (actividades.some((a) => typeof a !== "object" || a === null)) return { error: "Los datos de las actividades no son válidos." };
 
   const txt = (k: string) => String(datos.get(k) ?? "").trim();
+  // Números de la bitácora: enteros o decimales con punto/coma; si no, se avisa qué campo está mal.
+  for (const [campo, nombre] of [["personal_propio", "Personal propio"], ["personal_subcontratistas", "Personal de subcontratistas"], ["horas_perdidas_clima", "Horas perdidas por clima"], ["retraso_horas", "Horas del retraso"]] as const) {
+    const v = txt(campo).replace(",", ".");
+    if (v !== "" && !/^\d+(\.\d+)?$/.test(v)) return { error: `${nombre} debe ser un número (por ejemplo 8 o 2,5).` };
+  }
   const datosRpc = {
     fecha, clima: txt("clima"), horas_perdidas_clima: num(datos, "horas_perdidas_clima") || "0",
     personal_propio: num(datos, "personal_propio"), personal_subcontratistas: num(datos, "personal_subcontratistas") || "0",

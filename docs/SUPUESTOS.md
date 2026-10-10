@@ -19,7 +19,7 @@ fácil de cambiar; deben validarse con el uso real.
 | S6 | Menor hasta 2 %, moderado hasta 5 %, crítico por encima; comparaciones exactas; cambio de cronograma ligado a contrato = Crítico |
 | S8 | Amortización = mín(pendiente, bruto × %); retención con porcentaje vigente al crear el contrato |
 | S10–S11 | Interventoría conceptúa y verifica; no aprueba. Con avance verificado, el EV lo usa |
-| S12 | Plazos de hallazgos en días hábiles colombianos (Ley 51/1983, Pascua calculada) con escalamiento al consultar; parametrizables |
+| S12 | Plazos de hallazgos en días hábiles colombianos con escalamiento al consultar; los festivos se calculan solos para cualquier año (Ley 51/1983, Pascua calculada), sin cargarlos a mano; la tabla `festivos` solo guarda fechas excepcionales |
 | S13 | Hallazgos y avance verificado no cambian el semáforo |
 | D2 | La estrategia de stakeholders sigue la leyenda del libro (por producto) |
 | P1 | Firma del patrocinador para cambios de más del 5 % |

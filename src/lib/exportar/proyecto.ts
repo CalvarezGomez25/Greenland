@@ -5,7 +5,7 @@ import { ETIQUETA_ESTADO_CAMBIO, ETIQUETA_NIVEL_CAMBIO, type EstadoCambio } from
 import { ETIQUETA_ESTADO_ACTA, ETIQUETA_TIPO_CONTRATO, resumenContrato } from "../obra/contratos";
 import type { DocExport } from "./tipos";
 
-const pesos = (c: bigint) => Number(c / 100n);
+const pesos = (c: bigint) => Number(c) / 100; // sin truncar los centavos
 const ESTADO_REP: Record<string, string> = { verde: "Verde - En tiempo y presupuesto", amarillo: "Amarillo - Con alertas", rojo: "Rojo - Requiere atencion" };
 
 type Foto = { fecha_corte?: string; bac?: number | string; pv?: number | string; ev?: number | string; ac?: number | string; spi?: number | null; cpi?: number | null; avance_fisico?: number | null; avance_presupuestal?: number | null; hitos_cumplidos_semana?: number };
@@ -26,7 +26,7 @@ export function documentoReporte(p: { proyecto: string; semana: number; anio: nu
           ["SPI", f.spi ?? null], ["CPI", f.cpi ?? null], ["Avance físico %", f.avance_fisico ?? null], ["Avance presupuestal %", f.avance_presupuestal ?? null],
           ["Ejecutado - AC (COP)", f.ac !== undefined ? Number(f.ac) : null], ["Hitos cumplidos en la semana", f.hitos_cumplidos_semana ?? 0],
         ],
-        formato: ["texto", "decimal2"],
+        formatoFilas: ["texto", "texto", "texto", "decimal2", "decimal2", "porcentaje", "porcentaje", "pesos", "entero"],
       },
       {
         titulo: "Contenido del reporte",

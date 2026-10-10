@@ -49,6 +49,8 @@ export function FormularioBitacora({
     setError(null);
     const datos = new FormData(formulario.current);
     datos.delete("archivos");
+    const incompleta = actividades.find((a) => a.descripcion.trim() === "" && (a.tarea_id || (a.avance_dia_pct || "0").replace(",", ".") !== "0"));
+    if (incompleta) return setError("Una actividad tiene tarea o avance pero no tiene descripción: escríbela o quita la actividad.");
     const lista = actividades.filter((a) => a.descripcion.trim() !== "").map((a) => ({ tarea_id: a.tarea_id || null, avance_dia_pct: (a.avance_dia_pct || "0").replace(",", "."), descripcion: a.descripcion.trim() }));
     if (lista.length === 0) return setError("Registra al menos una actividad del día (con su descripción).");
     datos.set("actividades", JSON.stringify(lista));
@@ -123,10 +125,22 @@ export function FormularioBitacora({
 
       <fieldset className="flex flex-col gap-3 rounded-card border border-soil-border p-4">
         <legend className="px-1 text-sm font-medium text-leaf-800">Fotos de avance (hasta {MAX_FOTOS})</legend>
-        <input name="archivos" type="file" accept="image/*" multiple capture="environment"
-          onChange={(ev) => { const l = Array.from(ev.target.files ?? []); if (l.length > MAX_FOTOS) setError(`Máximo ${MAX_FOTOS} fotos: se tomaron las primeras ${MAX_FOTOS}.`); setFotos(l.slice(0, MAX_FOTOS)); }}
+        <input name="archivos" type="file" accept="image/*" multiple
+          onChange={(ev) => {
+            // Cada selección se suma a las anteriores (en el celular se elige una foto a la vez).
+            const nuevas = Array.from(ev.target.files ?? []);
+            ev.target.value = "";
+            const todas = [...fotos, ...nuevas];
+            if (todas.length > MAX_FOTOS) setError(`Máximo ${MAX_FOTOS} fotos: se conservaron las primeras ${MAX_FOTOS}.`);
+            setFotos(todas.slice(0, MAX_FOTOS));
+          }}
           className="block w-full text-sm file:mr-3 file:rounded-full file:border-0 file:bg-leaf-100 file:px-4 file:py-2.5 file:font-medium file:text-leaf-900" />
-        {fotos.length > 0 && <p className="text-sm text-muted">{fotos.length} foto(s) lista(s); se reducen de tamaño antes de subirlas.</p>}
+        {fotos.length > 0 && (
+          <div className="flex flex-wrap items-center gap-3 text-sm text-muted">
+            <span>{fotos.length} foto(s) lista(s); se reducen de tamaño antes de subirlas.</span>
+            <button type="button" onClick={() => setFotos([])} className="font-medium text-danger underline">Quitar fotos</button>
+          </div>
+        )}
       </fieldset>
 
       <label className="flex items-center gap-3 text-[15px]"><input type="checkbox" checked={retraso} onChange={(e) => setRetraso(e.target.checked)} className="h-5 w-5" /> Hubo un retraso</label>

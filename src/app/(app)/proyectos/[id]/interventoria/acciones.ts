@@ -162,13 +162,13 @@ export async function crearInforme(proyectoId: string, _p: Estado, d: FormData):
   const { data: a } = await supabase.from("interventoria_alcances").select("id, contrato_vigilado_id, alcances").eq("id", alcanceId).eq("proyecto_id", proyectoId).maybeSingle();
   if (!a) return { error: "No se encontró la asignación.", valores: valoresDe(d) };
   const contratoId = a.contrato_vigilado_id as string | null;
-  const hastaTs = `${hasta}T23:59:59`;
+  const hastaTs = `${hasta}T23:59:59.999-05:00`; // hora de Colombia (UTC-5, sin horario de verano)
   const [{ data: ct }, { data: ac }, { data: tareas }, { data: hall }, { data: conc }] = await Promise.all([
     contratoId ? supabase.from("contratos").select("contratista, objeto, valor").eq("id", contratoId).maybeSingle() : Promise.resolve({ data: null }),
     actaId ? supabase.from("actas_pago").select("numero, fecha, valor_bruto, amortizacion, retencion, neto, estado").eq("id", actaId).maybeSingle() : Promise.resolve({ data: null }),
     supabase.from("tareas").select("id, nombre, semana_inicio, duracion_semanas, peso_pct, avance_pct, avance_verificado_pct").eq("proyecto_id", proyectoId),
     supabase.from("hallazgos").select("severidad, estado, plazo_respuesta").eq("proyecto_id", proyectoId),
-    supabase.from("conceptos_interventoria").select("tipo, resultado, subrol, fecha").eq("proyecto_id", proyectoId).gte("fecha", `${desde}T00:00:00`).lte("fecha", hastaTs),
+    supabase.from("conceptos_interventoria").select("tipo, resultado, subrol, fecha").eq("proyecto_id", proyectoId).gte("fecha", `${desde}T00:00:00-05:00`).lte("fecha", hastaTs),
   ]);
   const av = avanceFisico((tareas ?? []) as Tarea[], true);
   const hoy = new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });

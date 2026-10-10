@@ -4,11 +4,15 @@ import { ES_UUID } from "@/lib/formato";
 import { hoyColombia } from "@/lib/pmo/cargar";
 import { indicadoresBorrador } from "@/lib/pmo/reporte";
 import { documentoCambios, documentoContratos, documentoEvm, documentoReporte } from "@/lib/exportar/proyecto";
-import { formatoDe, respuestaDescarga } from "@/lib/exportar/respuesta";
+import { formatoDe, protegerDescarga, respuestaDescarga } from "@/lib/exportar/respuesta";
 
 const noEncontrado = () => new Response("No encontrado", { status: 404 });
 
-export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string; tipo: string }> }) {
+export function GET(req: NextRequest, ctx: { params: Promise<{ id: string; tipo: string }> }) {
+  return protegerDescarga(() => generar(req, ctx));
+}
+
+async function generar(req: NextRequest, ctx: { params: Promise<{ id: string; tipo: string }> }) {
   const { id, tipo } = await ctx.params;
   const { supabase, proyecto, permisos } = await cargarProyecto(id);
   const hoy = hoyColombia();

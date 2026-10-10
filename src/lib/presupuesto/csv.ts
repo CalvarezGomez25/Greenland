@@ -98,7 +98,7 @@ export function leerNumeroColombiano(texto: string, maxDecimales: number, maxEnt
   if (/^-|^\(.*\)$/.test(t)) return { ok: false, motivo: "no puede ser negativo" };
   if (/[^\d.,]/.test(t)) return { ok: false, motivo: "no es un número" };
 
-  const m = /^(\d{1,3}(?:\.\d{3})+|\d+)(?:,(\d+))?$/.exec(t);
+  const m = /^([1-9]\d{0,2}(?:\.\d{3})+|\d+)(?:,(\d+))?$/.exec(t);
   if (!m) {
     return {
       ok: false,

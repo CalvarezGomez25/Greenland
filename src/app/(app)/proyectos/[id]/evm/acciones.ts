@@ -8,6 +8,7 @@ import { leerNumeroColombiano } from "@/lib/presupuesto/csv";
 import { esFechaValida } from "@/lib/registros/leer";
 import type { Estado } from "@/lib/presupuesto/estado";
 import { refrescarMedicion } from "@/lib/obra/refrescar";
+import { hoyColombia } from "@/lib/pmo/cargar";
 
 export async function guardarMedicion(proyectoId: string, _prev: Estado, datos: FormData): Promise<Estado> {
   const { supabase, permisos } = await cargarProyecto(proyectoId);
@@ -46,9 +47,9 @@ export async function borrarMedicion(proyectoId: string, id: string): Promise<vo
 export async function calcularAhora(proyectoId: string): Promise<void> {
   const { supabase, permisos } = await cargarProyecto(proyectoId);
   if (!permisos.reportar) redirect(`/proyectos/${proyectoId}/evm`);
-  const antes = await supabase.from("mediciones_evm").select("id", { count: "exact", head: true }).eq("proyecto_id", proyectoId).eq("origen", "calculado");
   await refrescarMedicion(supabase, proyectoId);
-  const despues = await supabase.from("mediciones_evm").select("id", { count: "exact", head: true }).eq("proyecto_id", proyectoId).eq("origen", "calculado");
+  // Se comprueba que realmente exista la medición calculada de hoy (si no hay línea base o cronograma, no se crea).
+  const hoy = await supabase.from("mediciones_evm").select("id", { count: "exact", head: true }).eq("proyecto_id", proyectoId).eq("origen", "calculado").eq("fecha_corte", hoyColombia());
   revalidatePath("/", "layout");
-  redirect(`/proyectos/${proyectoId}/evm?ok=${(despues.count ?? 0) >= 1 || (antes.count ?? 0) >= 1 ? "calculada" : "calculada_no"}`);
+  redirect(`/proyectos/${proyectoId}/evm?ok=${(hoy.count ?? 0) >= 1 ? "calculada" : "calculada_no"}`);
 }

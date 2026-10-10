@@ -29,7 +29,7 @@ async function DatosUsuario() {
 async function Navegacion() {
   const { perfil } = await obtenerSesion();
   const enlaces: [string, string][] = [["/", "Inicio"]];
-  if (perfil?.rol_global === "administrador") enlaces.push(["/usuarios", "Usuarios"], ["/organizacion", "Organización"], ["/festivos", "Festivos"]);
+  if (perfil?.rol_global === "administrador") enlaces.push(["/usuarios", "Usuarios"], ["/organizacion", "Organización"]);
   if (perfil?.rol_global) enlaces.push(["/parametros", "Parámetros"]);
   if (perfil?.rol_global === "administrador" || perfil?.rol_global === "director_general") enlaces.push(["/auditoria", "Auditoría"]);
   return (

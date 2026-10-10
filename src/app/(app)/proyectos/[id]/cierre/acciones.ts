@@ -28,5 +28,5 @@ export async function reabrirProyecto(proyectoId: string): Promise<void> {
   const { error } = await supabase.rpc("proyecto_reabrir", { p_proyecto: proyectoId });
   if (error) console.error("Fallo al reabrir el proyecto:", error.code, error.message);
   revalidatePath("/", "layout");
-  redirect(`/proyectos/${proyectoId}/cierre?${error ? "ok=no_borrado" : "ok=reabierto"}`);
+  redirect(`/proyectos/${proyectoId}/cierre?${error ? "ok=no_reabierto" : "ok=reabierto"}`);
 }

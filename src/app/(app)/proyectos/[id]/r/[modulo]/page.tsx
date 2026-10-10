@@ -13,6 +13,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   const { ok } = await searchParams;
   const def = obtenerDefinicion(modulo);
   if (!def) notFound();
+  if (modulo === "tareas") redirect(`/proyectos/${id}/cronograma`); // las tareas se ven y editan en el cronograma
   const { supabase, proyecto, permisos } = await cargarProyecto(id);
   if (!def.ver(permisos)) redirect(`/proyectos/${id}`);
 

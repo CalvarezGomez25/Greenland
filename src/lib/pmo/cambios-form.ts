@@ -3,6 +3,10 @@
 import { leerNumeroColombiano } from "../presupuesto/csv";
 import { AMBITOS_CAMBIO } from "./cambios";
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+// Un identificador que no es UUID válido se descarta (la base de datos también comprueba que sea del proyecto).
+const uuidONulo = (v: string): string | null => (UUID.test(v) ? v : null);
+
 export type DatosCambio = Record<string, string | string[] | boolean | null>;
 
 // Impacto en costo en formato colombiano; admite signo "-" (un ahorro).
@@ -34,8 +38,8 @@ export function leerDatosCambio(datos: FormData): { datos: DatosCambio } | { err
       impacto_costo: impacto.valor,
       impacto_dias: dias === "" ? "0" : dias,
       ambitos,
-      riesgo_id: txt("riesgo_id") || null,
-      contrato_id: txt("contrato_id") || null,
+      riesgo_id: uuidONulo(txt("riesgo_id")),
+      contrato_id: uuidONulo(txt("contrato_id")),
       responsable_implementacion: txt("responsable_implementacion"),
       observaciones: txt("observaciones"),
       lecciones: txt("lecciones"),

@@ -30,10 +30,10 @@ export async function aExcel(doc: DocExport): Promise<Buffer> {
     cab.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF4C700B" } };
     cab.alignment = { vertical: "middle", wrapText: true };
     const filaCab = cab.number;
-    for (const f of t.filas) {
+    for (const [r, f] of t.filas.entries()) {
       const fila = hoja.addRow(f.map((c) => (c === null ? "" : c)));
       f.forEach((c, i) => {
-        const fmt = t.formato?.[i];
+        const fmt = t.formatoFilas?.[r] ?? t.formato?.[i];
         if (typeof c === "number" && fmt && FORMATOS[fmt]) fila.getCell(i + 1).numFmt = FORMATOS[fmt];
         if (typeof c === "number") fila.getCell(i + 1).alignment = { horizontal: "right" };
       });

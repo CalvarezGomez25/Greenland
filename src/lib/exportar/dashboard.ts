@@ -6,7 +6,7 @@ import type { DocExport } from "./tipos";
 
 const NIVEL: Record<string, string> = { critico: "Crítico", alto: "Alto", medio: "Medio", bajo: "Bajo" };
 const num = (n: number | null) => n;
-const pesos = (c: bigint) => Number(c / 100n);
+const pesos = (c: bigint) => Number(c) / 100; // sin truncar los centavos
 
 export function documentoDashboard(d: Dashboard, descripcionFiltros: string): DocExport {
   const r = d.resumen;
@@ -23,7 +23,7 @@ export function documentoDashboard(d: Dashboard, descripcionFiltros: string): Do
           ["Proyectos activos", r.activos], ["En Verde", r.verdes], ["En Amarillo", r.amarillos], ["En Rojo", r.rojos], ["Sin datos", r.sinDatos],
           ["BAC total (COP)", pesos(r.bac)], ["AC total (COP)", pesos(r.ac)], ["SPI del portafolio", num(r.spi)], ["CPI del portafolio", num(r.cpi)],
         ],
-        formato: ["texto", "decimal2"],
+        formatoFilas: ["entero", "entero", "entero", "entero", "entero", "pesos", "pesos", "decimal2", "decimal2"],
       },
       {
         titulo: "Semáforo de proyectos",

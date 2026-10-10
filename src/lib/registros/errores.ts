@@ -2,6 +2,7 @@
 export function mensajeDeBase(error: { code?: string; message: string }): string {
   if (error.code === "42501") return "No tienes permiso para hacer esto.";
   if (error.code === "22023") return error.message;
+  if (error.code === "23514" && /wbs_elementos_codigo_check/.test(error.message)) return "El código de la EDT debe ser números separados por puntos, por ejemplo 1.2.1.";
   if (error.code === "23514") return "Algún valor no es válido. Revisa los datos.";
   if (error.code === "23505") return "Ya existe un registro con ese código o nombre.";
   if (error.code === "23503") return "Hay un dato relacionado que no existe o que impide la operación.";

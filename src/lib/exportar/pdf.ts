@@ -78,14 +78,14 @@ export async function aPdf(doc: DocExport): Promise<Uint8Array> {
     // Anchos proporcionales al contenido (con mínimos y máximos razonables)
     const tam = 8;
     const pesos = t.columnas.map((c, i) => {
-      const mayor = Math.max(negrita.widthOfTextAtSize(limpiar(c), tam), ...t.filas.map((f) => Math.min(180, normal.widthOfTextAtSize(limpiar(texto(f[i], t.formato?.[i])), tam))));
+      const mayor = Math.max(negrita.widthOfTextAtSize(limpiar(c), tam), ...t.filas.map((f) => Math.min(180, normal.widthOfTextAtSize(limpiar(texto(f[i], t.formatoFilas?.[t.filas.indexOf(f)] ?? t.formato?.[i])), tam))));
       return Math.max(38, Math.min(200, mayor + 8));
     });
     const suma = pesos.reduce((a, b) => a + b, 0);
     const anchos = pesos.map((p) => (p / suma) * ANCHO);
 
-    const fila = (celdas: string[], cabecera: boolean, alineaDerecha: boolean[]) => {
-      const lineas = celdas.map((c, i) => partir(c, cabecera ? negrita : normal, tam, anchos[i] - 6));
+    const LINEAS_MAX = Math.floor((A4_H[1] - 2 * MARGEN - 14 - 40) / 10); // líneas que caben en una hoja completa
+    const dibujarFila = (lineas: string[][], cabecera: boolean, alineaDerecha: boolean[]) => {
       const alto = Math.max(...lineas.map((l) => l.length)) * 10 + 6;
       asegurar(alto);
       if (cabecera) pagina.drawRectangle({ x: MARGEN, y: y - alto, width: ANCHO, height: alto, color: VERDE });
@@ -100,16 +100,26 @@ export async function aPdf(doc: DocExport): Promise<Uint8Array> {
       });
       y -= alto;
     };
+    // Una celda con más texto que una hoja se reparte en varias hojas (con la cabecera repetida): no se corta nada.
+    const fila = (celdas: string[], cabecera: boolean, alineaDerecha: boolean[]) => {
+      const lineas = celdas.map((c, i) => partir(c, cabecera ? negrita : normal, tam, anchos[i] - 6));
+      const n = Math.max(...lineas.map((l) => l.length));
+      if (n <= LINEAS_MAX) return dibujarFila(lineas, cabecera, alineaDerecha);
+      for (let k = 0; k < n; k += LINEAS_MAX) {
+        if (k > 0) { nueva(); fila(t.columnas, true, t.columnas.map(() => false)); }
+        dibujarFila(lineas.map((l) => { const parte = l.slice(k, k + LINEAS_MAX); return parte.length ? parte : [""]; }), cabecera, alineaDerecha);
+      }
+    };
     const der = t.columnas.map((_, i) => t.filas.some((f) => typeof f[i] === "number"));
     fila(t.columnas, true, t.columnas.map(() => false));
     if (t.filas.length === 0) { asegurar(14); pagina.drawText("Sin registros.", { x: MARGEN + 3, y: y - 11, size: 9, font: normal, color: GRIS }); y -= 16; }
     for (const f of t.filas) {
       const antes = pagina;
-      const celdas = f.map((c, i) => texto(c, t.formato?.[i]));
+      const celdas = f.map((c, i) => texto(c, t.formatoFilas?.[t.filas.indexOf(f)] ?? t.formato?.[i]));
       // si la fila obliga a cambiar de página, se repite la cabecera
       const lineas = celdas.map((c, i) => partir(c, normal, tam, anchos[i] - 6));
       const alto = Math.max(...lineas.map((l) => l.length)) * 10 + 6;
-      if (y - alto < MARGEN + 14) { nueva(); fila(t.columnas, true, t.columnas.map(() => false)); }
+      if (y - alto < MARGEN + 14 && lineas.every((l) => l.length <= LINEAS_MAX)) { nueva(); fila(t.columnas, true, t.columnas.map(() => false)); }
       void antes;
       fila(celdas, false, der);
     }

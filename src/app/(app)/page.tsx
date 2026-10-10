@@ -58,12 +58,12 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
       <div className="mb-4 flex flex-wrap items-center gap-3"><span className="text-sm text-muted">Exportar lo que ves:</span><BotonesExportar base={`/exportar/dashboard?${new URLSearchParams(Object.entries(f).filter(([, v]) => v) as [string, string][]).toString()}`} /></div>
 
       <section aria-label="Resumen del portafolio" className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
-        <Tarjeta titulo="Proyectos activos" valor={String(resumen.activos)} />
-        <Tarjeta titulo="Verde / Amarillo / Rojo" valor={`${resumen.verdes} / ${resumen.amarillos} / ${resumen.rojos}`} nota={resumen.sinDatos ? `${resumen.sinDatos} sin datos` : undefined} />
-        <Tarjeta titulo="BAC total (COP)" valor={centavos(resumen.bac)} />
-        <Tarjeta titulo="AC total (COP)" valor={centavos(resumen.ac)} />
-        <Tarjeta titulo="SPI del portafolio" valor={indice(resumen.spi)} nota="Suma de EV / suma de PV" />
-        <Tarjeta titulo="CPI del portafolio" valor={indice(resumen.cpi)} nota="Suma de EV / suma de AC" />
+        <Tarjeta titulo="Proyectos activos" valor={String(resumen.activos)} href="/?estado=activo#t-semaforo" />
+        <Tarjeta titulo="Verde / Amarillo / Rojo" valor={`${resumen.verdes} / ${resumen.amarillos} / ${resumen.rojos}`} nota={resumen.sinDatos ? `${resumen.sinDatos} sin datos` : undefined} href="#t-semaforo" />
+        <Tarjeta titulo="BAC total (COP)" valor={centavos(resumen.bac)} href="#t-semaforo" />
+        <Tarjeta titulo="AC total (COP)" valor={centavos(resumen.ac)} href="#t-semaforo" />
+        <Tarjeta titulo="SPI del portafolio" valor={indice(resumen.spi)} nota="Suma de EV / suma de PV" href="#t-semaforo" />
+        <Tarjeta titulo="CPI del portafolio" valor={indice(resumen.cpi)} nota="Suma de EV / suma de AC" href="#t-semaforo" />
       </section>
 
       <form className="mt-8 flex flex-wrap items-end gap-3" aria-label="Filtros">
@@ -97,9 +97,9 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
           </p>
         ) : (
           <div className="mt-3 overflow-x-auto rounded-card border border-soil-border">
-            <table className="w-full min-w-[920px] text-left text-sm">
+            <table className="w-full min-w-[1100px] text-left text-sm">
               <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
-                <tr>{["Proyecto", "Estado", "SPI", "CPI", "Riesgos", "Cambios", "Avance físico", "Avance presupuestal", "Reportado"].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr>
+                <tr>{["Proyecto", "Estado", "BAC (COP)", "AC (COP)", "SPI", "CPI", "Riesgos", "Cambios", "Avance físico", "Avance presupuestal", "Reportado"].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr>
               </thead>
               <tbody className="divide-y divide-soil-border">
                 {filas.map((r) => {
@@ -112,6 +112,8 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
                         <p className="text-xs text-muted">{r.proyecto.codigo} · {ETIQUETA_FASE[r.proyecto.fase as FaseProyecto]}{r.proyecto.estado !== "activo" ? ` · ${ETIQUETA_ESTADO[r.proyecto.estado as EstadoProyecto]}` : ""}</p>
                       </td>
                       <td className="px-3 py-2"><Link href={base}><Semaforo color={r.semaforo.general} /></Link></td>
+                      <td className="px-3 py-2 tabular-nums"><Link href={evmHref} className="hover:underline">{centavos(r.medicion?.bac ?? null)}</Link></td>
+                      <td className="px-3 py-2 tabular-nums"><Link href={evmHref} className="hover:underline">{centavos(r.medicion?.ac ?? null)}</Link></td>
                       <td className="px-3 py-2"><Link href={evmHref} className="hover:underline">{indice(r.evm?.spi ?? null)}</Link></td>
                       <td className="px-3 py-2"><Link href={evmHref} className="hover:underline">{indice(r.evm?.cpi ?? null)}</Link></td>
                       <td className="px-3 py-2"><Link href={`${base}/r/riesgos`} className="hover:underline">{r.riesgoMaximo ? NIVEL[r.riesgoMaximo] : "—"}</Link></td>
@@ -161,14 +163,16 @@ async function Dashboard({ searchParams }: { searchParams: Promise<Filtros> }) {
   );
 }
 
-function Tarjeta({ titulo, valor, nota }: { titulo: string; valor: string; nota?: string }) {
-  return (
-    <div className="rounded-card bg-leaf-100 p-4">
+function Tarjeta({ titulo, valor, nota, href }: { titulo: string; valor: string; nota?: string; href?: string }) {
+  const contenido = (
+    <>
       <p className="text-xs font-medium uppercase tracking-wider text-leaf-800">{titulo}</p>
-      <p className="mt-1 font-display text-2xl font-bold text-leaf-700">{valor}</p>
+      <p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{valor}</p>
       {nota && <p className="text-xs text-muted">{nota}</p>}
-    </div>
+    </>
   );
+  if (!href) return <div className="rounded-card bg-leaf-100 p-4">{contenido}</div>;
+  return <Link href={href} className="block rounded-card bg-leaf-100 p-4 transition hover:-translate-y-0.5 hover:shadow-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf-600">{contenido}</Link>;
 }
 
 export default function PaginaInicio({ searchParams }: PageProps<"/">) {

@@ -16,3 +16,9 @@ describe("documentos", () => {
     expect(tamanoLegible(5 * 1024 * 1024)).toBe("5 MB");
   });
 });
+
+describe("nombreSeguro con nombres sin letras latinas", () => {
+  it("conserva la extensión", () => {
+    expect(nombreSeguro("資料.pdf")).toBe("archivo.pdf");
+  });
+});

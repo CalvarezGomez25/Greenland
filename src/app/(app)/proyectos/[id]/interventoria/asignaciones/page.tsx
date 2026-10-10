@@ -57,7 +57,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
                     <p className="text-sm text-muted">Contrato de interventoría: {a.contrato_interventoria_id ? nomContrato.get(a.contrato_interventoria_id) ?? "—" : "no registrado"} · Alcances: {a.alcances.map((x) => etiqueta(ALCANCES, x)).join(", ")}</p>
                     <p className="text-sm text-muted">Vigencia: {a.fecha_inicio ? formatearFecha(a.fecha_inicio) : "sin inicio"} a {a.fecha_fin ? formatearFecha(a.fecha_fin) : "sin fin"} · {vigente ? "vigente" : "NO vigente"}</p>
                   </div>
-                  {permisos.gestionar && <form action={quitarAsignacion.bind(null, id, a.id, null)}><BotonEnviar className={claseBoton.peligro} textoEnviando="Quitando…">Quitar asignación</BotonEnviar></form>}
+                  {(permisos.admin || permisos.director) && <form action={quitarAsignacion.bind(null, id, a.id, null)}><BotonEnviar className={claseBoton.peligro} textoEnviando="Quitando…">Quitar asignación</BotonEnviar></form>}
                 </div>
                 <ul className="mt-3 divide-y divide-soil-border text-sm">
                   {propios.length === 0 && <li className="py-2 text-muted">Sin personas asignadas.</li>}

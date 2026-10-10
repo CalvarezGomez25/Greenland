@@ -31,6 +31,18 @@ do $mig$ begin
         ${marca("0004_editar_proyecto.sql")}
       end if;
     else
+      -- nunca se borra un presupuesto que ya tiene datos
+      declare t text; n bigint;
+      begin
+        foreach t in array array['apu_partidas', 'gasto_mensual', 'costos_adicionales', 'capitulos', 'cambios_presupuesto'] loop
+          if to_regclass('public.' || t) is not null then
+            execute format('select count(*) from public.%I', t) into n;
+            if n > 0 then
+              raise exception 'El presupuesto está incompleto pero tiene datos (%): no se reinstala para no perderlos. Avisa al administrador.', t;
+            end if;
+          end if;
+        end loop;
+      end;
       execute $inst$
 ${leer("instalar_hito2.sql")}
       $inst$;

@@ -12,7 +12,7 @@ for (const s of suites) {
   const n = (salida.match(/^\s+OK\s/gm) ?? []).length, f = (salida.match(/^\s+FALLA\s/gm) ?? []).length;
   pasadas += n; malas += f + (r.status === 0 ? 0 : 1);
   console.log(`${r.status === 0 && f === 0 ? "OK   " : "FALLA"} ${s}: ${n} comprobaciones, ${f} fallidas`);
-  if (r.status !== 0 || f > 0) console.log(salida.split("\n").filter((l) => /FALLA|Error/.test(l)).slice(0, 15).join("\n"));
+  if (r.status !== 0 || f > 0) console.log(salida.split("\n").filter((l) => /FALLA|Error/.test(l)).slice(0, 15).map((l) => l.slice(0, 300)).join("\n"));
 }
 console.log(`\n${pasadas} comprobaciones correctas; ${malas} suites con fallos`);
 process.exit(malas ? 1 : 0);

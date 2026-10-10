@@ -10,6 +10,7 @@ import type { Perfil } from "@/lib/tipos";
 export type Permisos = {
   editar: boolean; // Administrador o Gerente del proyecto
   verAuditoria: boolean; // Administrador, Director general o Gerente del proyecto
+  interventor: boolean; // solo interventoría: no ve el presupuesto
 };
 
 export async function cargarContexto(id: string, requiere?: "editar" | "auditoria") {
@@ -21,6 +22,7 @@ export async function cargarContexto(id: string, requiere?: "editar" | "auditori
   if (!data) notFound();
 
   const permisos = await calcularPermisos(supabase, perfil, id);
+  if (permisos.interventor) redirect(`/proyectos/${id}`); // el presupuesto no es parte de su rol
   if ((requiere === "editar" && !permisos.editar) || (requiere === "auditoria" && !permisos.verAuditoria)) {
     redirect(`/proyectos/${id}/presupuesto`);
   }
@@ -37,7 +39,7 @@ async function calcularPermisos(
   perfil: Perfil | null,
   proyectoId: string,
 ): Promise<Permisos> {
-  if (!perfil) return { editar: false, verAuditoria: false };
+  if (!perfil) return { editar: false, verAuditoria: false, interventor: false };
   const esAdmin = perfil.rol_global === "administrador";
   const veTodos = esAdmin || perfil.rol_global === "director_general";
   const { data } = await supabase
@@ -47,5 +49,6 @@ async function calcularPermisos(
     .eq("usuario_id", perfil.id)
     .maybeSingle();
   const esGerente = data?.rol === "gerente";
-  return { editar: esAdmin || esGerente, verAuditoria: veTodos || esGerente };
+  const verTodo = veTodos || perfil.rol_global === "analista_pmo" || perfil.rol_global === "finanzas";
+  return { editar: esAdmin || esGerente, verAuditoria: veTodos || esGerente, interventor: data?.rol === "interventoria" && !verTodo };
 }

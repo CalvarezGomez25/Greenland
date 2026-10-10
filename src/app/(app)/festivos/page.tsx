@@ -15,10 +15,10 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ anio?: stri
   return (
     <>
       <Titulo>Calendario de festivos</Titulo>
-      <p className="mt-3 max-w-3xl text-sm text-muted">Se usa para contar los días hábiles de los plazos de respuesta a hallazgos. Los festivos de Colombia (2026 a 2040) están calculados con la regla de la Ley 51 de 1983 (fijos, trasladados al lunes y los de Semana Santa). Confírmalos cada año con el calendario oficial y agrega o quita fechas si hace falta.</p>
+      <p className="mt-3 max-w-3xl text-sm text-muted">Los festivos de Colombia se calculan solos para cualquier año (Ley 51 de 1983: fijos, trasladados al lunes y los de Semana Santa) y se usan para contar los días hábiles de los plazos. No hay que cargarlos. Esta pantalla solo sirve para agregar o quitar una fecha excepcional (por ejemplo, un puente decretado). La lista de abajo muestra únicamente fechas registradas aparte.</p>
       <form className="mt-4 flex items-end gap-3" aria-label="Año"><label className="flex flex-col gap-1.5"><span className="text-[13px] font-medium text-leaf-800">Año</span><input name="anio" defaultValue={a} inputMode="numeric" className="h-[42px] w-28 rounded-[10px] border border-soil-border px-3.5" /></label><button className="inline-flex h-10 items-center rounded-full bg-leaf-100 px-5 text-sm font-medium text-leaf-900">Ver</button></form>
       <ul className="mt-6 divide-y divide-soil-border rounded-card border border-soil-border text-sm">
-        {lista.length === 0 && <li className="p-4 text-muted">No hay festivos cargados para {a}.</li>}
+        {lista.length === 0 && <li className="p-4 text-muted">No hay fechas excepcionales registradas para {a}.</li>}
         {lista.map((f) => (
           <li key={f.fecha} className="flex items-center justify-between gap-3 p-3"><span><strong>{formatearFecha(f.fecha)}</strong> · {f.nombre}</span>
             <form action={quitarFestivo.bind(null, f.fecha)}><BotonEnviar className="text-sm font-medium text-danger underline" textoEnviando="…">Quitar</BotonEnviar></form></li>
