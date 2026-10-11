@@ -6,7 +6,7 @@
 import { ESCALA, aEscalado, dividirRedondeado, porcentajeDe } from "./dinero";
 import type { FilaImportada } from "./csv";
 
-export type Capitulo = { id: string; codigo: string; nombre: string; orden: number };
+export type Capitulo = { id: string; codigo: string; nombre: string; orden: number; wbsId?: string | null }; // wbsId: elemento de la EDT al que está ligado
 
 export type Partida = {
   id: string;

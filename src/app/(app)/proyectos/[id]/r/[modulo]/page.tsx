@@ -48,14 +48,14 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
               <tr>
-                {def.columnas.map((c) => <th key={c.etiqueta} className="px-3 py-2 font-medium">{c.etiqueta}</th>)}
+                {def.columnas.filter((c) => !c.visible || c.visible(permisos)).map((c) => <th key={c.etiqueta} className="px-3 py-2 font-medium">{c.etiqueta}</th>)}
                 {puede && <th className="px-3 py-2" />}
               </tr>
             </thead>
             <tbody className="divide-y divide-soil-border">
               {filas.map((f) => (
                 <tr key={String(f.id)}>
-                  {def.columnas.map((c) => <td key={c.etiqueta} className="px-3 py-2 align-top">{c.valor(f, ctx)}</td>)}
+                  {def.columnas.filter((c) => !c.visible || c.visible(permisos)).map((c) => <td key={c.etiqueta} className="px-3 py-2 align-top">{c.valor(f, ctx)}</td>)}
                   {puede && (
                     <td className="px-3 py-2 text-right">
                       <Link href={`${base}/${f.id}`} className="font-medium text-leaf-600 hover:underline">Editar</Link>

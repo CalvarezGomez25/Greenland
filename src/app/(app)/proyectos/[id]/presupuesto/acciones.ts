@@ -78,7 +78,26 @@ export async function importarCsv(proyectoId: string, _prev: Estado, datos: Form
     p_motivo: motivo,
   });
   if (error) return conError(mensajeDeRpc(error), datos);
+  // Los capítulos importados que se llaman igual que un elemento de la EDT se ligan a él (si falla, no importa).
+  await supabase.rpc("capitulos_vincular_edt", { p_proyecto: proyectoId });
   terminar(proyectoId, "", "importacion");
+}
+
+// ---- Capítulos desde la EDT ---------------------------------------------------
+
+// Crea (o liga, si ya existen con el mismo nombre) los capítulos de los elementos de un nivel de la EDT.
+export async function crearCapitulosDesdeEdt(proyectoId: string, datos: FormData): Promise<void> {
+  if (!ES_UUID.test(proyectoId)) redirect("/");
+  const nivel = Number(campo(datos, "nivel"));
+  const { supabase } = await obtenerSesion();
+  const { data, error } = await supabase.rpc("capitulos_desde_edt", { p_proyecto: proyectoId, p_nivel: Number.isInteger(nivel) ? nivel : -1 });
+  if (error) {
+    revalidatePath(`/proyectos/${proyectoId}/presupuesto`, "layout");
+    redirect(`/proyectos/${proyectoId}/presupuesto?ok=capitulos_edt_no`);
+  }
+  const r = (data ?? {}) as { creados?: number; ligados?: number };
+  revalidatePath(`/proyectos/${proyectoId}`, "layout");
+  redirect(`/proyectos/${proyectoId}/presupuesto?ok=capitulos_edt&c=${Number(r.creados ?? 0)}&l=${Number(r.ligados ?? 0)}`);
 }
 
 // ---- Partidas ---------------------------------------------------------------

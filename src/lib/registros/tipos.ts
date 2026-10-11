@@ -41,7 +41,7 @@ export type Definicion = {
   campos: CampoDef[];
   seleccion: string; // columnas a leer para la lista
   orden: { columna: string; asc?: boolean }[];
-  columnas: { etiqueta: string; valor: (fila: Fila, ctx: ContextoLista) => ReactNode }[];
+  columnas: { etiqueta: string; valor: (fila: Fila, ctx: ContextoLista) => ReactNode; visible?: (p: Permisos) => boolean }[];
   ordenar?: (filas: Fila[]) => Fila[]; // orden propio (por ejemplo, códigos 1.2 antes que 1.10)
   extra?: (filas: Fila[], ctx: ContextoLista) => ReactNode; // bloque encima de la tabla (matrices, botones)
   ver: (p: Permisos) => boolean;

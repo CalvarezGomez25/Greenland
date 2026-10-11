@@ -6,7 +6,8 @@ import { calcularIndicadores, serieCurvaS } from "@/lib/presupuesto/curva";
 import { cargarDatosPresupuesto } from "@/lib/presupuesto/datos";
 import { AvisoResultado } from "@/components/aviso-resultado";
 import { BotonEnviar } from "@/components/boton-enviar";
-import { aprobarPresupuesto } from "./acciones";
+import { aprobarPresupuesto, crearCapitulosDesdeEdt } from "./acciones";
+import type { ElementoEdt } from "@/lib/presupuesto/edt";
 import { desdeJson, formatearPesos } from "@/lib/presupuesto/dinero";
 import { avanceFisico, planificadoDesdeCronograma, sumaPesos, type Tarea } from "@/lib/obra/cronograma";
 import { describirFallo } from "@/lib/presupuesto/fallos";
@@ -16,6 +17,7 @@ import {
   SeccionCurva,
   SeccionGasto,
   SeccionIndicadores,
+  SeccionCapitulosEdt,
   SeccionPartidas,
 } from "./secciones";
 
@@ -24,16 +26,19 @@ async function ContenidoPresupuesto({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ ok?: string | string[] }>;
+  searchParams: Promise<{ ok?: string | string[]; c?: string; l?: string }>;
 }) {
   const { id } = await params;
-  const { ok } = await searchParams;
+  const { ok, c: creados, l: ligados } = await searchParams;
   const { supabase, proyecto, permisos } = await cargarContexto(id);
 
   let calculo;
+  let edt: ElementoEdt[] = [];
   try {
     const datos = await cargarDatosPresupuesto(supabase, id);
     const presupuesto = calcularPresupuesto(datos);
+    const { data: edtDb } = await supabase.from("wbs_elementos").select("id, padre_id, codigo, nombre").eq("proyecto_id", id);
+    edt = (edtDb ?? []) as ElementoEdt[];
     // Cronograma: si hay tareas con pesos, el planificado sale de ahí (si no, distribución teórica).
     const [{ data: tareasDb }, { data: pr }, { data: lb }] = await Promise.all([
       supabase.from("tareas").select("id, nombre, semana_inicio, duracion_semanas, peso_pct, avance_pct, avance_verificado_pct").eq("proyecto_id", id),
@@ -102,6 +107,7 @@ async function ContenidoPresupuesto({
 
       <div className="mt-4">
         <AvisoResultado ok={ok} />
+        {ok === "capitulos_edt" && <Aviso tipo="ok">Se crearon {Number(creados) || 0} capítulo(s) y se ligaron {Number(ligados) || 0} que ya existían. Ahora agrega las partidas bajo cada capítulo.</Aviso>}
       </div>
 
       <section aria-label="Línea base de costo" className="mt-6 rounded-card border border-soil-border p-4 text-sm">
@@ -119,7 +125,8 @@ async function ContenidoPresupuesto({
 
       <SeccionIndicadores indicadores={indicadores} hayPresupuesto={presupuesto.costoTotal > 0n} avanceFisico={avance} />
       <SeccionCurva serie={serie} desdeCronograma={desdeCronograma} />
-      <SeccionPartidas presupuesto={presupuesto} hrefEditar={permisos.editar ? (idPartida) => `${base}/partidas/${idPartida}` : undefined} />
+      {permisos.editar && <SeccionCapitulosEdt idProyecto={id} elementos={edt} accion={crearCapitulosDesdeEdt.bind(null, id)} nCapitulos={presupuesto.capitulos.length} />}
+      <SeccionPartidas presupuesto={presupuesto} hrefEditar={permisos.editar ? (idPartida) => `${base}/partidas/${idPartida}` : undefined} codigosEdt={new Map(edt.map((e) => [e.id, e.codigo]))} />
       <SeccionAdicionales presupuesto={presupuesto} />
       <SeccionGasto serie={serie} gastoPorMes={datos.gastoPorMes} duracion={proyecto.duracion} />
     </>

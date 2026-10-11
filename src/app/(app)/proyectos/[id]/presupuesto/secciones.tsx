@@ -6,6 +6,9 @@ import type { Presupuesto } from "@/lib/presupuesto/calculos";
 import type { Indicadores, SerieCurva } from "@/lib/presupuesto/curva";
 import { ESCALA, formatearDecimal, formatearPesos } from "@/lib/presupuesto/dinero";
 import { CurvaS } from "@/components/curva-s";
+import { BotonEnviar } from "@/components/boton-enviar";
+import { claseBoton } from "@/components/ui";
+import { nivelPorDefecto, opcionesDeNivel, type ElementoEdt } from "@/lib/presupuesto/edt";
 
 const NUMERO = "px-3 py-2 text-right tabular-nums whitespace-nowrap";
 const CELDA = "px-3 py-2";
@@ -120,9 +123,11 @@ export function SeccionCurva({ serie, desdeCronograma = false }: { serie: SerieC
 export function SeccionPartidas({
   presupuesto,
   hrefEditar,
+  codigosEdt,
 }: {
   presupuesto: Presupuesto;
   hrefEditar?: (idPartida: string) => string;
+  codigosEdt?: Map<string, string>; // id del elemento de la EDT → su código
 }) {
   const conAcciones = !!hrefEditar;
   return (
@@ -157,6 +162,7 @@ export function SeccionPartidas({
                 <tr className="bg-leaf-100 font-medium text-leaf-900">
                   <th scope="rowgroup" colSpan={5} className={`${CELDA} text-left`}>
                     {c.codigo}. {c.nombre}{" "}
+                    {c.wbsId && codigosEdt?.get(c.wbsId) && <span className="mr-1 rounded-full bg-white/80 px-2 py-0.5 text-xs font-medium text-leaf-700">EDT {codigosEdt.get(c.wbsId)}</span>}
                     <span className="font-normal text-muted">({porcentaje(c.participacion)} del costo directo)</span>
                   </th>
                   <td className={NUMERO}>{formatearPesos(c.subtotal)}</td>
@@ -290,5 +296,36 @@ export function SeccionGasto({
         </table>
       </div>
     </Seccion>
+  );
+}
+
+// Crear los capítulos del presupuesto a partir de la EDT (solo para quien edita el presupuesto).
+export function SeccionCapitulosEdt({ idProyecto, elementos, accion, nCapitulos }: { idProyecto: string; elementos: ElementoEdt[]; accion: (datos: FormData) => Promise<void>; nCapitulos: number }) {
+  const opciones = opcionesDeNivel(elementos);
+  return (
+    <section className="mt-8 rounded-card border border-soil-border p-5" aria-labelledby="t-edt">
+      <h2 id="t-edt" className="font-display text-lg font-bold text-leaf-700">Presupuesto sobre la EDT</h2>
+      {elementos.length === 0 ? (
+        <p className="mt-1 text-sm text-muted">
+          Si primero armas la <Link href={`/proyectos/${idProyecto}/r/wbs`} className="font-medium text-leaf-600 underline">EDT</Link>, aquí podrás crear los capítulos del presupuesto a partir de sus elementos. También puedes presupuestar con capítulos propios, como hasta ahora.
+        </p>
+      ) : (
+        <>
+          <p className="mt-1 text-sm text-muted">
+            Crea los capítulos a partir de los elementos de la EDT de un nivel y luego agrega las partidas bajo cada capítulo. Si ya existe un capítulo con el mismo nombre, se liga en vez de duplicarse. Los capítulos ligados a la EDT no se borran aunque estén vacíos.
+            {nCapitulos > 0 && " Puedes repetirlo con otro nivel: solo se agregan los que faltan."}
+          </p>
+          <form action={accion} className="mt-3 flex flex-wrap items-end gap-3">
+            <label className="flex flex-col gap-1.5 text-[13px] font-medium text-leaf-800">
+              Nivel de la EDT
+              <select name="nivel" defaultValue={String(nivelPorDefecto(opciones))} className="h-[42px] rounded-[10px] border border-soil-border bg-white px-3 text-[15px] font-normal text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30">
+                {opciones.map((o) => <option key={o.nivel} value={o.nivel}>{o.etiqueta}</option>)}
+              </select>
+            </label>
+            <BotonEnviar className={claseBoton.secundario} textoEnviando="Creando…">Crear capítulos desde la EDT</BotonEnviar>
+          </form>
+        </>
+      )}
+    </section>
   );
 }

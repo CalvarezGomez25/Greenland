@@ -1,6 +1,10 @@
 // Stakeholders, WBS y riesgos (hito 3).
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { calcularPresupuesto } from "@/lib/presupuesto/calculos";
+import { cargarDatosPresupuesto } from "@/lib/presupuesto/datos";
+import { costoPorElemento, type ElementoEdt } from "@/lib/presupuesto/edt";
+import { formatearPesos } from "@/lib/presupuesto/dinero";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cargarProyecto } from "@/lib/contexto-proyecto";
@@ -152,14 +156,25 @@ export const WBS: Definicion = {
     { etiqueta: "Inicio", valor: (f) => txt(f.inicio_plan) },
     { etiqueta: "Fin", valor: (f) => txt(f.fin_plan) },
     { etiqueta: "Estado", valor: (f) => ETIQUETA_ESTADO_WBS[f.estado as keyof typeof ETIQUETA_ESTADO_WBS] ?? txt(f.estado) },
+    // Costo directo del presupuesto ligado a este elemento y a sus descendientes (no lo ve la interventoría).
+    { etiqueta: "Costo directo (COP)", visible: (p) => !p.interventor, valor: (f, ctx) => ctx.opciones.costos?.find((o) => o.valor === f.id)?.etiqueta ?? "—" },
   ],
   ver: () => true,
   escribir: (p) => p.gestionar,
   borrar: true,
   opciones: async (supabase: SupabaseClient, proyectoId: string) => {
-    const { data } = await supabase.from("wbs_elementos").select("id, codigo, nombre").eq("proyecto_id", proyectoId);
-    const lista = ((data ?? []) as { id: string; codigo: string; nombre: string }[]).sort((a, b) => comparaCodigos(a.codigo, b.codigo));
-    return { padres: lista.map((x) => ({ valor: x.id, etiqueta: `${x.codigo} ${x.nombre}` })) };
+    const { data } = await supabase.from("wbs_elementos").select("id, padre_id, codigo, nombre").eq("proyecto_id", proyectoId);
+    const elementos = (data ?? []) as ElementoEdt[];
+    const lista = [...elementos].sort((a, b) => comparaCodigos(a.codigo, b.codigo));
+    let costos: { valor: string; etiqueta: string }[] = [];
+    try {
+      const presupuesto = calcularPresupuesto(await cargarDatosPresupuesto(supabase, proyectoId));
+      const porElemento = costoPorElemento(elementos, presupuesto.capitulos.map((c) => ({ wbsId: c.wbsId ?? null, subtotal: c.subtotal })));
+      costos = [...porElemento.entries()].filter(([, v]) => v !== null).map(([valor, v]) => ({ valor, etiqueta: `$ ${formatearPesos(v!)}` }));
+    } catch {
+      // sin acceso al presupuesto (o aún sin presupuesto): la columna muestra «—»
+    }
+    return { padres: lista.map((x) => ({ valor: x.id, etiqueta: `${x.codigo} ${x.nombre}` })), costos };
   },
   validar: async (v, { supabase, proyectoId, registroId }) => {
     // Evita ciclos: subiendo por los padres nunca debe aparecer el propio elemento.

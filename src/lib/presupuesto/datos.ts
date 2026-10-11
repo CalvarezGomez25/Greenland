@@ -45,10 +45,10 @@ export async function cargarDatosPresupuesto(
   proyectoId: string,
 ): Promise<DatosPresupuesto> {
   const [capitulos, partidas, lineas, gastos] = await Promise.all([
-    leerTabla<{ id: string; codigo: string; nombre: string; orden: number }>("capitulos", (desde, hasta) =>
+    leerTabla<{ id: string; codigo: string; nombre: string; orden: number; wbs_id: string | null }>("capitulos", (desde, hasta) =>
       supabase
         .from("capitulos")
-        .select("id, codigo, nombre, orden")
+        .select("id, codigo, nombre, orden, wbs_id")
         .eq("proyecto_id", proyectoId)
         .order("orden")
         .range(desde, hasta),
@@ -95,7 +95,7 @@ export async function cargarDatosPresupuesto(
   ]);
 
   return {
-    capitulos,
+    capitulos: capitulos.map((c) => ({ id: c.id, codigo: c.codigo, nombre: c.nombre, orden: c.orden, wbsId: c.wbs_id ?? null })),
     partidas: partidas.map((p) => ({
       id: p.id,
       capituloId: p.capitulo_id,

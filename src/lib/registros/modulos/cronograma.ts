@@ -16,7 +16,7 @@ export const TAREAS: Definicion = {
     { nombre: "peso_pct", etiqueta: "Peso (% del proyecto)", tipo: "decimal", obligatorio: true, min: 0, max: 100, decimales: 4, ayuda: "La suma de los pesos de todas las tareas debe ser 100." },
     { nombre: "avance_pct", etiqueta: "Avance actual (%)", tipo: "decimal", obligatorio: true, porDefecto: "0", min: 0, max: 100, decimales: 2 },
     { nombre: "orden", etiqueta: "Orden en la lista", tipo: "entero", porDefecto: "0", min: 0, max: 100000 },
-    { nombre: "wbs_id", etiqueta: "Elemento de la EDT", tipo: "seleccion", opcionesDe: "wbs" },
+    { nombre: "wbs_id", etiqueta: "Elemento de la EDT", tipo: "seleccion", opcionesDe: "wbs", ayuda: "Si el elemento (o uno de sus superiores) tiene capítulo en el presupuesto, el capítulo se completa solo." },
     { nombre: "capitulo_id", etiqueta: "Capítulo del presupuesto", tipo: "seleccion", opcionesDe: "capitulos" },
   ],
   seleccion: "id, nombre, semana_inicio, duracion_semanas, peso_pct, avance_pct",

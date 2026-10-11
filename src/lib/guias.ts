@@ -14,7 +14,8 @@ export const GUIAS: Guia[] = [
   {
     clave: "presupuesto", titulo: "Presupuesto y costos", quien: "Gerente del proyecto o administrador (el supervisor lo consulta)",
     pasos: [
-      "Importa el presupuesto con «Importar CSV» o agrega las partidas una por una.",
+      "Opción recomendada: arma primero la EDT y usa «Crear capítulos desde la EDT» (eliges el nivel; normalmente el primero). Luego agrega las partidas bajo cada capítulo. Los capítulos de la EDT no se borran aunque estén vacíos.",
+      "También puedes importar el presupuesto con «Importar CSV» o agregar las partidas una por una con capítulos propios; si un capítulo se llama igual que un elemento de la EDT, se liga solo.",
       "El archivo CSV usa punto y coma como separador y estas columnas: capitulo; codigo; descripcion; unidad; cantidad; precio_unitario.",
       "Los números van en formato colombiano: punto para los miles y coma para los decimales (1.234.567,50).",
       "Agrega los costos adicionales (se suman al costo directo para dar el costo total).",
@@ -26,7 +27,7 @@ export const GUIAS: Guia[] = [
   {
     clave: "cronograma", titulo: "Cronograma y avance", quien: "Gerente (crea las tareas); supervisor (avance reportado); interventoría (avance verificado)",
     pasos: [
-      "Crea cada tarea con su semana de inicio (1 = primera semana del proyecto), su duración en semanas y su peso.",
+      "Crea cada tarea con su semana de inicio (1 = primera semana del proyecto), su duración en semanas y su peso. Si la ligas a un elemento de la EDT que tiene capítulo en el presupuesto, el capítulo se completa solo.",
       "El peso es el porcentaje de la obra que representa la tarea; la suma de todos los pesos debe ser 100 %.",
       "El supervisor actualiza el avance de cada tarea (0 a 100 %); la bitácora también lo suma.",
       "La interventoría registra el avance verificado; si existe, es el que usa el valor ganado.",
@@ -76,6 +77,7 @@ export const GUIAS: Guia[] = [
       "Cada entregable lleva un código numérico con puntos (1, 1.1, 1.2.1) y, si corresponde, su elemento padre.",
       "Puedes empezar con la plantilla estándar y ajustarla.",
       "Marca el estado de cada elemento; las tareas del cronograma pueden ligarse a un elemento de la EDT.",
+      "La columna «Costo directo» muestra lo presupuestado en los capítulos ligados a cada elemento (suma hacia arriba). No la ve la interventoría.",
     ],
   },
   {
