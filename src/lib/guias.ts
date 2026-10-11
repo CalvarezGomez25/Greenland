@@ -61,6 +61,7 @@ export const GUIAS: Guia[] = [
       "Describe el riesgo y elige su categoría.",
       "Califica la probabilidad y el impacto de 1 a 5: el puntaje (probabilidad × impacto) define el nivel.",
       "Escribe el plan de acción y el responsable. Un riesgo crítico activo pone el proyecto en rojo.",
+      "Si ya tienes el registro en Excel, usa «Importar riesgos desde Excel»: revisa la vista previa y confirma.",
     ],
   },
   {

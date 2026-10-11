@@ -40,3 +40,9 @@ fácil de cambiar; deben validarse con el uso real.
 - Validado con PostgreSQL real (PGlite) y un simulador de la API; falta la primera corrida contra el Supabase real.
 - Vercel Hobby es de uso no comercial.
 - `npm audit`: 5 avisos altos en herramientas de desarrollo.
+
+## Registro de riesgos ampliado e importación desde Excel (migración 0021)
+- Los riesgos suman: frente, causa, consecuencia, momento de control, fecha objetivo y referencia. Se importan desde un .xlsx (hoja «Registro») en `/proyectos/[id]/importar-riesgos`.
+- Escala: Baja/Media/Alta del Excel = 1/2/4 en la escala 1–5. Con los cortes de la plataforma (Crítico ≥ 15, Alto ≥ 8, Medio ≥ 4) reproduce exactamente la matriz 3×3 del Excel. Es una decisión de conversión; se puede recalibrar en la validación en taller.
+- El Excel no trae estrategia de respuesta: queda vacía (no se inventa). Si no hay nombre de responsable, se guarda el rol propuesto.
+- Reimportar actualiza por ID (no duplica) y no borra nada. Los riesgos ahora quedan en la auditoría (antes no lo estaban).

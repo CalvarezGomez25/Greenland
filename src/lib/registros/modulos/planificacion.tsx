@@ -5,6 +5,7 @@ import { calcularPresupuesto } from "@/lib/presupuesto/calculos";
 import { cargarDatosPresupuesto } from "@/lib/presupuesto/datos";
 import { costoPorElemento, type ElementoEdt } from "@/lib/presupuesto/edt";
 import { formatearPesos } from "@/lib/presupuesto/dinero";
+import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { cargarProyecto } from "@/lib/contexto-proyecto";
@@ -239,19 +240,26 @@ export const RIESGOS: Definicion = {
   singular: "riesgo",
   descripcion: "Score = probabilidad × impacto. Crítico 15–25, Alto 8–14, Medio 4–7, Bajo 1–3",
   campos: [
+    { nombre: "frente", etiqueta: "Frente o frente de obra", tipo: "texto", max: 120, ayuda: "Por ejemplo: F1 · Bodega principal, o Transversal." },
     { nombre: "categoria", etiqueta: "Categoría", tipo: "seleccion", obligatorio: true, opcionesDe: "categorias" },
     { nombre: "descripcion", etiqueta: "Descripción del riesgo", tipo: "area", obligatorio: true },
+    { nombre: "causa", etiqueta: "Causa o disparador", tipo: "area", max: 2000 },
+    { nombre: "consecuencia", etiqueta: "Consecuencia", tipo: "area", max: 2000 },
     { nombre: "probabilidad", etiqueta: "Probabilidad (1 a 5)", tipo: "entero", obligatorio: true, min: 1, max: 5 },
     { nombre: "impacto", etiqueta: "Impacto (1 a 5)", tipo: "entero", obligatorio: true, min: 1, max: 5 },
     { nombre: "estrategia", etiqueta: "Estrategia de respuesta", tipo: "seleccion", opciones: ESTRATEGIAS.map(([valor, etiqueta]) => ({ valor, etiqueta })) },
-    { nombre: "plan_accion", etiqueta: "Plan de acción", tipo: "area" },
+    { nombre: "plan_accion", etiqueta: "Plan de acción (mitigación)", tipo: "area" },
+    { nombre: "momento_control", etiqueta: "Momento de control", tipo: "texto", max: 60, ayuda: "Por ejemplo: Precontractual, Contractual, Ejecución." },
     { nombre: "responsable", etiqueta: "Responsable", tipo: "texto", max: 200 },
+    { nombre: "fecha_objetivo", etiqueta: "Fecha objetivo", tipo: "fecha" },
     { nombre: "estado", etiqueta: "Estado", tipo: "seleccion", obligatorio: true, porDefecto: "activo", opciones: ESTADOS_RIESGO.map(([valor, etiqueta]) => ({ valor, etiqueta })) },
+    { nombre: "referencia", etiqueta: "Base o referencia", tipo: "area", max: 1000 },
   ],
-  seleccion: "id, codigo, categoria, descripcion, probabilidad, impacto, score, estrategia, plan_accion, responsable, estado",
+  seleccion: "id, codigo, frente, categoria, descripcion, causa, consecuencia, probabilidad, impacto, score, estrategia, plan_accion, momento_control, responsable, fecha_objetivo, estado, referencia",
   orden: [{ columna: "score", asc: false }, { columna: "codigo" }],
   columnas: [
     { etiqueta: "Código", valor: (f) => txt(f.codigo) },
+    { etiqueta: "Frente", valor: (f) => txt(f.frente) },
     { etiqueta: "Categoría", valor: (f) => txt(f.categoria) },
     { etiqueta: "Descripción", valor: (f) => recorta(f.descripcion) },
     { etiqueta: "P × I", valor: (f) => `${f.probabilidad} × ${f.impacto} = ${f.score}` },
@@ -269,7 +277,19 @@ export const RIESGOS: Definicion = {
       supabase.from("proyectos").select("portafolio_id").eq("id", proyectoId).maybeSingle(),
     ]);
     const cats = listaParametro((pars ?? []) as never, "categorias_riesgo", { proyectoId, portafolioId: proy?.portafolio_id ?? null });
-    return { categorias: cats.map((c) => ({ valor: c, etiqueta: c })) };
+    // Las categorías que ya usan los riesgos del proyecto (p. ej. las de un Excel importado) también se ofrecen.
+    const { data: usadas } = await supabase.from("riesgos").select("categoria").eq("proyecto_id", proyectoId);
+    const todas = [...new Set([...cats, ...((usadas ?? []).map((r) => String(r.categoria)))])];
+    return { categorias: todas.map((c) => ({ valor: c, etiqueta: c })) };
   },
-  extra: (filas, ctx) => (filas.length ? <MatrizRiesgos filas={filas} ctx={ctx} /> : null),
+  extra: (filas, ctx) => (
+    <div className="flex flex-col gap-6">
+      {ctx.permisos.gestionar && (
+        <p className="text-sm">
+          <Link href={`/proyectos/${ctx.proyecto.id}/importar-riesgos`} className="font-medium text-leaf-600 underline">Importar riesgos desde Excel</Link>
+        </p>
+      )}
+      {filas.length ? <MatrizRiesgos filas={filas} ctx={ctx} /> : null}
+    </div>
+  ),
 };

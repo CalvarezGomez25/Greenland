@@ -4,6 +4,7 @@ import { Aviso } from "@/components/ui";
 // nunca se refleja en pantalla lo que venga en la dirección.
 const MENSAJES: Record<string, string> = {
   importacion: "Presupuesto importado correctamente.",
+  riesgos_importados: "Riesgos importados correctamente.",
   partida: "Partida guardada.",
   partida_borrada: "Partida eliminada.",
   costos: "Costos adicionales actualizados.",

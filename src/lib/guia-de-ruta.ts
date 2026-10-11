@@ -3,6 +3,7 @@
 const POR_SEGMENTO: Record<string, string> = {
   acta: "acta", evm: "evm", cambios: "cambios", reportes: "reportes", cronograma: "cronograma", contratos: "contratos",
   bitacora: "bitacora", documentos: "documentos", cierre: "cierre", presupuesto: "presupuesto", interventoria: "interventoria",
+  "importar-riesgos": "riesgos",
 };
 const POR_REGISTRO: Record<string, string> = {
   stakeholders: "interesados", wbs: "edt", riesgos: "riesgos", hitos: "reportes", reuniones: "reportes", lecciones: "cierre", tareas: "cronograma",
