@@ -6,10 +6,17 @@ import type { DocExport } from "./tipos";
 export type Formato = "xlsx" | "pdf";
 export const formatoDe = (v: string | null): Formato => (v === "pdf" ? "pdf" : "xlsx");
 
+export const nombreArchivo = (nombreBase: string, formato: Formato) =>
+  `${nombreBase.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^A-Za-z0-9._-]+/g, "-")}.${formato}`;
+
 // Respuesta de descarga con el nombre de archivo ya limpio.
 export async function respuestaDescarga(doc: DocExport, formato: Formato, nombreBase: string): Promise<Response> {
-  const nombre = `${nombreBase.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^A-Za-z0-9._-]+/g, "-")}.${formato}`;
-  const cuerpo = formato === "pdf" ? await aPdf(doc) : await aExcel(doc);
+  return respuestaArchivo(formato === "pdf" ? await aPdf(doc) : await aExcel(doc), formato, nombreBase);
+}
+
+// Descarga de un archivo ya armado (el informe gerencial, por ejemplo).
+export function respuestaArchivo(cuerpo: Uint8Array, formato: Formato, nombreBase: string): Response {
+  const nombre = nombreArchivo(nombreBase, formato);
   return new Response(new Uint8Array(cuerpo), {
     headers: {
       "Content-Type": formato === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

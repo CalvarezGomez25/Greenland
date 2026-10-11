@@ -7,7 +7,8 @@ import nodemailer from "nodemailer";
 import { NOMBRE_PLATAFORMA } from "../marca";
 
 export type Proveedor = "smtp" | "resend" | "consola";
-export type Correo = { para: string; asunto: string; texto: string; html: string };
+export type Adjunto = { nombre: string; contenido: Uint8Array; tipo: string };
+export type Correo = { para: string; asunto: string; texto: string; html: string; adjuntos?: Adjunto[] };
 export type ResultadoEnvio = { ok: boolean; proveedor: Proveedor | null; error?: string };
 
 const env = (k: string) => (process.env[k] ?? "").trim();
@@ -36,15 +37,15 @@ export async function enviarCorreo(c: Correo): Promise<ResultadoEnvio> {
   if (!EMAIL.test(c.para)) return { ok: false, proveedor, error: "Dirección de correo no válida." };
   try {
     if (proveedor === "consola") {
-      console.log(`[correo:consola] para=${c.para} asunto=${c.asunto}\n${c.texto}`);
+      console.log(`[correo:consola] para=${c.para} asunto=${c.asunto} adjuntos=${(c.adjuntos ?? []).map((a) => `${a.nombre} (${a.contenido.byteLength} B)`).join(", ") || "ninguno"}\n${c.texto}`);
       return { ok: true, proveedor };
     }
     if (proveedor === "resend") {
       const r = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: { Authorization: `Bearer ${env("RESEND_API_KEY")}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ from: remitente(), to: [c.para], subject: c.asunto, text: c.texto, html: c.html }),
-        signal: AbortSignal.timeout(15_000),
+        body: JSON.stringify({ from: remitente(), to: [c.para], subject: c.asunto, text: c.texto, html: c.html, ...(c.adjuntos?.length ? { attachments: c.adjuntos.map((a) => ({ filename: a.nombre, content: Buffer.from(a.contenido).toString("base64") })) } : {}) }),
+        signal: AbortSignal.timeout(c.adjuntos?.length ? 30_000 : 15_000),
       });
       if (!r.ok) return { ok: false, proveedor, error: `Resend respondió ${r.status}: ${(await r.text()).slice(0, 200)}` };
       return { ok: true, proveedor };
@@ -53,9 +54,9 @@ export async function enviarCorreo(c: Correo): Promise<ResultadoEnvio> {
     const transporte = nodemailer.createTransport({
       host: env("SMTP_SERVIDOR") || "smtp.gmail.com", port: puerto, secure: puerto === 465,
       auth: { user: env("SMTP_USUARIO"), pass: env("SMTP_CLAVE") },
-      connectionTimeout: 15_000, socketTimeout: 20_000,
+      connectionTimeout: 15_000, socketTimeout: c.adjuntos?.length ? 40_000 : 20_000,
     });
-    await transporte.sendMail({ from: remitente(), to: c.para, subject: c.asunto, text: c.texto, html: c.html });
+    await transporte.sendMail({ from: remitente(), to: c.para, subject: c.asunto, text: c.texto, html: c.html, attachments: (c.adjuntos ?? []).map((a) => ({ filename: a.nombre, content: Buffer.from(a.contenido), contentType: a.tipo })) });
     return { ok: true, proveedor };
   } catch (e) {
     return { ok: false, proveedor, error: e instanceof Error ? e.message.slice(0, 200) : "Error desconocido" };

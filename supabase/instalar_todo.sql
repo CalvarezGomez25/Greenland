@@ -5997,4 +5997,19 @@ grant execute on function public.riesgos_importar(uuid, jsonb) to authenticated;
   end if;
 end $mig$;
 
+-- 0022_informe_semanal.sql
+do $mig$ begin
+  if not exists (select 1 from public.migraciones_aplicadas where nombre = '0022_informe_semanal.sql') then
+    execute $m0022$
+-- 0022: informe gerencial semanal por correo (lunes 7:30 a. m., hora de Colombia).
+insert into public.parametros (ambito, clave, valor, descripcion, fuente) values
+ ('global', 'informe_semanal_activo', 'si',
+  'Si es "no", la plataforma no envía el informe gerencial semanal por correo', 'Decisión del usuario')
+on conflict do nothing;
+
+    $m0022$;
+    insert into public.migraciones_aplicadas (nombre) values ('0022_informe_semanal.sql') on conflict do nothing;
+  end if;
+end $mig$;
+
 select nombre, aplicada_en from public.migraciones_aplicadas order by nombre;

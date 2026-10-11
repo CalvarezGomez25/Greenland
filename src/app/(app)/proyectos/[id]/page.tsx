@@ -18,6 +18,7 @@ import { modulosVisibles, type Modulo } from "@/lib/modulos";
 import { diasDesde } from "@/lib/pmo/cambios";
 import { resumenBitacora, type EntradaResumen, type ResumenBitacora } from "@/lib/obra/bitacora";
 import { Semaforo } from "@/components/semaforo";
+import { BotonesExportar } from "@/components/botones-exportar";
 import { Selector, Titulo, claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { cambiarRol, quitarMiembro } from "./acciones";
@@ -92,11 +93,14 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
           <Titulo>{p.nombre}</Titulo>
           <p className="mt-2 text-sm text-muted">{p.codigo} · {ETIQUETA_TIPO[p.tipo]} · {ETIQUETA_FASE[p.fase]} · {ETIQUETA_ESTADO[p.estado]}</p>
         </div>
-        {permisos.gestionar && (
-          <Link href={`/proyectos/${p.id}/editar`} className={claseBoton.contorno}>
-            Editar proyecto
-          </Link>
-        )}
+        <div className="flex flex-wrap items-center gap-3">
+          {!permisos.interventor && <BotonesExportar base={`/proyectos/${p.id}/exportar/informe`} titulo="Informe gerencial" />}
+          {permisos.gestionar && (
+            <Link href={`/proyectos/${p.id}/editar`} className={claseBoton.contorno}>
+              Editar proyecto
+            </Link>
+          )}
+        </div>
       </div>
 
       {resumen && (

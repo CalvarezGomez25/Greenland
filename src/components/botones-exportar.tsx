@@ -12,7 +12,7 @@ function nombreDe(cabecera: string | null, formato: Formato): string {
   return m?.[1] ?? `exportacion.${formato}`;
 }
 
-export function BotonesExportar({ base }: { base: string }) {
+export function BotonesExportar({ base, titulo }: { base: string; titulo?: string }) {
   const [trabajando, setTrabajando] = useState<Formato | null>(null);
   const [error, setError] = useState<string | null>(null);
   const sep = base.includes("?") ? "&" : "?";
@@ -48,7 +48,8 @@ export function BotonesExportar({ base }: { base: string }) {
   }
 
   return (
-    <span className="inline-flex flex-wrap items-center gap-2" aria-label="Exportar">
+    <span className="inline-flex flex-wrap items-center gap-2" aria-label={titulo ?? "Exportar"}>
+      {titulo && <span className="text-sm font-medium text-leaf-800">{titulo}</span>}
       {(["xlsx", "pdf"] as const).map((f) => (
         <button key={f} type="button" className={clase} disabled={trabajando !== null} onClick={() => descargar(f)}>
           {trabajando === f ? "Generando…" : f === "xlsx" ? "Excel" : "PDF"}

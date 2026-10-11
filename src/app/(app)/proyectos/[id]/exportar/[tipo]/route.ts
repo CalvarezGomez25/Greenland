@@ -4,7 +4,10 @@ import { ES_UUID } from "@/lib/formato";
 import { hoyColombia } from "@/lib/pmo/cargar";
 import { indicadoresBorrador } from "@/lib/pmo/reporte";
 import { documentoCambios, documentoContratos, documentoEvm, documentoReporte } from "@/lib/exportar/proyecto";
-import { formatoDe, protegerDescarga, respuestaDescarga } from "@/lib/exportar/respuesta";
+import { formatoDe, protegerDescarga, respuestaArchivo, respuestaDescarga } from "@/lib/exportar/respuesta";
+import { cargarInformes } from "@/lib/informe/datos";
+import { informeAPdf } from "@/lib/informe/pdf";
+import { informeAExcel } from "@/lib/informe/excel";
 
 const noEncontrado = () => new Response("No encontrado", { status: 404 });
 
@@ -19,6 +22,12 @@ async function generar(req: NextRequest, ctx: { params: Promise<{ id: string; ti
   const formato = formatoDe(req.nextUrl.searchParams.get("formato"));
   if (permisos.interventor && tipo !== "contratos") return new Response("Tu rol no incluye esta exportación", { status: 403 });
 
+  if (tipo === "informe") {
+    const informe = (await cargarInformes(supabase, { proyectoId: id }))?.[0];
+    if (!informe) return noEncontrado();
+    const cuerpo = formato === "pdf" ? await informeAPdf(informe) : await informeAExcel(informe);
+    return respuestaArchivo(cuerpo, formato, `informe-gerencial-${proyecto.codigo ?? "proyecto"}-${hoy}`);
+  }
   if (tipo === "reporte") {
     const rid = req.nextUrl.searchParams.get("reporte") ?? "";
     if (!ES_UUID.test(rid)) return noEncontrado();

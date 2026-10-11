@@ -39,6 +39,14 @@ Configuración en Vercel (variables de entorno):
 
 Prueba manual del resumen: `curl -H "Authorization: Bearer TU_CRON_SECRET" https://tu-plataforma.vercel.app/api/cron/alertas`.
 
+## Informe gerencial de una página
+
+- **Manual:** en la pantalla de cada proyecto, junto al título, «Informe gerencial» → **Excel** o **PDF** (no aplica a la interventoría). Es una sola página con el semáforo, indicadores (SPI, CPI, avance, presupuesto, costo final proyectado), «Lectura rápida», riesgos principales, decisiones, hitos, cambios y último reporte semanal. Usa la tipografía y la paleta de la plataforma.
+- **Automático, todos los lunes a las 7:30 a. m. (hora de Colombia):** cron `/api/cron/informe-semanal` (`30 12 * * 1` UTC, en `vercel.json`). Cada persona con correo registrado recibe un correo con los puntos principales y adjuntos el PDF y el Excel de **sus** proyectos activos: administrador, director, analista PMO y finanzas reciben todos; las demás personas, los proyectos donde son miembros. La interventoría no recibe el informe (su acceso excluye costos y riesgos). Con más de 6 proyectos se adjunta solo el PDF.
+- Usa las mismas variables que las alertas (proveedor de correo, `CRON_SECRET`, `ALERTAS_USUARIO`, `ALERTAS_CLAVE`). Se apaga con el parámetro `informe_semanal_activo = no`. Requiere haber pegado de nuevo `supabase/instalar_todo.sql` (migración 0022).
+- Vercel Hobby: el cron corre una vez por tramo y Vercel no garantiza el minuto exacto (la hora puede variar dentro de la franja programada; con el plan Pro es puntual); admite 2 tareas programadas (ya usadas: alertas diarias e informe semanal) y limita cada ejecución a 60 s.
+- Prueba manual: `curl -H "Authorization: Bearer TU_CRON_SECRET" https://tu-plataforma.vercel.app/api/cron/informe-semanal` (envía el correo de verdad a todos los destinatarios).
+
 ## Comandos
 
 ```
