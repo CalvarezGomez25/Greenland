@@ -52,6 +52,7 @@ Versión 3.0, actualizada el 11 de octubre de 2026. Es la única versión vigent
 | Nombre | PMO360 |
 | Mensaje bajo el título | Control integral de Proyectos |
 | Empresa | GreenLand (logo como imagen principal) |
+| Significado del nombre | El 360 es la vuelta completa (visión integral, sin puntos ciegos); el marco FARO lo explica como una luz que gira en cuatro cuartos de vuelta (sección 17) |
 | Tipografías | Baloo 2 (títulos) y Roboto (texto); los documentos exportados las incrustan |
 | Paleta | Verdes de la marca (hoja #4c700b, #386631, #164504) y tierra #7c401d; semáforo Verde, Amarillo y Rojo siempre acompañado de la palabra |
 
@@ -854,6 +855,8 @@ La plataforma ya está construida (secciones 0.1 y 12.1). Este documento es la b
 Material para explicar la plataforma ante colegas, jefes y junta directiva, y para pedir un piloto. Los archivos están en `docs/presentacion-faro/`: guion para exponer, lámina de una página, documento corto y guion de video.
 
 **Idea central.** «Que ningún proyecto navegue a ciegas.» Un faro no evita la tormenta; evita que se navegue a ciegas. La plataforma no reemplaza el criterio del gerente ni promete ahorros.
+
+**El hilo entre PMO360 y FARO.** PMO360 es el nombre de la plataforma («Control integral de Proyectos»): el **360** es la vuelta completa, la visión integral del portafolio, sin puntos ciegos. FARO es el marco para explicarla y adoptarla: **cuatro pasos y cada uno ilumina un cuarto de vuelta** (4 × 90° = 360°), en el orden F (primer cuarto), A, R y O (con el que se completa la vuelta). Frase puente: **«PMO360 es la luz; FARO es cómo la mantenemos encendida»**. Aparece en la apertura, al final de cada paso y en el cierre del guion, en el documento corto, en el guion de video y en la lámina (anillo de 360° con los cuatro cuartos alrededor de «PMO360»).
 
 | Letra | Paso | Pregunta de la junta | Lo que la plataforma ya hace (verificable) |
 | --- | --- | --- | --- |
