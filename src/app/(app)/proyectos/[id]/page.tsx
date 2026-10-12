@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { Ayuda } from "@/components/ayuda";
 import { cargarProyecto } from "@/lib/contexto-proyecto";
 import { formatearFecha } from "@/lib/formato";
 import {
@@ -12,14 +11,15 @@ import {
   type Miembro,
 } from "@/lib/tipos";
 import { cargarDatosPortafolio } from "@/lib/pmo/cargar";
-import { armarPortafolio, type FilaPortafolio } from "@/lib/pmo/portafolio";
-import { indice } from "@/lib/pmo/formato";
+import { numeroParametro } from "@/lib/pmo/parametros";
+import { CORTES_RIESGO } from "@/lib/pmo/planificacion";
+import { armarPortafolio, requiereDecision, type FilaPortafolio } from "@/lib/pmo/portafolio";
 import { modulosVisibles, type Modulo } from "@/lib/modulos";
 import { diasDesde } from "@/lib/pmo/cambios";
 import { resumenBitacora, type EntradaResumen, type ResumenBitacora } from "@/lib/obra/bitacora";
-import { Semaforo } from "@/components/semaforo";
 import { BotonesExportar } from "@/components/botones-exportar";
 import { GraficoAvance } from "@/components/grafico-avance";
+import { ResumenControl } from "@/components/resumen-control";
 import { Selector, Titulo, claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { cambiarRol, quitarMiembro } from "./acciones";
@@ -46,12 +46,19 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
 
   // Resumen de desempeño (semáforo e indicadores) — no aplica a la interventoría (acceso reducido).
   let resumen: FilaPortafolio | null = null;
+  let decisiones: string[] = [];
+  let riesgos = { activos: 0, criticos: 0 };
   if (!permisos.interventor) {
     const datos = await cargarDatosPortafolio(supabase);
     const base = datos.proyectos.find((x) => x.id === id);
     if (base) {
       const r = armarPortafolio({ ...datos.entrada, proyectos: [base] });
       resumen = r.filas[0] ?? null;
+      if (resumen) decisiones = requiereDecision([resumen], datos.parametros).map((x) => x.tipo);
+      const { data: rs } = await supabase.from("riesgos").select("score").eq("proyecto_id", id).eq("estado", "activo");
+      const minCritico = numeroParametro(datos.parametros, "riesgo_critico_min", { proyectoId: id, portafolioId: base.portafolio_id }, CORTES_RIESGO.critico);
+      const scores = ((rs ?? []) as { score: number }[]).map((x) => x.score);
+      riesgos = { activos: scores.length, criticos: scores.filter((x) => x >= minCritico).length };
     }
   }
   // La bitácora alimenta el nivel N1: horas perdidas, retrasos e incidentes.
@@ -104,18 +111,18 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
         </div>
       </div>
 
+      <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-2 rounded-card bg-leaf-50 px-5 py-3 text-sm" aria-label="Datos del proyecto">
+        <Dato etiqueta="Cliente" valor={p.cliente} />
+        <Dato etiqueta="Ubicación" valor={p.ubicacion} />
+        <Dato etiqueta="Inicio" valor={formatearFecha(p.fecha_inicio)} />
+        <Dato etiqueta="Duración" valor={`${p.duracion_meses} ${p.duracion_meses === 1 ? "mes" : "meses"}`} />
+        {p.moneda !== "COP" && <Dato etiqueta="Moneda" valor={p.moneda} />}
+      </dl>
+
       {resumen && (
         <section className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,340px)_1fr]" aria-label="Estado del proyecto">
           <GraficoAvance fisico={resumen.evm?.avanceFisico ?? null} financiero={resumen.evm?.avanceFinanciero ?? null} planificado={resumen.evm?.avancePlan ?? null} href={`/proyectos/${p.id}/evm`} />
-          <div className="grid gap-3 lg:grid-rows-3">
-            <Ayuda modo="tarjeta" tema="semaforo" className="rounded-card bg-leaf-100 p-4 lg:flex lg:h-full lg:flex-col lg:justify-center">
-              <p className="pr-5 text-xs font-medium uppercase tracking-wider text-leaf-800">Estado calculado</p>
-              <div className="mt-2"><Semaforo color={resumen.semaforo.general} /></div>
-              {resumen.reporte && <p className="mt-2 text-xs text-muted">Reportado por el gerente: {resumen.reporte.estado_reportado}</p>}
-            </Ayuda>
-            <Ayuda modo="tarjeta" tema="spi" className="rounded-card bg-leaf-100 lg:h-full"><Link href={`/proyectos/${p.id}/evm`} className="block rounded-card p-4 hover:shadow-card lg:flex lg:h-full lg:flex-col lg:justify-center"><p className="pr-5 text-xs font-medium uppercase tracking-wider text-leaf-800">Cronograma (SPI)</p><p className="mt-1 font-display text-2xl font-bold text-leaf-700">{indice(resumen.evm?.spi ?? null)}</p></Link></Ayuda>
-            <Ayuda modo="tarjeta" tema="cpi" className="rounded-card bg-leaf-100 lg:h-full"><Link href={`/proyectos/${p.id}/evm`} className="block rounded-card p-4 hover:shadow-card lg:flex lg:h-full lg:flex-col lg:justify-center"><p className="pr-5 text-xs font-medium uppercase tracking-wider text-leaf-800">Costo (CPI)</p><p className="mt-1 font-display text-2xl font-bold text-leaf-700">{indice(resumen.evm?.cpi ?? null)}</p></Link></Ayuda>
-          </div>
+          <ResumenControl id={p.id} resumen={resumen} riesgos={riesgos} decisiones={decisiones} />
         </section>
       )}
 
@@ -131,14 +138,6 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
           {pendientes.map((x) => <p key={x.texto} className="mt-1"><Link href={x.href} className="text-leaf-700 hover:underline">{x.texto}</Link></p>)}
         </section>
       )}
-
-      <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-2 rounded-card bg-leaf-50 px-5 py-3 text-sm" aria-label="Datos del proyecto">
-        <Dato etiqueta="Cliente" valor={p.cliente} />
-        <Dato etiqueta="Ubicación" valor={p.ubicacion} />
-        <Dato etiqueta="Inicio" valor={formatearFecha(p.fecha_inicio)} />
-        <Dato etiqueta="Duración" valor={`${p.duracion_meses} ${p.duracion_meses === 1 ? "mes" : "meses"}`} />
-        {p.moneda !== "COP" && <Dato etiqueta="Moneda" valor={p.moneda} />}
-      </dl>
 
       {areas.map(([area, titulo]) => {
         const lista = modulos.filter((m) => m.area === area);
