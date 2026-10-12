@@ -144,7 +144,7 @@ En la parte superior de cada pantalla de proyecto se muestra su nombre y código
 Orden de bloques, de arriba hacia abajo, pensado para decidir (qué está mal, por qué, qué hacer):
 
 1. **Resumen del portafolio:** proyectos activos; cantidad en Verde, Amarillo y Rojo; suma de BAC y de AC; SPI y CPI del portafolio; semana de corte.
-2. **Semáforo multi-proyecto** (tabla del libro). Columnas: proyecto, estado general, SPI, CPI, riesgos activos (nivel máximo), cambios pendientes, avance físico %, avance presupuestal %, comentario o acción. Orden: rojos primero, luego SPI ascendente.
+2. **Semáforo multi-proyecto** (tabla del libro). Columnas: proyecto, estado general, SPI, CPI, riesgos activos (nivel máximo), cambios pendientes, avance físico %, avance presupuestal %, comentario o acción. Orden: por código del proyecto (GL-001, GL-002… en orden natural); decisión del usuario del 12 de octubre de 2026, que reemplaza el orden por semáforo de la v2.0. El estado de cada proyecto se ve en su columna.
 3. **Requiere decisión:** cambios pendientes de aprobación con su antigüedad; decisiones requeridas por dirección (de los reportes semanales); riesgos críticos activos; proyectos con TCPI mayor a 1,10; proyectos sin reporte de la semana; hitos vencidos; hallazgos de interventoría escalados; contratos nuevos por aprobar. Cada fila indica a quién corresponde (director, gerente o ambos), dato que usan los correos del módulo O.
 4. **KPIs de gestión** (seis, mensuales, con tendencia): ver módulo G.
 
@@ -813,7 +813,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | P22 | Comparación con software comercial | Abierto; puede incluirse en el piloto |
 | P23 | Quién mantiene la plataforma y cómo se explica su origen (construida con asistencia de inteligencia artificial y pruebas automáticas); designar un responsable y un apoyo | Abierto |
 | P24 | Siglas en español (por ejemplo IDP e IDC en lugar de SPI y CPI) | Abierto; solo si se pide |
-| P25 | Orden del tablero: hoy por peor semáforo; el usuario puede preferir orden por código | Abierto |
+| P25 | Orden del tablero | Resuelto el 12 de octubre de 2026: por código del proyecto |
 
 ## 15. Trazabilidad: hoja del libro a módulo
 

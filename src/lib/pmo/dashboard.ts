@@ -4,6 +4,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { cargarDatosKpi, cargarDatosPortafolio, hoyColombia } from "./cargar";
 import { calcularKpis, type SerieKpi } from "./kpis";
+import { ordenarPorCodigo } from "../navegacion";
 import { armarPortafolio, requiereDecision, type Decision, type FilaPortafolio, type ResumenPortafolio } from "./portafolio";
 
 export type FiltrosDashboard = { estado?: string; fase?: string; portafolio?: string; gerente?: string };
@@ -36,7 +37,11 @@ export async function cargarDashboard(supabase: SupabaseClient, f: FiltrosDashbo
       (!f.portafolio || p.portafolio_id === f.portafolio) &&
       (!f.gerente || datos.gerentes.get(p.id) === f.gerente),
   );
-  const { filas, resumen } = armarPortafolio({ ...datos.entrada, proyectos: visibles });
+  const armado = armarPortafolio({ ...datos.entrada, proyectos: visibles });
+  const { resumen } = armado;
+  // La tabla (y sus exportaciones) se listan por código del proyecto: GL-001, GL-002… GL-010.
+  const posicion = new Map(ordenarPorCodigo(visibles).map((p, i) => [p.id, i]));
+  const filas = [...armado.filas].sort((a, b) => (posicion.get(a.proyecto.id) ?? 0) - (posicion.get(b.proyecto.id) ?? 0));
   const hoy = hoyColombia();
   return {
     filas,
