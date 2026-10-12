@@ -113,6 +113,8 @@ N1  TABLERO DEL PROYECTO
 | Gestión del proyecto | Los módulos del proyecto elegido agrupados por área (Gestión, Obra, Interventoría), solo los que el rol permite |
 | Pie | Nombre de la persona, «Cambiar de usuario» y «Salir» |
 
+**Tablero del proyecto (N1), v3.0.** Arriba, el gráfico «Avance del proyecto: lo planeado frente a lo construido» (aro exterior = avance físico, marca = avance planificado, aro interior = avance financiero, con los tres porcentajes y la diferencia frente al plan) junto a las tarjetas de estado calculado, SPI y CPI. La tarjeta «Avance físico / financiero» se retiró por redundante: el gráfico muestra lo mismo y además el planificado. La ficha (cliente, ubicación, inicio y duración) se compactó en una sola franja; la moneda solo se muestra si no es COP. Decisión del usuario, 12 de octubre de 2026.
+
 En la parte superior de cada pantalla de proyecto se muestra su nombre y código, y el enlace «Ver guía» abre la guía de ese módulo. El calendario de festivos no está en el menú (se consulta por su dirección y se mantiene solo).
 
 ## 4. Mapa de módulos

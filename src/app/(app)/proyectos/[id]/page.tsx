@@ -13,12 +13,13 @@ import {
 } from "@/lib/tipos";
 import { cargarDatosPortafolio } from "@/lib/pmo/cargar";
 import { armarPortafolio, type FilaPortafolio } from "@/lib/pmo/portafolio";
-import { indice, porcentaje } from "@/lib/pmo/formato";
+import { indice } from "@/lib/pmo/formato";
 import { modulosVisibles, type Modulo } from "@/lib/modulos";
 import { diasDesde } from "@/lib/pmo/cambios";
 import { resumenBitacora, type EntradaResumen, type ResumenBitacora } from "@/lib/obra/bitacora";
 import { Semaforo } from "@/components/semaforo";
 import { BotonesExportar } from "@/components/botones-exportar";
+import { GraficoAvance } from "@/components/grafico-avance";
 import { Selector, Titulo, claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { cambiarRol, quitarMiembro } from "./acciones";
@@ -104,18 +105,17 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
       </div>
 
       {resumen && (
-        <section className="mt-6" aria-label="Estado del proyecto">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Ayuda modo="tarjeta" tema="semaforo" className="rounded-card bg-leaf-100 p-4">
+        <section className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,340px)_1fr]" aria-label="Estado del proyecto">
+          <GraficoAvance fisico={resumen.evm?.avanceFisico ?? null} financiero={resumen.evm?.avanceFinanciero ?? null} planificado={resumen.evm?.avancePlan ?? null} href={`/proyectos/${p.id}/evm`} />
+          <div className="grid gap-3 lg:grid-rows-3">
+            <Ayuda modo="tarjeta" tema="semaforo" className="rounded-card bg-leaf-100 p-4 lg:flex lg:h-full lg:flex-col lg:justify-center">
               <p className="pr-5 text-xs font-medium uppercase tracking-wider text-leaf-800">Estado calculado</p>
               <div className="mt-2"><Semaforo color={resumen.semaforo.general} /></div>
               {resumen.reporte && <p className="mt-2 text-xs text-muted">Reportado por el gerente: {resumen.reporte.estado_reportado}</p>}
             </Ayuda>
-            <Ayuda modo="tarjeta" tema="spi" className="rounded-card bg-leaf-100"><Link href={`/proyectos/${p.id}/evm`} className="block rounded-card p-4 hover:shadow-card"><p className="pr-5 text-xs font-medium uppercase tracking-wider text-leaf-800">Cronograma (SPI)</p><p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{indice(resumen.evm?.spi ?? null)}</p></Link></Ayuda>
-            <Ayuda modo="tarjeta" tema="cpi" className="rounded-card bg-leaf-100"><Link href={`/proyectos/${p.id}/evm`} className="block rounded-card p-4 hover:shadow-card"><p className="pr-5 text-xs font-medium uppercase tracking-wider text-leaf-800">Costo (CPI)</p><p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{indice(resumen.evm?.cpi ?? null)}</p></Link></Ayuda>
-            <Ayuda modo="tarjeta" tema="avance_fisico" className="rounded-card bg-leaf-100"><Link href={`/proyectos/${p.id}/evm`} className="block rounded-card p-4 hover:shadow-card"><p className="pr-5 text-xs font-medium uppercase tracking-wider text-leaf-800">Avance físico / financiero</p><p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{porcentaje(resumen.evm?.avanceFisico ?? null)} / {porcentaje(resumen.evm?.avanceFinanciero ?? null)}</p></Link></Ayuda>
+            <Ayuda modo="tarjeta" tema="spi" className="rounded-card bg-leaf-100 lg:h-full"><Link href={`/proyectos/${p.id}/evm`} className="block rounded-card p-4 hover:shadow-card lg:flex lg:h-full lg:flex-col lg:justify-center"><p className="pr-5 text-xs font-medium uppercase tracking-wider text-leaf-800">Cronograma (SPI)</p><p className="mt-1 font-display text-2xl font-bold text-leaf-700">{indice(resumen.evm?.spi ?? null)}</p></Link></Ayuda>
+            <Ayuda modo="tarjeta" tema="cpi" className="rounded-card bg-leaf-100 lg:h-full"><Link href={`/proyectos/${p.id}/evm`} className="block rounded-card p-4 hover:shadow-card lg:flex lg:h-full lg:flex-col lg:justify-center"><p className="pr-5 text-xs font-medium uppercase tracking-wider text-leaf-800">Costo (CPI)</p><p className="mt-1 font-display text-2xl font-bold text-leaf-700">{indice(resumen.evm?.cpi ?? null)}</p></Link></Ayuda>
           </div>
-          {!resumen.medicion && <p className="mt-2 text-sm text-muted">Aún no hay mediciones de valor ganado. Se registran en “Valor ganado”.</p>}
         </section>
       )}
 
@@ -132,16 +132,12 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
         </section>
       )}
 
-      <dl className="mt-6 grid gap-4 rounded-card bg-leaf-100 p-5 sm:grid-cols-2">
+      <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-2 rounded-card bg-leaf-50 px-5 py-3 text-sm" aria-label="Datos del proyecto">
         <Dato etiqueta="Cliente" valor={p.cliente} />
         <Dato etiqueta="Ubicación" valor={p.ubicacion} />
-        <Dato etiqueta="Fecha de inicio" valor={formatearFecha(p.fecha_inicio)} />
-        <Dato
-          etiqueta="Duración"
-          valor={`${p.duracion_meses} ${p.duracion_meses === 1 ? "mes" : "meses"}`}
-        />
-        <Dato etiqueta="Moneda" valor={p.moneda} />
-        <Dato etiqueta="Área de Obra" valor={p.usa_obra ? "Sí" : "No"} />
+        <Dato etiqueta="Inicio" valor={formatearFecha(p.fecha_inicio)} />
+        <Dato etiqueta="Duración" valor={`${p.duracion_meses} ${p.duracion_meses === 1 ? "mes" : "meses"}`} />
+        {p.moneda !== "COP" && <Dato etiqueta="Moneda" valor={p.moneda} />}
       </dl>
 
       {areas.map(([area, titulo]) => {
@@ -238,9 +234,9 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
 
 function Dato({ etiqueta, valor }: { etiqueta: string; valor: string | null }) {
   return (
-    <div>
+    <div className="flex items-baseline gap-1.5">
       <dt className="text-xs font-medium uppercase tracking-wider text-leaf-800">{etiqueta}</dt>
-      <dd className="mt-0.5 text-leaf-900">{valor || "—"}</dd>
+      <dd className="text-leaf-900">{valor || "—"}</dd>
     </div>
   );
 }
