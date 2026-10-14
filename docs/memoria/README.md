@@ -8,6 +8,7 @@ Repositorio de trazabilidad e historia del desarrollo de la plataforma PMO360 ·
 
 | # | Documento | Tipo (Diátaxis) | Contenido |
 | --- | --- | --- | --- |
+| 00 | [Origen y propósito](00-origen-y-proposito.md) | Explicación | Cómo nació, por qué, para qué, para quién y referencias; guion de 3 minutos |
 | 01 | [Resumen ejecutivo](01-resumen-ejecutivo.md) | Explicación | Estado, hechos clave y pendientes |
 | 02 | [Historia](02-historia.md) | Explicación | Cronología desde los antecedentes hasta hoy |
 | 03 | [Marco teórico](03-marco-teorico.md) | Explicación | Teoría de gestión de proyectos, normativa y su verificación |
