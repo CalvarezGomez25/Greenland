@@ -18,6 +18,7 @@ Repositorio de trazabilidad e historia del desarrollo de la plataforma PMO360 ·
 | 07 | [Lecciones aprendidas](07-lecciones-aprendidas.md) | Explicación | Incidentes y qué cambió |
 | 08 | [Fuentes y verificación](08-fuentes-y-verificacion.md) | Referencia | Bibliografía con nivel N1–N3 |
 | 09 | [Gobierno de la memoria](09-gobierno-de-la-memoria.md) | Guía práctica | Roles, disparadores, comprobaciones, pendientes |
+| — | [PDF para compartir: origen y propósito](PMO360-origen-y-proposito.pdf) | Explicación | Versión de 4 páginas de `00`, sin guion del presentador ni referencias internas |
 | — | [Registro de cambios](CHANGELOG.md) | Referencia | Qué cambió y cuándo |
 | — | [Sesiones](sesiones/README.md) | Referencia | Bitácora de jornadas |
 | — | [Plantillas](plantillas/) | Guía práctica | ADR, lección y sesión |
