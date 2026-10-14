@@ -10,7 +10,7 @@ Versión 3.0, actualizada el 11 de octubre de 2026. Es la única versión vigent
 | Última actualización | 11 de octubre de 2026 (incorpora lo construido, auditado y decidido del 9 al 11 de octubre) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
-| Código y documentación técnica | `README.md` (instalación y variables), `docs/SUPUESTOS.md`, `docs/AUDITORIA.md`, `docs/presentacion-faro/` |
+| Código y documentación técnica | `README.md` (instalación y variables), `docs/SUPUESTOS.md`, `docs/AUDITORIA.md`, `docs/presentacion-faro/`, `docs/memoria/` (historia, marco teórico, decisiones, trazabilidad y lecciones) |
 
 ### Historial de cambios
 
