@@ -12,7 +12,7 @@
 | Producción | Instalada por el propietario con **datos ficticios**; confirmó que funciona |
 | **No ha ocurrido** | Ningún correo se ha enviado en producción; no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
 | Marco de adopción | FARO: piloto de 90 días con 3–4 de los 12 proyectos; sin cifras de ahorro porque no existen |
-| Documento raíz | `ESPECIFICACION.md` v3.0 |
+| Documento raíz | `ESPECIFICACION.md` v3.1 |
 
 ## Cinco hechos que explican el proyecto
 

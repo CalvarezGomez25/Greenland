@@ -75,7 +75,7 @@ Roles completos en `ESPECIFICACION.md` §8. Escala de referencia: unos 12 proyec
 
 - No es una herramienta de residencia de obra detallada [Decisión: [ADR-0006](decisiones/ADR-0006-presupuesto-gerencial-por-capitulos.md)].
 - No reemplaza el criterio del gerente ni promete ahorros [Decisión: [ADR-0019](decisiones/ADR-0019-faro-y-piloto-de-90-dias.md)].
-- No calcula impuestos, flujo de caja, reajustes por IPC ni pólizas (fuera de alcance de la v3.0).
+- No calcula impuestos, flujo de caja, reajustes por IPC ni pólizas (fuera de alcance de la v3.1).
 - No está lista para datos reales: faltan región y confidencialidad, alojamiento apto para uso comercial y revisión de seguridad independiente (P12–P14).
 
 ## 7. Referencias que la sustentan

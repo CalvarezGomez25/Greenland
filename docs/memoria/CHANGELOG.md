@@ -2,6 +2,15 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.1] · 15 de octubre de 2026
+### Cambiado
+- `ESPECIFICACION.md` a la versión 3.1: marco de referencia ampliado con nivel de verificación (PMBOK 8.ª, ISO 21502, ISO 31000, historia del valor ganado, Ley 594), hitos 20 a 22, decisiones del 12 al 15 de octubre, pendientes P26 a P31, estado del material FARO (17.1 y 17.2) y sección 18 (memoria del proyecto).
+- README alineado con la versión 3.1.
+### Añadido
+- Memoria del proyecto `docs/memoria/` y PDF de origen y propósito (`6a6f89a`, `66f6811`, `ff74209`).
+### Decisión
+- No se crea un rol «gerente junior»; los roles quedan como están (sección 8 de la especificación).
+
 ## [3.0-ajustes] · 12 de octubre de 2026
 ### Cambiado
 - Tablero de control: proyectos ordenados por código (`b2da7d3`).

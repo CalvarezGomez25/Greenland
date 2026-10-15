@@ -1,14 +1,14 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.0, actualizada el 11 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.1, actualizada el 15 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.0, única versión vigente |
-| Última actualización | 11 de octubre de 2026 (incorpora lo construido, auditado y decidido del 9 al 11 de octubre) |
-| Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026) y las decisiones del usuario durante la construcción (sección 14) |
+| Versión | 3.1, única versión vigente |
+| Última actualización | 15 de octubre de 2026 (incorpora lo construido, auditado y decidido del 9 al 14 de octubre, el marco FARO completo y la memoria del proyecto) |
+| Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
 | Código y documentación técnica | `README.md` (instalación y variables), `docs/SUPUESTOS.md`, `docs/AUDITORIA.md`, `docs/presentacion-faro/`, `docs/memoria/` (historia, marco teórico, decisiones, trazabilidad y lecciones) |
 
@@ -18,16 +18,18 @@ Versión 3.0, actualizada el 11 de octubre de 2026. Es la única versión vigent
 | --- | --- | --- |
 | 2.0 | 9 de octubre de 2026 | Rol y módulo de Interventoría |
 | 3.0 | 11 de octubre de 2026 | Estado de construcción (sección 0.1); marca PMO360, menú lateral, ayuda y glosario (secciones 1.1, 3 y 5.Q); aprobación de contratos nuevos por el director (M); alertas por correo (5.O); presupuesto sobre la EDT (J); riesgos ampliados e importación desde Excel (E); informe gerencial de una página y envío semanal (5.P); auditoría y correcciones (12.1); festivos automáticos (N); parámetros, modelo de datos, roles, supuestos y pendientes actualizados; marco FARO para presentar y pilotear la plataforma (sección 17) |
+| 3.1 | 15 de octubre de 2026 | Ajustes del tablero del proyecto del 12 de octubre (gráfico de avance, resumen de control, tablero ordenado por código; sección 3 y hito 21); marco FARO completo con su estado de material y pendientes (sección 17 y hito 20); marco de referencia ampliado con PMBOK 8.ª edición, ISO 21502, ISO 31000, historia del valor ganado y Ley 594 de 2000, con nivel de verificación (sección 2); memoria del proyecto `docs/memoria/` (sección 18 y hito 22); decisión de no crear un rol «gerente junior» (secciones 8 y 14); pendientes P26 a P31; estado al 15 de octubre (sección 0.1) |
 
-### 0.1 Estado actual de un vistazo (11 de octubre de 2026)
+### 0.1 Estado actual de un vistazo (15 de octubre de 2026)
 
 | Aspecto | Estado |
 | --- | --- |
 | Hitos 1 a 11 de la sección 12 | Construidos. Todos los módulos del mapa (sección 4) están disponibles en la aplicación |
-| Extensiones posteriores | Construidas: aprobación de contratos, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial y su envío semanal, marca, menú lateral y ayuda |
-| Pruebas automáticas | 305 pruebas unitarias (Vitest) y 494 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas al 11 de octubre de 2026 |
+| Extensiones posteriores | Construidas: aprobación de contratos, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial y su envío semanal, marca, menú lateral y ayuda, y los ajustes del tablero del proyecto (hito 21). Material del marco FARO producido (hito 20). Memoria del proyecto creada (hito 22) |
+| Pruebas automáticas | 305 pruebas unitarias (Vitest, 33 archivos) y 494 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 14 de octubre de 2026 |
 | Producción | El usuario instaló el SQL de la base en Supabase y desplegó en Vercel; confirmó que funciona con datos ficticios |
 | Aún no ocurrido | Ningún correo se ha enviado en producción (falta configurar el proveedor, `CRON_SECRET` y el usuario de solo lectura); no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
+| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 21 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
 | Condiciones antes de datos reales | Definir región y confidencialidad; plan de alojamiento apto para uso comercial; revisión de seguridad (pendientes P12 a P14) |
 
 ## 1. Visión, alcance y principios
@@ -56,22 +58,28 @@ Versión 3.0, actualizada el 11 de octubre de 2026. Es la única versión vigent
 | Tipografías | Baloo 2 (títulos) y Roboto (texto); los documentos exportados las incrustan |
 | Paleta | Verdes de la marca (hoja #4c700b, #386631, #164504) y tierra #7c401d; semáforo Verde, Amarillo y Rojo siempre acompañado de la palabra |
 
-**Fuera de alcance de la v3.0:** hoja de ruta de certificación PMP del libro (es desarrollo personal del gerente, no gestión de proyectos); módulo de flujo de caja; programas (el campo queda reservado); multimoneda; reajustes por IPC; impuestos y pólizas.
+**Fuera de alcance de la v3.1:** hoja de ruta de certificación PMP del libro (es desarrollo personal del gerente, no gestión de proyectos); módulo de flujo de caja; programas (el campo queda reservado); multimoneda; reajustes por IPC; impuestos y pólizas.
 
 ## 2. Marco de referencia
 
 | Referencia | Uso en la plataforma | Verificación |
 | --- | --- | --- |
-| PMBOK Guide 7.ª ed. (PMI) | Dominios de desempeño y base de las plantillas del libro | Citada por el libro; no re-verificada |
+| PMBOK Guide 7.ª ed. (PMI) | Dominios de desempeño y base de las plantillas del libro | Citada por el libro. **Hay una edición vigente más nueva (8.ª, fila siguiente)**; pendiente P26 |
+| PMBOK Guide 8.ª ed. (PMI) | Seis principios y siete dominios de desempeño (gobernanza, alcance, cronograma, finanzas, interesados, recursos y riesgo); recupera una guía de procesos no prescriptiva | **N1:** la página de producto de PMI lo describe (verificado el 14 de octubre de 2026 vía buscador; el texto de la guía no se leyó). La salida en noviembre de 2025 y las cinco áreas de enfoque: N2, fuentes de formación |
+| ISO 21502:2020, Guidance on project management | Guía de gestión de proyectos para cualquier ciclo de vida; reemplazó a ISO 21500:2012 | **N2:** listados de organismos de normalización coincidentes; la norma no se leyó |
+| Historia del valor ganado | Origen en el *Cost of Work Report* de PERT/Cost (1962); criterios C/SCSC del Departamento de Defensa de EE. UU. (1967); reescritura de 32 guías (1995-1996) e incorporación a ANSI/EIA-748 (1998) | **N2:** DTIC, CMS, biblioteca de PMI |
 | Grupos de procesos PMI: Inicio, Planificación, Ejecución, Monitoreo y control, Cierre | Clasificación de módulos (sección 4) | Modelo conocido de PMI; no se verificó la publicación específica |
 | The Standard for Portfolio Management, 4.ª ed. (PMI) | Estructura de portafolio y dashboard | [Existencia verificada en pmi.org](https://www.pmi.org/shop/p-/book/the-standard-for-portfolio-management-—-fourth-edition/00101600601); falta verificar si hay edición posterior |
 | The Standard for Program Management, 4.ª ed. (PMI) | Campo de programa reservado | [Existencia verificada en pmi.org](https://www.pmi.org/shop/p-/book/the-standard-for-program-management-—-fourth-edition-(english)/00101600701) |
 | PMI Practice Standard for EVM, 2.ª ed. | Fórmulas de valor ganado | Citada por el libro; no re-verificada |
 | ISO 21500:2021, Project, programme and portfolio management: Context and concepts | Vocabulario y alineación general | [Título verificado](https://committee.iso.org/sites/tc258/home/projects/published/iso-3.html) |
-| ISO 31000:2018 | Gestión de riesgos | Citada por el libro; no re-verificada |
+| ISO 31000:2018 | Gestión de riesgos: ocho principios, marco y proceso; guía no certificable | Citada por el libro. **N2:** descripciones coincidentes de fuentes secundarias; la norma no se leyó |
 | Ley 80 de 1993, art. 32, num. 1 y 2 | La interventoría es obligatoria en contratos de obra adjudicados por licitación pública; se contrata por concurso de méritos como especie de consultoría | Citada en la [Guía de supervisión de Colombia Compra Eficiente](https://colombiacompra.gov.co/sites/cce_public/files/documentos_adicionales_oc/guia_de_supervision-_cpr-115.pdf) y en el [concepto C-1832 de 2025](https://relatoria.colombiacompra.gov.co/conceptos/c-1832-de-2025/); no se leyó el texto oficial de la ley |
 | Ley 51 de 1983 (festivos) | Base del cálculo automático de los festivos de Colombia para los plazos en días hábiles (módulo N); la Pascua se calcula | Citada por el código y por `docs/SUPUESTOS.md`; no se leyó el texto oficial |
 | Ley 1474 de 2011, arts. 83 y 85 | Supervisión frente a interventoría; seguimiento técnico, y administrativo, financiero, contable o jurídico si se le encarga; ajuste del contrato de interventoría | Mismas dos fuentes. El art. 84 (facultades y deberes) no se pudo verificar: el sitio del Gestor Normativo bloqueó la consulta. Confirmar vigencia en el texto oficial antes de usar la norma en un contrato |
+| Ley 594 de 2000, Ley General de Archivos (art. 21 y Título V); Decreto 1080 de 2015 | Obligan a las entidades públicas a un programa de gestión documental. Aplica a información de la plataforma solo si hay archivo público de por medio; no se ha definido | **N2:** programas de gestión documental de entidades y un artículo académico; **no se leyeron los textos oficiales ni el Decreto 2609 de 2012**. Pendiente P31 |
+
+**Niveles de verificación (v3.1).** N1: confirmado en la página del editor o en documento oficial. N2: varias fuentes secundarias independientes coinciden. N3: fuente única o sin contrastar. Las páginas de PMI, ISO y de otros editores no se pudieron abrir desde el entorno de trabajo el 14 de octubre de 2026: todo N1 y N2 viene de resultados de búsqueda. Detalle, fuentes y enlaces en `docs/memoria/03-marco-teorico.md` y `docs/memoria/08-fuentes-y-verificacion.md`.
 
 Los grupos de procesos describen en qué momento se usa cada módulo; no son estados del proyecto. Monitoreo y control corre en paralelo a todas las fases.
 
@@ -113,7 +121,7 @@ N1  TABLERO DEL PROYECTO
 | Gestión del proyecto | Los módulos del proyecto elegido agrupados por área (Gestión, Obra, Interventoría), solo los que el rol permite |
 | Pie | Nombre de la persona, «Cambiar de usuario» y «Salir» |
 
-**Tablero del proyecto (N1), v3.0.** Arriba, el gráfico «Avance del proyecto: lo planeado frente a lo construido» (aro exterior = avance físico, marca = avance planificado, aro interior = avance financiero, con los tres porcentajes y la diferencia frente al plan) junto a un resumen de control en rejilla: estado calculado, SPI y CPI; presupuesto (BAC), costo real (AC) y proyección final (EAC) con el ahorro o sobrecosto previsto; riesgos activos con su nivel máximo; cambios pendientes; y decisiones pendientes del proyecto. La tarjeta «Avance físico / financiero» se retiró por redundante: el gráfico muestra lo mismo y además el planificado. La ficha (cliente, ubicación, inicio y duración) se compactó en una sola franja justo debajo del nombre del proyecto; la moneda solo se muestra si no es COP. En celular todo se apila en una columna. Decisión del usuario, 12 de octubre de 2026.
+**Tablero del proyecto (N1), v3.1.** Arriba, el gráfico «Avance del proyecto: lo planeado frente a lo construido» (aro exterior = avance físico, marca = avance planificado, aro interior = avance financiero, con los tres porcentajes y la diferencia frente al plan) junto a un resumen de control en rejilla: estado calculado, SPI y CPI; presupuesto (BAC), costo real (AC) y proyección final (EAC) con el ahorro o sobrecosto previsto; riesgos activos con su nivel máximo; cambios pendientes; y decisiones pendientes del proyecto. La tarjeta «Avance físico / financiero» se retiró por redundante: el gráfico muestra lo mismo y además el planificado. La ficha (cliente, ubicación, inicio y duración) se compactó en una sola franja justo debajo del nombre del proyecto; la moneda solo se muestra si no es COP. En celular todo se apila en una columna. Decisión del usuario, 12 de octubre de 2026.
 
 En la parte superior de cada pantalla de proyecto se muestra su nombre y código, y el enlace «Ver guía» abre la guía de ese módulo. El calendario de festivos no está en el menú (se consulta por su dirección y se mantiene solo).
 
@@ -508,6 +516,8 @@ Los valores derivados no se guardan; se calculan a partir de estos datos. Excepc
 | Interventoría | Contratos asignados | Ver, conceptuar, verificar avance, registrar hallazgos e informes. No edita datos del contrato ni aprueba (módulo N y matriz siguiente). Sub-roles: director, técnico, administrativo, financiero, jurídico o contable |
 | Consulta | Proyectos asignados | Solo lectura (cliente, directivos) |
 
+**Crear proyectos y roles nuevos (decisión del 15 de octubre de 2026).** Solo el administrador crea proyectos y asigna personas a ellos. Se consideró un rol global «gerente junior» que creara y gestionara sus propios proyectos sin acceso a estructura ni parámetros; **se decidió no crearlo y dejar los roles como están**. Para que un gerente nuevo gestione un proyecto, el administrador lo crea y lo asigna como «Gerente de proyecto» en «Equipo del proyecto». Análisis técnico de lo que habría implicado: una migración, cambios de tipos, permisos y pantalla «Nuevo proyecto», pruebas de base de datos y reinstalar el SQL.
+
 **Matriz propuesta para Interventoría** (ver P5 y P9):
 
 | Módulo | Acceso | Acciones |
@@ -627,7 +637,7 @@ Cada hito termina con un entregable que se prueba con datos reales y se confirma
 
 Fase posterior, fuera de esta versión: flujo de caja, dependencias y ruta crítica, programas, multimoneda.
 
-### 12.1 Estado de construcción e hitos adicionales (v3.0)
+### 12.1 Estado de construcción e hitos adicionales (v3.0 y v3.1)
 
 Los hitos 1 a 11 están **construidos**, con pruebas de base de datos (`pruebas-sql/t-h1` a `t-h9` y `t-h11`; el hito 10, exportaciones, se cubre con pruebas unitarias) y pruebas unitarias de los cálculos. «Probado» significa con PostgreSQL real en memoria y un simulador de la API de Supabase; la primera corrida contra el Supabase real la hizo el usuario con datos ficticios.
 
@@ -641,6 +651,9 @@ Los hitos 1 a 11 están **construidos**, con pruebas de base de datos (`pruebas-
 | 17. Presupuesto sobre la EDT | Capítulos desde la EDT, herencia en tareas y costo por elemento (0020) | Construido. `t-edt-presupuesto` (21 comprobaciones) |
 | 18. Riesgos ampliados e importación | Campos nuevos e importación desde Excel (0021, módulo E) | Construido. `t-riesgos-importar` (17) y pruebas unitarias del lector. Probado con los 41 riesgos del Excel de la Planta El Silencio en una copia local con datos ficticios |
 | 19. Informe gerencial y envío semanal | Informe de una página en PDF y Excel, botón por proyecto, correo semanal con adjuntos y parámetro de apagado (0022, módulo P) | Construido. 12 pruebas unitarias; probado en copia local con envío por «consola». **Sin envío real todavía** |
+| 20. Marco FARO y presentación | Framework de cuatro pasos (sección 17), guion para exponer, lámina de una página en PDF, PNG y PPTX editable, documento corto, guion de video y el hilo con el nombre PMO360 (`docs/presentacion-faro/`, artifact web «FARO – Que ningún proyecto navegue a ciegas») | Producido el 11 de octubre de 2026. No es código: no tiene pruebas automáticas. Pendiente reemplazar los marcadores `[Tu nombre]` y `[por definir]` (P29) |
+| 21. Tablero del proyecto y orden por código | Tablero de control con proyectos ordenados por código; gráfico de avance «planeado frente a construido»; resumen de control en rejilla (estado, SPI, CPI, BAC, AC, EAC, riesgos, cambios y decisiones); ficha compacta bajo el nombre del proyecto (sección 3) | Construido el 12 de octubre de 2026. Verificado en pantalla ancha y en celular de 390 px; `tsc`, `eslint` y compilación correctos |
+| 22. Memoria del proyecto | Repositorio `docs/memoria/` (sección 18): historia, marco teórico, buenas prácticas de documentación, fichas de decisión, trazabilidad, lecciones, fuentes, gobierno y un PDF de origen y propósito | Creado el 14 de octubre de 2026. Enlaces internos verificados; no es código |
 
 ## 13. Casos de prueba de referencia
 
@@ -753,6 +766,9 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | Presupuesto y EDT | El presupuesto puede construirse sobre los elementos de la EDT (creación por nivel y herencia en tareas) |
 | Informe gerencial | Una página, en Excel y PDF, desde cada proyecto; envío automático los lunes a las 7:30 a. m. a las personas registradas, con resumen en el cuerpo |
 | Presentación | Framework FARO (sección 17); el piloto propuesto es de 90 días con 3 a 4 de los 12 proyectos; GreenLand como marca; presenta el usuario; no se citan cifras de ahorro porque no existen |
+| Tablero del proyecto | El gráfico de avance sustituye a la tarjeta «Avance físico / financiero» por redundante; resumen de control en rejilla; ficha bajo el nombre; tablero de control ordenado por código (12 de octubre de 2026) |
+| Roles y creación de proyectos | No se crea un rol «gerente junior». Solo el administrador crea proyectos; un gerente nuevo se asigna como «Gerente de proyecto» (15 de octubre de 2026) |
+| Memoria del proyecto | Se documenta la historia, las decisiones y la trazabilidad en `docs/memoria/`, con niveles de verificación y regla de no inventar (14 de octubre de 2026) |
 
 **Discrepancias detectadas en los documentos del usuario**
 
@@ -797,7 +813,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | P4 | Definición de «semana N.º» | Resuelto: semana calendario ISO |
 | P5 | Matriz definitiva de permisos por rol, módulo y acción | Abierto: requiere validación del usuario |
 | P6 | Comparar la bitácora con los requisitos contractuales de entidades públicas o de la interventoría | Abierto |
-| P7 | Flujo de caja, reajustes por IPC y pólizas | Abierto; fuera del alcance de la v3.0 |
+| P7 | Flujo de caja, reajustes por IPC y pólizas | Abierto; fuera del alcance de la v3.1 |
 | P8 | Verificar ediciones posteriores de los estándares de portafolio y programa de PMI | Abierto |
 | P9 | Qué sub-roles de interventoría contrata GreenLand y qué debe ver cada uno | Parcial: el presupuesto no se expone a la interventoría; falta validar el resto de la matriz |
 | P10 | Contenido obligatorio de los estudios previos y pliegos según el régimen aplicable | Abierto |
@@ -816,6 +832,12 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | P23 | Quién mantiene la plataforma y cómo se explica su origen (construida con asistencia de inteligencia artificial y pruebas automáticas); designar un responsable y un apoyo | Abierto |
 | P24 | Siglas en español (por ejemplo IDP e IDC en lugar de SPI y CPI) | Abierto; solo si se pide |
 | P25 | Orden del tablero | Resuelto el 12 de octubre de 2026: por código del proyecto |
+| P26 | Actualizar las referencias del PMBOK a la 8.ª edición en esta sección 2 y revisar si cambian los nombres de dominios usados en la plataforma | Abierto; memoria M-1 |
+| P27 | Aportar las conversaciones anteriores o un resumen (libro, especificación inicial, prototipos, motivación) para completar la fase 0 de la historia | Abierto; memoria M-6. Solo el propietario puede hacerlo |
+| P28 | Designar un revisor técnico independiente para la memoria y la revisión de seguridad | Abierto; memoria M-5 |
+| P29 | Reemplazar `[Tu nombre]` y `[por definir]` en el material FARO y sustituir las escenas ilustrativas de los pasos A, R y O por ejemplos reales no sensibles, si se quiere presentarlas como hechos de GreenLand | Abierto |
+| P30 | Leer en fuente primaria ISO 21502, ISO 31000, PMBOK 8.ª, Mendelow (1991) y los textos de las leyes citadas | Abierto; memoria M-2 |
+| P31 | Consultar con Jurídica o con un archivista si la Ley 594 de 2000 aplica a la información de la plataforma | Abierto; memoria M-3 |
 
 ## 15. Trazabilidad: hoja del libro a módulo
 
@@ -834,6 +856,8 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | (sin hoja; solicitud del usuario del 9 de octubre de 2026) | N |
 | Registro de Riesgos por frente, Planta Empacadora El Silencio (Excel, 8 de octubre de 2026; hojas Registro, Matriz y Resumen) | E (campos ampliados, importación y caso 13.11) |
 | (sin hoja; solicitudes del usuario del 10 y 11 de octubre de 2026) | O, P, Q y sección 17 |
+| (sin hoja; solicitudes del usuario del 12 de octubre de 2026) | Tablero del proyecto y tablero de control (sección 3, hito 21) |
+| (sin hoja; solicitudes del usuario del 14 y 15 de octubre de 2026) | Sección 18 (memoria del proyecto), sección 2 (marco de referencia) y decisión sobre roles (sección 8) |
 
 ## 16. Uso con Claude Code (sin saber programar)
 
@@ -850,7 +874,7 @@ La plataforma ya está construida (secciones 0.1 y 12.1). Este documento es la b
 2. Redesplegar en Vercel.
 3. Para los correos: configurar las variables de la sección 10 (pendientes P16 y P17).
 
-> Lee ESPECIFICACION.md completo (versión 3.0) y README.md. La plataforma PMO360 ya está construida: revisa las secciones 0.1 y 12.1. Soy gerente de proyectos y no sé programar: explícame cada paso en lenguaje sencillo y pídeme confirmación antes de instalar, ejecutar o publicar cualquier cosa. Antes de cambiar código, resume lo que entendiste y lista tus dudas. Mantén todas las reglas y umbrales como parámetros configurables (sección 9). Nunca uses ni me pidas la clave secreta (service_role) de Supabase, y no guardes contraseñas en el repositorio. Valida cada cambio con `npm run verificar`, `npm run test:sql` y los casos de la sección 13. No inventes cifras: si un dato no existe, dilo.
+> Lee ESPECIFICACION.md completo (versión 3.1), README.md y docs/memoria/README.md. La plataforma PMO360 ya está construida: revisa las secciones 0.1 y 12.1. Soy gerente de proyectos y no sé programar: explícame cada paso en lenguaje sencillo y pídeme confirmación antes de instalar, ejecutar o publicar cualquier cosa. Antes de cambiar código, resume lo que entendiste y lista tus dudas. Mantén todas las reglas y umbrales como parámetros configurables (sección 9). Nunca uses ni me pidas la clave secreta (service_role) de Supabase, y no guardes contraseñas en el repositorio. Valida cada cambio con `npm run verificar`, `npm run test:sql` y los casos de la sección 13. No inventes cifras: si un dato no existe, dilo.
 
 ## 17. Presentación y adopción: marco FARO
 
@@ -889,3 +913,55 @@ Los umbrales para decidir al final (seguir, ajustar o parar) no se fijan en este
 **Lo que se declara de frente:** solo datos ficticios hasta hoy; sin línea base de ahorro; costo de operación por calcular; alojamiento actual de uso no comercial; límites técnicos conocidos (500 riesgos por importación, 1.000 filas por lista, dos tareas programadas y 60 segundos por ejecución), que para 12 proyectos no son un obstáculo; sin comparación con software comercial; sin revisión de seguridad independiente.
 
 **Referencias de comunicación usadas (no verificadas en fuentes primarias):** el Principio de la Pirámide de Barbara Minto (respuesta primero, luego tres o cuatro argumentos) y el criterio MECE (cada paso se distingue de los demás y no falta ninguno), citados en guías de consultoría; y el estilo de explicación del creador de contenido Sandeep Swadia, del que se tomó solo la estructura (anuncia la cantidad de pasos y repite en cada uno afirmación, historia, evidencia y acción), analizada a partir de las transcripciones de tres videos.
+
+### 17.1 Origen del marco y decisiones que lo definieron (11 de octubre de 2026)
+
+| Paso | Qué se hizo | Resultado |
+| --- | --- | --- |
+| Encargo | El usuario pidió un marco de máximo cuatro pasos para dar sustento, orden y estructura al argumento de la plataforma (utilidad, sostenibilidad, escalabilidad), con tono neutro, convincente y fácil de exponer, tomando como referencia la estructura de explicación de un creador de contenido | Alcance acordado: entender la plataforma y pedir un piloto; todos los formatos; emoción antes que cifras; nombre mnemotécnico |
+| Investigación | Se leyeron las transcripciones de 3 de los 458 videos del creador (no se pudieron ver los videos) y guías de armado de argumentos (Principio de la Pirámide, MECE) | Referencias **N3**: guías de consultoría y divulgación, no estándares |
+| Nombre | Se propusieron BASE y FARO; el usuario eligió **FARO** con la imagen del faro como gancho | Fuente única, Alerta a tiempo, Respaldo, Operación que escala |
+| Caso local | Un hilo de investigación paralelo evaluó casos colombianos (Reficar, túnel de La Línea, Hidroituango, entre otros). El agente no pudo abrir páginas y ninguna cifra se contrastó con la fuente primaria | **Descartados** por sensibilidad política, procesos abiertos y falta de contraste. Se mantienen escenas ilustrativas rotuladas como tales |
+| Presentación | Con colegas se abre con la imagen del faro; con la junta se abre directo con tres preguntas; presenta el usuario; GreenLand como marca | Reglas de la sección 17 |
+| Hilo con el nombre | El usuario notó que no se explicaba la relación entre FARO y PMO360 | Anillo de 360° con cuatro cuartos de vuelta y la frase puente «PMO360 es la luz; FARO es cómo la mantenemos encendida» |
+
+### 17.2 Estado del material de presentación (15 de octubre de 2026)
+
+| Pieza | Archivo o lugar | Estado |
+| --- | --- | --- |
+| Guion para exponer | `docs/presentacion-faro/01-guion-para-exponer.docx` | Producido |
+| Lámina de una página | `docs/presentacion-faro/02-lamina-una-pagina.pdf`, `.png` y `.pptx` (editable) | Producida |
+| Documento corto | `docs/presentacion-faro/03-documento-corto.docx` y `.pdf` | Producido |
+| Guion de video | `docs/presentacion-faro/04-guion-de-video.docx` (objetivo 3 min 30 s, unas 370 palabras) | Producido; el video no se ha grabado |
+| Versión web | Artifact «FARO – Que ningún proyecto navegue a ciegas» en la cuenta del usuario | Publicado el 11 de octubre de 2026 |
+| Origen y propósito | `docs/memoria/00-origen-y-proposito.md` y `docs/memoria/PMO360-origen-y-proposito.pdf` (4 páginas, para compartir) | Producido el 14 de octubre de 2026 |
+| Marcadores sin completar | `[Tu nombre]` y `[por definir]` en los documentos | Pendiente P29 |
+
+**Estado de los dolores que motivan los pasos.** Las escenas de los pasos A, R y O son hipótesis ilustrativas, no casos reales de GreenLand (etiqueta **Supuesto**). El paso F usa la historia de Abraham Wald, aviones de la Segunda Guerra Mundial (fuente de divulgación, **N3**). Los hechos que sí están verificados son los de la columna «Lo que la plataforma ya hace» de la tabla de la sección 17.
+
+**El piloto es un pedido, no una decisión tomada.** Elegir proyectos, responsable, medidas y criterios de éxito sigue abierto (P20, P21); depende además de cerrar P12 a P14 si se usan datos reales.
+
+## 18. Memoria del proyecto (trazabilidad e historia)
+
+Repositorio `docs/memoria/`, creado el 14 de octubre de 2026 para explicar cómo nació la plataforma, por qué, para qué, para quién, con qué referencias y qué decisiones la formaron. No reemplaza este documento: lo resume y lo enlaza.
+
+| Documento | Contenido |
+| --- | --- |
+| `README.md` | Índice y límites de la memoria |
+| `00-origen-y-proposito.md` y su PDF | Cómo nació, por qué, para qué, para quién; guion de tres minutos; preguntas difíciles |
+| `01-resumen-ejecutivo.md` | Estado, hechos clave y pendientes |
+| `02-historia.md` | Cronología desde los antecedentes hasta hoy, con commits |
+| `03-marco-teorico.md` | Teoría, normativa y nivel de verificación de cada afirmación |
+| `04-buenas-practicas-documentacion.md` | Investigación sobre cómo documentar proyectos, diagnóstico y brechas |
+| `decisiones/` | 21 fichas de decisión (ADR) |
+| `06-trazabilidad.md` | Módulo → decisión → migración → prueba → commit |
+| `07-lecciones-aprendidas.md` | Incidentes y qué cambió |
+| `08-fuentes-y-verificacion.md` | Bibliografía con niveles N1 a N3 |
+| `09-gobierno-de-la-memoria.md` | Roles, disparadores de actualización y pendientes |
+| `CHANGELOG.md`, `sesiones/`, `plantillas/` | Registro de cambios, bitácora de sesiones y plantillas |
+
+**Reglas de rigor.** No se inventan fechas, cifras, normas ni citas; lo no conocido se escribe como «no disponible» y se lista como brecha. Cada afirmación se etiqueta: **Verificado** (con fuente y nivel), **Declarado** (lo dijo el usuario), **Supuesto** o **Estimación**. Una decisión aceptada no se reescribe: se marca como reemplazada y se enlaza la nueva. No se guardan credenciales ni identificadores de proyecto de Supabase.
+
+**Límites.** Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (P27). Las fichas de decisión se redactaron después de las decisiones, a partir del registro de la sesión.
+
+**Cuándo se actualiza.** Con cada decisión, cambio de módulo o migración, incidente, cambio de versión de este documento y cierre de jornada (tabla de disparadores en `docs/memoria/09-gobierno-de-la-memoria.md`). Al subir de versión esta especificación se revisan también `README.md` y `docs/memoria/CHANGELOG.md` para que coincidan (lección L-8).
