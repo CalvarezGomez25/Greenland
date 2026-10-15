@@ -18,7 +18,7 @@ Versión 3.1, actualizada el 15 de octubre de 2026. Es la única versión vigent
 | --- | --- | --- |
 | 2.0 | 9 de octubre de 2026 | Rol y módulo de Interventoría |
 | 3.0 | 11 de octubre de 2026 | Estado de construcción (sección 0.1); marca PMO360, menú lateral, ayuda y glosario (secciones 1.1, 3 y 5.Q); aprobación de contratos nuevos por el director (M); alertas por correo (5.O); presupuesto sobre la EDT (J); riesgos ampliados e importación desde Excel (E); informe gerencial de una página y envío semanal (5.P); auditoría y correcciones (12.1); festivos automáticos (N); parámetros, modelo de datos, roles, supuestos y pendientes actualizados; marco FARO para presentar y pilotear la plataforma (sección 17) |
-| 3.1 | 15 de octubre de 2026 | Ajustes del tablero del proyecto del 12 de octubre (gráfico de avance, resumen de control, tablero ordenado por código; sección 3 y hito 21); marco FARO completo con su estado de material y pendientes (sección 17 y hito 20); marco de referencia ampliado con PMBOK 8.ª edición, ISO 21502, ISO 31000, historia del valor ganado y Ley 594 de 2000, con nivel de verificación (sección 2); memoria del proyecto `docs/memoria/` (sección 18 y hito 22); decisión de no crear un rol «gerente junior» (secciones 8 y 14); pendientes P26 a P31; estado al 15 de octubre (sección 0.1) |
+| 3.1 | 15 de octubre de 2026 | Ajustes del tablero del proyecto del 12 de octubre (gráfico de avance, resumen de control, tablero ordenado por código; sección 3 y hito 21); marco FARO completo con su estado de material y pendientes (sección 17 y hito 20); marco de referencia ampliado con PMBOK 8.ª edición, ISO 21502, ISO 31000, historia del valor ganado y Ley 594 de 2000, con nivel de verificación (sección 2); memoria del proyecto `docs/memoria/` (sección 18 y hito 22); historia de cómo se llegó al nombre PMO360 (sección 1.2); decisión de no crear un rol «gerente junior» (secciones 8 y 14); pendientes P26 a P32; estado al 15 de octubre (sección 0.1) |
 
 ### 0.1 Estado actual de un vistazo (15 de octubre de 2026)
 
@@ -59,6 +59,32 @@ Versión 3.1, actualizada el 15 de octubre de 2026. Es la única versión vigent
 | Paleta | Verdes de la marca (hoja #4c700b, #386631, #164504) y tierra #7c401d; semáforo Verde, Amarillo y Rojo siempre acompañado de la palabra |
 
 **Fuera de alcance de la v3.1:** hoja de ruta de certificación PMP del libro (es desarrollo personal del gerente, no gestión de proyectos); módulo de flujo de caja; programas (el campo queda reservado); multimoneda; reajustes por IPC; impuestos y pólizas.
+
+### 1.2 Cómo se llegó al nombre PMO360
+
+Registro reconstruido del historial de Git, de los artifacts de la cuenta y de la sesión de desarrollo. Etiquetas: **Declarado** (lo dijo el usuario), **Verificado** (comprobable en un archivo o commit), **Supuesto**.
+
+| Fecha (UTC) | Paso | Base |
+| --- | --- | --- |
+| 7 a 8 de octubre de 2026 | La especificación y el prototipo llevaban nombres descriptivos de obra: «Especificación técnica: Plataforma de Gestión de Obras» y «Plataforma de Obra». La aplicación se construyó con ese nombre en el ingreso y el inicio | Verificado: títulos de los artifacts y primeros commits |
+| Título actual de este documento | «Plataforma Integral de Gestión de Proyectos (PMO)»: el alcance pasa de la obra al portafolio, y aparece la sigla PMO | Verificado: encabezado de este archivo |
+| 10 de octubre, 12:05 a 12:20 | Las presentaciones de la plataforma se titulan «Plataforma PMO Greenland» y «Plataforma PMO Greenland, versión corta» (todavía sin nombre propio) | Verificado: títulos de los artifacts |
+| 10 de octubre, 20:10 | El usuario pide cambiar el nombre: «“Plataforma de obra” es genérico»; quiere algo más profesional y creativo para la página de inicio y de ingreso, «algo como PMO360», y pide un par de propuestas. **La idea PMO360 es del usuario** | Declarado |
+| 10 de octubre, 20:26 | Claude presenta cuatro opciones y recomienda la 2 (tabla siguiente). Advierte que **no verificó disponibilidad de marca ni de dominio** y sugiere revisarla en el registro de marcas de la SIC | Verificado: registro de la sesión |
+| 10 de octubre, 20:43 | El usuario decide: **«Usa como nombre PMO360»**, con el mensaje «Control integral de Proyectos», y pide no repetir GreenLand porque ya es la imagen principal | Declarado |
+| 10 de octubre, 20:46 | Se aplica en el ingreso, la pestaña del navegador («PMO360 · GreenLand»), el asunto y el botón de los correos («[PMO360] …»), las propiedades de los Excel y PDF exportados y el README. El nombre vive en un solo archivo (`src/lib/marca.ts`) | Verificado: commit `63ac198` |
+| 11 de octubre | Al preparar el marco FARO, el usuario nota que no se explica la relación entre FARO y PMO360. Se formula el significado: **el 360 es la vuelta completa** (visión integral, sin puntos ciegos) y cada paso de FARO ilumina un cuarto de vuelta (4 × 90° = 360°) | Verificado: commit `0517e5b`. **Supuesto:** el significado se formuló después de elegir el nombre; el usuario no lo explicó el 10 de octubre |
+
+**Opciones propuestas el 10 de octubre de 2026** (mensaje propuesto bajo el título):
+
+| # | Nombre | Mensaje propuesto | Resultado |
+| --- | --- | --- | --- |
+| 1 | PMO360 (idea del usuario) | «Portafolio, obra e interventoría en una sola vista» | **Elegido**, con otro mensaje |
+| 2 | GreenLand PMO360 | El mismo | Recomendada por Claude; descartada porque la marca ya va como imagen principal |
+| 3 | Atalaya | «Torre de control de tus proyectos de obra» | No elegida |
+| 4 | Raíz PMO | «Cimientos firmes para cada proyecto», en sintonía con el logo | No elegida |
+
+**Pendiente P32:** verificar la disponibilidad del nombre como marca (registro de la SIC) y como dominio antes de usarlo fuera de la empresa. Hoy no está verificada.
 
 ## 2. Marco de referencia
 
@@ -761,7 +787,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | Datos | Solo datos ficticios hasta decidir región y confidencialidad |
 | Nueva contratación | El director general revisa y aprueba cada contrato nuevo |
 | Alertas | Aviso por correo al responsable cuando una decisión queda pendiente, más un resumen diario |
-| Marca | Nombre PMO360, mensaje «Control integral de Proyectos», logo de GreenLand como imagen principal |
+| Marca | Nombre PMO360, mensaje «Control integral de Proyectos», logo de GreenLand como imagen principal. La idea del nombre es del usuario; se evaluaron cuatro opciones el 10 de octubre de 2026 (sección 1.2) |
 | Navegación y ayuda | Menú lateral izquierdo con proyectos ordenados por código; títulos en español; ayuda «?» y glosario; cambio de usuario en el pie |
 | Presupuesto y EDT | El presupuesto puede construirse sobre los elementos de la EDT (creación por nivel y herencia en tareas) |
 | Informe gerencial | Una página, en Excel y PDF, desde cada proyecto; envío automático los lunes a las 7:30 a. m. a las personas registradas, con resumen en el cuerpo |
@@ -838,6 +864,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | P29 | Reemplazar `[Tu nombre]` y `[por definir]` en el material FARO y sustituir las escenas ilustrativas de los pasos A, R y O por ejemplos reales no sensibles, si se quiere presentarlas como hechos de GreenLand | Abierto |
 | P30 | Leer en fuente primaria ISO 21502, ISO 31000, PMBOK 8.ª, Mendelow (1991) y los textos de las leyes citadas | Abierto; memoria M-2 |
 | P31 | Consultar con Jurídica o con un archivista si la Ley 594 de 2000 aplica a la información de la plataforma | Abierto; memoria M-3 |
+| P32 | Verificar la disponibilidad del nombre PMO360 como marca (registro de la SIC) y como dominio antes de usarlo fuera de la empresa | Abierto; no verificado |
 
 ## 15. Trazabilidad: hoja del libro a módulo
 
