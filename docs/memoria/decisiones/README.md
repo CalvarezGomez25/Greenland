@@ -28,6 +28,5 @@ Una ficha por decisión importante, con el formato propuesto por Michael Nygard 
 | [ADR-0020](ADR-0020-tablero-del-proyecto.md) | Tablero del proyecto: gráfico de avance y resumen de control | 2026-10-12 | Vigente |
 | [ADR-0021](ADR-0021-festivos-automaticos.md) | Festivos de Colombia calculados automáticamente | 2026-10-10 | Vigente |
 | [ADR-0022](ADR-0022-interesados-y-directorio-de-contactos.md) | Correo y teléfono en los interesados y directorio de contactos reutilizable | 2026-10-16 | Vigente |
-| [ADR-0023](ADR-0023-actividades-y-mi-trabajo.md) | Actividades y «Mi trabajo»: un mínimo de trabajo colaborativo dentro de PMO360 | 2026-10-16 | Vigente (mínimo, a validar en el piloto) |
 
 Las decisiones de detalle (supuestos S1–S13, P1–P11, D2, etc.) siguen en `docs/SUPUESTOS.md` y en la sección 14 de `ESPECIFICACION.md`.

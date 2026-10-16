@@ -2,12 +2,12 @@
 
 Plataforma web de gestión de proyectos de construcción (PMO): portafolio, EVM, cambios, cronograma,
 contratos, bitácora, documentos, cierre e interventoría. La especificación vigente es `ESPECIFICACION.md`
-(v3.3); los supuestos y pendientes adoptados están en [`docs/SUPUESTOS.md`](docs/SUPUESTOS.md). La historia, las decisiones, el marco teórico y la trazabilidad del proyecto están en [`docs/memoria/`](docs/memoria/README.md).
+(v3.2); los supuestos y pendientes adoptados están en [`docs/SUPUESTOS.md`](docs/SUPUESTOS.md). La historia, las decisiones, el marco teórico y la trazabilidad del proyecto están en [`docs/memoria/`](docs/memoria/README.md).
 
 ## Estado
 
 Los 11 hitos y sus ampliaciones están construidos (ver `ESPECIFICACION.md` §0.1 y §12.1). Verificación automática (`npm run verificar` + `npm run test:sql`):
-tipos, estilo, pruebas unitarias, compilación de producción y 586 comprobaciones SQL sobre PostgreSQL real
+tipos, estilo, pruebas unitarias, compilación de producción y 532 comprobaciones SQL sobre PostgreSQL real
 (PGlite) que cubren permisos por rol (RLS), reglas de negocio y las migraciones.
 
 ## Puesta en marcha (una sola vez)

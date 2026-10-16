@@ -4,7 +4,6 @@ import { RIESGOS, STAKEHOLDERS, WBS } from "./modulos/planificacion";
 import { HITOS, REUNIONES } from "./modulos/seguimiento";
 import { TAREAS } from "./modulos/cronograma";
 import { LECCIONES } from "./modulos/cierre";
-import { ACTIVIDADES } from "./modulos/actividades";
 
 export const DEFINICIONES: Record<string, Definicion> = {
   stakeholders: STAKEHOLDERS,
@@ -14,7 +13,6 @@ export const DEFINICIONES: Record<string, Definicion> = {
   reuniones: REUNIONES,
   tareas: TAREAS,
   lecciones: LECCIONES,
-  actividades: ACTIVIDADES,
 };
 
 export function obtenerDefinicion(clave: string): Definicion | null {

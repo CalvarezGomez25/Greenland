@@ -104,10 +104,6 @@ El usuario, al revisar el registro de interesados, pidió agregar correo electr�
 
 Entre la fase 7 y esta, el 15 de octubre, el usuario consultó cómo crear un rol «gerente junior» que creara y gestionara sus propios proyectos; tras el análisis decidió **no hacer cambios** (ver `ESPECIFICACION.md` §8).
 
-## Fase 9 · Actividades y «Mi trabajo» (16 de octubre)
-
-El usuario preguntó si convenía darle a la plataforma la forma de un gestor colaborativo tipo Trello, Asana o ClickUp. Tras comparar tres caminos (integrar una herramienta externa, módulo propio o reencuadrar toda la plataforma) y discutir el riesgo de complicar la herramienta, acordaron construir **un mínimo propio**, para gerencia, analistas e interventoría. El usuario aclaró que la organización no usa hoy ninguna de esas herramientas: cada persona gestiona su información a su manera. Se construyó la migración 0024 (tabla `actividades`), el tablero por proyecto y la pantalla «Mi trabajo». Se verificó con 54 comprobaciones de base de datos y 7 pruebas unitarias nuevas, más tipos, lint y compilación; **aún sin recorrido en navegador**. Decisión en [ADR-0023](decisiones/ADR-0023-actividades-y-mi-trabajo.md); la adopción se mide en el piloto (P34).
-
 ## Estado al 14 de octubre de 2026
 
 Ver [01-resumen-ejecutivo.md](01-resumen-ejecutivo.md).

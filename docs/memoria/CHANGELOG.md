@@ -2,17 +2,6 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
-## [3.3] · 16 de octubre de 2026
-### Añadido
-- Módulo **Actividades**: trabajo asignado a personas del proyecto, con responsable real, fecha límite, prioridad y estado (por hacer, en curso, bloqueada, hecha), ligable a un riesgo y a un elemento de la EDT; tablero de cuatro columnas por proyecto (migración 0024, [ADR-0023](decisiones/ADR-0023-actividades-y-mi-trabajo.md)).
-- Pantalla **Mi trabajo** (menú lateral): las actividades pendientes de la persona en todos sus proyectos, agrupadas por urgencia.
-- Guía «Actividades y Mi trabajo» en la ayuda.
-- Pruebas: `t-actividades` (54 comprobaciones de base de datos) y 7 pruebas unitarias.
-### Cambiado
-- `ESPECIFICACION.md` a la versión 3.3 (módulo R, secciones 4, 7 y 8, hito 24, S19 y P34).
-### Pendiente
-- Recorrido en navegador con datos ficticios y validación de adopción en el piloto (P34). Comentarios, adjuntos y avisos quedan para una fase siguiente, solo si hay uso real.
-
 ## [3.2] · 16 de octubre de 2026
 ### Añadido
 - Correo electrónico y teléfono en los interesados, con validación.

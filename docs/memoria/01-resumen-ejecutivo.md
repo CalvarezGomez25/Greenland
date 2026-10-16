@@ -8,7 +8,7 @@
 | --- | --- |
 | Alcance construido | 11 hitos de la versión 2.0, más ocho ampliaciones (instalación, auditoría, aprobación de contratos, marca y menú, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial) |
 | Código | Más de 55 commits, 23 migraciones, 17 suites de pruebas de base de datos |
-| Verificación **hoy** | 321 pruebas unitarias correctas; 586 comprobaciones de base de datos correctas (16 de octubre de 2026) (PostgreSQL real en memoria) |
+| Verificación **hoy** | 314 pruebas unitarias correctas; 532 comprobaciones de base de datos correctas (16 de octubre de 2026) (PostgreSQL real en memoria) |
 | Producción | Instalada por el propietario con **datos ficticios**; confirmó que funciona |
 | **No ha ocurrido** | Ningún correo se ha enviado en producción; no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
 | Marco de adopción | FARO: piloto de 90 días con 3–4 de los 12 proyectos; sin cifras de ahorro porque no existen |
