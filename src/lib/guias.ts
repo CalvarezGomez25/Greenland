@@ -12,6 +12,21 @@ export const GUIAS: Guia[] = [
     ],
   },
   {
+    clave: "actividades", titulo: "Actividades y Mi trabajo", quien: "Gerente, administrador, director general y analista PMO asignan; interventoría registra las suyas; cada responsable mueve las suyas",
+    pasos: [
+      "Entra al proyecto y abre «Actividades»: es un tablero con cuatro columnas (Por hacer, En curso, Bloqueada y Hecha).",
+      "Con «Agregar actividad» escribe qué hay que hacer, elige a la persona responsable (del equipo del proyecto) y la fecha límite. La prioridad y el estado se pueden ajustar.",
+      "Si la actividad responde a un riesgo (por ejemplo, una acción de su plan de respuesta) o pertenece a un entregable, lígala al riesgo o al elemento de la EDT.",
+      "Cada responsable mueve sus actividades con los botones de la tarjeta («Pasar a en curso», «Marcar hecha»). Si algo se traba, pásala a «Bloqueada» para que el equipo lo vea.",
+      "Una actividad está vencida cuando pasó su fecha límite y no está hecha; la tarjeta lo dice con la palabra «Vencida».",
+      "«Mi trabajo» (en el menú lateral) reúne todas tus actividades de todos los proyectos, de la más urgente a la menos urgente.",
+    ],
+    notas: [
+      "Las actividades no son las tareas del cronograma: estas no tienen peso ni mueven el valor ganado.",
+      "La interventoría ve solo las actividades que le asignaron o que creó, y solo puede asignárselas a sí misma.",
+    ],
+  },
+  {
     clave: "presupuesto", titulo: "Presupuesto y costos", quien: "Gerente del proyecto o administrador (el supervisor lo consulta)",
     pasos: [
       "Opción recomendada: arma primero la EDT y usa «Crear capítulos desde la EDT» (eliges el nivel; normalmente el primero). Luego agrega las partidas bajo cada capítulo. Los capítulos de la EDT no se borran aunque estén vacíos.",

@@ -25,6 +25,7 @@ Las columnas «Migración» y «Prueba» se verificaron contra los archivos del 
 | O · Alertas por correo | Gestión por excepción (criterio propio) | [0017](decisiones/ADR-0017-correos-por-cron-con-usuario-de-solo-lectura.md) | 0019 | `t-alertas` | `1ecb136` |
 | P · Informe gerencial | Informe de una página; sistema de diseño GreenLand | [0018](decisiones/ADR-0018-informe-gerencial-una-pagina.md) | 0022 | pruebas unitarias en `src/lib/informe/` | `db2ac62` |
 | Q · Ayuda y glosario | Accesibilidad para usuarios no técnicos | [0014](decisiones/ADR-0014-menu-lateral-ayuda-y-glosario.md) | — | pruebas unitarias | `48f0997`, `3419da0`, `4207ce8` |
+| R · Actividades y Mi trabajo | Trabajo del proyecto (PMBOK 7); petición del usuario del 16 oct; mínimo a validar en el piloto | [0023](decisiones/ADR-0023-actividades-y-mi-trabajo.md) | 0024 | `t-actividades` | hito 24 |
 | Exportaciones Excel y PDF | Informes a la dirección | — | — | pruebas unitarias | `a76dd62` |
 | Seguridad y auditoría | Principio de reglas en la base | [0004](decisiones/ADR-0004-reglas-de-acceso-en-la-base.md) | 0017 | `t-auditoria` | `3dc98d8` |
 | Instalación | Reducir pasos manuales | [0008](decisiones/ADR-0008-instalador-sql-unico.md) | todas | `t-instalador`, `t-migraciones` | `804855f` |
@@ -33,8 +34,8 @@ Las columnas «Migración» y «Prueba» se verificaron contra los archivos del 
 
 | Verificación | Resultado | Cómo repetirla |
 | --- | --- | --- |
-| Pruebas unitarias | **314 correctas en 34 archivos** (`npx vitest run`, ejecutado el 16 oct) | `npm test` |
-| Pruebas de base de datos | **532 comprobaciones correctas, 0 suites con fallos** (`npm run test:sql`, ejecutado el 16 oct) | `npm run test:sql` |
+| Pruebas unitarias | **321 correctas en 35 archivos** (`npx vitest run`, ejecutado el 16 oct) | `npm test` |
+| Pruebas de base de datos | **586 comprobaciones correctas, 0 suites con fallos** (`npm run test:sql`, ejecutado el 16 oct) | `npm run test:sql` |
 | Tipos, estilo y compilación | Última ejecución completa el 12 oct, antes del commit `3689e5b` | `npm run verificar` |
 | Producción | El usuario instaló el SQL y desplegó con datos ficticios; confirmó que funciona. **Ningún correo enviado; sin datos reales; sin revisión de seguridad independiente** | — |
 

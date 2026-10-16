@@ -33,6 +33,8 @@ const ICONOS: Record<string, string> = {
   bitacora: "M4 5a2 2 0 012-2h6v18H6a2 2 0 01-2-2z M20 5a2 2 0 00-2-2h-6v18h6a2 2 0 002-2z",
   interventoria: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z M9 12l2 2 4-4",
   glosario: "M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z M4 21V5 M9 8h6 M9 12h6",
+  actividades: "M4 5h4v4H4z M4 15h4v4H4z M12 7h8 M12 17h8 M5 7l1 1 2-2",
+  mitrabajo: "M9 12l2 2 4-4 M12 21a9 9 0 100-18 9 9 0 000 18z",
   tablero: "M3 3h7v9H3z M14 3h7v5h-7z M14 12h7v9h-7z M3 16h7v5H3z",
   usuarios: "M9 11a3 3 0 100-6 3 3 0 000 6z M3 20c0-3 3-5 6-5s6 2 6 5",
   organizacion: "M4 21V8l8-5 8 5v13 M9 21v-6h6v6",
@@ -130,6 +132,7 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, usuario, n
         <nav aria-label="Principal" className="min-h-0 flex-1 overflow-y-auto px-3 pb-4">
           <p className={etiquetaSeccion}>Espacio de trabajo</p>
           <Link href="/" aria-current={ruta === "/" ? "page" : undefined} className={claseEnlace(ruta === "/")}><Icono clave="tablero" /> Tablero de control</Link>
+          <Link href="/mi-trabajo" aria-current={ruta === "/mi-trabajo" ? "page" : undefined} className={claseEnlace(ruta === "/mi-trabajo")}><Icono clave="mitrabajo" /> Mi trabajo</Link>
           <Link href="/glosario" aria-current={ruta === "/glosario" ? "page" : undefined} className={claseEnlace(ruta === "/glosario")}><Icono clave="glosario" /> Ayuda</Link>
 
           <div className="relative mt-2">
