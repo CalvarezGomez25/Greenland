@@ -2,6 +2,16 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.2] · 16 de octubre de 2026
+### Añadido
+- Correo electrónico y teléfono en los interesados, con validación.
+- Directorio de contactos reutilizable entre proyectos: vinculación automática al guardar un interesado, selector «Reutilizar un contacto del directorio», pantalla del directorio con búsqueda y edición, y enlace en el menú lateral (migración 0023, [ADR-0022](decisiones/ADR-0022-interesados-y-directorio-de-contactos.md)).
+- Pruebas: `t-contactos` (38 comprobaciones de base de datos) y 9 pruebas unitarias.
+### Cambiado
+- `ESPECIFICACION.md` a la versión 3.2 (módulo C, secciones 7 y 8, caso 13.12, hito 23, S18 y P33). Guía de «Interesados» actualizada.
+### Pendiente
+- Datos personales de terceros en el directorio: base legal, aviso y acceso antes de cargar contactos reales (P33).
+
 ## [3.1] · 15 de octubre de 2026
 ### Cambiado
 - `ESPECIFICACION.md` a la versión 3.1: marco de referencia ampliado con nivel de verificación (PMBOK 8.ª, ISO 21502, ISO 31000, historia del valor ganado, Ley 594), hitos 20 a 22, decisiones del 12 al 15 de octubre, pendientes P26 a P31, estado del material FARO (17.1 y 17.2) y sección 18 (memoria del proyecto).

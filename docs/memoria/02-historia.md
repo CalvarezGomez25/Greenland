@@ -98,6 +98,12 @@ El usuario pide un marco de máximo cuatro pasos para dar sustento, orden y estr
 
 El usuario pide documentar todo desde la gestación como repositorio de memoria con trazabilidad, complementar con otros chats, organizar un marco teórico validado e investigar buenas prácticas de documentación. Resultado: este conjunto `docs/memoria/`. **No se pudieron leer otras conversaciones:** el listado de sesiones solo mostró la de desarrollo; los antecedentes se reconstruyeron de los artifacts de la cuenta y de `ESPECIFICACION.md`.
 
+## Fase 8 · Interesados con contacto y directorio (16 de octubre)
+
+El usuario, al revisar el registro de interesados, pidió agregar correo electrónico y teléfono, guardarlos en la base de datos y poder reutilizar el registro en proyectos siguientes. Se construyó la migración 0023 (tabla `contactos`, columnas nuevas y vinculación automática), el selector «Reutilizar un contacto del directorio» y la pantalla del directorio. Se verificó con 38 comprobaciones de base de datos nuevas, 9 pruebas unitarias nuevas y un recorrido en navegador. Decisión en [ADR-0022](decisiones/ADR-0022-interesados-y-directorio-de-contactos.md).
+
+Entre la fase 7 y esta, el 15 de octubre, el usuario consultó cómo crear un rol «gerente junior» que creara y gestionara sus propios proyectos; tras el análisis decidió **no hacer cambios** (ver `ESPECIFICACION.md` §8).
+
 ## Estado al 14 de octubre de 2026
 
 Ver [01-resumen-ejecutivo.md](01-resumen-ejecutivo.md).

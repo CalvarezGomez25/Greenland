@@ -28,6 +28,7 @@ async function Contenido({ params }: { params: Promise<{ id: string; modulo: str
     }
   }
   const opciones = def.opciones ? await def.opciones(supabase, id) : {};
+  const listaSugerencias = nuevo && def.sugerencias ? await def.sugerencias.cargar(supabase) : [];
   const volverA = `/proyectos/${id}/${def.regreso ?? `r/${modulo}`}`;
 
   return (
@@ -42,6 +43,7 @@ async function Contenido({ params }: { params: Promise<{ id: string; modulo: str
           iniciales={iniciales}
           editando={!nuevo}
           volverA={volverA}
+          sugerencias={def.sugerencias && listaSugerencias.length > 0 ? { etiqueta: def.sugerencias.etiqueta, ayuda: def.sugerencias.ayuda, lista: listaSugerencias } : undefined}
         />
       </div>
       {!nuevo && def.borrar && (

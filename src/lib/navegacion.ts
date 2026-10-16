@@ -37,11 +37,19 @@ export function armarProyectosNav(
 }
 
 // Enlaces de administración según el rol global.
-export function enlacesAdministracion(rolGlobal: RolGlobal | null): NavEnlace[] {
+// El directorio de contactos lo usan administrador, director general, analista PMO y quien sea gerente de algún proyecto.
+export function puedeUsarDirectorio(rolGlobal: RolGlobal | null, roles: Iterable<RolProyecto>): boolean {
+  if (rolGlobal === "administrador" || rolGlobal === "director_general" || rolGlobal === "analista_pmo") return true;
+  for (const r of roles) if (r === "gerente") return true;
+  return false;
+}
+
+export function enlacesAdministracion(rolGlobal: RolGlobal | null, conDirectorio = false): NavEnlace[] {
   const out: NavEnlace[] = [];
   if (rolGlobal === "administrador") out.push({ href: "/usuarios", titulo: "Usuarios" }, { href: "/organizacion", titulo: "Organización" });
   if (rolGlobal) out.push({ href: "/parametros", titulo: "Parámetros" });
   if (rolGlobal === "administrador" || rolGlobal === "director_general") out.push({ href: "/auditoria", titulo: "Auditoría" });
+  if (conDirectorio) out.push({ href: "/directorio", titulo: "Directorio de contactos" });
   return out;
 }
 

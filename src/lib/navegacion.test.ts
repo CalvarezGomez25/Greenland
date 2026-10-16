@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { armarProyectosNav, enlacesAdministracion, ordenarPorCodigo, proyectoDeRuta } from "./navegacion";
+import { armarProyectosNav, enlacesAdministracion, ordenarPorCodigo, proyectoDeRuta, puedeUsarDirectorio } from "./navegacion";
 
 const ID = "8e6e8184-2e51-41ee-a903-2396c5a42212";
 const p = (usa_obra: boolean | null = true) => [{ id: ID, nombre: "Obra", codigo: "GL-001", estado: "activo", usa_obra }];
@@ -30,6 +30,17 @@ describe("menú lateral", () => {
     expect(enlacesAdministracion("director_general").map((e) => e.href)).toEqual(["/parametros", "/auditoria"]);
     expect(enlacesAdministracion("analista_pmo").map((e) => e.href)).toEqual(["/parametros"]);
     expect(enlacesAdministracion(null)).toEqual([]);
+  });
+  it("el directorio de contactos solo aparece para quien puede usarlo", () => {
+    expect(enlacesAdministracion("administrador", true).map((e) => e.href).at(-1)).toBe("/directorio");
+    expect(enlacesAdministracion(null, true)).toEqual([{ href: "/directorio", titulo: "Directorio de contactos" }]);
+    expect(enlacesAdministracion(null, false)).toEqual([]);
+    expect(puedeUsarDirectorio("administrador", [])).toBe(true);
+    expect(puedeUsarDirectorio("director_general", [])).toBe(true);
+    expect(puedeUsarDirectorio("analista_pmo", [])).toBe(true);
+    expect(puedeUsarDirectorio("finanzas", [])).toBe(false);
+    expect(puedeUsarDirectorio(null, ["supervisor", "consulta", "interventoria"])).toBe(false);
+    expect(puedeUsarDirectorio(null, ["supervisor", "gerente"])).toBe(true);
   });
   it("detecta el proyecto de la dirección actual", () => {
     expect(proyectoDeRuta(`/proyectos/${ID}/cambios/x`)).toBe(ID);

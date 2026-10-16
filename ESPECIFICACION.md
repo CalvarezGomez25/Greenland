@@ -1,13 +1,13 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.1, actualizada el 15 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.2, actualizada el 16 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.1, única versión vigente |
-| Última actualización | 15 de octubre de 2026 (incorpora lo construido, auditado y decidido del 9 al 14 de octubre, el marco FARO completo y la memoria del proyecto) |
+| Versión | 3.2, única versión vigente |
+| Última actualización | 16 de octubre de 2026 (incorpora lo construido, auditado y decidido del 9 al 16 de octubre, el marco FARO completo, la memoria del proyecto y el directorio de contactos) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
 | Código y documentación técnica | `README.md` (instalación y variables), `docs/SUPUESTOS.md`, `docs/AUDITORIA.md`, `docs/presentacion-faro/`, `docs/memoria/` (historia, marco teórico, decisiones, trazabilidad y lecciones) |
@@ -19,14 +19,15 @@ Versión 3.1, actualizada el 15 de octubre de 2026. Es la única versión vigent
 | 2.0 | 9 de octubre de 2026 | Rol y módulo de Interventoría |
 | 3.0 | 11 de octubre de 2026 | Estado de construcción (sección 0.1); marca PMO360, menú lateral, ayuda y glosario (secciones 1.1, 3 y 5.Q); aprobación de contratos nuevos por el director (M); alertas por correo (5.O); presupuesto sobre la EDT (J); riesgos ampliados e importación desde Excel (E); informe gerencial de una página y envío semanal (5.P); auditoría y correcciones (12.1); festivos automáticos (N); parámetros, modelo de datos, roles, supuestos y pendientes actualizados; marco FARO para presentar y pilotear la plataforma (sección 17) |
 | 3.1 | 15 de octubre de 2026 | Ajustes del tablero del proyecto del 12 de octubre (gráfico de avance, resumen de control, tablero ordenado por código; sección 3 y hito 21); marco FARO completo con su estado de material y pendientes (sección 17 y hito 20); marco de referencia ampliado con PMBOK 8.ª edición, ISO 21502, ISO 31000, historia del valor ganado y Ley 594 de 2000, con nivel de verificación (sección 2); memoria del proyecto `docs/memoria/` (sección 18 y hito 22); historia de cómo se llegó al nombre PMO360 (sección 1.2); decisión de no crear un rol «gerente junior» (secciones 8 y 14); pendientes P26 a P32; estado al 15 de octubre (sección 0.1) |
+| 3.2 | 16 de octubre de 2026 | Correo y teléfono en los interesados y directorio de contactos reutilizable entre proyectos (módulo C, secciones 7 y 8, migración 0023, hito 23, supuesto S18, pendiente P33); estado de pruebas actualizado |
 
-### 0.1 Estado actual de un vistazo (15 de octubre de 2026)
+### 0.1 Estado actual de un vistazo (16 de octubre de 2026)
 
 | Aspecto | Estado |
 | --- | --- |
 | Hitos 1 a 11 de la sección 12 | Construidos. Todos los módulos del mapa (sección 4) están disponibles en la aplicación |
-| Extensiones posteriores | Construidas: aprobación de contratos, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial y su envío semanal, marca, menú lateral y ayuda, y los ajustes del tablero del proyecto (hito 21). Material del marco FARO producido (hito 20). Memoria del proyecto creada (hito 22) |
-| Pruebas automáticas | 305 pruebas unitarias (Vitest, 33 archivos) y 494 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 14 de octubre de 2026 |
+| Extensiones posteriores | Construidas: aprobación de contratos, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial y su envío semanal, marca, menú lateral y ayuda, y los ajustes del tablero del proyecto (hito 21). Material del marco FARO producido (hito 20). Memoria del proyecto creada (hito 22). Directorio de contactos construido (hito 23) |
+| Pruebas automáticas | 314 pruebas unitarias (Vitest, 34 archivos) y 532 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas al 16 de octubre de 2026 (el 14 de octubre eran 305 y 494, antes del hito 23) |
 | Producción | El usuario instaló el SQL de la base en Supabase y desplegó en Vercel; confirmó que funciona con datos ficticios |
 | Aún no ocurrido | Ningún correo se ha enviado en producción (falta configurar el proveedor, `CRON_SECRET` y el usuario de solo lectura); no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
 | Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 21 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
@@ -203,6 +204,8 @@ Orden de bloques, de arriba hacia abajo, pensado para decidir (qué está mal, p
 - Campos del libro: nombre u organización, rol, poder (1-5), interés (1-5), influencia (poder × interés), estrategia de gestión, necesidades y expectativas, canal de comunicación.
 - La estrategia se calcula automáticamente. Ver la discrepancia D2 de la sección 14: los ejemplos del libro no coinciden con su propia leyenda.
 - Vista de matriz poder-interés.
+- **Contacto (v3.2, migración 0023).** Cada interesado tiene además correo electrónico y teléfono, ambos opcionales y validados (correo con formato de dirección; teléfono de 6 a 40 caracteres con números, espacios y + ( ) - .). En la lista se muestran como enlaces para escribir o llamar.
+- **Directorio de contactos reutilizable (v3.2).** Al guardar un interesado, la base de datos lo vincula con un contacto del directorio y lo crea si no existe: se busca por correo y, si no tiene correo, por nombre sin distinguir mayúsculas. Al agregar un interesado en otro proyecto, el selector «Reutilizar un contacto del directorio» rellena nombre, rol, correo y teléfono, que siguen siendo editables. **Poder, interés, necesidades y canal no se copian: son de cada proyecto.** El último dato guardado actualiza el contacto del directorio; lo que llega vacío no borra lo que ya había; los interesados de otros proyectos conservan sus propios datos. Pantalla «Directorio de contactos» (menú lateral): búsqueda por nombre, rol o correo, proyectos donde participa cada contacto (entre los que la persona ve), alta y edición; solo el administrador elimina contactos y, al hacerlo, los interesados se conservan y pierden el vínculo.
 
 ### D. WBS (EDT)
 
@@ -466,7 +469,8 @@ Esta tabla es el contrato de datos. Define de dónde sale cada número del dashb
 | Tabla | Campos principales |
 | --- | --- |
 | actas_constitucion | proyecto_id, proposito, objetivo_smart, beneficios, alcance_incluido, alcance_excluido, supuestos, restricciones, presupuesto_estimado, fuente_financiamiento, equipo_n, contratistas_externos, firma_gerente (fecha), firma_patrocinador (fecha) |
-| stakeholders | id, proyecto_id, nombre, rol, poder, interes, necesidades, canal (influencia y estrategia calculadas) |
+| stakeholders | id, proyecto_id, nombre, rol, correo, telefono, contacto_id, poder, interes, necesidades, canal (influencia y estrategia calculadas) |
+| contactos | id, nombre, rol, correo, telefono, creado_en, actualizado_en (directorio reutilizable; correo único sin distinguir mayúsculas; nombre único cuando no hay correo) |
 | wbs_elementos | id, proyecto_id, padre_id, codigo, nombre, descripcion, responsable, inicio_plan, fin_plan, estado |
 | riesgos | id, proyecto_id, codigo, categoria, descripcion, probabilidad, impacto, estrategia, plan_accion, responsable, estado (score y nivel calculados) |
 | lineas_base | id, proyecto_id, version, tipo (alcance, cronograma, costo), bac, fecha_fin, aprobada_por, fecha, cambio_id |
@@ -516,6 +520,7 @@ Esta tabla es el contrato de datos. Define de dónde sale cada número del dashb
 
 | Tabla | Cambio |
 | --- | --- |
+| stakeholders y contactos | v3.2, migración 0023: columnas correo, telefono y contacto_id; tabla `contactos`; función `puede_usar_directorio` y disparador `interesado_vincular_contacto` |
 | riesgos | Nuevas columnas: frente, causa, consecuencia, momento_control, fecha_objetivo, referencia. Función `riesgos_importar`. Ahora con auditoría |
 | contratos | Nuevas columnas: estado_aprobacion (pendiente, aprobado), aprobado_por, aprobado_en. Los contratos existentes quedan aprobados |
 | capitulos | `wbs_id` en uso: liga opcional a la EDT, con funciones `capitulos_desde_edt` y `capitulos_vincular_edt` y herencia de capítulo en las tareas |
@@ -524,7 +529,7 @@ Esta tabla es el contrato de datos. Define de dónde sale cada número del dashb
 | migraciones_aplicadas | Control del instalador: cada migración se aplica una sola vez |
 | parametros | Nuevas claves (sección 9) |
 
-El esquema completo está en `supabase/migrations/0001` a `0022`. En la auditoría de octubre de 2026 (migraciones 0001 a 0016) las 47 tablas tenían seguridad por filas (RLS); las escrituras sensibles pasan por funciones de base de datos.
+El esquema completo está en `supabase/migrations/0001` a `0023`. En la auditoría de octubre de 2026 (migraciones 0001 a 0016) las 47 tablas tenían seguridad por filas (RLS); las escrituras sensibles pasan por funciones de base de datos.
 
 Los valores derivados no se guardan; se calculan a partir de estos datos. Excepción: la foto de indicadores del reporte semanal, que es histórica y no se recalcula.
 
@@ -541,6 +546,8 @@ Los valores derivados no se guardan; se calculan a partir de estos datos. Excepc
 | Supervisor de obra | Obras asignadas | Crear bitácoras, subir fotos, actualizar avance de sus tareas |
 | Interventoría | Contratos asignados | Ver, conceptuar, verificar avance, registrar hallazgos e informes. No edita datos del contrato ni aprueba (módulo N y matriz siguiente). Sub-roles: director, técnico, administrativo, financiero, jurídico o contable |
 | Consulta | Proyectos asignados | Solo lectura (cliente, directivos) |
+
+**Directorio de contactos (v3.2).** Lo ven, crean y editan el administrador, el director general, el analista PMO y quien sea gerente de algún proyecto; solo el administrador elimina. Finanzas, supervisión, patrocinio, consulta e interventoría no lo ven. Las reglas viven en la base de datos (`puede_usar_directorio`, seguridad por filas).
 
 **Crear proyectos y roles nuevos (decisión del 15 de octubre de 2026).** Solo el administrador crea proyectos y asigna personas a ellos. Se consideró un rol global «gerente junior» que creara y gestionara sus propios proyectos sin acceso a estructura ni parámetros; **se decidió no crearlo y dejar los roles como están**. Para que un gerente nuevo gestione un proyecto, el administrador lo crea y lo asigna como «Gerente de proyecto» en «Equipo del proyecto». Análisis técnico de lo que habría implicado: una migración, cambios de tipos, permisos y pantalla «Nuevo proyecto», pruebas de base de datos y reinstalar el SQL.
 
@@ -663,7 +670,7 @@ Cada hito termina con un entregable que se prueba con datos reales y se confirma
 
 Fase posterior, fuera de esta versión: flujo de caja, dependencias y ruta crítica, programas, multimoneda.
 
-### 12.1 Estado de construcción e hitos adicionales (v3.0 y v3.1)
+### 12.1 Estado de construcción e hitos adicionales (v3.0 a v3.2)
 
 Los hitos 1 a 11 están **construidos**, con pruebas de base de datos (`pruebas-sql/t-h1` a `t-h9` y `t-h11`; el hito 10, exportaciones, se cubre con pruebas unitarias) y pruebas unitarias de los cálculos. «Probado» significa con PostgreSQL real en memoria y un simulador de la API de Supabase; la primera corrida contra el Supabase real la hizo el usuario con datos ficticios.
 
@@ -680,6 +687,7 @@ Los hitos 1 a 11 están **construidos**, con pruebas de base de datos (`pruebas-
 | 20. Marco FARO y presentación | Framework de cuatro pasos (sección 17), guion para exponer, lámina de una página en PDF, PNG y PPTX editable, documento corto, guion de video y el hilo con el nombre PMO360 (`docs/presentacion-faro/`, artifact web «FARO – Que ningún proyecto navegue a ciegas») | Producido el 11 de octubre de 2026. No es código: no tiene pruebas automáticas. Pendiente reemplazar los marcadores `[Tu nombre]` y `[por definir]` (P29) |
 | 21. Tablero del proyecto y orden por código | Tablero de control con proyectos ordenados por código; gráfico de avance «planeado frente a construido»; resumen de control en rejilla (estado, SPI, CPI, BAC, AC, EAC, riesgos, cambios y decisiones); ficha compacta bajo el nombre del proyecto (sección 3) | Construido el 12 de octubre de 2026. Verificado en pantalla ancha y en celular de 390 px; `tsc`, `eslint` y compilación correctos |
 | 22. Memoria del proyecto | Repositorio `docs/memoria/` (sección 18): historia, marco teórico, buenas prácticas de documentación, fichas de decisión, trazabilidad, lecciones, fuentes, gobierno y un PDF de origen y propósito | Creado el 14 de octubre de 2026. Enlaces internos verificados; no es código |
+| 23. Interesados con contacto y directorio reutilizable | Correo y teléfono en el interesado; directorio de contactos con vinculación automática, selector «Reutilizar un contacto del directorio» al agregar, pantalla del directorio con búsqueda y edición y enlace en el menú lateral (módulo C) | Construido el 16 de octubre de 2026. `t-contactos` (38 comprobaciones de base de datos), 9 pruebas unitarias nuevas y recorrido en navegador (escritorio y celular de 390 px, gerente y supervisor) |
 
 ## 13. Casos de prueba de referencia
 
@@ -772,6 +780,8 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 
 **13.13 Quién recibe el informe semanal.** Con dos proyectos activos (p1 y p2): el director general recibe p1 y p2; el gerente de p1 recibe solo p1; una persona con rol de interventoría en p2 no recibe nada; una persona sin proyectos no recibe nada; un correo inválido o ausente no recibe nada; el usuario técnico del cron no recibe nada. Con más de seis proyectos por persona se adjunta solo el PDF.
 
+**13.12 Interesados con contacto y directorio.** Un gerente registra en el proyecto 1 a «Ana Pérez» con correo `  Ana.Perez@Empresa.co ` y teléfono `+57 300 123 4567`: queda guardada como `ana.perez@empresa.co`, vinculada a un contacto nuevo del directorio. En el proyecto 2, otro gerente registra a «Ana P.» con el mismo correo y otro teléfono: **no se duplica el contacto**; los dos interesados comparten contacto y el directorio queda con el último teléfono y nombre, y conserva el rol. Un correo sin formato o un teléfono con letras se rechazan. Poder e interés quedan en cada interesado y el directorio no los guarda. Ven el directorio el administrador, el director, el analista PMO y los gerentes; no lo ven supervisión, interventoría, finanzas ni quien no tiene rol. Un gerente no borra contactos; el administrador sí, y el interesado se conserva sin vínculo. Verificado en `pruebas-sql/t-contactos.mjs` (38 comprobaciones), con 9 pruebas unitarias y un recorrido en navegador del selector «Reutilizar un contacto del directorio», la búsqueda y el acceso por rol.
+
 ## 14. Decisiones, supuestos, discrepancias y pendientes
 
 **Decisiones confirmadas por el usuario**
@@ -795,6 +805,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | Tablero del proyecto | El gráfico de avance sustituye a la tarjeta «Avance físico / financiero» por redundante; resumen de control en rejilla; ficha bajo el nombre; tablero de control ordenado por código (12 de octubre de 2026) |
 | Roles y creación de proyectos | No se crea un rol «gerente junior». Solo el administrador crea proyectos; un gerente nuevo se asigna como «Gerente de proyecto» (15 de octubre de 2026) |
 | Memoria del proyecto | Se documenta la historia, las decisiones y la trazabilidad en `docs/memoria/`, con niveles de verificación y regla de no inventar (14 de octubre de 2026) |
+| Interesados y directorio | Los interesados llevan correo y teléfono; los contactos se guardan en un directorio compartido entre proyectos y se reutilizan al registrar interesados nuevos (16 de octubre de 2026) |
 
 **Discrepancias detectadas en los documentos del usuario**
 
@@ -828,6 +839,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | S15 | Baja, Media y Alta de un registro de riesgos en Excel equivalen a 1, 2 y 4 en la escala de 1 a 5, porque con los cortes vigentes reproducen la matriz 3 × 3 del Excel. Se puede recalibrar en un taller de validación |
 | S16 | El informe semanal lo reciben los roles globales (todos los proyectos activos) y las personas miembros de un proyecto (ese proyecto), excepto la interventoría; el correo no incluye datos de proyectos que la persona no ve en la plataforma |
 | S17 | La hora de los avisos es la de Colombia (sin horario de verano): 12:00 UTC el resumen diario y 12:30 UTC el informe semanal; en Vercel Hobby el minuto exacto no está garantizado |
+| S18 | El directorio se alimenta solo al guardar interesados (sin captura aparte), identifica a la persona por correo y, sin correo, por nombre; el último dato guardado gana y lo vacío no borra. Lo ven quienes gestionan proyectos, no toda la plataforma. Son supuestos del asesor: validar con el uso real |
 
 **Pendientes**
 
@@ -865,6 +877,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | P30 | Leer en fuente primaria ISO 21502, ISO 31000, PMBOK 8.ª, Mendelow (1991) y los textos de las leyes citadas | Abierto; memoria M-2 |
 | P31 | Consultar con Jurídica o con un archivista si la Ley 594 de 2000 aplica a la información de la plataforma | Abierto; memoria M-3 |
 | P32 | Verificar la disponibilidad del nombre PMO360 como marca (registro de la SIC) y como dominio antes de usarlo fuera de la empresa | Abierto; no verificado |
+| P33 | **Datos personales en el directorio** (nombre, correo y teléfono de terceros): definir con Jurídica la base legal, el aviso a los titulares y quién puede ver y exportar el directorio antes de cargar contactos reales (Ley 1581 de 2012 y normas de datos personales, **no verificadas** en esta versión). Se suma a P12 | Abierto; hoy solo hay datos ficticios |
 
 ## 15. Trazabilidad: hoja del libro a módulo
 
@@ -884,6 +897,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | Registro de Riesgos por frente, Planta Empacadora El Silencio (Excel, 8 de octubre de 2026; hojas Registro, Matriz y Resumen) | E (campos ampliados, importación y caso 13.11) |
 | (sin hoja; solicitudes del usuario del 10 y 11 de octubre de 2026) | O, P, Q y sección 17 |
 | (sin hoja; solicitudes del usuario del 12 de octubre de 2026) | Tablero del proyecto y tablero de control (sección 3, hito 21) |
+| (sin hoja; solicitud del usuario del 16 de octubre de 2026: «correo electrónico, teléfono» y reutilización del registro) | Módulo C y directorio de contactos (hito 23) |
 | (sin hoja; solicitudes del usuario del 14 y 15 de octubre de 2026) | Sección 18 (memoria del proyecto), sección 2 (marco de referencia) y decisión sobre roles (sección 8) |
 
 ## 16. Uso con Claude Code (sin saber programar)
@@ -901,7 +915,7 @@ La plataforma ya está construida (secciones 0.1 y 12.1). Este documento es la b
 2. Redesplegar en Vercel.
 3. Para los correos: configurar las variables de la sección 10 (pendientes P16 y P17).
 
-> Lee ESPECIFICACION.md completo (versión 3.1), README.md y docs/memoria/README.md. La plataforma PMO360 ya está construida: revisa las secciones 0.1 y 12.1. Soy gerente de proyectos y no sé programar: explícame cada paso en lenguaje sencillo y pídeme confirmación antes de instalar, ejecutar o publicar cualquier cosa. Antes de cambiar código, resume lo que entendiste y lista tus dudas. Mantén todas las reglas y umbrales como parámetros configurables (sección 9). Nunca uses ni me pidas la clave secreta (service_role) de Supabase, y no guardes contraseñas en el repositorio. Valida cada cambio con `npm run verificar`, `npm run test:sql` y los casos de la sección 13. No inventes cifras: si un dato no existe, dilo.
+> Lee ESPECIFICACION.md completo (versión 3.2), README.md y docs/memoria/README.md. La plataforma PMO360 ya está construida: revisa las secciones 0.1 y 12.1. Soy gerente de proyectos y no sé programar: explícame cada paso en lenguaje sencillo y pídeme confirmación antes de instalar, ejecutar o publicar cualquier cosa. Antes de cambiar código, resume lo que entendiste y lista tus dudas. Mantén todas las reglas y umbrales como parámetros configurables (sección 9). Nunca uses ni me pidas la clave secreta (service_role) de Supabase, y no guardes contraseñas en el repositorio. Valida cada cambio con `npm run verificar`, `npm run test:sql` y los casos de la sección 13. No inventes cifras: si un dato no existe, dilo.
 
 ## 17. Presentación y adopción: marco FARO
 

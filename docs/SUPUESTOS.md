@@ -46,3 +46,9 @@ fácil de cambiar; deben validarse con el uso real.
 - Escala: Baja/Media/Alta del Excel = 1/2/4 en la escala 1–5. Con los cortes de la plataforma (Crítico ≥ 15, Alto ≥ 8, Medio ≥ 4) reproduce exactamente la matriz 3×3 del Excel. Es una decisión de conversión; se puede recalibrar en la validación en taller.
 - El Excel no trae estrategia de respuesta: queda vacía (no se inventa). Si no hay nombre de responsable, se guarda el rol propuesto.
 - Reimportar actualiza por ID (no duplica) y no borra nada. Los riesgos ahora quedan en la auditoría (antes no lo estaban).
+
+## Interesados con contacto y directorio reutilizable (migración 0023)
+- Los interesados suman correo y teléfono (opcionales). Al guardarlos, la base de datos los vincula con un contacto del directorio y lo crea si no existe. Se busca por correo; sin correo, por nombre sin distinguir mayúsculas.
+- El último dato guardado gana y lo que llega vacío no borra lo que el directorio ya tiene. Poder, interés, necesidades y canal no se copian: son de cada proyecto.
+- Lo ven, crean y editan administrador, director general, analista PMO y gerentes de algún proyecto; solo el administrador elimina contactos.
+- Contiene datos personales de terceros: antes de cargar contactos reales hay que definir con Jurídica base legal, aviso y acceso (P33; normas de datos personales no verificadas).

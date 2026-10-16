@@ -1,10 +1,10 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { Aviso, Campo, Selector, claseBoton } from "@/components/ui";
 import type { Estado } from "@/lib/presupuesto/estado";
-import type { CampoDef, Opcion } from "@/lib/registros/tipos";
+import type { CampoDef, Opcion, Sugerencia } from "@/lib/registros/tipos";
 import Link from "next/link";
 
 export function FormularioRegistro({
@@ -14,6 +14,7 @@ export function FormularioRegistro({
   iniciales,
   editando,
   volverA,
+  sugerencias,
 }: {
   accion: (anterior: Estado, datos: FormData) => Promise<Estado>;
   campos: CampoDef[];
@@ -21,16 +22,34 @@ export function FormularioRegistro({
   iniciales: Record<string, string>;
   editando: boolean;
   volverA: string;
+  sugerencias?: { etiqueta: string; ayuda?: string; lista: Sugerencia[] };
 }) {
   const [estado, enviar] = useActionState(accion, {} as Estado);
+  const formulario = useRef<HTMLFormElement>(null);
+  // Al elegir una sugerencia se copian sus valores a los campos del formulario (que siguen siendo editables).
+  const aplicar = (valor: string) => {
+    const s = sugerencias?.lista.find((x) => x.valor === valor);
+    if (!s || !formulario.current) return;
+    for (const [nombre, texto] of Object.entries(s.valores)) {
+      const campo = formulario.current.elements.namedItem(nombre);
+      if (campo instanceof HTMLInputElement || campo instanceof HTMLTextAreaElement) campo.value = texto;
+    }
+  };
   const v = (c: CampoDef) => estado.valores?.[c.nombre] ?? iniciales[c.nombre] ?? c.porDefecto ?? "";
 
   return (
     <form
+      ref={formulario}
       action={enviar}
       key={estado.valores ? JSON.stringify(estado.valores) : "inicial"}
       className="flex max-w-2xl flex-col gap-4"
     >
+      {!editando && sugerencias && sugerencias.lista.length > 0 && (
+        <Selector etiqueta={sugerencias.etiqueta} ayuda={sugerencias.ayuda} defaultValue="" onChange={(e) => aplicar(e.target.value)}>
+          <option value="">— Escribir uno nuevo —</option>
+          {sugerencias.lista.map((o) => <option key={o.valor} value={o.valor}>{o.etiqueta}</option>)}
+        </Selector>
+      )}
       {campos.map((c) => {
         if (c.soloAlCrear && editando) return null;
         const comun = { etiqueta: c.etiqueta + (c.obligatorio ? "" : " (opcional)"), name: c.nombre, ayuda: c.ayuda };

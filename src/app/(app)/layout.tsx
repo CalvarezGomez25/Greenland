@@ -4,7 +4,7 @@ import { ETIQUETA_ROL_GLOBAL, type RolProyecto } from "@/lib/tipos";
 import { claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { BarraLateral } from "@/components/barra-lateral";
-import { armarProyectosNav, enlacesAdministracion } from "@/lib/navegacion";
+import { armarProyectosNav, enlacesAdministracion, puedeUsarDirectorio } from "@/lib/navegacion";
 import { NOMBRE_PLATAFORMA } from "@/lib/marca";
 import { cambiarUsuario, salir } from "./acciones";
 
@@ -19,7 +19,7 @@ async function MenuLateral() {
   return (
     <BarraLateral
       proyectos={armarProyectosNav((proyectos ?? []) as { id: string; nombre: string; codigo: string | null; estado: string; usa_obra: boolean | null }[], roles, rolGlobal)}
-      administracion={enlacesAdministracion(rolGlobal)}
+      administracion={enlacesAdministracion(rolGlobal, puedeUsarDirectorio(rolGlobal, roles.values()))}
       puedeCrear={rolGlobal === "administrador"}
       usuario={{ nombre: perfil?.nombre ?? "Usuario", rol: rolGlobal ? ETIQUETA_ROL_GLOBAL[rolGlobal] : null }}
       nombrePlataforma={NOMBRE_PLATAFORMA}

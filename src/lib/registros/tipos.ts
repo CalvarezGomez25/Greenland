@@ -24,6 +24,8 @@ export type CampoDef = {
 };
 
 export type Fila = Record<string, unknown>;
+// Opción de «reutilizar» un registro existente: al elegirla se rellenan los campos del formulario con sus valores.
+export type Sugerencia = { valor: string; etiqueta: string; valores: Record<string, string> };
 export type Valores = Record<string, string | number | boolean | null>;
 export type ContextoLista = {
   opciones: Record<string, Opcion[]>;
@@ -50,5 +52,7 @@ export type Definicion = {
   regreso?: string; // ruta (bajo /proyectos/[id]/) a la que se vuelve tras guardar o borrar; por defecto la lista del módulo
   despues?: (supabase: SupabaseClient, proyectoId: string) => Promise<void>; // tras guardar o borrar (p. ej. refrescar cálculos)
   opciones?: (supabase: SupabaseClient, proyectoId: string) => Promise<Record<string, Opcion[]>>;
+  // Selector al crear: reutilizar datos guardados antes (por ejemplo, un contacto del directorio).
+  sugerencias?: { etiqueta: string; ayuda?: string; cargar: (supabase: SupabaseClient) => Promise<Sugerencia[]> };
   validar?: (valores: Valores, ctx: { supabase: SupabaseClient; proyectoId: string; registroId: string | null }) => Promise<string | null> | string | null;
 };

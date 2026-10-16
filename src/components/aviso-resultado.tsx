@@ -11,6 +11,8 @@ const MENSAJES: Record<string, string> = {
   plantilla: "Se crearon los conceptos habituales. Ahora completa sus porcentajes.",
   gasto: "Gasto actualizado.",
   guardado: "Guardado.",
+  contacto: "Contacto guardado en el directorio.",
+  contacto_borrado: "Contacto eliminado del directorio. Los interesados que lo usaban se conservan.",
   eliminado: "Registro eliminado.",
   parametro: "Parámetro actualizado.",
   rol: "Rol actualizado.",

@@ -12,6 +12,7 @@ import { cargarProyecto } from "@/lib/contexto-proyecto";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { claseBoton } from "@/components/ui";
 import { numeroParametro, listaParametro, valorParametro } from "@/lib/pmo/parametros";
+import { enlaceTelefono, sugerenciaDeContacto, validarCorreo, validarTelefono, type Contacto } from "@/lib/contactos";
 import { estrategiaStakeholder, ETIQUETA_ESTRATEGIA, leerCortes, CORTES_RIESGO } from "@/lib/pmo/planificacion";
 import { nivelDeRiesgo, type NivelRiesgo } from "@/lib/pmo/semaforo";
 import type { Definicion, Fila, ContextoLista } from "../tipos";
@@ -81,16 +82,20 @@ export const STAKEHOLDERS: Definicion = {
   campos: [
     { nombre: "nombre", etiqueta: "Nombre u organización", tipo: "texto", obligatorio: true, max: 200 },
     { nombre: "rol", etiqueta: "Rol", tipo: "texto", max: 200 },
+    { nombre: "correo", etiqueta: "Correo electrónico", tipo: "texto", max: 200, ayuda: "Si ya existe en el directorio, se reutiliza esa persona." },
+    { nombre: "telefono", etiqueta: "Teléfono", tipo: "texto", max: 40, ayuda: "Por ejemplo +57 300 123 4567." },
     { nombre: "poder", etiqueta: "Poder (1 a 5)", tipo: "entero", obligatorio: true, min: 1, max: 5 },
     { nombre: "interes", etiqueta: "Interés (1 a 5)", tipo: "entero", obligatorio: true, min: 1, max: 5 },
     { nombre: "necesidades", etiqueta: "Necesidades y expectativas", tipo: "area", max: 4000 },
     { nombre: "canal", etiqueta: "Canal de comunicación", tipo: "texto", max: 200 },
   ],
-  seleccion: "id, nombre, rol, poder, interes, influencia, canal",
+  seleccion: "id, nombre, rol, correo, telefono, poder, interes, influencia, canal",
   orden: [{ columna: "influencia", asc: false }, { columna: "nombre" }],
   columnas: [
     { etiqueta: "Nombre", valor: (f) => txt(f.nombre) },
     { etiqueta: "Rol", valor: (f) => txt(f.rol) },
+    { etiqueta: "Correo", valor: (f) => (f.correo ? <a href={`mailto:${String(f.correo)}`} className="text-leaf-600 hover:underline">{String(f.correo)}</a> : "—") },
+    { etiqueta: "Teléfono", valor: (f) => (f.telefono ? <a href={enlaceTelefono(String(f.telefono))} className="whitespace-nowrap text-leaf-600 hover:underline">{String(f.telefono)}</a> : "—") },
     { etiqueta: "Poder", valor: (f) => txt(f.poder) },
     { etiqueta: "Interés", valor: (f) => txt(f.interes) },
     { etiqueta: "Influencia", valor: (f) => txt(f.influencia) },
@@ -107,6 +112,15 @@ export const STAKEHOLDERS: Definicion = {
   escribir: (p) => p.gestionar,
   borrar: true,
   extra: (filas) => (filas.length ? <MatrizPoderInteres filas={filas} /> : null),
+  sugerencias: {
+    etiqueta: "Reutilizar un contacto del directorio",
+    ayuda: "Rellena nombre, rol, correo y teléfono. El poder, el interés y las necesidades los defines para este proyecto.",
+    cargar: async (supabase) => {
+      const { data } = await supabase.from("contactos").select("id, nombre, rol, correo, telefono").order("nombre").limit(1000);
+      return ((data ?? []) as Contacto[]).map(sugerenciaDeContacto);
+    },
+  },
+  validar: (v) => validarCorreo(v.correo as string | null) ?? validarTelefono(v.telefono as string | null),
 };
 
 // ---- WBS ------------------------------------------------------------------------------

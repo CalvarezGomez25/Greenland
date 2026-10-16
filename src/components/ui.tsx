@@ -15,7 +15,7 @@ export const claseBoton = {
   peligro: `${base} border-[1.5px] border-danger text-danger hover:bg-red-50`,
 };
 
-const claseCampo =
+export const claseCampo =
   "h-[42px] w-full rounded-[10px] border border-soil-border bg-white px-3.5 text-[15px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30";
 
 type PropsCampo = { etiqueta: string; ayuda?: string; className?: string; tema?: TemaAyuda };

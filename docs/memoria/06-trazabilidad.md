@@ -10,7 +10,7 @@ Las columnas «Migración» y «Prueba» se verificaron contra los archivos del 
 | --- | --- | --- | --- | --- | --- |
 | A · Tablero de control (portafolio) | PMBOK 8 (gobernanza); semáforo del libro (hoja «Dashboard RAG») | [0009](decisiones/ADR-0009-semaforo-peor-de-cuatro.md), [0020](decisiones/ADR-0020-tablero-del-proyecto.md) | 0006 | `t-h2` | `4da682c` |
 | B · Ficha y acta de constitución | PMBOK (inicio); hoja «Acta de Constitución» | — | 0005, 0006 | `t-h1`, `t-h2` | `6a61569`, `4da682c` |
-| C · Interesados | Matriz poder–interés (N3); hoja «Stakeholders» | — | 0007 | `t-h3` | `8463ff2` |
+| C · Interesados | Matriz poder–interés (N3); hoja «Stakeholders»; directorio reutilizable (petición del usuario) | [0022](decisiones/ADR-0022-interesados-y-directorio-de-contactos.md) | 0007, 0023 | `t-h3`, `t-contactos` | `8463ff2`, hito 23 |
 | D · EDT | Regla del 100 % (N2); hoja «WBS - EDT» | [0015](decisiones/ADR-0015-presupuesto-sobre-la-edt.md) | 0007, 0020 | `t-h3`, `t-edt-presupuesto` | `8463ff2`, `ddd7eeb` |
 | E · Riesgos | ISO 31000 (N2); hoja «Registro de Riesgos»; Excel Planta El Silencio | [0016](decisiones/ADR-0016-escala-de-riesgos-e-importacion.md) | 0007, 0021 | `t-h3`, `t-riesgos-importar` | `8463ff2`, `5cd9187` |
 | F · Control de cambios | Control integrado de cambios (N2); *Metodología de Control de Cambios GL* | [0007](decisiones/ADR-0007-control-de-cambios-formal-por-niveles.md) | 0008 | `t-h4` | `b3495f8` |
@@ -33,8 +33,8 @@ Las columnas «Migración» y «Prueba» se verificaron contra los archivos del 
 
 | Verificación | Resultado | Cómo repetirla |
 | --- | --- | --- |
-| Pruebas unitarias | **305 correctas en 33 archivos** (`npx vitest run`, ejecutado el 14 oct) | `npm test` |
-| Pruebas de base de datos | **494 comprobaciones correctas, 0 suites con fallos** (`npm run test:sql`, ejecutado el 14 oct) | `npm run test:sql` |
+| Pruebas unitarias | **314 correctas en 34 archivos** (`npx vitest run`, ejecutado el 16 oct) | `npm test` |
+| Pruebas de base de datos | **532 comprobaciones correctas, 0 suites con fallos** (`npm run test:sql`, ejecutado el 16 oct) | `npm run test:sql` |
 | Tipos, estilo y compilación | Última ejecución completa el 12 oct, antes del commit `3689e5b` | `npm run verificar` |
 | Producción | El usuario instaló el SQL y desplegó con datos ficticios; confirmó que funciona. **Ningún correo enviado; sin datos reales; sin revisión de seguridad independiente** | — |
 

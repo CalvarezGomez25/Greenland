@@ -2,7 +2,7 @@
 
 Una ficha por decisión importante, con el formato propuesto por Michael Nygard en 2011 (contexto, decisión, estado, consecuencias), ampliado con alternativas y evidencia. Las decisiones reemplazadas **no se borran**: pasan a «Reemplazada por ADR-####». Plantilla en [`../plantillas/adr.md`](../plantillas/adr.md).
 
-**Origen de las fichas.** Las ADR-0001 a ADR-0021 se redactaron el 14 de octubre de 2026 a partir del historial de la sesión y de `ESPECIFICACION.md` §14; no se escribieron en el momento de cada decisión. Donde la sesión no conserva el detalle de las alternativas, la ficha lo dice.
+**Origen de las fichas.** Las ADR-0001 a ADR-0021 se redactaron el 14 de octubre de 2026 (la ADR-0022 se escribió el día de la decisión) a partir del historial de la sesión y de `ESPECIFICACION.md` §14; no se escribieron en el momento de cada decisión. Donde la sesión no conserva el detalle de las alternativas, la ficha lo dice.
 
 | Ficha | Decisión | Fecha | Estado |
 | --- | --- | --- | --- |
@@ -27,5 +27,6 @@ Una ficha por decisión importante, con el formato propuesto por Michael Nygard 
 | [ADR-0019](ADR-0019-faro-y-piloto-de-90-dias.md) | Marco FARO y piloto de 90 días | 2026-10-11 | Vigente |
 | [ADR-0020](ADR-0020-tablero-del-proyecto.md) | Tablero del proyecto: gráfico de avance y resumen de control | 2026-10-12 | Vigente |
 | [ADR-0021](ADR-0021-festivos-automaticos.md) | Festivos de Colombia calculados automáticamente | 2026-10-10 | Vigente |
+| [ADR-0022](ADR-0022-interesados-y-directorio-de-contactos.md) | Correo y teléfono en los interesados y directorio de contactos reutilizable | 2026-10-16 | Vigente |
 
 Las decisiones de detalle (supuestos S1–S13, P1–P11, D2, etc.) siguen en `docs/SUPUESTOS.md` y en la sección 14 de `ESPECIFICACION.md`.

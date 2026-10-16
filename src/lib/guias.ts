@@ -67,8 +67,9 @@ export const GUIAS: Guia[] = [
   {
     clave: "interesados", titulo: "Interesados", quien: "Gerente o administrador",
     pasos: [
-      "Registra cada persona u organización con su rol.",
-      "Califica su poder y su interés de 1 a 5: la plataforma calcula la estrategia de gestión.",
+      "Al agregar un interesado, si ya lo registraste en otro proyecto, elígelo en «Reutilizar un contacto del directorio»: se rellenan su nombre, rol, correo y teléfono.",
+      "Si es nuevo, escribe su nombre, rol, correo electrónico y teléfono. Al guardar, queda en el «Directorio de contactos» (menú lateral) para los próximos proyectos.",
+      "Califica su poder y su interés de 1 a 5: la plataforma calcula la estrategia de gestión. El poder, el interés y las necesidades son de cada proyecto y no se copian.",
       "Anota sus necesidades y el canal de comunicación.",
     ],
   },
