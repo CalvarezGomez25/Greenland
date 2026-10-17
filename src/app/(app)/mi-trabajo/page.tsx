@@ -1,65 +1,81 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { obtenerSesion } from "@/lib/sesion";
-import { ETIQUETA_GRUPO, GRUPOS_VENCIMIENTO, agruparPorVencimiento, hoyColombia } from "@/lib/actividades";
+import { agruparPorVencimiento, hoyColombia, type ItemTablero } from "@/lib/actividades";
 import { AvisoResultado } from "@/components/aviso-resultado";
 import { Aviso, Titulo } from "@/components/ui";
-import { TarjetaActividad, type FilaActividad } from "@/components/tarjeta-actividad";
+import { TableroActividades } from "@/components/tablero-actividades";
 
 export const metadata = { title: "Mi trabajo · PMO360" };
+const HECHAS_VISIBLES = 8;
 type Uno<T> = T | T[] | null;
 const uno = <T,>(v: Uno<T>): T | null => (Array.isArray(v) ? (v[0] ?? null) : v);
 
-async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string | string[] }> }) {
-  const { ok } = await searchParams;
+async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string | string[]; hechas?: string }> }) {
+  const { ok, hechas } = await searchParams;
+  const todasLasHechas = hechas === "todas";
   const { supabase, perfil } = await obtenerSesion();
   const { data, error } = perfil
     ? await supabase
         .from("actividades")
-        .select("id, proyecto_id, titulo, descripcion, estado, prioridad, fecha_limite, responsable_id, creado_por, riesgos(codigo), wbs_elementos(codigo, nombre), proyectos(codigo, nombre)")
+        .select("id, proyecto_id, titulo, descripcion, estado, prioridad, fecha_limite, responsable_id, completada_en, riesgos(codigo), wbs_elementos(codigo, nombre), proyectos(codigo, nombre)")
         .eq("responsable_id", perfil.id)
-        .neq("estado", "hecha")
         .limit(1000)
     : { data: [], error: null };
 
-  type Cruda = Omit<FilaActividad, "responsable" | "riesgo" | "elemento" | "proyecto"> & {
+  type Cruda = Omit<ItemTablero, "responsable" | "riesgo" | "elemento" | "proyecto" | "puedeMover" | "hrefEditar" | "hrefProyecto"> & {
+    completada_en: string | null;
     riesgos: Uno<{ codigo: string }>; wbs_elementos: Uno<{ codigo: string; nombre: string }>; proyectos: Uno<{ codigo: string | null; nombre: string }>;
   };
-  const filas: FilaActividad[] = ((data ?? []) as unknown as Cruda[]).map(({ riesgos, wbs_elementos, proyectos, ...a }) => {
+  const crudas = (data ?? []) as unknown as Cruda[];
+  const completadaEn = new Map(crudas.map((a) => [a.id, a.completada_en ?? ""]));
+  const todas: ItemTablero[] = crudas.map(({ riesgos, wbs_elementos, proyectos, completada_en, ...a }) => {
+    void completada_en;
     const pr = uno(proyectos);
     const w = uno(wbs_elementos);
-    return { ...a, responsable: perfil?.nombre ?? null, riesgo: uno(riesgos)?.codigo ?? null, elemento: w ? `${w.codigo} ${w.nombre}` : null, proyecto: pr ? (pr.codigo ? `${pr.codigo} · ${pr.nombre}` : pr.nombre) : null };
+    return {
+      ...a,
+      responsable: perfil?.nombre ?? null,
+      riesgo: uno(riesgos)?.codigo ?? null,
+      elemento: w ? `${w.codigo} ${w.nombre}` : null,
+      proyecto: pr ? (pr.codigo ? `${pr.codigo} · ${pr.nombre}` : pr.nombre) : null,
+      puedeMover: true,
+      hrefProyecto: `/proyectos/${a.proyecto_id}/actividades`,
+    };
   });
+
   const hoy = hoyColombia();
-  const grupos = agruparPorVencimiento(filas, hoy);
+  const abiertas = todas.filter((a) => a.estado !== "hecha");
+  const hechasRecientes = todas.filter((a) => a.estado === "hecha").sort((x, y) => (completadaEn.get(y.id) ?? "").localeCompare(completadaEn.get(x.id) ?? ""));
+  const hechasMostradas = todasLasHechas ? hechasRecientes : hechasRecientes.slice(0, HECHAS_VISIBLES);
+  const grupos = agruparPorVencimiento(abiertas, hoy);
 
   return (
     <>
       <Titulo>Mi trabajo</Titulo>
       <p className="mt-3 max-w-3xl text-sm text-muted">
-        Todas las actividades que tienes asignadas, de todos tus proyectos, de la más urgente a la menos urgente. Cuando termines una, márcala como hecha.
+        Tus actividades de todos los proyectos, en un tablero por estado. Arrastra una tarjeta a otra columna a medida que avanzas.
+      </p>
+      <p className="mt-2 text-sm text-muted">
+        {abiertas.length} {abiertas.length === 1 ? "abierta" : "abiertas"}
+        {grupos.vencidas.length > 0 && <>, <strong className="text-danger">{grupos.vencidas.length} {grupos.vencidas.length === 1 ? "vencida" : "vencidas"}</strong></>}
+        {grupos.esta_semana.length > 0 && <>, {grupos.esta_semana.length} {grupos.esta_semana.length === 1 ? "vence" : "vencen"} en los próximos 7 días</>}
       </p>
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
       {error && <div className="mt-4"><Aviso>No se pudo leer tu trabajo{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
-      {!error && filas.length === 0 && (
-        <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">No tienes actividades pendientes. Cuando te asignen una, aparecerá aquí.</p>
+      {!error && (
+        <div className="mt-6">
+          <TableroActividades
+            items={[...abiertas, ...hechasMostradas]}
+            hoy={hoy}
+            ocultasHechas={hechasRecientes.length - hechasMostradas.length}
+            verTodasHref="/mi-trabajo?hechas=todas"
+            vacio="No tienes actividades. Cuando te asignen una, aparecerá aquí."
+          />
+        </div>
       )}
-      <div className="mt-6 flex flex-col gap-6">
-        {GRUPOS_VENCIMIENTO.filter((g) => grupos[g].length > 0).map((g) => (
-          <section key={g} aria-label={ETIQUETA_GRUPO[g]}>
-            <h2 className={`font-display text-xl font-bold ${g === "vencidas" ? "text-danger" : "text-leaf-700"}`}>
-              {ETIQUETA_GRUPO[g]} <span className="text-sm font-medium text-muted">({grupos[g].length})</span>
-            </h2>
-            <ul className="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {grupos[g].map((a) => (
-                <TarjetaActividad key={a.id} a={a} hoy={hoy} desde="mi-trabajo" puedeMover hrefProyecto={`/proyectos/${a.proyecto_id}/actividades`} />
-              ))}
-            </ul>
-          </section>
-        ))}
-      </div>
       <p className="mt-8 text-sm text-muted">
-        ¿Quieres ver el tablero de un proyecto? Elígelo en el menú lateral y entra a <strong>Actividades</strong>. <Link href="/glosario" className="font-medium text-leaf-600 hover:underline">Ver la guía</Link>.
+        ¿Quieres ver el tablero de un proyecto completo? Elígelo en el menú lateral y entra a <strong>Actividades</strong>. <Link href="/glosario" className="font-medium text-leaf-600 hover:underline">Ver la guía</Link>.
       </p>
     </>
   );

@@ -7,6 +7,7 @@ Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Correg
 - Módulo **Actividades**: trabajo asignado a personas del proyecto, con responsable real, fecha límite, prioridad y estado (por hacer, en curso, bloqueada, hecha), ligable a un riesgo y a un elemento de la EDT; tablero de cuatro columnas por proyecto (migración 0024, [ADR-0023](decisiones/ADR-0023-actividades-y-mi-trabajo.md)).
 - Pantalla **Mi trabajo** (menú lateral): las actividades pendientes de la persona en todos sus proyectos, agrupadas por urgencia.
 - Guía «Actividades y Mi trabajo» en la ayuda.
+- Tablero Kanban real en «Actividades» y «Mi trabajo»: cuatro columnas lado a lado, tarjetas que se arrastran de una columna a otra con cambio inmediato (vuelve atrás si la base de datos lo rechaza) y selector «Mover a» para celular y teclado. Verificado en un navegador real con un Supabase simulado.
 - Pruebas: `t-actividades` (54 comprobaciones de base de datos) y 7 pruebas unitarias.
 ### Cambiado
 - `ESPECIFICACION.md` a la versión 3.3 (módulo R, secciones 4, 7 y 8, hito 24, S19 y P34).

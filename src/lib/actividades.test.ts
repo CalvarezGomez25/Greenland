@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { agruparPorEstado, agruparPorVencimiento, diasParaVencer, esEstadoActividad, estaVencida, hoyColombia, ordenarActividades, textoPlazo, type EstadoActividad, type PrioridadActividad } from "./actividades";
+import { agruparPorEstado, conEstado, agruparPorVencimiento, diasParaVencer, esEstadoActividad, estaVencida, hoyColombia, ordenarActividades, textoPlazo, type EstadoActividad, type PrioridadActividad } from "./actividades";
 
 const HOY = "2026-10-16";
 const a = (titulo: string, estado: EstadoActividad, fecha_limite: string | null, prioridad: PrioridadActividad = "media") => ({ titulo, estado, fecha_limite, prioridad });
@@ -45,6 +45,13 @@ describe("actividades", () => {
     expect(textoPlazo(HOY, HOY)).toBe("Vence hoy");
     expect(textoPlazo("2026-10-17", HOY)).toBe("Vence mañana");
     expect(textoPlazo("2026-10-21", HOY)).toBe("Vence en 5 días");
+  });
+  it("conEstado cambia solo la actividad pedida y no toca la lista original", () => {
+    const original = [{ id: "a", estado: "por_hacer" as EstadoActividad }, { id: "b", estado: "en_curso" as EstadoActividad }];
+    const nueva = conEstado(original, "a", "hecha");
+    expect(nueva.map((x) => x.estado)).toEqual(["hecha", "en_curso"]);
+    expect(original[0].estado).toBe("por_hacer");
+    expect(conEstado(original, "zzz", "hecha")).toEqual(original);
   });
   it("valida el estado y usa la fecha de Colombia", () => {
     expect(esEstadoActividad("hecha")).toBe(true);

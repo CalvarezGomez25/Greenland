@@ -20,6 +20,23 @@ export type Actividad = {
   responsable_id: string | null;
 };
 
+// Tarjeta del tablero: la actividad con lo que la pantalla necesita mostrar y los permisos ya resueltos en el servidor.
+export type ItemTablero = Actividad & {
+  descripcion: string | null;
+  responsable: string | null; // nombre
+  riesgo: string | null; // código
+  elemento: string | null; // código y nombre de la EDT
+  proyecto?: string | null; // «GL-001 · Nombre», solo en «Mi trabajo»
+  puedeMover: boolean;
+  hrefEditar?: string;
+  hrefProyecto?: string;
+};
+
+// La misma lista con una actividad en otro estado (el cambio inmediato que se ve al arrastrar).
+export function conEstado<T extends Pick<Actividad, "id" | "estado">>(lista: T[], id: string, estado: EstadoActividad): T[] {
+  return lista.map((a) => (a.id === id ? { ...a, estado } : a));
+}
+
 export const esEstadoActividad = (v: unknown): v is EstadoActividad => ESTADOS_ACTIVIDAD.includes(v as EstadoActividad);
 
 // Fecha de hoy en Colombia (AAAA-MM-DD), igual que la base de datos (hoy_co).

@@ -36,7 +36,6 @@ export function AvisoResultado({ ok }: { ok?: string | string[] }) {
   if (clave === "linea_base_no") return <Aviso>No se pudo aprobar el presupuesto: revisa que tenga valor y que no esté ya aprobado.</Aviso>;
   if (clave === "capitulos_edt_no") return <Aviso>No se pudieron crear los capítulos desde la EDT. Revisa que tengas permiso y que la EDT tenga elementos en ese nivel.</Aviso>;
   if (clave === "no_reabierto") return <Aviso>No se pudo reabrir el proyecto: solo el administrador reabre un proyecto cerrado.</Aviso>;
-  if (clave === "actividad_no") return <Aviso>No se pudo cambiar el estado: la actividad ya no existe o no tienes permiso para moverla.</Aviso>;
   if (clave === "no_borrado") return <Aviso>No se pudo eliminar: el registro está en uso o no tienes permiso.</Aviso>;
   return mensaje ? <Aviso tipo="ok">{mensaje}</Aviso> : null;
 }

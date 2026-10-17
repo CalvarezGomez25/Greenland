@@ -14,12 +14,12 @@ export const GUIAS: Guia[] = [
   {
     clave: "actividades", titulo: "Actividades y Mi trabajo", quien: "Gerente, administrador, director general y analista PMO asignan; interventoría registra las suyas; cada responsable mueve las suyas",
     pasos: [
-      "Entra al proyecto y abre «Actividades»: es un tablero con cuatro columnas (Por hacer, En curso, Bloqueada y Hecha).",
+      "Entra al proyecto y abre «Actividades»: es un tablero tipo Kanban con cuatro columnas (Por hacer, En curso, Bloqueada y Hecha).",
       "Con «Agregar actividad» escribe qué hay que hacer, elige a la persona responsable (del equipo del proyecto) y la fecha límite. La prioridad y el estado se pueden ajustar.",
       "Si la actividad responde a un riesgo (por ejemplo, una acción de su plan de respuesta) o pertenece a un entregable, lígala al riesgo o al elemento de la EDT.",
-      "Cada responsable mueve sus actividades con los botones de la tarjeta («Pasar a en curso», «Marcar hecha»). Si algo se traba, pásala a «Bloqueada» para que el equipo lo vea.",
+      "Cada responsable mueve sus actividades arrastrando la tarjeta a otra columna (en el celular, con el selector «Mover a»). Si algo se traba, pásala a «Bloqueada» para que el equipo lo vea.",
       "Una actividad está vencida cuando pasó su fecha límite y no está hecha; la tarjeta lo dice con la palabra «Vencida».",
-      "«Mi trabajo» (en el menú lateral) reúne todas tus actividades de todos los proyectos, de la más urgente a la menos urgente.",
+      "«Mi trabajo» (en el menú lateral) es el mismo tablero con todas tus actividades de todos los proyectos; arriba dice cuántas están vencidas y cuántas vencen en los próximos 7 días.",
     ],
     notas: [
       "Las actividades no son las tareas del cronograma: estas no tienen peso ni mueven el valor ganado.",

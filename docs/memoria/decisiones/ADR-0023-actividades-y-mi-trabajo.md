@@ -17,13 +17,13 @@ PMO360 registraba y controlaba el proyecto, pero no había dónde repartir y seg
 
 ## Decisión
 Tabla `actividades` (migración 0024) con título, detalle, responsable (persona con cuenta, opcional), fecha límite, prioridad (alta, media, baja), estado (por hacer, en curso, bloqueada, hecha) y ligas opcionales a un riesgo y a un elemento de la EDT. Dos pantallas:
-- **Actividades** de cada proyecto: tablero de cuatro columnas, filtro «Solo las mías», alta y edición con el formulario genérico.
-- **Mi trabajo** (menú lateral): lo pendiente de la persona en todos sus proyectos, agrupado en vencidas, próximos 7 días, más adelante y sin fecha.
+- **Actividades** de cada proyecto: tablero Kanban de cuatro columnas (las tarjetas se arrastran entre columnas; en celular, selector «Mover a»), filtro «Solo las mías», alta y edición con el formulario genérico.
+- **Mi trabajo** (menú lateral): el mismo tablero con lo de la persona en todos sus proyectos y un resumen de vencidas y próximas a vencer.
 
 Permisos en la base de datos: ven quienes ya ven el proyecto; crean, editan y borran administrador, gerente del proyecto, director general y analista PMO; **la persona responsable solo cambia el estado**; la interventoría ve solo lo que le asignaron o creó, se asigna únicamente a sí misma y no liga riesgos (que no ve). Las actividades **no** son las tareas del cronograma: no tienen peso ni mueven el valor ganado.
 
 ## Consecuencias
-- Quedan fuera a propósito: comentarios, adjuntos, menciones, notificaciones dentro de la plataforma o por correo, arrastrar tarjetas, tareas recurrentes, plantillas y la liga a cambios e hitos. Son la fase siguiente, **solo si el piloto muestra uso real**.
+- Quedan fuera a propósito: comentarios, adjuntos, menciones, notificaciones dentro de la plataforma o por correo, reordenar tarjetas dentro de una columna, tareas recurrentes, plantillas y la liga a cambios e hitos. Son la fase siguiente, **solo si el piloto muestra uso real**.
 - Supervisor, patrocinador, consulta y finanzas ven el tablero pero no crean; el supervisor responsable puede mover sus actividades.
 - Nada alimenta aún el semáforo ni el resumen diario: una actividad vencida se ve en el tablero y en «Mi trabajo», pero no genera aviso.
 - Riesgo de adopción: un tablero que nadie actualiza da una falsa sensación de control. Se mide en el piloto (ver P34 de la especificación).
