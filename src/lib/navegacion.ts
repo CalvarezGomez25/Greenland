@@ -53,6 +53,18 @@ export function enlacesAdministracion(rolGlobal: RolGlobal | null, conDirectorio
   return out;
 }
 
+// Primera pantalla de cada persona. Quien ve todo el portafolio (rol global) entra al tablero de control; las demás
+// personas (gerentes, supervisores, patrocinio, consulta e interventoría) entran a «Mi trabajo», con sus actividades
+// pendientes a primera vista, y desde ahí van a sus proyectos.
+export const RUTA_TABLERO_PROPIO = "/tablero"; // el tablero limitado a los proyectos de quien no ve todo el portafolio
+export function rutaDeInicio(rolGlobal: RolGlobal | null): "/" | "/mi-trabajo" {
+  return rolGlobal ? "/" : "/mi-trabajo";
+}
+// Dirección del tablero de control que le corresponde a la persona.
+export function rutaDelTablero(rolGlobal: RolGlobal | null): "/" | typeof RUTA_TABLERO_PROPIO {
+  return rolGlobal ? "/" : RUTA_TABLERO_PROPIO;
+}
+
 // Id del proyecto que se está viendo (según la dirección), o null.
 export function proyectoDeRuta(ruta: string): string | null {
   const m = /^\/proyectos\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:\/|$)/i.exec(ruta);

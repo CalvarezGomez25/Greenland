@@ -20,6 +20,7 @@ import { resumenBitacora, type EntradaResumen, type ResumenBitacora } from "@/li
 import { BotonesExportar } from "@/components/botones-exportar";
 import { GraficoAvance } from "@/components/grafico-avance";
 import { ResumenControl } from "@/components/resumen-control";
+import { rutaDelTablero } from "@/lib/navegacion";
 import { Selector, Titulo, claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { cambiarRol, quitarMiembro } from "./acciones";
@@ -92,8 +93,8 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
 
   return (
     <>
-      <Link href="/" className="text-sm font-medium text-leaf-600 hover:underline">
-        ← Volver al portafolio
+      <Link href={rutaDelTablero(permisos.rolGlobal)} className="text-sm font-medium text-leaf-600 hover:underline">
+        ← {permisos.rolGlobal ? "Volver al portafolio" : "Volver al tablero de mis proyectos"}
       </Link>
 
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
@@ -122,7 +123,7 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
       {resumen && (
         <section className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,340px)_1fr]" aria-label="Estado del proyecto">
           <GraficoAvance fisico={resumen.evm?.avanceFisico ?? null} financiero={resumen.evm?.avanceFinanciero ?? null} planificado={resumen.evm?.avancePlan ?? null} href={`/proyectos/${p.id}/evm`} />
-          <ResumenControl id={p.id} resumen={resumen} riesgos={riesgos} decisiones={decisiones} />
+          <ResumenControl id={p.id} resumen={resumen} riesgos={riesgos} decisiones={decisiones} hrefTablero={rutaDelTablero(permisos.rolGlobal)} />
         </section>
       )}
 

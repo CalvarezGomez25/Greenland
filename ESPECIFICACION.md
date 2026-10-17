@@ -138,6 +138,8 @@ N1  TABLERO DEL PROYECTO
 
 **Acceso de la interventoría.** No entra por N0. Ingresa directo al proyecto y solo ve los contratos que tiene asignados y su documentación (módulo N, sección 5; permisos en la sección 8).
 
+**Pantalla de inicio por rol (v3.3).** Quien tiene rol global (administrador, director general, analista PMO y finanzas) ve todo el portafolio y entra al **tablero de control** (`/`). Las demás personas (gerentes, supervisores, patrocinio, consulta e interventoría) entran a **«Mi trabajo»** (`/mi-trabajo`): sus actividades pendientes a primera vista y, debajo, la lista de sus proyectos. Su tablero de control limitado a sus proyectos sigue disponible en el menú lateral como «Tablero de mis proyectos» (`/tablero`); quien ve todo el portafolio que entre a `/tablero` vuelve a `/`. En el menú de las personas sin rol global, «Mi trabajo» va primero. Los enlaces «Volver al portafolio» de las pantallas de proyecto llevan al tablero que corresponde a cada persona.
+
 **Reglas de navegación.** Cada cifra del dashboard enlaza a la pantalla que la calcula; los cuadros principales y las filas del tablero son clicables. Por ejemplo: un SPI en rojo lleva al cronograma de ese proyecto; un riesgo crítico lleva al registro de riesgos filtrado. En la v3.0 la ruta de migas se reemplazó por el menú lateral (siguiente bloque) y por enlaces «Volver» en cada pantalla.
 
 **Menú lateral izquierdo (v3.0).**

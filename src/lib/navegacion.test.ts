@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { armarProyectosNav, enlacesAdministracion, ordenarPorCodigo, proyectoDeRuta, puedeUsarDirectorio } from "./navegacion";
+import { armarProyectosNav, enlacesAdministracion, ordenarPorCodigo, proyectoDeRuta, puedeUsarDirectorio, rutaDeInicio, rutaDelTablero } from "./navegacion";
 
 const ID = "8e6e8184-2e51-41ee-a903-2396c5a42212";
 const p = (usa_obra: boolean | null = true) => [{ id: ID, nombre: "Obra", codigo: "GL-001", estado: "activo", usa_obra }];
@@ -41,6 +41,14 @@ describe("menú lateral", () => {
     expect(puedeUsarDirectorio("finanzas", [])).toBe(false);
     expect(puedeUsarDirectorio(null, ["supervisor", "consulta", "interventoria"])).toBe(false);
     expect(puedeUsarDirectorio(null, ["supervisor", "gerente"])).toBe(true);
+  });
+  it("primera pantalla: el tablero para quien ve todo el portafolio; «Mi trabajo» para los demás", () => {
+    for (const r of ["administrador", "director_general", "analista_pmo", "finanzas"] as const) {
+      expect(rutaDeInicio(r), r).toBe("/");
+      expect(rutaDelTablero(r), r).toBe("/");
+    }
+    expect(rutaDeInicio(null)).toBe("/mi-trabajo");
+    expect(rutaDelTablero(null)).toBe("/tablero"); // su tablero propio, limitado a sus proyectos
   });
   it("detecta el proyecto de la dirección actual", () => {
     expect(proyectoDeRuta(`/proyectos/${ID}/cambios/x`)).toBe(ID);

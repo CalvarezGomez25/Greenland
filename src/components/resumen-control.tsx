@@ -21,7 +21,7 @@ function Tarjeta({ clase = "", tema, href, children }: { clase?: string; tema?: 
   return tema ? <Ayuda modo="tarjeta" tema={tema} className={base}>{contenido}</Ayuda> : <div className={base}>{contenido}</div>;
 }
 
-export function ResumenControl({ id, resumen, riesgos, decisiones }: { id: string; resumen: FilaPortafolio; riesgos: { activos: number; criticos: number }; decisiones: string[] }) {
+export function ResumenControl({ id, resumen, riesgos, decisiones, hrefTablero = "/" }: { id: string; resumen: FilaPortafolio; riesgos: { activos: number; criticos: number }; decisiones: string[]; hrefTablero?: string }) {
   const m = resumen.medicion;
   const pesos = (c: bigint) => Number(c) / 100;
   const bac = m ? pesos(m.bac) : null;
@@ -74,7 +74,7 @@ export function ResumenControl({ id, resumen, riesgos, decisiones }: { id: strin
         <p className={valor}>{resumen.cambiosPendientes}</p>
         <p className={sub}>{resumen.cambioCriticoPendientes} crítico(s)</p>
       </Tarjeta>
-      <Tarjeta clase="col-span-2 lg:col-span-1" href="/">
+      <Tarjeta clase="col-span-2 lg:col-span-1" href={hrefTablero}>
         <p className={etiqueta}>Requiere decisión</p>
         <p className={valor}>{decisiones.length}</p>
         <p className={sub}>{decisiones.length === 0 ? "Nada pendiente de la dirección" : [...new Set(decisiones)].slice(0, 2).join(" · ")}</p>

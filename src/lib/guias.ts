@@ -19,7 +19,7 @@ export const GUIAS: Guia[] = [
       "Si la actividad responde a un riesgo (por ejemplo, una acción de su plan de respuesta) o pertenece a un entregable, lígala al riesgo o al elemento de la EDT.",
       "Cada responsable mueve sus actividades arrastrando la tarjeta a otra columna (en el celular, con el selector «Mover a»). Si algo se traba, pásala a «Bloqueada» para que el equipo lo vea.",
       "Una actividad está vencida cuando pasó su fecha límite y no está hecha; la tarjeta lo dice con la palabra «Vencida».",
-      "«Mi trabajo» (en el menú lateral) es el mismo tablero con todas tus actividades de todos los proyectos; arriba dice cuántas están vencidas y cuántas vencen en los próximos 7 días.",
+      "«Mi trabajo» es tu pantalla de inicio si no ves todo el portafolio (gerentes, supervisores, patrocinio, consulta e interventoría); allí, debajo del tablero, están tus proyectos. Para quien ve todo el portafolio, está en el menú lateral. Es el mismo tablero con todas tus actividades de todos los proyectos; arriba dice cuántas están vencidas y cuántas vencen en los próximos 7 días.",
     ],
     notas: [
       "Las actividades no son las tareas del cronograma: estas no tienen peso ni mueven el valor ganado.",
