@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { armarProyectosNav, enlacesAdministracion, ordenarPorCodigo, proyectoDeRuta, puedeUsarDirectorio, rutaDeInicio, rutaDelTablero, esSoloInterventoria } from "./navegacion";
+import { armarProyectosNav, enlacesAdministracion, ordenarPorCodigo, proyectoDeRuta, puedeUsarDirectorio, rutaDeInicio, rutaDelTablero, esSoloInterventoria, mostrarMisProyectos } from "./navegacion";
 
 const ID = "8e6e8184-2e51-41ee-a903-2396c5a42212";
 const p = (usa_obra: boolean | null = true) => [{ id: ID, nombre: "Obra", codigo: "GL-001", estado: "activo", usa_obra }];
@@ -57,6 +57,12 @@ describe("menú lateral", () => {
     expect(esSoloInterventoria(null, ["supervisor"])).toBe(false);
     expect(esSoloInterventoria(null, [])).toBe(false);
     expect(esSoloInterventoria("analista_pmo", ["interventoria"])).toBe(false);
+  });
+  it("«Mis proyectos»: siempre sin rol global; con rol global, solo si está asignado a proyectos", () => {
+    expect(mostrarMisProyectos(null, 0)).toBe(true);
+    expect(mostrarMisProyectos(null, 2)).toBe(true);
+    expect(mostrarMisProyectos("administrador", 2)).toBe(true);
+    expect(mostrarMisProyectos("administrador", 0)).toBe(false);
   });
   it("detecta el proyecto de la dirección actual", () => {
     expect(proyectoDeRuta(`/proyectos/${ID}/cambios/x`)).toBe(ID);

@@ -74,6 +74,13 @@ export function esSoloInterventoria(rolGlobal: RolGlobal | null, roles: Iterable
   return hay;
 }
 
+// «Mis proyectos» de «Mi trabajo»: los proyectos donde la persona está asignada. Quien no tiene rol global siempre ve la
+// sección (si no tiene proyectos, se le explica); quien sí lo tiene (y ve todo el portafolio) la ve solo si además está
+// asignado a algún proyecto, para no listarle todo el portafolio.
+export function mostrarMisProyectos(rolGlobal: RolGlobal | null, asignaciones: number): boolean {
+  return rolGlobal === null || asignaciones > 0;
+}
+
 // Id del proyecto que se está viendo (según la dirección), o null.
 export function proyectoDeRuta(ruta: string): string | null {
   const m = /^\/proyectos\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:\/|$)/i.exec(ruta);

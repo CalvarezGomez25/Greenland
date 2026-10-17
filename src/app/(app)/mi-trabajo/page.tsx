@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { obtenerSesion } from "@/lib/sesion";
 import { agruparPorVencimiento, hoyColombia, type ItemTablero } from "@/lib/actividades";
+import { mostrarMisProyectos } from "@/lib/navegacion";
 import { AvisoResultado } from "@/components/aviso-resultado";
 import { Aviso, Titulo } from "@/components/ui";
 import { TableroActividades } from "@/components/tablero-actividades";
@@ -23,9 +24,11 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string
         .limit(1000)
     : { data: [], error: null };
 
-  // Quien no ve todo el portafolio entra aquí primero: debajo del tablero tiene la lista de sus proyectos.
-  const { data: proyectosData } = perfil && !perfil.rol_global
-    ? await supabase.from("proyectos").select("id, nombre, codigo, cliente, ubicacion, estado").order("nombre")
+  // «Mis proyectos»: aquellos donde la persona está asignada (quien no ve todo el portafolio entra aquí primero).
+  const { data: asignaciones } = perfil ? await supabase.from("miembros_proyecto").select("proyecto_id").eq("usuario_id", perfil.id) : { data: [] };
+  const idsAsignados = ((asignaciones ?? []) as { proyecto_id: string }[]).map((m) => m.proyecto_id);
+  const { data: proyectosData } = idsAsignados.length > 0
+    ? await supabase.from("proyectos").select("id, nombre, codigo, cliente, ubicacion, estado").in("id", idsAsignados).order("nombre")
     : { data: null };
   const misProyectos = (proyectosData ?? []) as { id: string; nombre: string; codigo: string | null; cliente: string | null; ubicacion: string | null; estado: string }[];
 
@@ -80,7 +83,7 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string
           />
         </div>
       )}
-      {perfil && !perfil.rol_global && (
+      {perfil && mostrarMisProyectos(perfil.rol_global, idsAsignados.length) && (
         <section className="mt-10" aria-labelledby="t-mis-proyectos">
           <h2 id="t-mis-proyectos" className="font-display text-2xl font-bold text-leaf-700">Mis proyectos</h2>
           {misProyectos.length === 0 ? (
