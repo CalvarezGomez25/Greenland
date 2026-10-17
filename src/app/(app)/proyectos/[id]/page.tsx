@@ -93,8 +93,8 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
 
   return (
     <>
-      <Link href={rutaDelTablero(permisos.rolGlobal)} className="text-sm font-medium text-leaf-600 hover:underline">
-        ← {permisos.rolGlobal ? "Volver al portafolio" : "Volver al tablero de mis proyectos"}
+      <Link href={permisos.interventor ? "/mi-trabajo" : rutaDelTablero(permisos.rolGlobal)} className="text-sm font-medium text-leaf-600 hover:underline">
+        ← {permisos.interventor ? "Volver a Mi trabajo" : permisos.rolGlobal ? "Volver al portafolio" : "Volver al tablero de mis proyectos"}
       </Link>
 
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">

@@ -65,6 +65,15 @@ export function rutaDelTablero(rolGlobal: RolGlobal | null): "/" | typeof RUTA_T
   return rolGlobal ? "/" : RUTA_TABLERO_PROPIO;
 }
 
+// ¿Solo es interventoría? Sin rol global y con todas sus asignaciones como interventoría. Esa persona no usa tablero de
+// control (la interventoría no entra por el portafolio): su inicio es «Mi trabajo», que ya lista sus proyectos.
+export function esSoloInterventoria(rolGlobal: RolGlobal | null, roles: Iterable<RolProyecto>): boolean {
+  if (rolGlobal) return false;
+  let hay = false;
+  for (const r of roles) { if (r !== "interventoria") return false; hay = true; }
+  return hay;
+}
+
 // Id del proyecto que se está viendo (según la dirección), o null.
 export function proyectoDeRuta(ruta: string): string | null {
   const m = /^\/proyectos\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:\/|$)/i.exec(ruta);

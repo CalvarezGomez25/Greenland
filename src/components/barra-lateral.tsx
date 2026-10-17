@@ -11,6 +11,7 @@ type Props = {
   administracion: NavEnlace[];
   puedeCrear: boolean;
   conPortafolio: boolean; // ve todo el portafolio: su tablero es el general; si no, «Mi trabajo» va primero y el tablero es solo de sus proyectos
+  conTableroPropio: boolean; // false para la interventoría: no usa tablero de control, su inicio es «Mi trabajo»
   usuario: { nombre: string; rol: string | null };
   nombrePlataforma: string;
   salir: ReactNode; // botón «Salir» (formulario con acción del servidor)
@@ -62,7 +63,7 @@ const claseEnlace = (activo: boolean) =>
   `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${activo ? "bg-leaf-100 font-semibold text-leaf-900" : "text-leaf-800 hover:bg-leaf-50"}`;
 const etiquetaSeccion = "px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted";
 
-export function BarraLateral({ proyectos, administracion, puedeCrear, conPortafolio, usuario, nombrePlataforma, salir, cambiarUsuario }: Props) {
+export function BarraLateral({ proyectos, administracion, puedeCrear, conPortafolio, conTableroPropio, usuario, nombrePlataforma, salir, cambiarUsuario }: Props) {
   const ruta = usePathname();
   const actualId = proyectoDeRuta(ruta);
   const actual = proyectos.find((p) => p.id === actualId) ?? null;
@@ -140,7 +141,7 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, conPortafo
           ) : (
             <>
               <Link href="/mi-trabajo" aria-current={ruta === "/mi-trabajo" ? "page" : undefined} className={claseEnlace(ruta === "/mi-trabajo")}><Icono clave="mitrabajo" /> Mi trabajo</Link>
-              <Link href="/tablero" aria-current={ruta === "/tablero" ? "page" : undefined} className={claseEnlace(ruta === "/tablero")}><Icono clave="tablero" /> Tablero de mis proyectos</Link>
+              {conTableroPropio && <Link href="/tablero" aria-current={ruta === "/tablero" ? "page" : undefined} className={claseEnlace(ruta === "/tablero")}><Icono clave="tablero" /> Tablero de mis proyectos</Link>}
             </>
           )}
           <Link href="/glosario" aria-current={ruta === "/glosario" ? "page" : undefined} className={claseEnlace(ruta === "/glosario")}><Icono clave="glosario" /> Ayuda</Link>

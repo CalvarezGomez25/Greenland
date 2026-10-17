@@ -8,7 +8,7 @@ import { Semaforo } from "@/components/semaforo";
 import { BotonesExportar } from "@/components/botones-exportar";
 import { Ayuda } from "@/components/ayuda";
 import { temaDe } from "@/lib/glosario";
-import { Aviso, Titulo, claseBoton } from "@/components/ui";
+import { Aviso, claseBoton } from "@/components/ui";
 
 type Filtros = { estado?: string; fase?: string; portafolio?: string; gerente?: string };
 const NIVEL: Record<string, string> = { critico: "Crítico", alto: "Alto", medio: "Medio", bajo: "Bajo" };
@@ -17,25 +17,6 @@ export async function Dashboard({ searchParams, base }: { searchParams: Promise<
   const f = await searchParams;
   const { supabase, perfil } = await obtenerSesion();
   if (!perfil) return <Aviso>Tu cuenta aún no tiene perfil en la plataforma. Avisa al administrador.</Aviso>;
-
-  // Interventoría (sin rol global): no entra al tablero de control del portafolio; ve solo sus proyectos.
-  if (!perfil.rol_global) {
-    const { data: mias } = await supabase.from("miembros_proyecto").select("proyecto_id, rol").eq("usuario_id", perfil.id);
-    const roles = (mias ?? []) as { proyecto_id: string; rol: string }[];
-    if (roles.length > 0 && roles.every((m) => m.rol === "interventoria")) {
-      const { data: ps } = await supabase.from("proyectos").select("id, nombre, codigo, cliente, ubicacion").order("nombre");
-      const lista = (ps ?? []) as { id: string; nombre: string; codigo: string | null; cliente: string | null; ubicacion: string | null }[];
-      return (
-        <>
-          <Titulo>Mis proyectos de interventoría</Titulo>
-          <p className="mt-3 text-sm text-muted">Ves solo los contratos y la documentación que tienes asignados.</p>
-          {lista.length === 0 ? <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">Tu asignación aún no está vigente. Avisa al gerente del proyecto.</p> : (
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2">{lista.map((p) => <li key={p.id}><Link href={`/proyectos/${p.id}`} className="block h-full rounded-card bg-leaf-100 p-5 transition hover:-translate-y-0.5 hover:shadow-card"><h2 className="font-display text-xl font-bold text-leaf-700">{p.nombre}</h2><p className="mt-1 text-sm">{[p.codigo, p.cliente, p.ubicacion].filter(Boolean).join(" · ")}</p></Link></li>)}</ul>
-          )}
-        </>
-      );
-    }
-  }
 
   const d = await cargarDashboard(supabase, f);
   if (!d) return <Aviso>No se pudieron cargar los proyectos. Intenta de nuevo.</Aviso>;
