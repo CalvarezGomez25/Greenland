@@ -9,14 +9,14 @@ import { BALOO_700, LOGO_PNG, ROBOTO_400, ROBOTO_500 } from "./fuentes";
 import { ETIQUETA_NIVEL, causasSemaforo, fechaCorta, pesosCorto, puntosPrincipales, recortar, type InformeProyecto } from "./modelo";
 
 // Las fuentes de la marca incluyen tildes, comillas y rayas; solo se sustituyen los símbolos que no traen.
-const limpiar = (t: string): string =>
+export const limpiar = (t: string): string =>
   t.replace(/≥/g, ">=").replace(/≤/g, "<=").replace(/[→↑↓]/g, "").replace(/\u00a0/g, " ")
     .replace(/[^\x09\x0A\x0D\x20-\x7E\u00A1-\u00FF\u2013\u2014\u2018\u2019\u201C\u201D\u2026\u2022]/g, "").replace(/ {2,}/g, " ");
 
 const W = 595.28, H = 841.89, M = 34, ANCHO = W - 2 * M;
-const hex = (h: string): RGB => rgb(parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255);
+export const hex = (h: string): RGB => rgb(parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255);
 // Paleta de src/app/globals.css y de los componentes de semáforo / niveles de riesgo.
-const C = {
+export const C = {
   hoja: hex("#ffffff"), leaf50: hex("#f4f9ea"), leaf100: hex("#e6f1d1"), leaf200: hex("#cfe3a8"), leaf400: hex("#7fa62e"), leaf500: hex("#5d870e"), leaf600: hex("#4c700b"),
   leaf700: hex("#386631"), leaf800: hex("#2f5517"), leaf900: hex("#164504"), tierra: hex("#7c401d"), borde: hex("#dcdcd8"), gris: hex("#555552"),
 };
@@ -31,12 +31,12 @@ const SIN_DATOS = { fondo: hex("#f4f4f2"), borde: hex("#dcdcd8"), punto: hex("#9
 const num2 = (n: number | null) => (n === null ? "—" : n.toLocaleString("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
 const pct = (n: number | null) => (n === null ? "—" : `${n.toLocaleString("es-CO", { maximumFractionDigits: 1 })} %`);
 
-type Fuentes = { titulo: PDFFont; normal: PDFFont; medio: PDFFont };
+export type Fuentes = { titulo: PDFFont; normal: PDFFont; medio: PDFFont };
 
-class Lienzo {
+export class Lienzo {
   constructor(readonly p: PDFPage, readonly f: Fuentes) {}
   // y se mide desde ARRIBA de la página (más natural para maquetar).
-  Y = (y: number) => H - y;
+  Y = (y: number) => this.p.getHeight() - y;
   caja(x: number, y: number, w: number, h: number, o: { fondo?: RGB; borde?: RGB; radio?: number; grosor?: number }) {
     const r = Math.min(o.radio ?? 8, w / 2, h / 2);
     const d = `M ${r} 0 H ${w - r} A ${r} ${r} 0 0 1 ${w} ${r} V ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h} H ${r} A ${r} ${r} 0 0 1 0 ${h - r} V ${r} A ${r} ${r} 0 0 1 ${r} 0 Z`;
@@ -69,7 +69,7 @@ class Lienzo {
   }
 }
 
-function partir(texto: string, f: PDFFont, tam: number, ancho: number): string[] {
+export function partir(texto: string, f: PDFFont, tam: number, ancho: number): string[] {
   const lineas: string[] = [];
   for (const par of texto.split(/\r?\n/)) {
     let actual = "";

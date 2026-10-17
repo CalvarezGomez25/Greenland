@@ -10,6 +10,7 @@ Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Correg
 - Tablero Kanban real en «Actividades» y «Mi trabajo»: cuatro columnas lado a lado, tarjetas que se arrastran de una columna a otra con cambio inmediato (vuelve atrás si la base de datos lo rechaza) y selector «Mover a» para celular y teclado. Verificado en un navegador real con un Supabase simulado.
 - Pruebas: `t-actividades` (54 comprobaciones de base de datos) y 7 pruebas unitarias.
 ### Cambiado
+- **Exportaciones a PDF y Excel con la identidad de la marca** (la del informe gerencial): logo, tipografías Baloo 2 y Roboto, paleta verde, filas alternadas y etiquetas de color para el semáforo, los niveles de riesgo y Sí / No. El PDF del tablero de control suma tarjetas de indicadores (proyectos activos, verde / amarillo / rojo / sin datos, BAC, AC, SPI y CPI del portafolio), encabezado en cada hoja y pie con número de página. El Excel lleva el logo, encabezado de marca, sin cuadrícula, paneles fijos, formato de pesos y «S/I» donde falta información, e imprime en horizontal ajustado al ancho con la fila de títulos repetida. Aplica a todos los PDF y Excel de tablas de la plataforma (tablero, reporte semanal, valor ganado, cambios, contratos).
 - `ESPECIFICACION.md` a la versión 3.3 (módulo R, secciones 4, 7 y 8, hito 24, S19 y P34).
 ### Pendiente
 - Recorrido en navegador con datos ficticios y validación de adopción en el piloto (P34). Comentarios, adjuntos y avisos quedan para una fase siguiente, solo si hay uso real.
