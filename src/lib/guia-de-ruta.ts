@@ -2,11 +2,11 @@
 // Devuelve la clave de la guía (ver src/lib/guias.ts) o null si la pantalla no tiene guía propia.
 const POR_SEGMENTO: Record<string, string> = {
   acta: "acta", evm: "evm", cambios: "cambios", reportes: "reportes", cronograma: "cronograma", contratos: "contratos",
-  bitacora: "bitacora", documentos: "documentos", cierre: "cierre", presupuesto: "presupuesto", interventoria: "interventoria",
+  bitacora: "bitacora", actividades: "actividades", documentos: "documentos", cierre: "cierre", presupuesto: "presupuesto", interventoria: "interventoria",
   "importar-riesgos": "riesgos",
 };
 const POR_REGISTRO: Record<string, string> = {
-  stakeholders: "interesados", wbs: "edt", riesgos: "riesgos", hitos: "reportes", reuniones: "reportes", lecciones: "cierre", tareas: "cronograma",
+  stakeholders: "interesados", wbs: "edt", riesgos: "riesgos", hitos: "reportes", reuniones: "reportes", lecciones: "cierre", tareas: "cronograma", actividades: "actividades",
 };
 
 export function guiaDeRuta(ruta: string): string | null {
