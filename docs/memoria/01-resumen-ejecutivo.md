@@ -4,15 +4,15 @@
 
 ## En una página
 
-| Tema | Estado al 14 de octubre de 2026 |
+| Tema | Estado al 17 de octubre de 2026 |
 | --- | --- |
-| Alcance construido | 11 hitos de la versión 2.0, más ocho ampliaciones (instalación, auditoría, aprobación de contratos, marca y menú, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial) |
-| Código | Más de 55 commits, 23 migraciones, 17 suites de pruebas de base de datos |
-| Verificación **hoy** | 321 pruebas unitarias correctas; 586 comprobaciones de base de datos correctas (16 de octubre de 2026) (PostgreSQL real en memoria) |
+| Alcance construido | 11 hitos de la versión 2.0, más ampliaciones (instalación, auditoría, aprobación de contratos, marca y menú, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial, directorio de contactos, **Actividades y «Mi trabajo» con tablero Kanban**, exportaciones con la identidad de la marca e inicio por rol) |
+| Código | 62 commits, 24 migraciones, 18 suites de pruebas de base de datos |
+| Verificación **hoy** | 328 pruebas unitarias correctas; 586 comprobaciones de base de datos correctas (17 de octubre de 2026) (PostgreSQL real en memoria) |
 | Producción | Instalada por el propietario con **datos ficticios**; confirmó que funciona |
 | **No ha ocurrido** | Ningún correo se ha enviado en producción; no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
 | Marco de adopción | FARO: piloto de 90 días con 3–4 de los 12 proyectos; sin cifras de ahorro porque no existen |
-| Documento raíz | `ESPECIFICACION.md` v3.2 |
+| Documento raíz | `ESPECIFICACION.md` v3.3 |
 
 ## Cinco hechos que explican el proyecto
 

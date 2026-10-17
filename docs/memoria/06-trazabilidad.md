@@ -25,18 +25,21 @@ Las columnas «Migración» y «Prueba» se verificaron contra los archivos del 
 | O · Alertas por correo | Gestión por excepción (criterio propio) | [0017](decisiones/ADR-0017-correos-por-cron-con-usuario-de-solo-lectura.md) | 0019 | `t-alertas` | `1ecb136` |
 | P · Informe gerencial | Informe de una página; sistema de diseño GreenLand | [0018](decisiones/ADR-0018-informe-gerencial-una-pagina.md) | 0022 | pruebas unitarias en `src/lib/informe/` | `db2ac62` |
 | Q · Ayuda y glosario | Accesibilidad para usuarios no técnicos | [0014](decisiones/ADR-0014-menu-lateral-ayuda-y-glosario.md) | — | pruebas unitarias | `48f0997`, `3419da0`, `4207ce8` |
-| R · Actividades y Mi trabajo | Trabajo del proyecto (PMBOK 7); petición del usuario del 16 oct; mínimo a validar en el piloto | [0023](decisiones/ADR-0023-actividades-y-mi-trabajo.md) | 0024 | `t-actividades` | hito 24 |
-| Exportaciones Excel y PDF | Informes a la dirección | — | — | pruebas unitarias | `a76dd62` |
+| R · Actividades y Mi trabajo | Trabajo del proyecto (PMBOK 7); petición del usuario del 16 oct; mínimo a validar en el piloto; tablero Kanban el 17 oct | [0023](decisiones/ADR-0023-actividades-y-mi-trabajo.md), [0026](decisiones/ADR-0026-integracion-con-microsoft-365.md) | 0024 | `t-actividades`; unitarias `actividades.test.ts` | `650d8a8`, `d50aa6a`, `a2be839` (hito 24) |
+| Inicio por rol y navegación | Interventoría fuera del portafolio (§3); petición del usuario del 17 oct | [0024](decisiones/ADR-0024-pantalla-de-inicio-por-rol.md) | — | unitarias `navegacion.test.ts` | `00cb5b3`, `9186580`, `78b5aa8` |
+| Administración: traspaso y permisos del director | Decisión del usuario del 17 oct (**por construir**) | [0027](decisiones/ADR-0027-administrador-unico-y-traspaso.md) | — (pendiente) | — (pendiente) | `4e85691` a `fd3c101` (solo documentos) |
+| Exportaciones Excel y PDF | Informes a la dirección; identidad de la marca (informe gerencial) | [0025](decisiones/ADR-0025-exportaciones-con-identidad-de-marca.md) | — | pruebas unitarias `exportar.test.ts` | `a76dd62`, `72dc45c` (hito 25) |
 | Seguridad y auditoría | Principio de reglas en la base | [0004](decisiones/ADR-0004-reglas-de-acceso-en-la-base.md) | 0017 | `t-auditoria` | `3dc98d8` |
 | Instalación | Reducir pasos manuales | [0008](decisiones/ADR-0008-instalador-sql-unico.md) | todas | `t-instalador`, `t-migraciones` | `804855f` |
 
-## 2. Estado de verificación al 14 de octubre de 2026
+## 2. Estado de verificación al 17 de octubre de 2026
 
 | Verificación | Resultado | Cómo repetirla |
 | --- | --- | --- |
-| Pruebas unitarias | **321 correctas en 35 archivos** (`npx vitest run`, ejecutado el 16 oct) | `npm test` |
-| Pruebas de base de datos | **586 comprobaciones correctas, 0 suites con fallos** (`npm run test:sql`, ejecutado el 16 oct) | `npm run test:sql` |
-| Tipos, estilo y compilación | Última ejecución completa el 12 oct, antes del commit `3689e5b` | `npm run verificar` |
+| Pruebas unitarias | **328 correctas en 35 archivos** (`npx vitest run`, ejecutado el 17 oct, commit `78b5aa8`) | `npm test` |
+| Pruebas de base de datos | **586 comprobaciones correctas, 0 suites con fallos** (`npm run test:sql`, ejecutado el 17 oct, commit `78b5aa8`) | `npm run test:sql` |
+| Tipos, estilo y compilación | `tsc`, `eslint` y `next build` correctos el 17 oct (commit `78b5aa8`) | `npm run verificar` |
+| Pruebas en navegador | Tablero Kanban, inicio por rol y «Mis proyectos» probados en un navegador real con un **Supabase simulado** (no el real); PDF y Excel revisados como imagen | Guion de la sesión del 17 oct |
 | Producción | El usuario instaló el SQL y desplegó con datos ficticios; confirmó que funciona. **Ningún correo enviado; sin datos reales; sin revisión de seguridad independiente** | — |
 
 ## 3. Cómo se mantiene

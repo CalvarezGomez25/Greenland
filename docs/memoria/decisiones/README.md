@@ -2,7 +2,7 @@
 
 Una ficha por decisión importante, con el formato propuesto por Michael Nygard en 2011 (contexto, decisión, estado, consecuencias), ampliado con alternativas y evidencia. Las decisiones reemplazadas **no se borran**: pasan a «Reemplazada por ADR-####». Plantilla en [`../plantillas/adr.md`](../plantillas/adr.md).
 
-**Origen de las fichas.** Las ADR-0001 a ADR-0021 se redactaron el 14 de octubre de 2026 (la ADR-0022 se escribió el día de la decisión) a partir del historial de la sesión y de `ESPECIFICACION.md` §14; no se escribieron en el momento de cada decisión. Donde la sesión no conserva el detalle de las alternativas, la ficha lo dice.
+**Origen de las fichas.** Las ADR-0001 a ADR-0021 se redactaron el 14 de octubre de 2026 (las ADR-0022 a ADR-0027 se escribieron el día de cada decisión) a partir del historial de la sesión y de `ESPECIFICACION.md` §14; no se escribieron en el momento de cada decisión. Donde la sesión no conserva el detalle de las alternativas, la ficha lo dice.
 
 | Ficha | Decisión | Fecha | Estado |
 | --- | --- | --- | --- |
@@ -29,5 +29,9 @@ Una ficha por decisión importante, con el formato propuesto por Michael Nygard 
 | [ADR-0021](ADR-0021-festivos-automaticos.md) | Festivos de Colombia calculados automáticamente | 2026-10-10 | Vigente |
 | [ADR-0022](ADR-0022-interesados-y-directorio-de-contactos.md) | Correo y teléfono en los interesados y directorio de contactos reutilizable | 2026-10-16 | Vigente |
 | [ADR-0023](ADR-0023-actividades-y-mi-trabajo.md) | Actividades y «Mi trabajo»: un mínimo de trabajo colaborativo dentro de PMO360 | 2026-10-16 | Vigente (mínimo, a validar en el piloto) |
+| [ADR-0024](ADR-0024-pantalla-de-inicio-por-rol.md) | Pantalla de inicio por rol: «Mi trabajo» para quien no ve todo el portafolio | 2026-10-17 | Vigente |
+| [ADR-0025](ADR-0025-exportaciones-con-identidad-de-marca.md) | Exportaciones a PDF y Excel con la identidad de la marca | 2026-10-17 | Vigente |
+| [ADR-0026](ADR-0026-integracion-con-microsoft-365.md) | Explorar la integración con Microsoft 365 (Teams y Planner) en lugar de un gestor propio | 2026-10-16 | Propuesta |
+| [ADR-0027](ADR-0027-administrador-unico-y-traspaso.md) | Administrador único, traspaso a TI y quién crea proyectos | 2026-10-17 | Aceptada en principio; por construir |
 
 Las decisiones de detalle (supuestos S1–S13, P1–P11, D2, etc.) siguen en `docs/SUPUESTOS.md` y en la sección 14 de `ESPECIFICACION.md`.

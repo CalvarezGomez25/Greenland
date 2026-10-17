@@ -54,3 +54,20 @@
 | Registro de la sesión de desarrollo | conversación 8–14 oct 2026 | Fuente de [02-historia.md](02-historia.md) |
 
 **Excluido a propósito:** otros artifacts de la cuenta que corresponden a asuntos de otros clientes o proyectos (por ejemplo, informes de una casa y sus otrosíes). No son parte de la memoria de PMO360 y no se leyeron.
+
+## Fuentes de la integración con Microsoft 365 (16 y 17 de octubre de 2026)
+
+**Limitación:** las páginas de `learn.microsoft.com` y de `supabase.com` **no se pudieron abrir** desde el entorno (error de resolución de nombres). Todo lo siguiente salió de **resultados del buscador** que resumían esas páginas; los niveles los asigna el redactor y quedan **pendientes de verificar en la página** (M-8). Ver [ADR-0026](decisiones/ADR-0026-integracion-con-microsoft-365.md).
+
+| Tema | Fuente | URL | Nivel |
+| --- | --- | --- | --- |
+| La API de Graph de Planner solo accede a planes básicos; planes en un contenedor (grupo de Microsoft 365); límite de 200 planes por grupo | Microsoft Learn, «Use the Planner REST API» (v1.0) | https://learn.microsoft.com/en-us/graph/api/resources/planner-overview?view=graph-rest-1.0 | N2 |
+| Consulta de cambios de tareas (`delta`); permisos `Tasks.Read` y `Tasks.Read.All`; la versión beta no es para producción | Microsoft Learn, «Planner: delta» | https://learn.microsoft.com/en-us/graph/api/planneruser-list-delta | N2 |
+| Planner Premium se compra aparte; nombres de planes (2024) | Microsoft Q&A sobre licencias; Microsoft Learn, licencias de Planner | https://learn.microsoft.com/en-us/answers/a/12596411 y https://learn.microsoft.com/en-us/planner/understand-planner-trial-and-license-assignments | N3 |
+| Planner es conector estándar de Power Automate; las licencias de Microsoft 365 cubren los conectores estándar | Microsoft Learn, preguntas frecuentes de licencias de Power Automate | https://learn.microsoft.com/en-MY/power-platform/admin/power-automate-licensing/faqs | N2 |
+| Inicio de sesión con Microsoft (Entra ID) en Supabase; reclamaciones `xms_edov` y `email` | Supabase, «Login with Azure (Microsoft)» | https://supabase.com/docs/guides/auth/social-login/auth-azure | N2 |
+| Planner básico incluido en los planes Microsoft 365 empresariales | Guía de licencias de terceros; Microsoft Q&A lo matiza | https://www.licensingschool.co.uk/licensing-blog/?p=120641 | N3 |
+| Cambios de precio desde julio de 2026 | Guía de terceros, sin contraste con Microsoft | — | NV |
+| Webhooks de Planner, etiquetas y campos personalizados en planes básicos, invitados externos | No se encontró fuente | — | NV |
+
+Guía para TI (documento editable, con estas fuentes y lo no verificado): https://claude.ai/code/artifact/13eee31a-c754-4ef9-8904-86c5ded90492

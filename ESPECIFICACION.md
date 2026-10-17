@@ -31,7 +31,7 @@ Versión 3.2, actualizada el 16 de octubre de 2026. Es la única versión vigent
 | Pruebas automáticas | 321 pruebas unitarias (Vitest, 35 archivos) y 586 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas al 16 de octubre de 2026 (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
 | Producción | El usuario instaló el SQL de la base en Supabase y desplegó en Vercel; confirmó que funciona con datos ficticios |
 | Aún no ocurrido | Ningún correo se ha enviado en producción (falta configurar el proveedor, `CRON_SECRET` y el usuario de solo lectura); no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
-| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 21 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
+| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 27 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
 | Condiciones antes de datos reales | Definir región y confidencialidad; plan de alojamiento apto para uso comercial; revisión de seguridad (pendientes P12 a P14) |
 
 ## 1. Visión, alcance y principios
@@ -1025,7 +1025,7 @@ Repositorio `docs/memoria/`, creado el 14 de octubre de 2026 para explicar cómo
 | `02-historia.md` | Cronología desde los antecedentes hasta hoy, con commits |
 | `03-marco-teorico.md` | Teoría, normativa y nivel de verificación de cada afirmación |
 | `04-buenas-practicas-documentacion.md` | Investigación sobre cómo documentar proyectos, diagnóstico y brechas |
-| `decisiones/` | 21 fichas de decisión (ADR) |
+| `decisiones/` | 27 fichas de decisión (ADR) |
 | `06-trazabilidad.md` | Módulo → decisión → migración → prueba → commit |
 | `07-lecciones-aprendidas.md` | Incidentes y qué cambió |
 | `08-fuentes-y-verificacion.md` | Bibliografía con niveles N1 a N3 |
@@ -1034,6 +1034,6 @@ Repositorio `docs/memoria/`, creado el 14 de octubre de 2026 para explicar cómo
 
 **Reglas de rigor.** No se inventan fechas, cifras, normas ni citas; lo no conocido se escribe como «no disponible» y se lista como brecha. Cada afirmación se etiqueta: **Verificado** (con fuente y nivel), **Declarado** (lo dijo el usuario), **Supuesto** o **Estimación**. Una decisión aceptada no se reescribe: se marca como reemplazada y se enlaza la nueva. No se guardan credenciales ni identificadores de proyecto de Supabase.
 
-**Límites.** Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (P27). Las fichas de decisión se redactaron después de las decisiones, a partir del registro de la sesión.
+**Límites.** Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (P27). Las fichas ADR-0001 a ADR-0021 se redactaron después de las decisiones, a partir del registro de la sesión; las ADR-0022 a ADR-0027 se escribieron el día de cada decisión.
 
 **Cuándo se actualiza.** Con cada decisión, cambio de módulo o migración, incidente, cambio de versión de este documento y cierre de jornada (tabla de disparadores en `docs/memoria/09-gobierno-de-la-memoria.md`). Al subir de versión esta especificación se revisan también `README.md` y `docs/memoria/CHANGELOG.md` para que coincidan (lección L-8).
