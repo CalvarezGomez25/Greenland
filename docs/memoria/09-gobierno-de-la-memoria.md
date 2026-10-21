@@ -45,6 +45,11 @@ Dejar **trazabilidad** (por qué existe cada cosa y qué la prueba) y **la histo
 | 10 oct | Claude trabaja de forma autónoma: construye, prueba, hace commit y push; solo le pide al usuario lo que no puede hacer (Supabase, Vercel) |
 | Preferencias del usuario | Respuestas concisas y prácticas; resultados profesionales, bien estructurados y con investigación profunda; **no inventar; dar resultados verificables** |
 
+### 5.1 Ramas (decisión del 21 de octubre de 2026)
+- **Rama principal: `claude/especificacion-project-manager-495kj0`** (decisión del usuario). Todo el trabajo se integra ahí y de ahí salen los despliegues.
+- Antes de cada sesión: traer lo último de la rama principal. Si el envío es rechazado por cambios nuevos, se hace *merge* y se resuelven los conflictos; nunca se fuerza el envío ni se reescribe la historia.
+- `prueba/gestor-colaborativo`: sin trabajo propio (todo está en la principal). `vercel/install-vercel-web-analytics-x313y1`: 1 commit de Vercel que no está en la principal; sin integrar (P38 de la especificación).
+
 ## 6. Convenciones
 
 - **Idioma:** español de Colombia; tuteo en la interfaz.

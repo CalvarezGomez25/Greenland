@@ -2,7 +2,7 @@
 
 Plataforma web de gestión de proyectos de construcción (PMO): portafolio, EVM, cambios, cronograma,
 contratos, bitácora, documentos, cierre e interventoría. La especificación vigente es `ESPECIFICACION.md`
-(v3.3.1); los supuestos y pendientes adoptados están en [`docs/SUPUESTOS.md`](docs/SUPUESTOS.md). La historia, las decisiones, el marco teórico y la trazabilidad del proyecto están en [`docs/memoria/`](docs/memoria/README.md).
+(v3.3.2); los supuestos y pendientes adoptados están en [`docs/SUPUESTOS.md`](docs/SUPUESTOS.md). La historia, las decisiones, el marco teórico y la trazabilidad del proyecto están en [`docs/memoria/`](docs/memoria/README.md).
 
 ## Estado
 

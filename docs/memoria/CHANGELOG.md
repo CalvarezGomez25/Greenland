@@ -2,6 +2,10 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.3.2] · 21 de octubre de 2026
+### Cambiado
+- Se registra que la rama principal es `claude/especificacion-project-manager-495kj0` y la regla de integración (traer lo último antes de cada sesión, *merge*, sin forzar). Pendiente P38: ramas secundarias.
+
 ## [3.3.1] · 21 de octubre de 2026
 ### Corregido
 - `ESPECIFICACION.md`: cifras de pruebas (328 unitarias y 586 de base de datos, verificadas de nuevo el 21 de octubre sobre el código unido) y estado de P16 y P17 (el recordatorio del 12 de octubre ya se cumplió; configuración de correos aún pendiente).

@@ -1,12 +1,12 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.3.1, actualizada el 21 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.3.2, actualizada el 21 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.3.1, única versión vigente |
+| Versión | 3.3.2, única versión vigente |
 | Última actualización | 21 de octubre de 2026 (revisión de coherencia sobre lo construido y decidido hasta el 17 de octubre de 2026; guías de operación en la sección 16) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
@@ -22,6 +22,7 @@ Versión 3.3.1, actualizada el 21 de octubre de 2026. Es la única versión vige
 | 3.2 | 16 de octubre de 2026 | Correo y teléfono en los interesados y directorio de contactos reutilizable entre proyectos (módulo C, secciones 7 y 8, migración 0023, hito 23, supuesto S18, pendiente P33); estado de pruebas actualizado |
 | 3.3 | 16 de octubre de 2026 | Módulo R, Actividades y «Mi trabajo»: un mínimo de trabajo colaborativo (secciones 4, 5, 7 y 8, migración 0024, hito 24, supuesto S19, pendiente P34); pendientes P35 (rol futuro de Carlos y administrador único de TI) y P36 (quién crea proyectos y arma equipos) |
 | 3.3.1 | 21 de octubre de 2026 | Revisión de coherencia al unir dos líneas de trabajo (cifras de pruebas, conteo de fichas de decisión, estado de P16 y P17); guías de operación de la sección 16: crear usuarios con su rol y configurar y probar el envío de correos por fases; aviso de que los avisos inmediatos solo necesitan el proveedor de correo (módulo O); se registra la exploración de Microsoft 365 como decisión abierta (P37) |
+| 3.3.2 | 21 de octubre de 2026 | Se registra que la rama principal es `claude/especificacion-project-manager-495kj0` (secciones 14 y 16, pendiente P38) |
 
 ### 0.1 Estado actual de un vistazo (16 de octubre de 2026)
 
@@ -835,6 +836,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | Memoria del proyecto | Se documenta la historia, las decisiones y la trazabilidad en `docs/memoria/`, con niveles de verificación y regla de no inventar (14 de octubre de 2026) |
 | Interesados y directorio | Los interesados llevan correo y teléfono; los contactos se guardan en un directorio compartido entre proyectos y se reutilizan al registrar interesados nuevos (16 de octubre de 2026) |
 | Gestor de tareas y Microsoft 365 | Se mantiene «Actividades» como mínimo propio; la integración con Microsoft 365 (Teams y Planner) queda en exploración, con una guía para TI y una prueba en un proyecto antes de integrar (16 y 17 de octubre de 2026; P37, ADR-0026) |
+| Rama principal | La rama principal del repositorio es `claude/especificacion-project-manager-495kj0`; todo el trabajo se integra ahí y los despliegues de producción salen de ella (decisión del usuario, 21 de octubre de 2026) |
 
 **Discrepancias detectadas en los documentos del usuario**
 
@@ -912,6 +914,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | P35 | **Rol futuro de Carlos y administrador único de TI.** Más adelante Carlos dejará de ser administrador y será gerente de proyectos con visión del portafolio; quedará un solo administrador, el de TI (nunca dos). Propuesta: Carlos con rol global «Analista PMO» (ve todo el portafolio sin administrar) más rol de proyecto «Gerente de proyecto» en sus proyectos; no usar «Director general» salvo que deba aprobar cambios críticos y contratos nuevos. Orden del traspaso: 1) crear y asignar al administrador de TI, 2) asignar a Carlos el rol global y sus roles de gerente, 3) recién entonces quitarle el rol de administrador (la plataforma exige siempre al menos uno). A decidir con ello: el administrador de TI **ve los datos de todos los proyectos** (presupuestos, contratos, riesgos); si debe administrar sin verlos haría falta un rol nuevo «solo administración», que conviene resolver junto con P12 a P14 (confidencialidad y datos reales). El nombre «Analista PMO» no refleja el caso de Carlos; se puede mostrar con otro nombre | Abierto. Decidido el 17 de octubre de 2026: **por ahora todo sigue igual** (Carlos es administrador, crea los proyectos y el equipo). **Regla de traspaso:** siempre hay exactamente un administrador; al nombrar a otra persona administradora, quien lo era lo deja automáticamente (nunca quedan dos). Hoy la plataforma solo garantiza «al menos un administrador» (migración 0017) y permite varios, así que el traspaso automático **está por construir** antes de usarse. **Decidido (17 de octubre de 2026): Carlos, al dejar de ser administrador, pasa automáticamente a «Analista PMO»** para conservar el acceso al portafolio; sus roles de gerente en cada proyecto se mantienen. A definir al construirlo: una confirmación para que un cambio accidental no deje sin acceso al administrador actual |
 | P36 | **Quién crea proyectos y arma los equipos.** Hoy solo el administrador crea proyectos y asigna personas a ellos (decisión del 15 de octubre de 2026). Con un administrador de TI cada proyecto nuevo y cada cambio de equipo pasaría por TI, un posible cuello de botella para la PMO. Opciones: a) dejarlo así (TI lo hace por solicitud; lo más sencillo y controlado); b) ampliar permisos para que un rol de la PMO cree proyectos y arme equipos sin administrar usuarios ni parámetros (cambio pequeño en permisos de base de datos, pantallas y pruebas). Decidir **antes** de traspasar el rol de administrador (P35). Mientras Carlos sea administrador, sin cambios | **Decidido (17 de octubre de 2026): cuando el administrador sea el de TI, el director general de planificación y proyectos crea los proyectos y arma los equipos** (opción b: sin administrar usuarios ni parámetros). Rige desde el traspaso de P35; **aún no se hace**: hoy esos permisos son solo del administrador y Carlos sigue siendo el administrador que crea los proyectos. Por construir con el traspaso. A definir entonces: alcance exacto del director (crear proyectos, editar la ficha, asignar y quitar miembros, reabrir proyectos cerrados, que hoy solo reabre el administrador) y que no pueda asignar roles globales |
 | P37 | **Integración con Microsoft 365 (Teams y Planner).** Se exploró usar la licencia corporativa de Microsoft como capa de trabajo y dejar a PMO360 como capa de control (lectura de tareas por Microsoft Graph, solo lectura); **no se ha construido nada ni hay decisión definitiva** (ADR-0026). Pendiente del usuario: confirmar el plan de Microsoft 365. Pendiente de TI: cinco preguntas (plan, invitados externos para la interventoría, quién crea equipos, registro de aplicación en Entra ID, Power Automate) y una prueba con un solo proyecto. Lo citado de Microsoft salió de resultados de búsqueda, no de sus páginas | Abierto; relacionado con P34 (adopción de Actividades) |
+| P38 | **Ramas secundarias.** `prueba/gestor-colaborativo` no tiene trabajo propio (todo su contenido ya está en la rama principal): se puede archivar o borrar cuando el usuario lo decida. `vercel/install-vercel-web-analytics-x313y1` tiene 1 commit creado por Vercel («Install Vercel Web Analytics», 17 de octubre de 2026) que **no está en la rama principal** y quedó 13 commits atrás; no se integró porque no fue solicitado. Decidir si se integra o se descarta | Abierto; decide el usuario |
 
 ## 15. Trazabilidad: hoja del libro a módulo
 
@@ -943,6 +946,8 @@ La plataforma ya está construida (secciones 0.1 y 12.1). Este documento es la b
 3. Pega el prompt de abajo y pide que te guíe paso a paso.
 4. Avanza por cambios pequeños; valida cada uno con los casos de la sección 13 y con las pruebas automáticas.
 
+**Rama de trabajo.** La rama principal es `claude/especificacion-project-manager-495kj0`. Antes de empezar cualquier sesión se trae lo último de esa rama (`git fetch` y `git pull`) para no trabajar sobre una copia vieja; los cambios se integran con un *merge* y nunca se fuerza el envío (lección L-18).
+
 **Pasos que solo puede hacer el usuario (por cada versión con migraciones nuevas):**
 
 1. Pegar `supabase/instalar_todo.sql` completo en Supabase, en el editor SQL, y ejecutarlo (se puede repetir sin problema).
@@ -963,7 +968,7 @@ La plataforma ya está construida (secciones 0.1 y 12.1). Este documento es la b
 6. Envío real: borrar `CORREO_PROVEEDOR`, redesplegar y probar primero con una sola persona. Repetir el informe semanal con envío real escribe a **todos** los destinatarios.
 Estado al 21 de octubre de 2026: el usuario aún no ha hecho la configuración final (P16 y P17); nada se ha enviado en producción.
 
-> Lee ESPECIFICACION.md completo (versión 3.3.1), README.md y docs/memoria/README.md. La plataforma PMO360 ya está construida: revisa las secciones 0.1 y 12.1. Soy gerente de proyectos y no sé programar: explícame cada paso en lenguaje sencillo y pídeme confirmación antes de instalar, ejecutar o publicar cualquier cosa. Antes de cambiar código, resume lo que entendiste y lista tus dudas. Mantén todas las reglas y umbrales como parámetros configurables (sección 9). Nunca uses ni me pidas la clave secreta (service_role) de Supabase, y no guardes contraseñas en el repositorio. Valida cada cambio con `npm run verificar`, `npm run test:sql` y los casos de la sección 13. No inventes cifras: si un dato no existe, dilo.
+> Lee ESPECIFICACION.md completo (versión 3.3.2), README.md y docs/memoria/README.md. La plataforma PMO360 ya está construida: revisa las secciones 0.1 y 12.1. Soy gerente de proyectos y no sé programar: explícame cada paso en lenguaje sencillo y pídeme confirmación antes de instalar, ejecutar o publicar cualquier cosa. Antes de cambiar código, resume lo que entendiste y lista tus dudas. Mantén todas las reglas y umbrales como parámetros configurables (sección 9). Nunca uses ni me pidas la clave secreta (service_role) de Supabase, y no guardes contraseñas en el repositorio. Valida cada cambio con `npm run verificar`, `npm run test:sql` y los casos de la sección 13. No inventes cifras: si un dato no existe, dilo.
 
 ## 17. Presentación y adopción: marco FARO
 
