@@ -1,9 +1,9 @@
-// PDF de tablas con la identidad de la plataforma (la misma del informe gerencial): logo, tipografías Baloo 2 y Roboto,
-// paleta verde, tarjetas de indicadores, etiquetas de semáforo y filas alternadas. Se dibuja con pdf-lib, sin servicios externos.
+// PDF de tablas con el sistema de diseño GreenLand v1.0.0 (el mismo del informe gerencial): logo, tipografía Archivo, tarjetas con muesca y estados con la paleta de alertas.
+// Se dibuja con pdf-lib, sin servicios externos.
 import { PDFDocument, type PDFFont, type PDFPage } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import { LEMA_PLATAFORMA, NOMBRE_EMPRESA, NOMBRE_PLATAFORMA } from "../marca";
-import { BALOO_700, LOGO_PNG, ROBOTO_400, ROBOTO_500 } from "../informe/fuentes";
+import { ARCHIVO_300, ARCHIVO_400, ARCHIVO_500, LOGO_PNG } from "../informe/fuentes";
 import { C, Lienzo, hex, limpiar as limpiarMarca, partir as partirMarca, type Fuentes } from "../informe/pdf";
 import { TONOS, tonoDeTexto } from "./tonos";
 import type { DocExport, TablaExport, Tarjeta } from "./tipos";
@@ -36,9 +36,9 @@ export async function aPdf(doc: DocExport): Promise<Uint8Array> {
   const pdf = await PDFDocument.create();
   pdf.registerFontkit(fontkit);
   const f: Fuentes = {
-    titulo: await pdf.embedFont(Buffer.from(BALOO_700, "base64"), { subset: true }),
-    normal: await pdf.embedFont(Buffer.from(ROBOTO_400, "base64"), { subset: true }),
-    medio: await pdf.embedFont(Buffer.from(ROBOTO_500, "base64"), { subset: true }),
+    titulo: await pdf.embedFont(Buffer.from(ARCHIVO_300, "base64"), { subset: true }),
+    normal: await pdf.embedFont(Buffer.from(ARCHIVO_400, "base64"), { subset: true }),
+    medio: await pdf.embedFont(Buffer.from(ARCHIVO_500, "base64"), { subset: true }),
   };
   const logo = await pdf.embedPng(Buffer.from(LOGO_PNG, "base64"));
   pdf.setTitle(limpiarMarca(doc.titulo));
@@ -59,7 +59,6 @@ export async function aPdf(doc: DocExport): Promise<Uint8Array> {
       L.texto(NOMBRE_PLATAFORMA, A4_H[0] - M, M + 11, { f: f.titulo, tam: 13, color: C.leaf600, derecha: true });
       L.texto(`${NOMBRE_EMPRESA} · ${LEMA_PLATAFORMA}`, A4_H[0] - M, M + 24, { tam: 7.5, color: C.gris, derecha: true });
       L.linea(M, M + 38, A4_H[0] - M, M + 38, C.leaf600, 1);
-      pagina.drawRectangle({ x: M, y: L.Y(M + 40.5), width: 70, height: 2.5, color: C.tierra });
       y = M + 66;
       const tam = doc.titulo.length > 60 ? 17 : 21;
       y += L.parrafo(doc.titulo, M, y, { f: f.titulo, tam, ancho: ANCHO, maxLineas: 2, color: C.leaf700, interlinea: tam * 1.05 }) + 4;
@@ -85,11 +84,9 @@ export async function aPdf(doc: DocExport): Promise<Uint8Array> {
       fila.forEach((t, k) => {
         const x = M + k * (w + 8);
         const tono = t.tono ? TONOS[t.tono] : null;
-        L.caja(x, y, w, hT, { fondo: tono ? hex(tono.fondo) : C.leaf100, borde: tono ? hex(tono.borde) : undefined, radio: 10, grosor: 0.9 });
-        const colorTexto = tono ? hex(tono.texto) : C.leaf800;
-        L.texto(t.etiqueta.toUpperCase(), x + 10, y + 14, { f: f.medio, tam: 6.8, color: colorTexto, ancho: w - 18 });
-        L.texto(t.valor, x + 10, y + 35, { f: f.titulo, tam: 19, color: tono ? hex(tono.texto) : C.leaf700, ancho: w - 18 });
-        if (t.detalle) L.texto(t.detalle, x + 10, y + 47, { tam: 7, color: C.gris, ancho: w - 18 });
+        L.muesca(x, y + 6, w, hT - 6, t.etiqueta, { color: tono ? hex(tono.borde) : undefined });
+        L.texto(t.valor, x + w / 2, y + 33, { f: f.titulo, tam: 19, color: tono ? hex(tono.texto) : C.leaf700, ancho: w - 14, centro: true });
+        if (t.detalle) L.texto(t.detalle, x + w / 2, y + 47, { tam: 7, color: C.gris, ancho: w - 14, centro: true });
       });
       y += hT + 8;
     }
@@ -125,12 +122,11 @@ export async function aPdf(doc: DocExport): Promise<Uint8Array> {
     const anchos = pesos.map((p) => (p / suma) * ANCHO);
     const LINEAS_MAX = Math.floor((BASE - M - 50) / interl); // líneas que caben en una hoja completa
 
-    const dibujarFila = (lineas: string[][], cabecera: boolean, indice: number) => {
+    const dibujarFila = (lineas: string[][], cabecera: boolean) => {
       const alto = Math.max(...lineas.map((l) => l.length)) * interl + padV;
       asegurar(alto);
       if (cabecera) L.caja(M, y, ANCHO, alto, { fondo: C.leaf600, radio: 4 });
       else {
-        if (indice % 2 === 1) L.caja(M, y, ANCHO, alto, { fondo: C.leaf50, radio: 0 });
         L.linea(M, y + alto, M + ANCHO, y + alto, C.borde, 0.4);
       }
       let x = M;
@@ -138,11 +134,10 @@ export async function aPdf(doc: DocExport): Promise<Uint8Array> {
         const etiqueta = !cabecera && t.insignias?.includes(i) && ls.length === 1 ? tonoDeTexto(ls[0]) : null;
         if (etiqueta) {
           const tono = TONOS[etiqueta];
-          const w = Math.min(anchos[i] - 6, f.medio.widthOfTextAtSize(ls[0], 7) + 18);
+          const w = Math.min(anchos[i] - 6, f.medio.widthOfTextAtSize(ls[0], 7) + 16);
           const px = der[i] ? x + anchos[i] - 4 - w : x + 4;
-          L.caja(px, y + (alto - 13) / 2, w, 13, { fondo: hex(tono.fondo), borde: hex(tono.borde), radio: 6.5, grosor: 0.6 });
-          L.punto(px + 7, y + alto / 2, 2.2, hex(tono.punto));
-          L.texto(ls[0], px + 12, y + alto / 2 + 2.5, { f: f.medio, tam: 7, color: hex(tono.texto), ancho: w - 15 });
+          L.caja(px, y + (alto - 13) / 2, w, 13, { fondo: C.hoja, borde: hex(tono.borde), radio: 6.5, grosor: 0.9 });
+          L.texto(ls[0], px + w / 2, y + alto / 2 + 2.5, { f: f.medio, tam: 7, color: hex(tono.texto), ancho: w - 10, centro: true });
         } else {
           ls.forEach((l, k) => {
             const fuente = cabecera ? f.medio : f.normal;
@@ -161,10 +156,10 @@ export async function aPdf(doc: DocExport): Promise<Uint8Array> {
       const fuente: PDFFont = cabecera ? f.medio : f.normal;
       const lineas = previas ?? celdas.map((c, i) => partirMarca(limpiarMarca(c), fuente, tam, anchos[i] - 8));
       const n = Math.max(...lineas.map((l) => l.length));
-      if (n <= LINEAS_MAX) return dibujarFila(lineas, cabecera, indice);
+      if (n <= LINEAS_MAX) return dibujarFila(lineas, cabecera);
       for (let k = 0; k < n; k += LINEAS_MAX) {
         if (k > 0) { nueva(); fila(t.columnas, true, 0); }
-        dibujarFila(lineas.map((l) => { const parte = l.slice(k, k + LINEAS_MAX); return parte.length ? parte : [""]; }), cabecera, indice);
+        dibujarFila(lineas.map((l) => { const parte = l.slice(k, k + LINEAS_MAX); return parte.length ? parte : [""]; }), cabecera);
       }
     };
     fila(t.columnas, true, 0);
