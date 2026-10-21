@@ -71,7 +71,7 @@ export function ImportarCsv({
           type="file"
           accept=".csv,.txt,.tsv,text/csv,text/plain"
           onChange={alElegir}
-          className="block w-full rounded-[10px] border border-soil-border bg-white p-2 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-leaf-600 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-leaf-700"
+          className="block w-full rounded-[20px] border border-soil-border bg-white p-2 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-leaf-600 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-leaf-700"
         />
       </label>
 
@@ -83,7 +83,7 @@ export function ImportarCsv({
           <h2 className="font-display text-xl font-bold text-leaf-700">Vista previa de «{archivo.nombre}»</h2>
 
           {lectura.errores.length > 0 && (
-            <div className="rounded-card border border-danger/40 bg-red-50 p-4">
+            <div className="rounded-card border-[1.5px] border-alerta-crit bg-white p-4">
               <p className="font-medium text-danger">
                 {lectura.errores.length === 1 ? "Hay 1 problema" : `Hay ${lectura.errores.length} problemas`} en el archivo.
                 No se puede importar hasta corregirlos.
@@ -107,23 +107,23 @@ export function ImportarCsv({
           {resumen && (
             <>
               <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-card bg-leaf-100 p-4">
-                  <p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Partidas</p>
+                <div className="rounded-card border-[1.5px] border-leaf-500 p-4">
+                  <p className="text-xs font-medium text-leaf-800">Partidas</p>
                   <p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-900">{lectura.filas.length}</p>
                 </div>
-                <div className="rounded-card bg-leaf-100 p-4">
-                  <p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Capítulos</p>
+                <div className="rounded-card border-[1.5px] border-leaf-500 p-4">
+                  <p className="text-xs font-medium text-leaf-800">Capítulos</p>
                   <p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-900">{resumen.capitulos.length}</p>
                 </div>
-                <div className="rounded-card bg-leaf-100 p-4">
-                  <p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Costo directo</p>
+                <div className="rounded-card border-[1.5px] border-leaf-500 p-4">
+                  <p className="text-xs font-medium text-leaf-800">Costo directo</p>
                   <p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl tabular-nums text-leaf-900">$ {formatearPesos(resumen.costoDirecto)}</p>
                 </div>
               </div>
 
               <div className="overflow-x-auto rounded-card border border-soil-border">
                 <table className="w-full min-w-[420px] text-sm">
-                  <thead className="bg-leaf-100 text-left text-leaf-800">
+                  <thead className="border-b-[1.5px] border-leaf-500 text-left font-medium text-leaf-500">
                     <tr>
                       <th scope="col" className="px-3 py-2">Capítulo</th>
                       <th scope="col" className="px-3 py-2 text-right">Partidas</th>

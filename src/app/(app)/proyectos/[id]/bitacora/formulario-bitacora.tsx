@@ -9,7 +9,7 @@ import { crearClienteNavegador } from "@/lib/supabase/navegador";
 
 type Actividad = { tarea_id: string; avance_dia_pct: string; descripcion: string };
 
-const clase = "w-full rounded-[10px] border border-soil-border bg-white px-3.5 py-3 text-[16px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30";
+const clase = "w-full rounded-[20px] border border-soil-border bg-white px-3.5 py-3 text-[16px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30";
 
 function Area({ nombre, etiqueta }: { nombre: string; etiqueta: string }) {
   return (
@@ -100,7 +100,7 @@ export function FormularioBitacora({
       <fieldset className="flex flex-col gap-3 rounded-card border border-soil-border p-4">
         <legend className="px-1 text-sm font-medium text-leaf-800">Actividades del día</legend>
         {actividades.map((a, i) => (
-          <div key={i} className="grid gap-3 rounded-[10px] bg-leaf-50 p-3 sm:grid-cols-[1fr_110px]">
+          <div key={i} className="grid gap-3 rounded-[20px] bg-leaf-50 p-3 sm:grid-cols-[1fr_110px]">
             <label className="flex flex-col gap-1.5 sm:col-span-2">
               <span className="text-[13px] font-medium text-leaf-800">Descripción</span>
               <textarea rows={2} maxLength={2000} value={a.descripcion} onChange={(ev) => cambiar(i, "descripcion", ev.target.value)} className={clase} />
@@ -145,7 +145,7 @@ export function FormularioBitacora({
 
       <label className="flex items-center gap-3 text-[15px]"><input type="checkbox" checked={retraso} onChange={(e) => setRetraso(e.target.checked)} className="h-5 w-5" /> Hubo un retraso</label>
       {retraso && (
-        <div className="grid gap-4 rounded-card bg-leaf-50 p-4 sm:grid-cols-2">
+        <div className="grid gap-4 rounded-card border-[1.5px] border-soil-border p-4 sm:grid-cols-2">
           <Selector etiqueta="Causa" name="retraso_causa" required defaultValue="">
             <option value="">Elige…</option>{CAUSAS_RETRASO.map(([v, t]) => <option key={v} value={v}>{t}</option>)}
           </Selector>
@@ -156,7 +156,7 @@ export function FormularioBitacora({
 
       <label className="flex items-center gap-3 text-[15px]"><input type="checkbox" checked={incidente} onChange={(e) => setIncidente(e.target.checked)} className="h-5 w-5" /> Hubo un incidente</label>
       {incidente && (
-        <div className="grid gap-4 rounded-card bg-leaf-50 p-4 sm:grid-cols-2">
+        <div className="grid gap-4 rounded-card border-[1.5px] border-soil-border p-4 sm:grid-cols-2">
           <Selector etiqueta="Tipo" name="incidente_tipo" required defaultValue="">
             <option value="">Elige…</option>{TIPOS_INCIDENTE.map(([v, t]) => <option key={v} value={v}>{t}</option>)}
           </Selector>

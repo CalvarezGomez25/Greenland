@@ -66,8 +66,8 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         {bloqueadas > 0 && <>, {bloqueadas} {bloqueadas === 1 ? "bloqueada" : "bloqueadas"}</>}
       </p>
       <div className="mt-3 flex flex-wrap gap-2 text-sm">
-        <Link href={base} aria-current={!soloMias ? "page" : undefined} className={`rounded-full border px-3 py-1 ${!soloMias ? "border-leaf-600 bg-leaf-100 font-medium text-leaf-900" : "border-soil-border text-leaf-800 hover:bg-leaf-50"}`}>Todas</Link>
-        <Link href={`${base}?mias=1`} aria-current={soloMias ? "page" : undefined} className={`rounded-full border px-3 py-1 ${soloMias ? "border-leaf-600 bg-leaf-100 font-medium text-leaf-900" : "border-soil-border text-leaf-800 hover:bg-leaf-50"}`}>Solo las mías</Link>
+        <Link href={base} aria-current={!soloMias ? "page" : undefined} className={`rounded-full border px-3 py-1 ${!soloMias ? "border-leaf-600 bg-white font-medium text-leaf-500" : "border-soil-border text-leaf-800 hover:bg-leaf-50"}`}>Todas</Link>
+        <Link href={`${base}?mias=1`} aria-current={soloMias ? "page" : undefined} className={`rounded-full border px-3 py-1 ${soloMias ? "border-leaf-600 bg-white font-medium text-leaf-500" : "border-soil-border text-leaf-800 hover:bg-leaf-50"}`}>Solo las mías</Link>
       </div>
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
       {error && <div className="mt-4"><Aviso>No se pudo leer la lista{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}

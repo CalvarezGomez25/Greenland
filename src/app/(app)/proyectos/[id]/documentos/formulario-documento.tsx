@@ -69,7 +69,7 @@ export function FormularioDocumento({
           {vinculos && vinculos.length > 0 && (
             <label className="flex flex-col gap-1.5">
               <span className="text-[13px] font-medium text-leaf-800">Vincular a un registro (opcional)</span>
-              <select name="vinculo" className="h-[42px] w-full rounded-[10px] border border-soil-border bg-white px-3.5 text-[15px]" onChange={(ev) => {
+              <select name="vinculo" className="h-[42px] w-full rounded-[20px] border border-soil-border bg-white px-3.5 text-[15px]" onChange={(ev) => {
                 const [tipo, id] = ev.target.value.split("|");
                 const f = formulario.current!;
                 (f.elements.namedItem("entidad_tipo") as HTMLInputElement).value = tipo ?? "";

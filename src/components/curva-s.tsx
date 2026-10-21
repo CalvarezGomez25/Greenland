@@ -7,10 +7,10 @@ import type { PuntoCurva } from "@/lib/presupuesto/curva";
 const ANCHO = 720;
 const ALTO = 320;
 const M = { izq: 70, der: 16, arr: 30, aba: 36 };
-const COLOR_PLAN = "#5f86c4";
-const COLOR_REAL = "#7c401d";
-const COLOR_TEXTO = "#555552";
-const COLOR_REJILLA = "#dcdcd8";
+const COLOR_PLAN = "#84b71e";
+const COLOR_REAL = "#027001";
+const COLOR_TEXTO = "#5e5e5e";
+const COLOR_REJILLA = "#e4e4e4";
 
 const aMillones = (monto: bigint) => Number(monto) / 1e12; // monto escala 6 → millones de pesos
 const fmt = (n: number) => n.toLocaleString("es-CO", { maximumFractionDigits: 0 });
@@ -22,7 +22,7 @@ export function CurvaS({ puntos, mesesSinRegistro = [] }: { puntos: PuntoCurva[]
     ...puntos.map((p) => (p.real === null ? 0 : aMillones(p.real))),
   );
   if (!(maximo > 0)) {
-    return <p className="rounded-card bg-leaf-50 p-6 text-center text-sm text-muted">Sin presupuesto para graficar.</p>;
+    return <p className="rounded-card border-[1.5px] border-soil-border p-6 text-center text-sm text-muted">Sin presupuesto para graficar.</p>;
   }
 
   const anchoUtil = ANCHO - M.izq - M.der;

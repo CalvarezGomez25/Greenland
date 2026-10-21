@@ -46,7 +46,8 @@
 | Prototipo «PM Infraestructura — Sistema Integral de Gerencia» | artifact en la cuenta, actualizado 8 oct 2026 | Leído completo: PMBOK 7, USD, datos en el navegador, nueve módulos |
 | Prototipo «Plataforma de Obra» | artifact, 8 oct 2026 | Mencionado por la sesión del 8 oct; no releído para esta memoria |
 | «Especificación técnica: Plataforma de Gestión de Obras» | documento en la cuenta, 7 oct 2026 | Existe; su contenido se refleja en `ESPECIFICACION.md`; no releído en detalle |
-| «GreenLand Design System» y «Design System» | artifacts, 8–9 oct 2026 | Fuente del diseño visual |
+| «GreenLand Design System» y «Design System» | artifacts, 8–9 oct 2026 | Sistema de diseño anterior (reemplazado) |
+| **GreenLand Design System v1.0.0** y formato de hojas de cálculo | Habilidades del asistente, 21 oct 2026 | **Vigente.** Reglas leídas completas; el paquete de activos (`GreenLand_DS_Export_v1.0.zip`) no estaba en la sesión. Paleta de alertas y reglas de Excel: propuesta pendiente de marca |
 | «Plataforma PMO Greenland» y su versión corta | presentaciones, 10 oct 2026 | Existen (17 y 9 láminas); no releídas |
 | «FARO – Que ningún proyecto navegue a ciegas» | artifact, 11 oct 2026 | Versión web del material FARO |
 | Libro *Sistema de Gestión de Proyectos de Infraestructura*, *Metodología de Control de Cambios GL*, prototipo SGCC | citados en la especificación | **No accesibles** desde esta sesión |

@@ -1,5 +1,5 @@
+import { TarjetaMuesca } from "@/components/tarjeta-muesca";
 import { Suspense } from "react";
-import { Ayuda } from "@/components/ayuda";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cargarProyecto } from "@/lib/contexto-proyecto";
@@ -24,14 +24,14 @@ type Cambio = Record<string, unknown> & {
 };
 
 function Dato({ t, v }: { t: string; v: React.ReactNode }) {
-  return <div><dt className="text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</dt><dd className="mt-0.5 whitespace-pre-wrap text-leaf-900">{v || "—"}</dd></div>;
+  return <div><dt className="text-xs font-medium text-leaf-800">{t}</dt><dd className="mt-0.5 whitespace-pre-wrap text-leaf-900">{v || "—"}</dd></div>;
 }
 
 function Nota({ nombre = "nota", obligatoria }: { nombre?: string; obligatoria?: boolean }) {
   return (
     <label className="flex flex-col gap-1.5">
       <span className="text-[13px] font-medium text-leaf-800">Nota{obligatoria ? "" : " (opcional)"}</span>
-      <input name={nombre} maxLength={500} required={obligatoria} className="h-[42px] w-full rounded-[10px] border border-soil-border bg-white px-3.5 text-[15px] focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30" />
+      <input name={nombre} maxLength={500} required={obligatoria} className="h-[42px] w-full rounded-[20px] border border-soil-border bg-white px-3.5 text-[15px] focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30" />
     </label>
   );
 }
@@ -87,10 +87,10 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       </ol>
 
       <section className="mt-6 grid gap-3 sm:grid-cols-4" aria-label="Nivel del cambio">
-        <Ayuda modo="tarjeta" tema="nivel_cambio" className="rounded-card bg-leaf-100 p-4"><p className="pr-6 text-xs font-medium uppercase tracking-wider text-leaf-800">Nivel</p><p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{c.nivel ? ETIQUETA_NIVEL_CAMBIO[c.nivel] : "Sin calcular"}</p></Ayuda>
-        <div className="rounded-card bg-leaf-100 p-4"><p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Variación</p><p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{c.variacion_pct === null ? "—" : `${Number(c.variacion_pct).toLocaleString("es-CO", { maximumFractionDigits: 2 })} %`}</p><p className="text-xs text-muted">sobre {c.base_valor === null ? "—" : `${centavos(desdeJson(c.base_valor, 2))} COP`}</p></div>
-        <div className="rounded-card bg-leaf-100 p-4"><p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Lo decide</p><p className="mt-1 text-sm font-medium text-leaf-900">{aprobador ? ETIQUETA_APROBADOR[aprobador] : "—"}</p></div>
-        <div className="rounded-card bg-leaf-100 p-4"><p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Firma del patrocinador</p><p className="mt-1 text-sm font-medium text-leaf-900">{c.requiere_firma_patrocinador ? (c.firma_patrocinador ? `Firmada el ${formatearFecha(c.firma_patrocinador)}` : "Requerida, pendiente") : "No requerida"}</p></div>
+        <TarjetaMuesca titulo="Nivel" tema="nivel_cambio"><p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{c.nivel ? ETIQUETA_NIVEL_CAMBIO[c.nivel] : "Sin calcular"}</p></TarjetaMuesca>
+        <div className="rounded-card border-[1.5px] border-leaf-500 p-4"><p className="text-xs font-medium text-leaf-800">Variación</p><p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-700">{c.variacion_pct === null ? "—" : `${Number(c.variacion_pct).toLocaleString("es-CO", { maximumFractionDigits: 2 })} %`}</p><p className="text-xs text-muted">sobre {c.base_valor === null ? "—" : `${centavos(desdeJson(c.base_valor, 2))} COP`}</p></div>
+        <div className="rounded-card border-[1.5px] border-leaf-500 p-4"><p className="text-xs font-medium text-leaf-800">Lo decide</p><p className="mt-1 text-sm font-medium text-leaf-900">{aprobador ? ETIQUETA_APROBADOR[aprobador] : "—"}</p></div>
+        <div className="rounded-card border-[1.5px] border-leaf-500 p-4"><p className="text-xs font-medium text-leaf-800">Firma del patrocinador</p><p className="mt-1 text-sm font-medium text-leaf-900">{c.requiere_firma_patrocinador ? (c.firma_patrocinador ? `Firmada el ${formatearFecha(c.firma_patrocinador)}` : "Requerida, pendiente") : "No requerida"}</p></div>
       </section>
       {!c.nivel && <div className="mt-3"><Aviso>No hay línea base de costo (BAC) para calcular el nivel. Registra una medición de valor ganado y vuelve a guardar el cambio.</Aviso></div>}
 
@@ -124,7 +124,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       )}
 
       {(puedeAvanzar || e === "aprobacion") && (
-        <section className="mt-8 rounded-card bg-leaf-50 p-5" aria-label="Acciones">
+        <section className="mt-8 rounded-card border-[1.5px] border-soil-border p-5" aria-label="Acciones">
           <h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Siguiente paso</h2>
           {espera !== null && <p className="mb-3 text-sm text-muted">Lleva {espera} día(s) esperando decisión.</p>}
           {puedeAvanzar && sig && (

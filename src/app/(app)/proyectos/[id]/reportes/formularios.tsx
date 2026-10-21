@@ -39,7 +39,7 @@ export function FormularioReporte({ accion, iniciales }: { accion: Accion; inici
   const area = (k: string, t: string) => (
     <label key={k} className="flex flex-col gap-1.5">
       <span className="text-[13px] font-medium text-leaf-800">{t}</span>
-      <textarea name={k} rows={3} maxLength={4000} defaultValue={v(k)} className="w-full rounded-[10px] border border-soil-border bg-white px-3.5 py-2.5 text-[15px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30" />
+      <textarea name={k} rows={3} maxLength={4000} defaultValue={v(k)} className="w-full rounded-[20px] border border-soil-border bg-white px-3.5 py-2.5 text-[15px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30" />
     </label>
   );
   return (

@@ -29,6 +29,7 @@ Las columnas «Migración» y «Prueba» se verificaron contra los archivos del 
 | Inicio por rol y navegación | Interventoría fuera del portafolio (§3); petición del usuario del 17 oct | [0024](decisiones/ADR-0024-pantalla-de-inicio-por-rol.md) | — | unitarias `navegacion.test.ts` | `00cb5b3`, `9186580`, `78b5aa8` |
 | Administración: traspaso y permisos del director | Decisión del usuario del 17 oct (**por construir**) | [0027](decisiones/ADR-0027-administrador-unico-y-traspaso.md) | — (pendiente) | — (pendiente) | `4e85691` a `fd3c101` (solo documentos) |
 | Exportaciones Excel y PDF | Informes a la dirección; identidad de la marca (informe gerencial) | [0025](decisiones/ADR-0025-exportaciones-con-identidad-de-marca.md) | — | pruebas unitarias `exportar.test.ts` | `a76dd62`, `72dc45c` (hito 25) |
+| Imagen corporativa (todos los módulos) | Sistema de diseño GreenLand v1.0.0 | [0028](decisiones/ADR-0028-sistema-de-diseno-greenland-v1.md) | — | pruebas unitarias de exportaciones y navegación | `506d98a`, `f6d9f22` |
 | Seguridad y auditoría | Principio de reglas en la base | [0004](decisiones/ADR-0004-reglas-de-acceso-en-la-base.md) | 0017 | `t-auditoria` | `3dc98d8` |
 | Instalación | Reducir pasos manuales | [0008](decisiones/ADR-0008-instalador-sql-unico.md) | todas | `t-instalador`, `t-migraciones` | `804855f` |
 

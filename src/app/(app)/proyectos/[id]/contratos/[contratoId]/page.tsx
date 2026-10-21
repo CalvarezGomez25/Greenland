@@ -1,5 +1,5 @@
+import { TarjetaMuesca } from "@/components/tarjeta-muesca";
 import { Suspense } from "react";
-import { Ayuda } from "@/components/ayuda";
 import { temaDe } from "@/lib/glosario";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -19,7 +19,7 @@ import { FormularioActa, FormularioAnticipo } from "../formularios";
 type Acta = { id: string; numero: number; fecha: string; valor_bruto: number | string; amortizacion: number | string; retencion: number | string; neto: number | string; estado: string };
 
 function Dato({ t, v }: { t: string; v: React.ReactNode }) {
-  return <div><dt className="text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</dt><dd className="mt-0.5 whitespace-pre-wrap text-leaf-900">{v || "—"}</dd></div>;
+  return <div><dt className="text-xs font-medium text-leaf-800">{t}</dt><dd className="mt-0.5 whitespace-pre-wrap text-leaf-900">{v || "—"}</dd></div>;
 }
 
 async function Contenido({ params, searchParams }: { params: Promise<{ id: string; contratoId: string }>; searchParams: Promise<{ ok?: string; error?: string; aviso?: string }> }) {
@@ -78,7 +78,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           ["Anticipo autorizado", centavos(desdeJson(c.anticipo_valor, 2))], ["Anticipo por amortizar", centavos(r.anticipoPendiente)],
           ["Retención acumulada", centavos(r.retenido)], ["Desembolsado", centavos(r.desembolsado)],
         ] as [string, string][]).map(([t, v]) => (
-          <Ayuda key={t} modo="tarjeta" tema={temaDe(t)} className="rounded-card bg-leaf-100 p-4"><p className="pr-6 text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</p><p className="mt-1 font-display text-xl font-bold text-leaf-700">{v}</p>{t === "Valor del contrato" && <p className="text-xs text-muted">COP</p>}</Ayuda>
+          <TarjetaMuesca key={t} titulo={t} tema={temaDe(t)}><p className="mt-1 font-display text-xl font-bold text-leaf-700">{v}</p>{t === "Valor del contrato" && <p className="text-xs text-muted">COP</p>}</TarjetaMuesca>
         ))}
       </section>
 
@@ -93,7 +93,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         <h2 id="t-anticipo" className="font-display text-2xl font-bold text-leaf-700">Anticipo</h2>
         <p className="mt-1 text-sm text-muted">Es discrecional: lo autoriza el director general según la urgencia o necesidad. Nunca supera el {maxAnticipo} % del contrato. Lo normal es no darlo en contratos menores a la referencia.</p>
         {puedeAnticipo ? (
-          <div className="mt-3 rounded-card bg-leaf-50 p-5"><FormularioAnticipo accion={autorizarAnticipo.bind(null, id, contratoId)} pctActual={Number(c.anticipo_pct) > 0 ? String(Number(c.anticipo_pct)).replace(".", ",") : ""} maximo={String(maxAnticipo)} /></div>
+          <div className="mt-3 rounded-card border-[1.5px] border-soil-border p-5"><FormularioAnticipo accion={autorizarAnticipo.bind(null, id, contratoId)} pctActual={Number(c.anticipo_pct) > 0 ? String(Number(c.anticipo_pct)).replace(".", ",") : ""} maximo={String(maxAnticipo)} /></div>
         ) : (
           <p className="mt-2 text-sm text-muted">{actas.length > 0 ? "Ya hay actas de pago: el anticipo no se puede cambiar." : pendiente ? "El anticipo se puede autorizar cuando el contrato esté aprobado." : "Solo el director general de planificación y proyectos autoriza el anticipo."}</p>
         )}
@@ -102,11 +102,11 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <section className="mt-8" aria-labelledby="t-actas">
         <h2 id="t-actas" className="font-display text-2xl font-bold text-leaf-700">Actas de pago</h2>
         {actas.length === 0 ? (
-          <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Aún no hay actas.</p>
+          <p className="mt-3 rounded-card border-[1.5px] border-soil-border p-5 text-sm text-muted">Aún no hay actas.</p>
         ) : (
           <div className="mt-3 overflow-x-auto rounded-card border border-soil-border">
             <table className="w-full min-w-[860px] text-left text-sm">
-              <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
+              <thead className="border-b-[1.5px] border-leaf-500 text-sm font-medium text-leaf-500">
                 <tr>{["N.º", "Fecha", "Bruto", "Amortización", "Retención", "Neto a pagar", "Estado", ""].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr>
               </thead>
               <tbody className="divide-y divide-soil-border">
@@ -132,7 +132,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           </div>
         )}
         {permisos.gestionar && !pendiente && !c.retencion_liberada && (
-          <div className="mt-4 rounded-card bg-leaf-50 p-5"><h3 className="mb-3 font-display text-lg font-bold text-leaf-700">Radicar acta de pago</h3><FormularioActa accion={radicarActa.bind(null, id, contratoId)} hoy={hoyColombia()} /></div>
+          <div className="mt-4 rounded-card border-[1.5px] border-soil-border p-5"><h3 className="mb-3 font-display text-lg font-bold text-leaf-700">Radicar acta de pago</h3><FormularioActa accion={radicarActa.bind(null, id, contratoId)} hoy={hoyColombia()} /></div>
         )}
       </section>
 

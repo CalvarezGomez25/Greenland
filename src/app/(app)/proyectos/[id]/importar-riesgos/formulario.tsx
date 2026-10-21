@@ -49,7 +49,7 @@ export function ImportarRiesgos({ accion }: { accion: (anterior: EstadoRiesgos, 
           type="file"
           accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           onChange={alElegir}
-          className="block w-full rounded-[10px] border border-soil-border bg-white p-2 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-leaf-600 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-leaf-700"
+          className="block w-full rounded-[20px] border border-soil-border bg-white p-2 text-sm file:mr-3 file:rounded-full file:border-0 file:bg-leaf-600 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-leaf-700"
         />
       </label>
 
@@ -61,7 +61,7 @@ export function ImportarRiesgos({ accion }: { accion: (anterior: EstadoRiesgos, 
           <h2 className="font-display text-xl font-bold text-leaf-700">Vista previa de «{vista.nombre}»</h2>
 
           {vista.errores.length > 0 && (
-            <div className="rounded-card border border-danger/40 bg-red-50 p-4">
+            <div className="rounded-card border-[1.5px] border-alerta-crit bg-white p-4">
               <p className="font-medium text-danger">
                 {vista.errores.length === 1 ? "Hay 1 problema" : `Hay ${vista.errores.length} problemas`} en el archivo. No se puede importar hasta corregirlos.
               </p>
@@ -80,13 +80,13 @@ export function ImportarRiesgos({ accion }: { accion: (anterior: EstadoRiesgos, 
           {listo && (
             <>
               <div className="grid gap-3 sm:grid-cols-4">
-                <div className="rounded-card bg-leaf-100 p-4">
-                  <p className="text-xs font-medium uppercase tracking-wider text-leaf-800">Riesgos</p>
+                <div className="rounded-card border-[1.5px] border-leaf-500 p-4">
+                  <p className="text-xs font-medium text-leaf-800">Riesgos</p>
                   <p className="mt-1 font-display text-2xl font-bold text-leaf-900">{vista.riesgos.length}</p>
                 </div>
                 {NIVELES.map((n) => (
-                  <div key={n} className="rounded-card bg-leaf-100 p-4">
-                    <p className="text-xs font-medium uppercase tracking-wider text-leaf-800">{n}</p>
+                  <div key={n} className="rounded-card border-[1.5px] border-leaf-500 p-4">
+                    <p className="text-xs font-medium text-leaf-800">{n}</p>
                     <p className="mt-1 font-display text-2xl font-bold text-leaf-900">{porNivel.get(n) ?? 0}</p>
                   </div>
                 ))}
@@ -94,7 +94,7 @@ export function ImportarRiesgos({ accion }: { accion: (anterior: EstadoRiesgos, 
 
               <div className="overflow-x-auto rounded-card border border-soil-border">
                 <table className="w-full min-w-[420px] text-sm">
-                  <thead className="bg-leaf-100 text-left text-leaf-800">
+                  <thead className="border-b-[1.5px] border-leaf-500 text-left font-medium text-leaf-500">
                     <tr><th scope="col" className="px-3 py-2">Frente</th><th scope="col" className="px-3 py-2 text-right">Riesgos</th></tr>
                   </thead>
                   <tbody>

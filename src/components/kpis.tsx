@@ -9,7 +9,7 @@ export function TablaKpis({ series }: { series: SerieKpi[] }) {
   return (
     <div className="overflow-x-auto rounded-card border border-soil-border">
       <table className="w-full min-w-[760px] text-left text-sm">
-        <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
+        <thead className="border-b-[1.5px] border-leaf-500 text-sm font-medium text-leaf-500">
           <tr>
             <th className="px-3 py-2 font-medium">Indicador</th><th className="px-3 py-2 font-medium">Actual</th><th className="px-3 py-2 font-medium">Meta</th><th className="px-3 py-2 font-medium">Tendencia</th>
             {series[0]?.puntos.map((p) => <th key={p.mes} className="px-2 py-2 text-right font-medium">{etiquetaMes(p.mes)}</th>)}

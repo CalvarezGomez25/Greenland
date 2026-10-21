@@ -54,10 +54,10 @@ describe("exportación del dashboard coincide con la pantalla (caso 13.4)", () =
     let cab = 0;
     hoja.eachRow((r, n) => { if (r.getCell(1).value === "Proyecto") cab = n; });
     expect(cab).toBeGreaterThan(0);
-    expect((hoja.getCell(cab, 1).fill as ExcelJS.FillPattern).fgColor?.argb).toBe("FF4C700B");
+    expect((hoja.getCell(cab, 1).fill as ExcelJS.FillPattern).fgColor?.argb).toBe("FF027001");
     let rojo: ExcelJS.Cell | null = null;
     hoja.eachRow((r) => { if (r.getCell(5).value === "Rojo") rojo = r.getCell(5); });
-    expect((rojo as unknown as ExcelJS.Cell).font.color?.argb).toBe("FF7F1D1D"); // etiqueta roja del semáforo
+    expect((rojo as unknown as ExcelJS.Cell).font.color?.argb).toBe("FFA32A1F"); // etiqueta roja del semáforo
     expect(hoja.views[0].showGridLines).toBe(false);
     expect(hoja.pageSetup.orientation).toBe("landscape");
     expect(hoja.pageSetup.fitToWidth).toBe(1);
@@ -103,7 +103,7 @@ describe("PDF y Excel con muchas filas", () => {
 
 describe("etiquetas de color", () => {
   it("semáforo, niveles de riesgo y Sí / No", () => {
-    expect(["Verde", "Amarillo", "Rojo", "Sin datos", "Crítico", "Alto", "Medio", "Bajo", "Sí", "No"].map((t) => tonoDeTexto(t))).toEqual(["verde", "amarillo", "rojo", "gris", "rojo", "naranja", "amarillo", "verde", "verde", "rojo"]);
+    expect(["Verde", "Amarillo", "Rojo", "Sin datos", "Crítico", "Alto", "Medio", "Bajo", "Sí", "No"].map((t) => tonoDeTexto(t))).toEqual(["verde", "amarillo", "rojo", "gris", "rojo", "naranja", "gris", "verde", "verde", "rojo"]);
     expect(tonoDeTexto("—")).toBeNull();
     expect(tonoDeTexto("Cualquier otro texto")).toBeNull();
   });

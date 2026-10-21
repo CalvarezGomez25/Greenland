@@ -35,12 +35,12 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <div className="mt-4"><Titulo>Ficha y acta de constitución</Titulo></div>
       <div className="mt-4">{ok === "firma_no" ? <Aviso>No se pudo registrar la firma: revisa que tengas ese rol y que el acta esté guardada.</Aviso> : ok === "firma" ? <Aviso tipo="ok">Firma registrada.</Aviso> : <AvisoResultado ok={ok} />}</div>
 
-      <dl className="mt-6 grid gap-4 rounded-card bg-leaf-100 p-5 sm:grid-cols-3">
+      <dl className="mt-6 grid gap-4 rounded-card border-[1.5px] border-leaf-500 p-5 sm:grid-cols-3">
         {([
           ["Código", p.codigo], ["Nombre", p.nombre], ["Tipo", ETIQUETA_TIPO[p.tipo]], ["Cliente", p.cliente], ["Ubicación", p.ubicacion],
           ["Fase", ETIQUETA_FASE[p.fase]], ["Estado", ETIQUETA_ESTADO[p.estado]], ["Inicio", formatearFecha(p.fecha_inicio)], ["Duración", `${p.duracion_meses} meses`],
         ] as [string, string | null][]).map(([t, v]) => (
-          <div key={t}><dt className="text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</dt><dd className="mt-0.5 text-leaf-900">{v || "—"}</dd></div>
+          <div key={t}><dt className="text-xs font-medium text-leaf-800">{t}</dt><dd className="mt-0.5 text-leaf-900">{v || "—"}</dd></div>
         ))}
       </dl>
 
@@ -72,11 +72,11 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         ) : acta ? (
           <dl className="mt-3 grid gap-4">
             {([["proposito", "Propósito y justificación"], ["objetivo_smart", "Objetivo SMART"], ["beneficios", "Beneficios esperados"], ["alcance_incluido", "Alcance incluido"], ["alcance_excluido", "Alcance excluido"], ["supuestos", "Supuestos"], ["restricciones", "Restricciones"], ["fuente_financiamiento", "Fuente de financiamiento"], ["contratistas_externos", "Contratistas externos"]] as [string, string][]).map(([k, t]) => (
-              <div key={k}><dt className="text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</dt><dd className="mt-0.5 whitespace-pre-wrap">{(acta[k] as string) || "—"}</dd></div>
+              <div key={k}><dt className="text-xs font-medium text-leaf-800">{t}</dt><dd className="mt-0.5 whitespace-pre-wrap">{(acta[k] as string) || "—"}</dd></div>
             ))}
           </dl>
         ) : (
-          <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">El gerente aún no ha diligenciado el acta.</p>
+          <p className="mt-3 rounded-card border-[1.5px] border-soil-border p-5 text-sm text-muted">El gerente aún no ha diligenciado el acta.</p>
         )}
       </section>
     </>

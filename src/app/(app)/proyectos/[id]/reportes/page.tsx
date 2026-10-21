@@ -47,7 +47,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         <h2 id="t-rep" className="font-display text-2xl font-bold text-leaf-700">Reportes</h2>
         {error && <div className="mt-3"><Aviso>No se pudieron leer los reportes{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
         {filas.length === 0 && !error ? (
-          <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Aún no hay reportes.</p>
+          <p className="mt-3 rounded-card border-[1.5px] border-soil-border p-5 text-sm text-muted">Aún no hay reportes.</p>
         ) : (
           <ul className="mt-3 divide-y divide-soil-border rounded-card border border-soil-border">
             {filas.map((r) => (
@@ -63,12 +63,12 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           </ul>
         )}
         {permisos.gestionar && (
-          <div className="mt-5 rounded-card bg-leaf-50 p-5"><h3 className="mb-3 font-display text-lg font-bold text-leaf-700">Nuevo reporte</h3><FormularioNuevoReporte accion={crearReporte.bind(null, id)} hoy={hoy} /></div>
+          <div className="mt-5 rounded-card border-[1.5px] border-soil-border p-5"><h3 className="mb-3 font-display text-lg font-bold text-leaf-700">Nuevo reporte</h3><FormularioNuevoReporte accion={crearReporte.bind(null, id)} hoy={hoy} /></div>
         )}
       </section>
 
       {puedeEvaluar && (
-        <section className="mt-8 rounded-card bg-leaf-50 p-5" aria-labelledby="t-eval">
+        <section className="mt-8 rounded-card border-[1.5px] border-soil-border p-5" aria-labelledby="t-eval">
           <h2 id="t-eval" className="mb-1 font-display text-lg font-bold text-leaf-700">Satisfacción del patrocinador</h2>
           <p className="mb-3 text-sm text-muted">Encuesta simple de 1 a 5, una por mes (captura manual).</p>
           <FormularioEvaluacion accion={guardarEvaluacion.bind(null, id)} mesActual={hoy.slice(0, 7)} />

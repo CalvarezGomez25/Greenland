@@ -34,17 +34,17 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
 
       <section className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="Resumen">
         {([["Entradas", String(r.entradas)], ["Horas perdidas", r.horasPerdidas.toLocaleString("es-CO")], ["Retrasos", String(r.retrasos)], ["Incidentes", `${r.incidentes}${r.accidentes ? ` (${r.accidentes} accidente(s))` : ""}`]] as [string, string][]).map(([t, v]) => (
-          <div key={t} className="rounded-card bg-leaf-100 p-4"><p className="text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</p><p className="mt-1 font-display text-xl font-bold text-leaf-700">{v}</p></div>
+          <div key={t} className="rounded-card border-[1.5px] border-leaf-500 p-4"><p className="text-xs font-medium text-leaf-800">{t}</p><p className="mt-1 font-display text-xl font-bold text-leaf-700">{v}</p></div>
         ))}
       </section>
 
       {filas.length === 0 && !error ? (
-        <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">Aún no hay entradas.</p>
+        <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">Aún no hay entradas.</p>
       ) : (
         <ul className="mt-6 flex flex-col gap-3">
           {filas.map((f) => (
             <li key={f.id}>
-              <Link href={`/proyectos/${id}/bitacora/${f.id}`} className="block rounded-card border border-soil-border p-4 hover:shadow-card">
+              <Link href={`/proyectos/${id}/bitacora/${f.id}`} className="block rounded-card border border-soil-border p-4 ">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="font-display text-lg font-bold text-leaf-700">{formatearFecha(f.fecha)}</p>
                   <p className="text-sm text-muted">{nombres.get(f.supervisor_id) ?? "—"}{f.es_interventoria ? " · Interventoría" : ""}</p>

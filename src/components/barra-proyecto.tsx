@@ -15,7 +15,7 @@ export function BarraProyecto({ id, nombre, codigo }: { id: string; nombre: stri
           Ver guía
         </Link>
       )}
-      <Link href={`/proyectos/${id}`} title={nombre} className="max-w-full truncate rounded-full border border-soil-border bg-leaf-50 px-3.5 py-1.5 text-sm font-medium text-leaf-900 hover:bg-leaf-100">
+      <Link href={`/proyectos/${id}`} title={nombre} className="max-w-full truncate rounded-full border-[1.5px] border-leaf-500 bg-white px-3.5 py-1.5 text-sm font-medium text-leaf-500">
         {nombre}{codigo && <span className="ml-2 text-xs font-normal text-muted">{codigo}</span>}
       </Link>
     </div>

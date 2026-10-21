@@ -13,7 +13,7 @@ import type { CampoDef } from "@/lib/registros/tipos";
 
 type H = { id: string; contrato_id: string | null; severidad: string; descripcion: string; evidencia: string[]; fecha: string; plazo_respuesta: string; estado: string; respuesta: string | null };
 
-const COLOR: Record<string, string> = { abierto: "bg-amber-100 text-amber-900", respondido: "bg-leaf-100 text-leaf-800", cerrado: "bg-white text-muted border border-soil-border", escalado: "bg-red-100 text-red-900" };
+const COLOR: Record<string, string> = { abierto: "bg-white text-alerta-aten border border-alerta-aten", respondido: "bg-white text-alerta-info border border-alerta-info", cerrado: "bg-white text-muted border border-soil-border", escalado: "bg-white text-alerta-crit border border-alerta-crit" };
 
 async function Contenido({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ ok?: string; error?: string }> }) {
   const { id } = await params;
@@ -41,7 +41,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <p className="mt-3 max-w-3xl text-sm text-muted">Observación: 5 días hábiles · No conformidad: 3 · Incumplimiento grave: 1 (configurable en Parámetros). Si el plazo vence sin respuesta, el hallazgo pasa a Escalado y aparece en el tablero de control.</p>
       <div className="mt-4 flex flex-col gap-2"><AvisoResultado ok={ok} />{errorUrl && <Aviso>{errorUrl.slice(0, 400)}</Aviso>}</div>
       {error && <div className="mt-4"><Aviso>No se pudieron leer los hallazgos{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
-      {hallazgos.length === 0 && !error ? <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">No hay hallazgos.</p> : (
+      {hallazgos.length === 0 && !error ? <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">No hay hallazgos.</p> : (
         <ul className="mt-6 flex flex-col gap-4">
           {hallazgos.map((h) => (
             <li key={h.id} className="rounded-card border border-soil-border p-4">
@@ -51,11 +51,11 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
               </div>
               <p className="mt-1 whitespace-pre-wrap text-sm">{h.descripcion}</p>
               <p className="mt-1 text-xs text-muted">Registrado el {formatearFecha(h.fecha)} · plazo de respuesta: {formatearFecha(h.plazo_respuesta)}{h.evidencia.length ? ` · evidencia: ${h.evidencia.map((e) => nomDoc.get(e) ?? "documento").join(", ")}` : ""}</p>
-              {h.respuesta && <p className="mt-2 whitespace-pre-wrap rounded-[10px] bg-leaf-50 p-3 text-sm"><strong>Respuesta:</strong> {h.respuesta}</p>}
+              {h.respuesta && <p className="mt-2 whitespace-pre-wrap rounded-[20px] bg-leaf-50 p-3 text-sm"><strong>Respuesta:</strong> {h.respuesta}</p>}
               <div className="mt-3 flex flex-wrap items-start gap-4">
                 {permisos.gestionar && h.estado !== "cerrado" && (
                   <form action={responderHallazgo.bind(null, id, h.id)} className="flex flex-1 flex-wrap items-end gap-2">
-                    <label className="flex min-w-[240px] flex-1 flex-col gap-1.5"><span className="text-[13px] font-medium text-leaf-800">Respuesta del contratista o del gerente</span><input name="respuesta" required maxLength={4000} className="h-[42px] w-full rounded-[10px] border border-soil-border bg-white px-3.5 text-[15px]" /></label>
+                    <label className="flex min-w-[240px] flex-1 flex-col gap-1.5"><span className="text-[13px] font-medium text-leaf-800">Respuesta del contratista o del gerente</span><input name="respuesta" required maxLength={4000} className="h-[42px] w-full rounded-[20px] border border-soil-border bg-white px-3.5 text-[15px]" /></label>
                     <BotonEnviar className={claseBoton.secundario} textoEnviando="Guardando…">Responder</BotonEnviar>
                   </form>
                 )}
@@ -67,7 +67,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         </ul>
       )}
       {permisos.interventor && (
-        <section className="mt-8 rounded-card bg-leaf-50 p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Registrar un hallazgo</h2>
+        <section className="mt-8 rounded-card border-[1.5px] border-soil-border p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Registrar un hallazgo</h2>
           <FormularioRegistro accion={crearHallazgo.bind(null, id)} campos={campos} opciones={{ contratos: o.contratosObra, documentos: o.documentos }} iniciales={{}} editando={false} volverA={`/proyectos/${id}/interventoria`} /></section>
       )}
     </>

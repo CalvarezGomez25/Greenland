@@ -37,7 +37,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <p className="mt-3 max-w-3xl text-sm text-muted">Criterios configurables (escala 1 a 5): {o.criterios.join(", ")}. El puntaje total es el promedio.</p>
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
       {error && <div className="mt-4"><Aviso>No se pudieron leer las evaluaciones{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
-      {evals.length === 0 && !error ? <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">Aún no hay evaluaciones.</p> : (
+      {evals.length === 0 && !error ? <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">Aún no hay evaluaciones.</p> : (
         <ul className="mt-6 flex flex-col gap-3">
           {evals.map((e) => (
             <li key={e.id} className="rounded-card border border-soil-border p-4 text-sm">
@@ -50,7 +50,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         </ul>
       )}
       {permisos.interventor && o.criterios.length > 0 && (
-        <section className="mt-8 rounded-card bg-leaf-50 p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Nueva evaluación</h2>
+        <section className="mt-8 rounded-card border-[1.5px] border-soil-border p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Nueva evaluación</h2>
           <FormularioRegistro accion={evaluarProveedor.bind(null, id)} campos={campos} opciones={{ contratos: o.contratosObra }} iniciales={{}} editando={false} volverA={`/proyectos/${id}/interventoria`} /></section>
       )}
     </>

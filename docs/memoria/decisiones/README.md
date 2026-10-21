@@ -33,5 +33,6 @@ Una ficha por decisión importante, con el formato propuesto por Michael Nygard 
 | [ADR-0025](ADR-0025-exportaciones-con-identidad-de-marca.md) | Exportaciones a PDF y Excel con la identidad de la marca | 2026-10-17 | Vigente |
 | [ADR-0026](ADR-0026-integracion-con-microsoft-365.md) | Explorar la integración con Microsoft 365 (Teams y Planner) en lugar de un gestor propio | 2026-10-16 | Propuesta |
 | [ADR-0027](ADR-0027-administrador-unico-y-traspaso.md) | Administrador único, traspaso a TI y quién crea proyectos | 2026-10-17 | Aceptada en principio; por construir |
+| [ADR-0028](ADR-0028-sistema-de-diseno-greenland-v1.md) | Adoptar el sistema de diseño GreenLand v1.0.0 en toda la plataforma, sin versión paralela | 2026-10-21 | Vigente |
 
 Las decisiones de detalle (supuestos S1–S13, P1–P11, D2, etc.) siguen en `docs/SUPUESTOS.md` y en la sección 14 de `ESPECIFICACION.md`.

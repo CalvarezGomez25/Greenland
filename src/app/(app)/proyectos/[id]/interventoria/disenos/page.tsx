@@ -41,13 +41,13 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <p className="mt-3 max-w-3xl text-sm text-muted">Cada plano (subido en Documentos) tiene ciclos de revisión. El diseño solo puede marcarse como listo para licitar con TODOS los planos aprobados en su última versión.</p>
       <div className="mt-4 flex flex-col gap-2"><AvisoResultado ok={ok} />{errorUrl && <Aviso>{errorUrl.slice(0, 400)}</Aviso>}</div>
 
-      <section className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-card bg-leaf-100 p-5">
+      <section className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-card border-[1.5px] border-leaf-500 p-5">
         <p className="font-medium text-leaf-900">{listo ? "✔ El diseño está marcado como listo para licitar." : "El diseño aún no está marcado como listo para licitar."}</p>
         {permisos.gestionar && <form action={marcarDisenoListo.bind(null, id, !listo)}><BotonEnviar className={listo ? claseBoton.contorno : claseBoton.primario} textoEnviando="Guardando…">{listo ? "Quitar la marca" : "Marcar listo para licitar"}</BotonEnviar></form>}
       </section>
 
       <section className="mt-6" aria-label="Planos">
-        {o.planos.length === 0 ? <p className="rounded-card bg-leaf-50 p-6 text-sm text-muted">No hay planos. Súbelos en Documentos con tipo “Plano”.</p> : (
+        {o.planos.length === 0 ? <p className="rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">No hay planos. Súbelos en Documentos con tipo “Plano”.</p> : (
           <ul className="flex flex-col gap-3">
             {o.planos.map((p) => {
               const propias = revs.filter((r) => r.documento_id === p.valor);
@@ -68,7 +68,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         )}
       </section>
       {permisos.interventor && o.planos.length > 0 && (
-        <section className="mt-8 rounded-card bg-leaf-50 p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Registrar una revisión</h2>
+        <section className="mt-8 rounded-card border-[1.5px] border-soil-border p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Registrar una revisión</h2>
           <FormularioRegistro accion={revisarDiseno.bind(null, id)} campos={campos} opciones={{ planos: o.planos, disciplinas: o.disciplinas }} iniciales={{}} editando={false} volverA={`/proyectos/${id}/interventoria`} /></section>
       )}
     </>

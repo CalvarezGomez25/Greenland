@@ -12,7 +12,7 @@ import { comentarBitacora } from "../acciones";
 type B = Record<string, string | number | boolean | null> & { id: string };
 
 function Dato({ t, v }: { t: string; v: React.ReactNode }) {
-  return <div><dt className="text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</dt><dd className="mt-0.5 whitespace-pre-wrap text-leaf-900">{v || "—"}</dd></div>;
+  return <div><dt className="text-xs font-medium text-leaf-800">{t}</dt><dd className="mt-0.5 whitespace-pre-wrap text-leaf-900">{v || "—"}</dd></div>;
 }
 
 async function Contenido({ params, searchParams }: { params: Promise<{ id: string; bitacoraId: string }>; searchParams: Promise<{ ok?: string; error?: string }> }) {
@@ -42,7 +42,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <p className="mt-2 text-sm text-muted">{nombres.get(b.supervisor_id as string) ?? "—"}{b.es_interventoria ? " · Entrada de la interventoría" : ""}</p>
       <div className="mt-4 flex flex-col gap-2"><AvisoResultado ok={ok} />{errorUrl && <Aviso>{errorUrl.slice(0, 400)}</Aviso>}</div>
 
-      <dl className="mt-6 grid gap-4 rounded-card bg-leaf-100 p-5 sm:grid-cols-3">
+      <dl className="mt-6 grid gap-4 rounded-card border-[1.5px] border-leaf-500 p-5 sm:grid-cols-3">
         <Dato t="Clima" v={etiqueta(CLIMAS, b.clima as string)} />
         <Dato t="Horas perdidas (total)" v={`${Number(b.horas_perdidas_total).toLocaleString("es-CO")} h (clima: ${Number(b.horas_perdidas_clima).toLocaleString("es-CO")} h)`} />
         <Dato t="Personal" v={`${b.personal_propio} propio · ${b.personal_subcontratistas} de subcontratistas`} />
@@ -87,10 +87,10 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           </ul>
         )}
         {(permisos.interventor || permisos.gestionar) && (
-          <div className="mt-4 flex flex-col gap-4 rounded-card bg-leaf-50 p-5">
+          <div className="mt-4 flex flex-col gap-4 rounded-card border-[1.5px] border-soil-border p-5">
             {permisos.interventor && <form action={comentarBitacora.bind(null, id, bitacoraId, "visto_bueno")}><BotonEnviar className={claseBoton.secundario} textoEnviando="Registrando…">Dar visto bueno</BotonEnviar></form>}
             <form action={comentarBitacora.bind(null, id, bitacoraId, "comentario")} className="flex flex-col gap-3">
-              <label className="flex flex-col gap-1.5"><span className="text-[13px] font-medium text-leaf-800">Comentario</span><textarea name="texto" rows={2} maxLength={2000} required className="w-full rounded-[10px] border border-soil-border bg-white px-3.5 py-2.5 text-[15px]" /></label>
+              <label className="flex flex-col gap-1.5"><span className="text-[13px] font-medium text-leaf-800">Comentario</span><textarea name="texto" rows={2} maxLength={2000} required className="w-full rounded-[20px] border border-soil-border bg-white px-3.5 py-2.5 text-[15px]" /></label>
               <div><BotonEnviar className={claseBoton.primario} textoEnviando="Enviando…">Agregar comentario</BotonEnviar></div>
             </form>
           </div>

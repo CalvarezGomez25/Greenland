@@ -55,11 +55,11 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ q?: string 
       </form>
       {error && <p className="mt-4 text-sm text-danger">No se pudo leer el directorio{error.code ? ` (código ${error.code})` : ""}.</p>}
       {lista.length === 0 && !error ? (
-        <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">{q ? "Ningún contacto coincide con la búsqueda." : "Aún no hay contactos. Se crean solos al registrar interesados."}</p>
+        <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">{q ? "Ningún contacto coincide con la búsqueda." : "Aún no hay contactos. Se crean solos al registrar interesados."}</p>
       ) : (
         <div className="mt-6 overflow-x-auto rounded-card border border-soil-border">
           <table className="w-full min-w-[720px] text-left text-sm">
-            <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
+            <thead className="border-b-[1.5px] border-leaf-500 text-sm font-medium text-leaf-500">
               <tr>{["Nombre", "Rol", "Correo", "Teléfono", "Proyectos", ""].map((t) => <th key={t} className="px-3 py-2 font-medium">{t}</th>)}</tr>
             </thead>
             <tbody className="divide-y divide-soil-border">

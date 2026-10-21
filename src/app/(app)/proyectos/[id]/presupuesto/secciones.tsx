@@ -1,3 +1,4 @@
+import { TarjetaMuesca } from "@/components/tarjeta-muesca";
 import type { ReactNode } from "react";
 import { Ayuda } from "@/components/ayuda";
 import { temaDe, type TemaAyuda } from "@/lib/glosario";
@@ -35,11 +36,10 @@ function Seccion({ id, titulo, children, nota, tema }: { id: string; titulo: str
 
 function Tarjeta({ titulo, valor, detalle }: { titulo: string; valor: string; detalle?: string }) {
   return (
-    <Ayuda modo="tarjeta" tema={temaDe(titulo)} className="rounded-card bg-leaf-100 p-4">
-      <p className="pr-6 text-xs font-medium uppercase tracking-wider text-leaf-800">{titulo}</p>
+    <TarjetaMuesca titulo={titulo} tema={temaDe(titulo)}>
       <p className="mt-1 font-display text-xl font-bold [overflow-wrap:anywhere] sm:text-2xl text-leaf-900 tabular-nums">{valor}</p>
       {detalle && <p className="mt-1 text-xs text-muted">{detalle}</p>}
-    </Ayuda>
+    </TarjetaMuesca>
   );
 }
 
@@ -75,7 +75,7 @@ export function SeccionIndicadores({ indicadores: i, hayPresupuesto, avanceFisic
         <Tarjeta titulo="Avance físico" valor={avanceFisico === null || avanceFisico === undefined ? "Pendiente" : porcentaje(avanceFisico)} detalle={avanceFisico === null || avanceFisico === undefined ? "Se calcula con el cronograma: crea las tareas y sus pesos" : "Del cronograma (peso × avance de cada tarea)"} />
       </div>
       {i.mesesSinRegistro.length > 0 && (
-        <p role="status" className="mt-3 rounded-[10px] border border-leaf-300 bg-leaf-50 px-3.5 py-2.5 text-sm text-leaf-800">
+        <p role="status" className="mt-3 rounded-[20px] border border-leaf-300 bg-leaf-50 px-3.5 py-2.5 text-sm text-leaf-800">
           {i.mesesSinRegistro.length === 1 ? "Falta registrar el gasto del mes" : "Faltan por registrar los meses"}{" "}
           {i.mesesSinRegistro.join(", ")}. Mientras tanto cuentan como cero.
         </p>
@@ -97,7 +97,7 @@ export function SeccionCurva({ serie, desdeCronograma = false }: { serie: SerieC
         <summary className="cursor-pointer font-medium text-leaf-600">Ver los datos de la curva</summary>
         <div className="mt-2 overflow-x-auto rounded-card border border-soil-border">
           <table className="w-full min-w-[420px] text-sm">
-            <thead className="bg-leaf-100 text-left text-leaf-800">
+            <thead className="border-b-[1.5px] border-leaf-500 text-left font-medium text-leaf-500">
               <tr>
                 <th scope="col" className={CELDA}>Mes</th>
                 <th scope="col" className={`${NUMERO} font-medium`}>Planificado acumulado</th>
@@ -133,7 +133,7 @@ export function SeccionPartidas({
   return (
     <Seccion id="partidas" titulo="Presupuesto por capítulos" nota="Valores en pesos colombianos (COP).">
       {presupuesto.capitulos.length === 0 ? (
-        <p className="rounded-card bg-leaf-50 p-6 text-center text-sm text-muted">
+        <p className="rounded-card border-[1.5px] border-soil-border p-6 text-center text-sm text-muted">
           Este proyecto aún no tiene presupuesto.{" "}
           {conAcciones
             ? "Impórtalo desde un archivo CSV o agrega las partidas una a una con los botones de arriba."
@@ -210,13 +210,13 @@ export function SeccionAdicionales({ presupuesto }: { presupuesto: Presupuesto }
       nota="Porcentajes definidos por el proyecto (por ejemplo AIU, IVA sobre la utilidad y retefuente)."
     >
       {presupuesto.lineas.length === 0 ? (
-        <p className="rounded-card bg-leaf-50 p-6 text-center text-sm text-muted">
+        <p className="rounded-card border-[1.5px] border-soil-border p-6 text-center text-sm text-muted">
           Aún no se han configurado costos adicionales; por ahora el costo total es igual al costo directo.
         </p>
       ) : (
         <div className="overflow-x-auto rounded-card border border-soil-border">
           <table className="w-full min-w-[520px] text-sm">
-            <thead className="bg-leaf-100 text-left text-leaf-800">
+            <thead className="border-b-[1.5px] border-leaf-500 text-left font-medium text-leaf-500">
               <tr>
                 <th scope="col" className={CELDA}>Concepto</th>
                 <th scope="col" className={CELDA}>Se calcula sobre</th>
@@ -268,7 +268,7 @@ export function SeccionGasto({
     <Seccion id="gasto" titulo="Gasto real por mes" nota="Mes 1 es el primer mes del proyecto. Valores en pesos colombianos (COP).">
       <div className="overflow-x-auto rounded-card border border-soil-border">
         <table className="w-full min-w-[520px] text-sm">
-          <thead className="bg-leaf-100 text-left text-leaf-800">
+          <thead className="border-b-[1.5px] border-leaf-500 text-left font-medium text-leaf-500">
             <tr>
               <th scope="col" className={CELDA}>Mes</th>
               <th scope="col" className={`${NUMERO} font-medium`}>Gasto del mes</th>
@@ -318,7 +318,7 @@ export function SeccionCapitulosEdt({ idProyecto, elementos, accion, nCapitulos 
           <form action={accion} className="mt-3 flex flex-wrap items-end gap-3">
             <label className="flex flex-col gap-1.5 text-[13px] font-medium text-leaf-800">
               Nivel de la EDT
-              <select name="nivel" defaultValue={String(nivelPorDefecto(opciones))} className="h-[42px] rounded-[10px] border border-soil-border bg-white px-3 text-[15px] font-normal text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30">
+              <select name="nivel" defaultValue={String(nivelPorDefecto(opciones))} className="h-[42px] rounded-[20px] border border-soil-border bg-white px-3 text-[15px] font-normal text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30">
                 {opciones.map((o) => <option key={o.nivel} value={o.nivel}>{o.etiqueta}</option>)}
               </select>
             </label>
