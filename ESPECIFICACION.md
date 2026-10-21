@@ -842,7 +842,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | Interesados y directorio | Los interesados llevan correo y teléfono; los contactos se guardan en un directorio compartido entre proyectos y se reutilizan al registrar interesados nuevos (16 de octubre de 2026) |
 | Gestor de tareas y Microsoft 365 | Se mantiene «Actividades» como mínimo propio; la integración con Microsoft 365 (Teams y Planner) queda en exploración, con una guía para TI y una prueba en un proyecto antes de integrar (16 y 17 de octubre de 2026; P37, ADR-0026) |
 | Rama principal | La rama principal del repositorio es `claude/especificacion-project-manager-495kj0`; todo el trabajo se integra ahí y los despliegues de producción salen de ella (decisión del usuario, 21 de octubre de 2026) |
-| Imagen corporativa | Se adopta el sistema de diseño GreenLand v1.0.0 en toda la plataforma (el usuario dejó al asesor decidir si crear una versión aparte). **No se mantiene una versión paralela:** el cambio es solo de presentación, sin cambios de base de datos, y la reversión se hace con `git revert` de un único *merge* (ancla: commit `4324528`). ADR-0028 (21 de octubre de 2026) |
+| Imagen corporativa | Se adopta el sistema de diseño GreenLand v1.0.0 en toda la plataforma (el usuario dejó al asesor decidir si crear una versión aparte). **No se mantiene una versión paralela:** el cambio es solo de presentación, sin cambios de base de datos, y la reversión se hace con `git revert -m 1 9df595b` (único *merge*; estado anterior: commit `4324528`). ADR-0028 (21 de octubre de 2026) |
 
 **Discrepancias detectadas en los documentos del usuario**
 

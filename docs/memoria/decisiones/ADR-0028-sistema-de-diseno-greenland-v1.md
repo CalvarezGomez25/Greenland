@@ -21,7 +21,7 @@ Aplicar el sistema en toda la interfaz, las exportaciones PDF y Excel, el inform
 
 **Cómo volver a la imagen anterior:**
 1. Ancla: el estado inmediatamente anterior es el commit `4324528` (ESPECIFICACION v3.3.2). Intenté dejar además una etiqueta en el repositorio, pero el servidor rechazó el envío de etiquetas; por eso el ancla es el número del commit.
-2. Reversión: `git revert -m 1 <commit del merge>` deshace todo el cambio visual en un solo paso, sin tocar la base de datos. Luego, redesplegar.
+2. Reversión: `git revert -m 1 9df595b` (el commit del *merge*) deshace todo el cambio visual en un solo paso, sin tocar la base de datos. Luego, redesplegar.
 3. Rápido, sin código: en Vercel, redesplegar el despliegue anterior (Deployments → el último con la imagen anterior → Promote o Redeploy). No lo verifiqué en el plan de la cuenta.
 
 ## Consecuencias
