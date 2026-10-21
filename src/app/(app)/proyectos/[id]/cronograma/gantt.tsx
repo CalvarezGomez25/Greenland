@@ -65,7 +65,7 @@ export function Gantt({
     <div>
       <div className="overflow-x-auto rounded-card border border-soil-border" role="group" aria-label="Diagrama de Gantt en semanas">
         <div style={{ width: COLUMNA_NOMBRES + totalSemanas * ANCHO_SEMANA }} className="relative">
-          <div className="flex border-b border-soil-border bg-leaf-100 text-[11px] text-leaf-800" style={{ height: 26 }}>
+          <div className="flex border-b border-soil-border bg-leaf-50 text-[11px] text-leaf-800" style={{ height: 26 }}>
             <div className="shrink-0 px-2 py-1 font-medium" style={{ width: COLUMNA_NOMBRES }}>Tarea</div>
             {Array.from({ length: totalSemanas }, (_, i) => (
               <div key={i} className={`shrink-0 border-l border-soil-border py-1 text-center ${semanaActual === i + 1 ? "bg-leaf-300 font-bold" : ""}`} style={{ width: ANCHO_SEMANA }}>{i + 1}</div>
@@ -85,7 +85,7 @@ export function Gantt({
                     onPointerMove={mueve}
                     onPointerUp={() => suelta(b)}
                     onPointerCancel={() => suelta(b)}
-                    className={`absolute top-1.5 overflow-hidden rounded-md bg-leaf-200 ring-1 ring-leaf-500 ${editable ? "cursor-grab touch-none active:cursor-grabbing" : ""} ${pendiente ? "opacity-60" : ""}`}
+                    className={`absolute top-1.5 overflow-hidden rounded-full bg-leaf-200 ring-1 ring-leaf-500 ${editable ? "cursor-grab touch-none active:cursor-grabbing" : ""} ${pendiente ? "opacity-60" : ""}`}
                     style={{ left: (v.inicio - 1) * ANCHO_SEMANA, width: v.duracion * ANCHO_SEMANA - 2, height: ALTO_FILA - 12 }}
                   >
                     <div className="h-full bg-leaf-500/80" style={{ width: `${Math.min(100, b.avance)}%` }} />
@@ -101,7 +101,7 @@ export function Gantt({
         {editable ? "Arrastra una barra para moverla; arrastra su borde derecho para cambiar la duración. " : ""}
         La parte oscura de cada barra es el avance. La línea vertical marca la semana actual.
       </p>
-      {error && <p role="alert" className="mt-2 rounded-[10px] border border-danger/40 bg-red-50 px-3 py-2 text-sm text-danger">{error}</p>}
+      {error && <p role="alert" className="mt-2 rounded-[20px] border-[1.5px] border-alerta-crit bg-white px-3 py-2 text-sm text-danger">{error}</p>}
     </div>
   );
 }

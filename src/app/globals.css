@@ -1,41 +1,87 @@
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500&display=swap');
 @import "tailwindcss";
 
-/* Paleta y tipografía del sistema de diseño GreenLand */
+/* Sistema de diseño GreenLand v1.0.0 (21/10/2026).
+   Los nombres «leaf», «soil» y «muted» se conservan para no tocar cada pantalla, pero ahora apuntan a la paleta oficial:
+   verde de trabajo #027001, texto de cuerpo gris #5E5E5E (nunca negro), líneas #E4E4E4 y superficie #F2F2F2.
+   Sin sombras, solo dos radios (pill y 20 px), sin mayúsculas sostenidas. Detalle en docs/memoria (ADR-0028). */
 @theme {
-  --color-leaf-50: #f4f9ea;
-  --color-leaf-100: #e6f1d1;
-  --color-leaf-200: #cfe3a8;
-  --color-leaf-300: #a9c96c;
-  --color-leaf-400: #7fa62e;
-  --color-leaf-500: #5d870e;
-  --color-leaf-600: #4c700b;
-  --color-leaf-700: #386631;
-  --color-leaf-800: #2f5517;
-  --color-leaf-900: #164504;
-  --color-earth-600: #7c401d;
-  --color-soil-border: #dcdcd8;
-  --color-muted: #555552;
-  --color-danger: #b23a22;
+  /* Tokens oficiales */
+  --color-green-signal: #027001;
+  --color-green-icon: #036828;
+  --color-green-forest: #225b30;
+  --color-green-leaf: #84b71e;
+  --color-green-moss: #98b73f;
+  --color-green-sage: #71986b;
+  --color-grey-700: #5e5e5e;
+  --color-grey-400: #a7a7a7;
+  --color-grey-200: #e4e4e4;
+  --color-grey-100: #f2f2f2;
 
-  --font-display: 'Baloo 2', 'Varela Round', system-ui, sans-serif;
-  --font-body: 'Roboto', system-ui, -apple-system, sans-serif;
+  /* Alertas (paleta 2.1 del sistema; propuesta pendiente de validación de marca). Siempre con texto o icono. */
+  --color-alerta-ok: #027001;
+  --color-alerta-ok-bg: #e6f0e6;
+  --color-alerta-aten: #9a5b00;
+  --color-alerta-aten-bg: #fbefd9;
+  --color-alerta-crit: #a32a1f;
+  --color-alerta-crit-bg: #f8e6e4;
+  --color-alerta-info: #5e5e5e;
+  --color-alerta-info-bg: #f2f2f2;
 
-  --radius-card: 16px;
-  --shadow-card: 0 4px 14px rgba(22, 69, 4, 0.1);
+  /* Nombres heredados → paleta oficial */
+  --color-leaf-50: #f2f2f2;
+  --color-leaf-100: #e4e4e4;
+  --color-leaf-200: #e4e4e4;
+  --color-leaf-300: #a7a7a7;
+  --color-leaf-400: #84b71e;
+  --color-leaf-500: #027001;
+  --color-leaf-600: #027001;
+  --color-leaf-700: #027001;
+  --color-leaf-800: #5e5e5e;
+  --color-leaf-900: #5e5e5e;
+  --color-earth-600: #027001;
+  --color-soil-border: #e4e4e4;
+  --color-muted: #5e5e5e;
+  --color-danger: #a32a1f;
+
+  /* Non Natural Grotesk Plain (licenciada, no incluida): sustituta oficial Archivo */
+  --font-display: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-body: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  --radius-card: 20px;
+  --shadow-card: none;
+}
+
+:root {
+  --gradient-brand: linear-gradient(115deg, #7dae2b 0%, #528e31 50%, #1c6c36 100%);
 }
 
 body {
   background: #ffffff;
-  color: var(--color-leaf-900);
+  color: var(--color-grey-700);
   font-family: var(--font-body);
-  font-weight: 300;
+  font-weight: 400;
   font-size: 15px;
-  line-height: 1.45;
+  line-height: 1.35;
 }
 
-/* Anillo de foco visible, igual al del sistema de diseño */
+/* Títulos y display en Light verde, interlineado cerrado y tracking −0,01 em. Sin negrita (la negrita queda para enunciados a página completa). */
+h1, h2, h3, .font-display {
+  font-weight: 300;
+  letter-spacing: -0.01em;
+}
+h1, h2 { line-height: 1.1; }
+.font-display { font-weight: 300; }
+/* El resto del texto solo llega a Medium (500) */
+.font-bold, .font-semibold { font-weight: 500; }
+
+/* Hover y presionado: opacidad 0,85, sin cambio de color, escala ni sombra */
+a, button { transition: opacity 0.24s ease; }
+a:hover, button:not(:disabled):hover { opacity: 0.85; }
+button:not(:disabled):active { opacity: 0.85; }
+
+/* Anillo de foco visible, en el verde de la marca */
 :focus-visible {
-  outline: 3px solid rgba(93, 135, 14, 0.55);
+  outline: 2px solid rgba(2, 112, 1, 0.6);
   outline-offset: 2px;
 }

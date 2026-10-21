@@ -21,10 +21,10 @@ const txt = (v: unknown) => (v === null || v === undefined ? "—" : String(v));
 const recorta = (v: unknown, n = 90) => { const t = txt(v); return t.length > n ? `${t.slice(0, n)}…` : t; };
 const NIVEL_ETIQUETA: Record<NivelRiesgo, string> = { critico: "Crítico", alto: "Alto", medio: "Medio", bajo: "Bajo" };
 const NIVEL_CLASE: Record<NivelRiesgo, string> = {
-  critico: "bg-red-100 text-red-900 border-red-500",
-  alto: "bg-orange-100 text-orange-900 border-orange-500",
-  medio: "bg-amber-100 text-amber-900 border-amber-500",
-  bajo: "bg-leaf-100 text-leaf-800 border-leaf-400",
+  critico: "bg-white text-alerta-crit border-alerta-crit",
+  alto: "bg-white text-alerta-aten border-alerta-aten",
+  medio: "bg-white text-alerta-info border-alerta-info",
+  bajo: "bg-white text-alerta-ok border-alerta-ok",
 };
 
 export function cortesRiesgo(ctx: ContextoLista) {
@@ -58,7 +58,7 @@ function MatrizPoderInteres({ filas }: { filas: Fila[] }) {
                   const lista = celda(poder, interes);
                   const fuerte = poder * interes >= 16;
                   return (
-                    <td key={interes} className={`h-14 w-24 border border-soil-border p-1 align-top ${fuerte ? "bg-leaf-100" : "bg-white"}`}>
+                    <td key={interes} className={`h-14 w-24 border border-soil-border p-1 align-top ${fuerte ? "bg-leaf-50" : "bg-white"}`}>
                       {lista.map((f) => <div key={String(f.id)} className="truncate font-medium text-leaf-900" title={String(f.nombre)}>{String(f.nombre)}</div>)}
                     </td>
                   );
@@ -203,7 +203,7 @@ export const WBS: Definicion = {
   },
   extra: (filas, ctx) =>
     filas.length === 0 && ctx.permisos.gestionar ? (
-      <form action={crearPlantillaWbs.bind(null, ctx.proyecto.id)} className="rounded-card bg-leaf-50 p-5">
+      <form action={crearPlantillaWbs.bind(null, ctx.proyecto.id)} className="rounded-card border-[1.5px] border-soil-border p-5">
         <p className="mb-3 text-sm text-muted">La EDT está vacía. Puedes empezar con la plantilla estándar del libro (1.1 Gestión, 1.2 Ingeniería y diseño, 1.3 Permisos, 1.4 Adquisiciones, 1.5 Construcción, 1.6 Calidad y SST, 1.7 Entrega y cierre).</p>
         <BotonEnviar className={claseBoton.secundario} textoEnviando="Creando…">Usar la plantilla estándar</BotonEnviar>
       </form>

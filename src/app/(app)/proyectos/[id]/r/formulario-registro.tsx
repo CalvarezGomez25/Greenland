@@ -63,7 +63,7 @@ export function FormularioRegistro({
                 maxLength={c.max ?? 4000}
                 required={c.obligatorio}
                 defaultValue={v(c)}
-                className="w-full rounded-[10px] border border-soil-border bg-white px-3.5 py-2.5 text-[15px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30"
+                className="w-full rounded-[20px] border border-soil-border bg-white px-3.5 py-2.5 text-[15px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30"
               />
               {c.ayuda && <span className="text-xs text-muted">{c.ayuda}</span>}
             </label>

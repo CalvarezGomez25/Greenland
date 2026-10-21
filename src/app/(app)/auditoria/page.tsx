@@ -43,11 +43,11 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ tabla?: str
         <button className={claseBoton.secundario}>Filtrar</button>
       </form>
       {filas.length === 0 ? (
-        <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">No hay movimientos para mostrar.</p>
+        <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">No hay movimientos para mostrar.</p>
       ) : (
         <div className="mt-6 overflow-x-auto rounded-card border border-soil-border">
           <table className="w-full min-w-[820px] text-left text-sm">
-            <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
+            <thead className="border-b-[1.5px] border-leaf-500 text-sm font-medium text-leaf-500">
               <tr>{["Fecha", "Quién", "Tabla", "Proyecto", "Campo", "Antes", "Después"].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr>
             </thead>
             <tbody className="divide-y divide-soil-border">

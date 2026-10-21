@@ -62,7 +62,7 @@ export function BorrarMes({ accion, mes }: { accion: (anterior: Estado, datos: F
     );
   }
   return (
-    <div className="min-w-[260px] rounded-[10px] border border-danger/30 bg-red-50 p-3 text-left">
+    <div className="min-w-[260px] rounded-[20px] border-[1.5px] border-alerta-crit bg-white p-3 text-left">
       <FormularioBorrar accion={accion} campos={{ mes: String(mes) }} textoBoton={`Borrar mes ${mes}`} alCancelar={() => setAbierto(false)} />
     </div>
   );

@@ -43,11 +43,11 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       {error && <div className="mt-4"><Aviso>No se pudo leer la lista{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
       {def.extra && <div className="mt-6">{def.extra(filas, ctx)}</div>}
       {filas.length === 0 && !error ? (
-        <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">Aún no hay registros.</p>
+        <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">Aún no hay registros.</p>
       ) : (
         <div className="mt-6 overflow-x-auto rounded-card border border-soil-border">
           <table className="w-full min-w-[640px] text-left text-sm">
-            <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
+            <thead className="border-b-[1.5px] border-leaf-500 text-sm font-medium text-leaf-500">
               <tr>
                 {def.columnas.filter((c) => !c.visible || c.visible(permisos)).map((c) => <th key={c.etiqueta} className="px-3 py-2 font-medium">{c.etiqueta}</th>)}
                 {puede && <th className="px-3 py-2" />}

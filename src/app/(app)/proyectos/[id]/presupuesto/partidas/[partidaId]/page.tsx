@@ -58,7 +58,7 @@ async function Contenido({ params }: { params: Promise<{ id: string; partidaId: 
         />
       </div>
 
-      <section className="mt-12 max-w-xl rounded-card border border-danger/30 bg-red-50 p-5" aria-labelledby="borrar">
+      <section className="mt-12 max-w-xl rounded-card border-[1.5px] border-alerta-crit bg-white p-5" aria-labelledby="borrar">
         <h2 id="borrar" className="font-display text-xl font-bold text-danger">
           Borrar esta partida
         </h2>

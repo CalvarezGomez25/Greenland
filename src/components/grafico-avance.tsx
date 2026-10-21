@@ -11,7 +11,8 @@ const R = 80;
 const R_FIN = 60;
 const C = (r: number) => 2 * Math.PI * r;
 const tope = (n: number | null) => (n === null ? 0 : Math.max(0, Math.min(100, n)));
-const COLOR = { fisico: "#5d870e", financiero: "#7c401d", plan: "#555552" };
+// Serie oficial del sistema de diseño: #027001, #84B71E y gris #5E5E5E; pista en gris #E4E4E4.
+const COLOR = { fisico: "#027001", financiero: "#84b71e", plan: "#5e5e5e" };
 
 export function GraficoAvance({ fisico, financiero, planificado, href }: Props) {
   const hay = fisico !== null;
@@ -22,7 +23,7 @@ export function GraficoAvance({ fisico, financiero, planificado, href }: Props) 
     : "Sin mediciones de valor ganado";
 
   return (
-    <Link href={href} className="block h-full rounded-card border border-soil-border bg-white p-5 hover:shadow-card" aria-label={`Avance del proyecto. ${descripcion}. Abrir valor ganado`}>
+    <Link href={href} className="block h-full rounded-card border-[1.5px] border-leaf-500 bg-white p-5" aria-label={`Avance del proyecto. ${descripcion}. Abrir valor ganado`}>
       <div className="flex items-start justify-between gap-2">
         <div>
           <h2 className="font-display text-lg font-bold text-leaf-700">Avance del proyecto</h2>
@@ -34,9 +35,9 @@ export function GraficoAvance({ fisico, financiero, planificado, href }: Props) 
       <div className="relative mx-auto mt-3 w-full max-w-[220px]">
         <svg viewBox="0 0 200 200" role="img" aria-label={descripcion} className="block w-full">
           <g transform="rotate(-90 100 100)" fill="none" strokeLinecap="round">
-            <circle cx="100" cy="100" r={R} stroke="#e6f1d1" strokeWidth="14" />
+            <circle cx="100" cy="100" r={R} stroke="#e4e4e4" strokeWidth="14" />
             {hay && tope(fisico) > 0 && <circle cx="100" cy="100" r={R} stroke={COLOR.fisico} strokeWidth="14" strokeDasharray={`${(C(R) * tope(fisico)) / 100} ${C(R)}`} />}
-            <circle cx="100" cy="100" r={R_FIN} stroke="#f1ebe4" strokeWidth="6" />
+            <circle cx="100" cy="100" r={R_FIN} stroke="#f2f2f2" strokeWidth="6" />
             {financiero !== null && tope(financiero) > 0 && <circle cx="100" cy="100" r={R_FIN} stroke={COLOR.financiero} strokeWidth="6" strokeDasharray={`${(C(R_FIN) * tope(financiero)) / 100} ${C(R_FIN)}`} />}
           </g>
           {marca !== null && (

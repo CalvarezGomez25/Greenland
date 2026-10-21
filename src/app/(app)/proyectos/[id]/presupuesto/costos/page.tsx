@@ -38,7 +38,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       </p>
 
       {p.lineas.length === 0 ? (
-        <div className="mt-6 max-w-2xl rounded-card bg-leaf-50 p-6">
+        <div className="mt-6 max-w-2xl rounded-card border-[1.5px] border-soil-border p-6">
           <p className="text-sm">
             Este proyecto aún no tiene costos adicionales. Puedes crear los conceptos habituales (Administración, Imprevistos,
             Utilidad, IVA sobre la utilidad y Retefuente) en 0 % y luego completar los porcentajes, o agregar tus propios conceptos.
@@ -54,7 +54,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         <>
           <div className="mt-6 overflow-x-auto rounded-card border border-soil-border">
             <table className="w-full min-w-[640px] text-sm">
-              <thead className="bg-leaf-100 text-left text-leaf-800">
+              <thead className="border-b-[1.5px] border-leaf-500 text-left font-medium text-leaf-500">
                 <tr>
                   <th scope="col" className="px-3 py-2">Concepto</th>
                   <th scope="col" className="px-3 py-2">Se calcula sobre</th>

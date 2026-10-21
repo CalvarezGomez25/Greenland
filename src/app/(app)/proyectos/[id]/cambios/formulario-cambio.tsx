@@ -12,7 +12,7 @@ function Area({ nombre, etiqueta, valor, obligatorio }: { nombre: string; etique
     <label className="flex flex-col gap-1.5">
       <span className="text-[13px] font-medium text-leaf-800">{etiqueta}{obligatorio ? "" : " (opcional)"}</span>
       <textarea name={nombre} rows={3} maxLength={4000} required={obligatorio} defaultValue={valor}
-        className="w-full rounded-[10px] border border-soil-border bg-white px-3.5 py-2.5 text-[15px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30" />
+        className="w-full rounded-[20px] border border-soil-border bg-white px-3.5 py-2.5 text-[15px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30" />
     </label>
   );
 }

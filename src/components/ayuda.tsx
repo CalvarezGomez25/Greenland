@@ -77,11 +77,11 @@ export function Ayuda({ tema, modo = "icono", className = "", children }: Props)
       id={id}
       role="tooltip"
       style={{ top: pos.top, left: pos.left, width: pos.ancho }}
-      className="pointer-events-none fixed z-[70] block rounded-xl border border-soil-border bg-white p-3 text-left text-xs font-normal normal-case leading-snug tracking-normal text-leaf-900 shadow-card"
+      className="pointer-events-none fixed z-[70] block rounded-[20px] border border-soil-border bg-white p-3 text-left text-xs font-normal normal-case leading-snug tracking-normal text-leaf-900 "
     >
       <strong className="block text-[13px] font-semibold text-leaf-700">{info.titulo}</strong>
       <span className="mt-1 block">{info.texto}</span>
-      {"ejemplo" in info && <span className="mt-1.5 block rounded-lg bg-leaf-50 px-2 py-1 text-leaf-800"><b>Ejemplo:</b> {info.ejemplo}</span>}
+      {"ejemplo" in info && <span className="mt-1.5 block rounded-[20px] border-[1.5px] border-soil-border px-2 py-1 text-leaf-800"><b>Ejemplo:</b> {info.ejemplo}</span>}
       {"meta" in info && <span className="mt-1.5 block text-muted">{info.meta}</span>}
     </span>
   );

@@ -44,7 +44,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <p className="mt-3 max-w-3xl text-sm text-muted">Define qué ve cada interventor. Antes de asignar, el administrador debe agregar a la persona al equipo del proyecto con el rol “Interventoría”. {permisos.gestionar ? "" : "Solo el gerente o el administrador cambian las asignaciones."}</p>
       <div className="mt-4 flex flex-col gap-2"><AvisoResultado ok={ok} />{error && <Aviso>{error.slice(0, 400)}</Aviso>}</div>
 
-      {alcances.length === 0 ? <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">Aún no hay asignaciones.</p> : (
+      {alcances.length === 0 ? <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">Aún no hay asignaciones.</p> : (
         <ul className="mt-6 flex flex-col gap-4">
           {alcances.map((a) => {
             const vigente = (!a.fecha_inicio || a.fecha_inicio <= hoy) && (!a.fecha_fin || a.fecha_fin >= hoy);
@@ -67,7 +67,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
                   ))}
                 </ul>
                 {permisos.gestionar && (
-                  <div className="mt-3 rounded-[10px] bg-leaf-50 p-4"><p className="mb-2 text-sm font-medium text-leaf-800">Agregar una persona</p>
+                  <div className="mt-3 rounded-[20px] bg-leaf-50 p-4"><p className="mb-2 text-sm font-medium text-leaf-800">Agregar una persona</p>
                     <FormularioRegistro accion={asignarUsuario.bind(null, id, a.id)} campos={campos} opciones={{ usuarios: interventores }} iniciales={{}} editando={false} volverA={`/proyectos/${id}/interventoria/asignaciones`} /></div>
                 )}
               </li>
@@ -76,7 +76,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         </ul>
       )}
       {permisos.gestionar && (
-        <section className="mt-8 rounded-card bg-leaf-50 p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Nueva asignación</h2>
+        <section className="mt-8 rounded-card border-[1.5px] border-soil-border p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Nueva asignación</h2>
           <FormularioAlcance accion={guardarAlcance.bind(null, id)} interventoria={o.contratosInterventoria} obra={o.contratosObra} /></section>
       )}
     </>

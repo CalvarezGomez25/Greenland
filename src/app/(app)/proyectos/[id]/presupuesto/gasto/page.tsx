@@ -43,11 +43,11 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           Gasto registrado
         </h2>
         {registrados.length === 0 ? (
-          <p className="mt-3 rounded-card bg-leaf-50 p-6 text-center text-sm text-muted">Aún no hay gasto registrado.</p>
+          <p className="mt-3 rounded-card border-[1.5px] border-soil-border p-6 text-center text-sm text-muted">Aún no hay gasto registrado.</p>
         ) : (
           <div className="mt-4 overflow-x-auto rounded-card border border-soil-border">
             <table className="w-full min-w-[420px] text-sm">
-              <thead className="bg-leaf-100 text-left text-leaf-800">
+              <thead className="border-b-[1.5px] border-leaf-500 text-left font-medium text-leaf-500">
                 <tr>
                   <th scope="col" className="px-3 py-2">Mes</th>
                   <th scope="col" className="px-3 py-2 text-right">Gasto del mes</th>

@@ -52,7 +52,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       </section>
 
       {permisos.gestionar && (
-        <section className="mt-6 rounded-card bg-leaf-50 p-5" aria-label="Interventoría">
+        <section className="mt-6 rounded-card border-[1.5px] border-soil-border p-5" aria-label="Interventoría">
           <p className="mb-3 text-sm">{d.visible_interventoria ? "La interventoría puede ver este documento." : "La interventoría no ve este documento."}</p>
           <form action={cambiarVisibilidad.bind(null, id, documentoId, !d.visible_interventoria)}><BotonEnviar className={claseBoton.secundario} textoEnviando="Guardando…">{d.visible_interventoria ? "Ocultar a la interventoría" : "Abrir a la interventoría"}</BotonEnviar></form>
         </section>

@@ -2,21 +2,20 @@ import { useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttribu
 import { Ayuda } from "./ayuda";
 import type { TemaAyuda } from "@/lib/glosario";
 
-// Estilos compartidos con el sistema de diseño GreenLand.
-// Nota de accesibilidad: el botón principal usa leaf-600 (contraste 5,8:1 con
-// texto blanco) en lugar de leaf-500 (4,3:1), que no alcanza el mínimo AA.
+// Estilos compartidos con el sistema de diseño GreenLand v1.0.0: píldoras (radio completo), contorno de 1,5 px en el verde
+// de trabajo #027001, sin sombras; el hover baja la opacidad a 0,85 (regla global en globals.css).
 const base =
-  "inline-flex h-10 items-center justify-center gap-2 rounded-full px-5 text-sm font-medium tracking-wide transition active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-45";
+  "inline-flex h-10 items-center justify-center gap-2 rounded-full px-[26px] text-[15px] font-normal disabled:cursor-not-allowed disabled:opacity-45";
 
 export const claseBoton = {
-  primario: `${base} bg-leaf-600 text-white hover:bg-leaf-700`,
-  secundario: `${base} bg-leaf-100 text-leaf-900 hover:bg-leaf-200`,
-  contorno: `${base} border-[1.5px] border-leaf-600 text-leaf-600 hover:bg-leaf-50`,
-  peligro: `${base} border-[1.5px] border-danger text-danger hover:bg-red-50`,
+  primario: `${base} border-[1.5px] border-leaf-600 bg-leaf-600 text-white`,
+  secundario: `${base} border-[1.5px] border-leaf-600 bg-white text-leaf-600`,
+  contorno: `${base} border-[1.5px] border-leaf-600 bg-white text-leaf-600`,
+  peligro: `${base} border-[1.5px] border-alerta-crit bg-white text-alerta-crit`,
 };
 
 export const claseCampo =
-  "h-[42px] w-full rounded-[10px] border border-soil-border bg-white px-3.5 text-[15px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30";
+  "h-[42px] w-full rounded-full border-[1.5px] border-soil-border bg-white px-[22px] text-[15px] font-normal text-leaf-900 focus:border-leaf-500 focus:outline-none";
 
 type PropsCampo = { etiqueta: string; ayuda?: string; className?: string; tema?: TemaAyuda };
 
@@ -70,15 +69,9 @@ export function Selector({
   );
 }
 
-// Título de sección: verde con subrayado café del ancho de la palabra.
+// Título de sección: verde de trabajo, Light, sin subrayado.
 export function Titulo({ children }: { children: ReactNode }) {
-  return (
-    <h1 className="font-display text-3xl font-bold leading-tight text-leaf-500">
-      <span className="inline-block border-b-2 border-earth-600 pb-1">
-        {children}
-      </span>
-    </h1>
-  );
+  return <h1 className="font-display text-[34px] font-light leading-[1.05] text-leaf-500">{children}</h1>;
 }
 
 export function Aviso({
@@ -90,10 +83,10 @@ export function Aviso({
 }) {
   const estilo =
     tipo === "error"
-      ? "border-danger/40 bg-red-50 text-danger"
-      : "border-leaf-300 bg-leaf-50 text-leaf-800";
+      ? "border-alerta-crit text-alerta-crit"
+      : "border-leaf-500 text-leaf-500";
   return (
-    <p role={tipo === "error" ? "alert" : "status"} className={`rounded-[10px] border px-3.5 py-2.5 text-sm ${estilo}`}>
+    <p role={tipo === "error" ? "alert" : "status"} className={`rounded-[20px] border-[1.5px] bg-white px-[22px] py-2.5 text-sm ${estilo}`}>
       {children}
     </p>
   );
