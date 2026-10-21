@@ -2,7 +2,7 @@
 
 Plataforma web de gestión de proyectos de construcción (PMO): portafolio, EVM, cambios, cronograma,
 contratos, bitácora, documentos, cierre e interventoría. La especificación vigente es `ESPECIFICACION.md`
-(v3.2); los supuestos y pendientes adoptados están en [`docs/SUPUESTOS.md`](docs/SUPUESTOS.md). La historia, las decisiones, el marco teórico y la trazabilidad del proyecto están en [`docs/memoria/`](docs/memoria/README.md).
+(v3.2.1); los supuestos y pendientes adoptados están en [`docs/SUPUESTOS.md`](docs/SUPUESTOS.md). La historia, las decisiones, el marco teórico y la trazabilidad del proyecto están en [`docs/memoria/`](docs/memoria/README.md).
 
 ## Estado
 
@@ -36,6 +36,8 @@ Configuración en Vercel (variables de entorno):
 2. `CRON_SECRET`: una clave larga inventada por ti. Vercel la envía sola al cron diario (`vercel.json`).
 3. `ALERTAS_USUARIO` y `ALERTAS_CLAVE`: un usuario de solo lectura. Créalo en Supabase → Authentication → Users → Add user (correo y contraseña, «Auto Confirm User») y en `/usuarios` asígnale el rol **Analista PMO**. Así el resumen no necesita la clave secreta de Supabase.
 4. Opcional: `URL_PUBLICA` (por defecto se usa la dirección de Vercel).
+
+**Qué necesita cada aviso.** Los avisos inmediatos de aprobaciones solo necesitan el proveedor de correo (paso 1). El resumen diario y el informe del lunes necesitan además los pasos 2 y 3. **Ensayo sin enviar:** define `CORREO_PROVEEDOR=consola`, redespliega y revisa los Logs de Vercel (líneas `[correo:consola]`); bórrala para pasar a envío real.
 
 Prueba manual del resumen: `curl -H "Authorization: Bearer TU_CRON_SECRET" https://tu-plataforma.vercel.app/api/cron/alertas`.
 

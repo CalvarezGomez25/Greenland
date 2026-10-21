@@ -2,6 +2,13 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.2.1] · 21 de octubre de 2026
+### Corregido
+- `ESPECIFICACION.md`: conteo de fichas de decisión (22), cifras de pruebas (314 unitarias y 532 de base de datos al 16 de octubre) y estado de P16 y P17 (el recordatorio del 12 de octubre ya se cumplió; configuración de correos aún pendiente).
+- Memoria: cifras del guion de origen y propósito alineadas (846 comprobaciones automáticas en total) y PDF regenerado.
+### Añadido
+- Guías de operación en la especificación (sección 16) y en el README: crear usuarios con su rol y configurar y probar el envío de correos por fases.
+
 ## [3.2] · 16 de octubre de 2026
 ### Añadido
 - Correo electrónico y teléfono en los interesados, con validación.

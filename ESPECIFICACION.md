@@ -1,13 +1,13 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.2, actualizada el 16 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.2.1, actualizada el 21 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.2, única versión vigente |
-| Última actualización | 16 de octubre de 2026 (incorpora lo construido, auditado y decidido del 9 al 16 de octubre, el marco FARO completo, la memoria del proyecto y el directorio de contactos) |
+| Versión | 3.2.1, única versión vigente |
+| Última actualización | 21 de octubre de 2026 (revisión de coherencia: cifras, versiones y pendientes alineados con lo construido hasta el 16 de octubre; guías de operación en la sección 16) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
 | Código y documentación técnica | `README.md` (instalación y variables), `docs/SUPUESTOS.md`, `docs/AUDITORIA.md`, `docs/presentacion-faro/`, `docs/memoria/` (historia, marco teórico, decisiones, trazabilidad y lecciones) |
@@ -20,6 +20,7 @@ Versión 3.2, actualizada el 16 de octubre de 2026. Es la única versión vigent
 | 3.0 | 11 de octubre de 2026 | Estado de construcción (sección 0.1); marca PMO360, menú lateral, ayuda y glosario (secciones 1.1, 3 y 5.Q); aprobación de contratos nuevos por el director (M); alertas por correo (5.O); presupuesto sobre la EDT (J); riesgos ampliados e importación desde Excel (E); informe gerencial de una página y envío semanal (5.P); auditoría y correcciones (12.1); festivos automáticos (N); parámetros, modelo de datos, roles, supuestos y pendientes actualizados; marco FARO para presentar y pilotear la plataforma (sección 17) |
 | 3.1 | 15 de octubre de 2026 | Ajustes del tablero del proyecto del 12 de octubre (gráfico de avance, resumen de control, tablero ordenado por código; sección 3 y hito 21); marco FARO completo con su estado de material y pendientes (sección 17 y hito 20); marco de referencia ampliado con PMBOK 8.ª edición, ISO 21502, ISO 31000, historia del valor ganado y Ley 594 de 2000, con nivel de verificación (sección 2); memoria del proyecto `docs/memoria/` (sección 18 y hito 22); historia de cómo se llegó al nombre PMO360 (sección 1.2); decisión de no crear un rol «gerente junior» (secciones 8 y 14); pendientes P26 a P32; estado al 15 de octubre (sección 0.1) |
 | 3.2 | 16 de octubre de 2026 | Correo y teléfono en los interesados y directorio de contactos reutilizable entre proyectos (módulo C, secciones 7 y 8, migración 0023, hito 23, supuesto S18, pendiente P33); estado de pruebas actualizado |
+| 3.2.1 | 21 de octubre de 2026 | Revisión de coherencia (conteo de fichas de decisión, cifras de pruebas, estado de P16 y P17); guías de operación de la sección 16: crear usuarios con su rol y configurar y probar el envío de correos por fases; aviso de que los avisos inmediatos solo necesitan el proveedor de correo (módulo O) |
 
 ### 0.1 Estado actual de un vistazo (16 de octubre de 2026)
 
@@ -30,7 +31,7 @@ Versión 3.2, actualizada el 16 de octubre de 2026. Es la única versión vigent
 | Pruebas automáticas | 314 pruebas unitarias (Vitest, 34 archivos) y 532 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas al 16 de octubre de 2026 (el 14 de octubre eran 305 y 494, antes del hito 23) |
 | Producción | El usuario instaló el SQL de la base en Supabase y desplegó en Vercel; confirmó que funciona con datos ficticios |
 | Aún no ocurrido | Ningún correo se ha enviado en producción (falta configurar el proveedor, `CRON_SECRET` y el usuario de solo lectura); no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
-| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 21 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
+| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 22 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
 | Condiciones antes de datos reales | Definir región y confidencialidad; plan de alojamiento apto para uso comercial; revisión de seguridad (pendientes P12 a P14) |
 
 ## 1. Visión, alcance y principios
@@ -647,7 +648,7 @@ Planes, límites y precios de estas herramientas cambian: verificarlos en sus si
 - Idioma español, formato numérico y de fechas de Colombia, moneda COP.
 - Seguridad: acceso por rol y por proyecto; archivos privados; auditoría de cambios en contratos, pagos, anticipos, línea base y parámetros.
 - Respaldos de base de datos y archivos.
-- Pruebas automáticas de los cálculos con los casos de la sección 13 (305 pruebas unitarias y 494 comprobaciones de base de datos al 11 de octubre de 2026). Comandos: `npm run verificar` (tipos, lint, pruebas y compilación) y `npm run test:sql`.
+- Pruebas automáticas de los cálculos con los casos de la sección 13 (314 pruebas unitarias y 532 comprobaciones de base de datos al 16 de octubre de 2026). Comandos: `npm run verificar` (tipos, lint, pruebas y compilación) y `npm run test:sql`.
 - Exportación a Excel y PDF: construida (hito 10) para el dashboard, el reporte semanal, el valor ganado, los cambios, los contratos y el informe gerencial.
 
 ## 12. Hitos de construcción
@@ -860,8 +861,8 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | P13 | **Plan de alojamiento apto para uso comercial** y cálculo del costo real de operación (hoy Vercel Hobby, de uso no comercial) | Abierto |
 | P14 | **Revisión de seguridad independiente** antes de cargar datos reales | Abierto |
 | P15 | Primera corrida con datos reales de un proyecto | Abierto; depende de P12 a P14 |
-| P16 | **Configurar el correo en Vercel:** proveedor (SMTP o Resend), `CRON_SECRET`, `ALERTAS_USUARIO`, `ALERTAS_CLAVE` y opcional `URL_PUBLICA`; redesplegar y probar con `curl` | Abierto; recordatorio programado para el 12 de octubre de 2026 |
-| P17 | **Crear el usuario Analista PMO de solo lectura** (Supabase Authentication, «Auto Confirm User») y asignarle el rol en `/usuarios` | Abierto; mismo recordatorio |
+| P16 | **Configurar el correo en Vercel:** proveedor (SMTP o Resend), `CRON_SECRET`, `ALERTAS_USUARIO`, `ALERTAS_CLAVE` y opcional `URL_PUBLICA`; redesplegar y probar con `curl` | Abierto. El recordatorio del 12 de octubre ya se cumplió; el usuario retomó la configuración el 17 de octubre y recibió la guía por fases (sección 16). Sin envío real hasta hoy |
+| P17 | **Crear el usuario Analista PMO de solo lectura** (Supabase Authentication, «Auto Confirm User») y asignarle el rol en `/usuarios` | Abierto; mismo estado que P16 |
 | P18 | Variante de riesgo: registrar a mano una medición con un BAC inflado antes de aprobar el presupuesto | Abierto; documentado en `docs/AUDITORIA.md` |
 | P19 | Responsables y fechas objetivo del registro de riesgos: reemplazar los roles propuestos por nombres y calificar en taller con diseñadores, Jurídica, Operación e Interventoría | Abierto; las calificaciones del Excel son preliminares |
 | P20 | **Piloto de 90 días** con 3 a 4 de los 12 proyectos: elegir proyectos, responsable, medidas y criterios de éxito antes de empezar | Abierto; depende de la decisión de la dirección |
@@ -915,7 +916,21 @@ La plataforma ya está construida (secciones 0.1 y 12.1). Este documento es la b
 2. Redesplegar en Vercel.
 3. Para los correos: configurar las variables de la sección 10 (pendientes P16 y P17).
 
-> Lee ESPECIFICACION.md completo (versión 3.2), README.md y docs/memoria/README.md. La plataforma PMO360 ya está construida: revisa las secciones 0.1 y 12.1. Soy gerente de proyectos y no sé programar: explícame cada paso en lenguaje sencillo y pídeme confirmación antes de instalar, ejecutar o publicar cualquier cosa. Antes de cambiar código, resume lo que entendiste y lista tus dudas. Mantén todas las reglas y umbrales como parámetros configurables (sección 9). Nunca uses ni me pidas la clave secreta (service_role) de Supabase, y no guardes contraseñas en el repositorio. Valida cada cambio con `npm run verificar`, `npm run test:sql` y los casos de la sección 13. No inventes cifras: si un dato no existe, dilo.
+**Guía: crear un usuario nuevo con su rol y permisos (17 de octubre de 2026).** Son tres pasos:
+1. **Crear la cuenta** en Supabase (no en la plataforma): Authentication → Users → Add user, con correo y contraseña y marcando «Auto Confirm User». Sin rol ni proyectos, la persona no ve nada.
+2. **Rol global**, solo si debe ver todo el portafolio: en la plataforma, como administrador, Usuarios → Rol global (Administrador, Director general, Analista PMO o Finanzas).
+3. **Rol por proyecto:** en el proyecto, «Equipo del proyecto» (solo el administrador asigna): Gerente de proyecto, Patrocinador, Supervisor de obra, Interventoría o Consulta. Una persona puede tener roles distintos en proyectos distintos. Debe existir al menos un usuario con rol Director general.
+
+**Guía: configurar y probar el envío de correos, por fases (17 de octubre de 2026).** Los avisos inmediatos de aprobaciones (cambio que pasa a «En aprobación», contrato por aprobar, reporte con decisiones) **solo necesitan el proveedor de correo**; el resumen diario y el informe del lunes necesitan además `CRON_SECRET` y el usuario lector (Analista PMO).
+1. Antes: tener pegado el último `supabase/instalar_todo.sql` y un usuario Director general con correo.
+2. Proveedor: Gmail con «contraseña de aplicación» (`SMTP_USUARIO` y `SMTP_CLAVE`) o Resend. En Vercel, ambiente Production.
+3. Ensayo sin enviar: agregar `CORREO_PROVEEDOR=consola` y redesplegar; los correos «salen» en los Logs de Vercel con la línea `[correo:consola]`.
+4. Probar el aviso: pasar un cambio a «En aprobación» (menor: va al gerente; moderado o crítico: al director).
+5. Tareas programadas: `CRON_SECRET`, crear el usuario lector y `ALERTAS_USUARIO` y `ALERTAS_CLAVE`; redesplegar; disparar a mano con `curl` o con «Run» en Settings → Cron Jobs, si el plan lo muestra (no verificado).
+6. Envío real: borrar `CORREO_PROVEEDOR`, redesplegar y probar primero con una sola persona. Repetir el informe semanal con envío real escribe a **todos** los destinatarios.
+Estado al 21 de octubre de 2026: el usuario aún no ha hecho la configuración final (P16 y P17); nada se ha enviado en producción.
+
+> Lee ESPECIFICACION.md completo (versión 3.2.1), README.md y docs/memoria/README.md. La plataforma PMO360 ya está construida: revisa las secciones 0.1 y 12.1. Soy gerente de proyectos y no sé programar: explícame cada paso en lenguaje sencillo y pídeme confirmación antes de instalar, ejecutar o publicar cualquier cosa. Antes de cambiar código, resume lo que entendiste y lista tus dudas. Mantén todas las reglas y umbrales como parámetros configurables (sección 9). Nunca uses ni me pidas la clave secreta (service_role) de Supabase, y no guardes contraseñas en el repositorio. Valida cada cambio con `npm run verificar`, `npm run test:sql` y los casos de la sección 13. No inventes cifras: si un dato no existe, dilo.
 
 ## 17. Presentación y adopción: marco FARO
 
@@ -994,7 +1009,7 @@ Repositorio `docs/memoria/`, creado el 14 de octubre de 2026 para explicar cómo
 | `02-historia.md` | Cronología desde los antecedentes hasta hoy, con commits |
 | `03-marco-teorico.md` | Teoría, normativa y nivel de verificación de cada afirmación |
 | `04-buenas-practicas-documentacion.md` | Investigación sobre cómo documentar proyectos, diagnóstico y brechas |
-| `decisiones/` | 21 fichas de decisión (ADR) |
+| `decisiones/` | 22 fichas de decisión (ADR) |
 | `06-trazabilidad.md` | Módulo → decisión → migración → prueba → commit |
 | `07-lecciones-aprendidas.md` | Incidentes y qué cambió |
 | `08-fuentes-y-verificacion.md` | Bibliografía con niveles N1 a N3 |

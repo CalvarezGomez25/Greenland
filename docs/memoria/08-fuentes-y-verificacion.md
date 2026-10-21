@@ -40,7 +40,7 @@
 
 | Fuente | Dónde | Estado |
 | --- | --- | --- |
-| `ESPECIFICACION.md` v3.1 | raíz del repositorio | Vigente |
+| `ESPECIFICACION.md` v3.2.1 | raíz del repositorio | Vigente |
 | `docs/SUPUESTOS.md`, `docs/AUDITORIA.md` | repositorio | Vigentes |
 | `docs/presentacion-faro/` | repositorio | Material de presentación |
 | Prototipo «PM Infraestructura — Sistema Integral de Gerencia» | artifact en la cuenta, actualizado 8 oct 2026 | Leído completo: PMBOK 7, USD, datos en el navegador, nueve módulos |

@@ -75,7 +75,7 @@ Roles completos en `ESPECIFICACION.md` §8. Escala de referencia: unos 12 proyec
 
 - No es una herramienta de residencia de obra detallada [Decisión: [ADR-0006](decisiones/ADR-0006-presupuesto-gerencial-por-capitulos.md)].
 - No reemplaza el criterio del gerente ni promete ahorros [Decisión: [ADR-0019](decisiones/ADR-0019-faro-y-piloto-de-90-dias.md)].
-- No calcula impuestos, flujo de caja, reajustes por IPC ni pólizas (fuera de alcance de la v3.1).
+- No calcula impuestos, flujo de caja, reajustes por IPC ni pólizas (fuera de alcance de la versión vigente).
 - No está lista para datos reales: faltan región y confidencialidad, alojamiento apto para uso comercial y revisión de seguridad independiente (P12–P14).
 
 ## 7. Referencias que la sustentan
@@ -99,7 +99,7 @@ Detalle, enlaces y limitaciones: [03-marco-teorico.md](03-marco-teorico.md) y [0
 2. **Necesidad (45 s).** «Manejamos unos 12 proyectos. Hoy cada uno se reporta a su manera. Queremos ver el portafolio completo, saber quién debe decidir qué y poder defender cada número.» *(Reemplaza con un ejemplo real tuyo.)*
 3. **Propósito (45 s).** «Una sola fuente, alertas a tiempo, respaldo del dato y una operación que aguante más proyectos: eso es FARO.»
 4. **Para quién (30 s).** «Dirección, gerentes, finanzas, supervisores e interventoría, cada uno con lo suyo.»
-5. **Honestidad (30 s).** «Probado con datos ficticios, 305 pruebas unitarias y 494 de base de datos correctas. Sin datos reales, sin correos enviados todavía y sin cifras de ahorro. Por eso pido un piloto de 90 días con 3 o 4 proyectos.»
+5. **Honestidad (30 s).** «Probado con datos ficticios, 314 pruebas unitarias y 532 de base de datos correctas. Sin datos reales, sin correos enviados todavía y sin cifras de ahorro. Por eso pido un piloto de 90 días con 3 o 4 proyectos.»
 
 ## 9. Preguntas que te harán, con respuesta honesta
 
@@ -108,5 +108,5 @@ Detalle, enlaces y limitaciones: [03-marco-teorico.md](03-marco-teorico.md) y [0
 | ¿Cuánto ahorra? | No lo sabemos: no existe línea base. El piloto mide tiempo de informe, antigüedad de decisiones y datos incorrectos |
 | ¿Es seguro? | Permisos aplicados en la base y auditoría interna con 1 falla crítica y 7 altas corregidas. Falta revisión externa antes de datos reales |
 | ¿Quién la mantiene? | Hoy el propietario con asistente de programación. El mantenimiento a largo plazo y su costo son pendientes (O del marco FARO; P13) |
-| ¿Qué pasa si falla? | Base estándar PostgreSQL, instalación en un archivo, documentación y 799 comprobaciones automáticas; sin plan de continuidad formal todavía |
+| ¿Qué pasa si falla? | Base estándar PostgreSQL, instalación en un archivo, documentación y 846 comprobaciones automáticas; sin plan de continuidad formal todavía |
 | ¿Por qué no un software comercial? | No se hizo comparación. Es un vacío declarado |
