@@ -99,7 +99,7 @@ Detalle, enlaces y limitaciones: [03-marco-teorico.md](03-marco-teorico.md) y [0
 2. **Necesidad (45 s).** «Manejamos unos 12 proyectos. Hoy cada uno se reporta a su manera. Queremos ver el portafolio completo, saber quién debe decidir qué y poder defender cada número.» *(Reemplaza con un ejemplo real tuyo.)*
 3. **Propósito (45 s).** «Una sola fuente, alertas a tiempo, respaldo del dato y una operación que aguante más proyectos: eso es FARO.»
 4. **Para quién (30 s).** «Dirección, gerentes, finanzas, supervisores e interventoría, cada uno con lo suyo.»
-5. **Honestidad (30 s).** «Probado con datos ficticios, 314 pruebas unitarias y 532 de base de datos correctas. Sin datos reales, sin correos enviados todavía y sin cifras de ahorro. Por eso pido un piloto de 90 días con 3 o 4 proyectos.»
+5. **Honestidad (30 s).** «Probado con datos ficticios, 328 pruebas unitarias y 586 de base de datos correctas. Sin datos reales, sin correos enviados todavía y sin cifras de ahorro. Por eso pido un piloto de 90 días con 3 o 4 proyectos.»
 
 ## 9. Preguntas que te harán, con respuesta honesta
 
@@ -108,5 +108,5 @@ Detalle, enlaces y limitaciones: [03-marco-teorico.md](03-marco-teorico.md) y [0
 | ¿Cuánto ahorra? | No lo sabemos: no existe línea base. El piloto mide tiempo de informe, antigüedad de decisiones y datos incorrectos |
 | ¿Es seguro? | Permisos aplicados en la base y auditoría interna con 1 falla crítica y 7 altas corregidas. Falta revisión externa antes de datos reales |
 | ¿Quién la mantiene? | Hoy el propietario con asistente de programación. El mantenimiento a largo plazo y su costo son pendientes (O del marco FARO; P13) |
-| ¿Qué pasa si falla? | Base estándar PostgreSQL, instalación en un archivo, documentación y 846 comprobaciones automáticas; sin plan de continuidad formal todavía |
+| ¿Qué pasa si falla? | Base estándar PostgreSQL, instalación en un archivo, documentación y 914 comprobaciones automáticas; sin plan de continuidad formal todavía |
 | ¿Por qué no un software comercial? | No se hizo comparación. Es un vacío declarado |

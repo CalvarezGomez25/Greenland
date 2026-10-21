@@ -104,6 +104,19 @@ El usuario, al revisar el registro de interesados, pidió agregar correo electr�
 
 Entre la fase 7 y esta, el 15 de octubre, el usuario consultó cómo crear un rol «gerente junior» que creara y gestionara sus propios proyectos; tras el análisis decidió **no hacer cambios** (ver `ESPECIFICACION.md` §8).
 
-## Estado al 14 de octubre de 2026
+## Fase 9 · Actividades y «Mi trabajo» (16 de octubre)
+
+El usuario preguntó si convenía darle a la plataforma la forma de un gestor colaborativo tipo Trello, Asana o ClickUp. Tras comparar tres caminos (integrar una herramienta externa, módulo propio o reencuadrar toda la plataforma) y discutir el riesgo de complicar la herramienta, acordaron construir **un mínimo propio**, para gerencia, analistas e interventoría. El usuario aclaró que la organización no usa hoy ninguna de esas herramientas: cada persona gestiona su información a su manera. Se construyó la migración 0024 (tabla `actividades`), el tablero por proyecto y la pantalla «Mi trabajo». Se verificó con 54 comprobaciones de base de datos y 7 pruebas unitarias nuevas, más tipos, lint y compilación; **aún sin recorrido en navegador**. Decisión en [ADR-0023](decisiones/ADR-0023-actividades-y-mi-trabajo.md); la adopción se mide en el piloto (P34).
+
+## Fase 10 · Tablero Kanban, exportaciones, inicio por rol y administración (16 y 17 de octubre)
+
+- **Despliegue del módulo.** El usuario pidió dejar PMO360 intacta y probar el gestor en una rama aparte (`prueba/gestor-colaborativo`); como Vercel no permitía desplegar esa rama, pidió devolver el módulo a la rama principal (`650d8a8`, `3454ada`, `d50aa6a`; ver L-15).
+- **Tablero Kanban real** en «Actividades» y «Mi trabajo»: columnas lado a lado, tarjetas que se arrastran con cambio inmediato y selector «Mover a» para celular (`a2be839`; L-16).
+- **Exportaciones con la identidad de la marca** a partir de una captura del PDF del tablero que el usuario calificó de plano (`72dc45c`) — [ADR-0025](decisiones/ADR-0025-exportaciones-con-identidad-de-marca.md).
+- **Pantalla de inicio por rol**: quien no ve todo el portafolio entra a «Mi trabajo»; la interventoría queda sin tablero propio; corrección de «Mis proyectos» para un administrador asignado a proyectos (`00cb5b3`, `9186580`, `78b5aa8`; L-14) — [ADR-0024](decisiones/ADR-0024-pantalla-de-inicio-por-rol.md).
+- **Microsoft 365.** Tras comprobar que la organización no usa ninguna herramienta de tareas, el usuario planteó usar la licencia corporativa de Microsoft; se preparó una guía para TI (documento) y se dejó como propuesta — [ADR-0026](decisiones/ADR-0026-integracion-con-microsoft-365.md).
+- **Administración futura.** El usuario decidió: por ahora Carlos sigue como administrador; más adelante habrá un único administrador de TI, Carlos pasará a Analista PMO y el director general creará los proyectos y los equipos. Quedó como pendientes P35 y P36 (`4e85691` a `fd3c101`) — [ADR-0027](decisiones/ADR-0027-administrador-unico-y-traspaso.md).
+
+## Estado al 17 de octubre de 2026
 
 Ver [01-resumen-ejecutivo.md](01-resumen-ejecutivo.md).

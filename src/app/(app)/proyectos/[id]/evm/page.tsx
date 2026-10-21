@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { rutaDelTablero } from "@/lib/navegacion";
 import { cargarProyecto } from "@/lib/contexto-proyecto";
 import { desdeJson, formatearDecimal } from "@/lib/presupuesto/dinero";
 import { calcularEvm } from "@/lib/pmo/evm";
@@ -107,7 +108,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           <FormularioMedicion accion={guardarMedicion.bind(null, id)} iniciales={iniciales} />
         </section>
       )}
-      <p className="mt-6 text-xs text-muted"><Link href="/" className={`${claseBoton.contorno} !h-8`}>Ver el portafolio</Link></p>
+      <p className="mt-6 text-xs text-muted"><Link href={rutaDelTablero(permisos.rolGlobal)} className={`${claseBoton.contorno} !h-8`}>{permisos.rolGlobal ? "Ver el portafolio" : "Ver el tablero de mis proyectos"}</Link></p>
     </>
   );
 }

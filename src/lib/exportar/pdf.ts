@@ -1,134 +1,193 @@
-// PDF sencillo con tablas (pdf-lib, sin archivos externos). Las fuentes estándar solo admiten caracteres
-// latinos (WinAnsi): se sustituyen los símbolos que no existen en ellas.
-import { NOMBRE_EMPRESA, NOMBRE_PLATAFORMA } from "../marca";
-import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
-import type { DocExport, TablaExport } from "./tipos";
+// PDF de tablas con la identidad de la plataforma (la misma del informe gerencial): logo, tipografías Baloo 2 y Roboto,
+// paleta verde, tarjetas de indicadores, etiquetas de semáforo y filas alternadas. Se dibuja con pdf-lib, sin servicios externos.
+import { PDFDocument, type PDFFont, type PDFPage } from "pdf-lib";
+import fontkit from "@pdf-lib/fontkit";
+import { LEMA_PLATAFORMA, NOMBRE_EMPRESA, NOMBRE_PLATAFORMA } from "../marca";
+import { BALOO_700, LOGO_PNG, ROBOTO_400, ROBOTO_500 } from "../informe/fuentes";
+import { C, Lienzo, hex, limpiar as limpiarMarca, partir as partirMarca, type Fuentes } from "../informe/pdf";
+import { TONOS, tonoDeTexto } from "./tonos";
+import type { DocExport, TablaExport, Tarjeta } from "./tipos";
 
 const A4_H: [number, number] = [841.89, 595.28]; // horizontal
-const MARGEN = 36;
-const VERDE = rgb(0.298, 0.439, 0.043);
-const GRIS = rgb(0.33, 0.33, 0.32);
+const M = 34;
+const ANCHO = A4_H[0] - 2 * M;
+const BASE = A4_H[1] - 46; // hasta aquí llega el contenido; debajo va el pie
 
+// Para fuentes estándar (compatibilidad): sustituye los símbolos que no existen en el alfabeto latino.
 export function limpiar(t: string): string {
   return t
     .replace(/[–—]/g, "-").replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/…/g, "...")
-    .replace(/≥/g, ">=").replace(/≤/g, "<=").replace(/[→↑↓]/g, "").replace(/ /g, " ")
+    .replace(/≥/g, ">=").replace(/≤/g, "<=").replace(/[→↑↓]/g, "").replace(/ /g, " ")
     .replace(/[^\x09\x0A\x0D\x20-\x7E¡-ÿ]/g, "")
     .replace(/ {2,}/g, " ");
 }
 
-function partir(texto: string, fuente: PDFFont, tam: number, ancho: number): string[] {
-  const lineas: string[] = [];
-  for (const parrafo of limpiar(texto).split(/\r?\n/)) {
-    let actual = "";
-    for (const palabra of parrafo.split(/\s+/).filter(Boolean)) {
-      let p = palabra;
-      while (fuente.widthOfTextAtSize(p, tam) > ancho) { // palabra más larga que la columna: se corta
-        let n = p.length;
-        while (n > 1 && fuente.widthOfTextAtSize(p.slice(0, n), tam) > ancho) n--;
-        if (actual) { lineas.push(actual); actual = ""; }
-        lineas.push(p.slice(0, n));
-        p = p.slice(n);
-      }
-      const prueba = actual ? `${actual} ${p}` : p;
-      if (fuente.widthOfTextAtSize(prueba, tam) <= ancho) actual = prueba;
-      else { if (actual) lineas.push(actual); actual = p; }
-    }
-    lineas.push(actual);
-  }
-  return lineas.length ? lineas : [""];
-}
-
 const texto = (c: string | number | null, f?: string): string => {
-  if (c === null) return "";
+  if (c === null) return "—";
   if (typeof c === "number") {
     if (f === "porcentaje") return `${c.toLocaleString("es-CO", { maximumFractionDigits: 1 })} %`;
     if (f === "decimal2") return c.toLocaleString("es-CO", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     return c.toLocaleString("es-CO", { maximumFractionDigits: 2 });
   }
-  return c;
+  return c === "" ? "—" : c;
 };
 
 export async function aPdf(doc: DocExport): Promise<Uint8Array> {
   const pdf = await PDFDocument.create();
-  pdf.setTitle(limpiar(doc.titulo));
-  pdf.setCreator(`${NOMBRE_PLATAFORMA} · ${NOMBRE_EMPRESA}`);
-  const normal = await pdf.embedFont(StandardFonts.Helvetica);
-  const negrita = await pdf.embedFont(StandardFonts.HelveticaBold);
-  const paginas: PDFPage[] = [];
-  let pagina!: PDFPage, y = 0;
-  const ANCHO = A4_H[0] - 2 * MARGEN;
+  pdf.registerFontkit(fontkit);
+  const f: Fuentes = {
+    titulo: await pdf.embedFont(Buffer.from(BALOO_700, "base64"), { subset: true }),
+    normal: await pdf.embedFont(Buffer.from(ROBOTO_400, "base64"), { subset: true }),
+    medio: await pdf.embedFont(Buffer.from(ROBOTO_500, "base64"), { subset: true }),
+  };
+  const logo = await pdf.embedPng(Buffer.from(LOGO_PNG, "base64"));
+  pdf.setTitle(limpiarMarca(doc.titulo));
+  pdf.setAuthor(`${NOMBRE_PLATAFORMA} · ${NOMBRE_EMPRESA}`);
+  pdf.setCreator(NOMBRE_PLATAFORMA);
 
-  const nueva = () => { pagina = pdf.addPage(A4_H); paginas.push(pagina); y = A4_H[1] - MARGEN; };
-  const asegurar = (alto: number) => { if (y - alto < MARGEN + 14) nueva(); };
+  const paginas: PDFPage[] = [];
+  let L!: Lienzo, y = 0;
+
+  // ---- Encabezados --------------------------------------------------------------------------------
+  const nueva = () => {
+    const pagina = pdf.addPage(A4_H);
+    paginas.push(pagina);
+    L = new Lienzo(pagina, f);
+    if (paginas.length === 1) {
+      const lh = 30;
+      pagina.drawImage(logo, { x: M, y: L.Y(M + lh), width: (lh * logo.width) / logo.height, height: lh });
+      L.texto(NOMBRE_PLATAFORMA, A4_H[0] - M, M + 11, { f: f.titulo, tam: 13, color: C.leaf600, derecha: true });
+      L.texto(`${NOMBRE_EMPRESA} · ${LEMA_PLATAFORMA}`, A4_H[0] - M, M + 24, { tam: 7.5, color: C.gris, derecha: true });
+      L.linea(M, M + 38, A4_H[0] - M, M + 38, C.leaf600, 1);
+      pagina.drawRectangle({ x: M, y: L.Y(M + 40.5), width: 70, height: 2.5, color: C.tierra });
+      y = M + 66;
+      const tam = doc.titulo.length > 60 ? 17 : 21;
+      y += L.parrafo(doc.titulo, M, y, { f: f.titulo, tam, ancho: ANCHO, maxLineas: 2, color: C.leaf700, interlinea: tam * 1.05 }) + 4;
+      L.texto([doc.subtitulo, `Generado: ${doc.generado}`].filter(Boolean).join("  ·  "), M, y, { tam: 8.5, color: C.gris, ancho: ANCHO });
+      y += 18;
+    } else {
+      const lh = 18;
+      pagina.drawImage(logo, { x: M, y: L.Y(M + lh - 4), width: (lh * logo.width) / logo.height, height: lh });
+      L.texto(doc.titulo, A4_H[0] - M, M + 6, { f: f.medio, tam: 8, color: C.gris, derecha: true, ancho: ANCHO - 120 });
+      L.linea(M, M + 20, A4_H[0] - M, M + 20, C.leaf600, 0.8);
+      y = M + 36;
+    }
+  };
+  const asegurar = (alto: number) => { if (y + alto > BASE) nueva(); };
   nueva();
 
-  pagina.drawText(limpiar(doc.titulo), { x: MARGEN, y: y - 16, size: 16, font: negrita, color: VERDE });
-  y -= 24;
-  pagina.drawText(limpiar([doc.subtitulo, `Generado: ${doc.generado}`].filter(Boolean).join("  |  ")), { x: MARGEN, y: y - 10, size: 9, font: normal, color: GRIS });
-  y -= 22;
-
-  const dibujarTabla = (t: TablaExport) => {
-    asegurar(60);
-    pagina.drawText(limpiar(t.titulo), { x: MARGEN, y: y - 12, size: 12, font: negrita, color: VERDE });
-    y -= 20;
-    if (t.nota) {
-      for (const l of partir(t.nota, normal, 8.5, ANCHO)) { asegurar(12); pagina.drawText(l, { x: MARGEN, y: y - 9, size: 8.5, font: normal, color: GRIS }); y -= 11; }
-      y -= 4;
+  // ---- Tarjetas de indicadores ----------------------------------------------------------------------
+  const dibujarTarjetas = (filas: Tarjeta[][]) => {
+    const hT = 54;
+    for (const fila of filas) {
+      asegurar(hT + 8);
+      const w = (ANCHO - (fila.length - 1) * 8) / fila.length;
+      fila.forEach((t, k) => {
+        const x = M + k * (w + 8);
+        const tono = t.tono ? TONOS[t.tono] : null;
+        L.caja(x, y, w, hT, { fondo: tono ? hex(tono.fondo) : C.leaf100, borde: tono ? hex(tono.borde) : undefined, radio: 10, grosor: 0.9 });
+        const colorTexto = tono ? hex(tono.texto) : C.leaf800;
+        L.texto(t.etiqueta.toUpperCase(), x + 10, y + 14, { f: f.medio, tam: 6.8, color: colorTexto, ancho: w - 18 });
+        L.texto(t.valor, x + 10, y + 35, { f: f.titulo, tam: 19, color: tono ? hex(tono.texto) : C.leaf700, ancho: w - 18 });
+        if (t.detalle) L.texto(t.detalle, x + 10, y + 47, { tam: 7, color: C.gris, ancho: w - 18 });
+      });
+      y += hT + 8;
     }
-    // Anchos proporcionales al contenido (con mínimos y máximos razonables)
-    const tam = 8;
+    if (doc.notaTarjetas) {
+      for (const l of partirMarca(limpiarMarca(doc.notaTarjetas), f.normal, 7.5, ANCHO)) { asegurar(11); L.texto(l, M, y + 8, { tam: 7.5, color: C.gris }); y += 10.5; }
+    }
+    y += 10;
+  };
+  if (doc.tarjetas?.length) dibujarTarjetas(doc.tarjetas);
+
+  // ---- Tablas ---------------------------------------------------------------------------------------
+  const dibujarTabla = (t: TablaExport) => {
+    asegurar(70);
+    L.texto(t.titulo, M, y + 11, { f: f.titulo, tam: 12, color: C.leaf700, ancho: ANCHO - 90 });
+    L.texto(`${t.filas.length} ${t.filas.length === 1 ? "registro" : "registros"}`, A4_H[0] - M, y + 10, { tam: 7.5, color: C.gris, derecha: true });
+    y += 19;
+    if (t.nota) {
+      for (const l of partirMarca(limpiarMarca(t.nota), f.normal, 7.8, ANCHO)) { asegurar(11); L.texto(l, M, y + 8, { tam: 7.8, color: C.gris }); y += 10.5; }
+      y += 3;
+    }
+    const tam = 7.8, interl = 9.6, padV = 7;
+    const fmtDe = (r: number, c: number) => t.formatoFilas?.[r] ?? t.formato?.[c];
+    const der = t.columnas.map((_, i) => t.filas.some((fila) => typeof fila[i] === "number"));
+    // Anchos proporcionales al contenido (con mínimos y máximos razonables); las cifras llevan más aire entre columnas.
     const pesos = t.columnas.map((c, i) => {
-      const mayor = Math.max(negrita.widthOfTextAtSize(limpiar(c), tam), ...t.filas.map((f) => Math.min(180, normal.widthOfTextAtSize(limpiar(texto(f[i], t.formatoFilas?.[t.filas.indexOf(f)] ?? t.formato?.[i])), tam))));
-      return Math.max(38, Math.min(200, mayor + 8));
+      const mayor = Math.max(
+        f.medio.widthOfTextAtSize(limpiarMarca(c), tam),
+        ...t.filas.map((fila, r) => Math.min(180, f.normal.widthOfTextAtSize(limpiarMarca(texto(fila[i], fmtDe(r, i)).slice(0, 120)), tam))), // se mide una muestra: medir textos enormes carácter a carácter es lento
+      );
+      return Math.max(46, Math.min(200, mayor + (der[i] ? 26 : 18)));
     });
     const suma = pesos.reduce((a, b) => a + b, 0);
     const anchos = pesos.map((p) => (p / suma) * ANCHO);
+    const LINEAS_MAX = Math.floor((BASE - M - 50) / interl); // líneas que caben en una hoja completa
 
-    const LINEAS_MAX = Math.floor((A4_H[1] - 2 * MARGEN - 14 - 40) / 10); // líneas que caben en una hoja completa
-    const dibujarFila = (lineas: string[][], cabecera: boolean, alineaDerecha: boolean[]) => {
-      const alto = Math.max(...lineas.map((l) => l.length)) * 10 + 6;
+    const dibujarFila = (lineas: string[][], cabecera: boolean, indice: number) => {
+      const alto = Math.max(...lineas.map((l) => l.length)) * interl + padV;
       asegurar(alto);
-      if (cabecera) pagina.drawRectangle({ x: MARGEN, y: y - alto, width: ANCHO, height: alto, color: VERDE });
-      else pagina.drawLine({ start: { x: MARGEN, y: y - alto }, end: { x: MARGEN + ANCHO, y: y - alto }, thickness: 0.4, color: rgb(0.86, 0.86, 0.85) });
-      let x = MARGEN;
+      if (cabecera) L.caja(M, y, ANCHO, alto, { fondo: C.leaf600, radio: 4 });
+      else {
+        if (indice % 2 === 1) L.caja(M, y, ANCHO, alto, { fondo: C.leaf50, radio: 0 });
+        L.linea(M, y + alto, M + ANCHO, y + alto, C.borde, 0.4);
+      }
+      let x = M;
       lineas.forEach((ls, i) => {
-        ls.forEach((l, k) => {
-          const ancho = (cabecera ? negrita : normal).widthOfTextAtSize(l, tam);
-          pagina.drawText(l, { x: alineaDerecha[i] ? x + anchos[i] - 3 - ancho : x + 3, y: y - 9 - k * 10, size: tam, font: cabecera ? negrita : normal, color: cabecera ? rgb(1, 1, 1) : rgb(0.09, 0.27, 0.02) });
-        });
+        const etiqueta = !cabecera && t.insignias?.includes(i) && ls.length === 1 ? tonoDeTexto(ls[0]) : null;
+        if (etiqueta) {
+          const tono = TONOS[etiqueta];
+          const w = Math.min(anchos[i] - 6, f.medio.widthOfTextAtSize(ls[0], 7) + 18);
+          const px = der[i] ? x + anchos[i] - 4 - w : x + 4;
+          L.caja(px, y + (alto - 13) / 2, w, 13, { fondo: hex(tono.fondo), borde: hex(tono.borde), radio: 6.5, grosor: 0.6 });
+          L.punto(px + 7, y + alto / 2, 2.2, hex(tono.punto));
+          L.texto(ls[0], px + 12, y + alto / 2 + 2.5, { f: f.medio, tam: 7, color: hex(tono.texto), ancho: w - 15 });
+        } else {
+          ls.forEach((l, k) => {
+            const fuente = cabecera ? f.medio : f.normal;
+            const tamano = cabecera ? 7.5 : tam;
+            const ancho = fuente.widthOfTextAtSize(limpiarMarca(l), tamano);
+            const px = der[i] ? x + anchos[i] - 4 - ancho : x + 4;
+            L.texto(l, px, y + 10 + k * interl, { f: fuente, tam: tamano, color: cabecera ? C.hoja : l === "—" ? C.gris : C.leaf900 });
+          });
+        }
         x += anchos[i];
       });
-      y -= alto;
+      y += alto;
     };
     // Una celda con más texto que una hoja se reparte en varias hojas (con la cabecera repetida): no se corta nada.
-    const fila = (celdas: string[], cabecera: boolean, alineaDerecha: boolean[]) => {
-      const lineas = celdas.map((c, i) => partir(c, cabecera ? negrita : normal, tam, anchos[i] - 6));
+    const fila = (celdas: string[], cabecera: boolean, indice: number, previas?: string[][]) => {
+      const fuente: PDFFont = cabecera ? f.medio : f.normal;
+      const lineas = previas ?? celdas.map((c, i) => partirMarca(limpiarMarca(c), fuente, tam, anchos[i] - 8));
       const n = Math.max(...lineas.map((l) => l.length));
-      if (n <= LINEAS_MAX) return dibujarFila(lineas, cabecera, alineaDerecha);
+      if (n <= LINEAS_MAX) return dibujarFila(lineas, cabecera, indice);
       for (let k = 0; k < n; k += LINEAS_MAX) {
-        if (k > 0) { nueva(); fila(t.columnas, true, t.columnas.map(() => false)); }
-        dibujarFila(lineas.map((l) => { const parte = l.slice(k, k + LINEAS_MAX); return parte.length ? parte : [""]; }), cabecera, alineaDerecha);
+        if (k > 0) { nueva(); fila(t.columnas, true, 0); }
+        dibujarFila(lineas.map((l) => { const parte = l.slice(k, k + LINEAS_MAX); return parte.length ? parte : [""]; }), cabecera, indice);
       }
     };
-    const der = t.columnas.map((_, i) => t.filas.some((f) => typeof f[i] === "number"));
-    fila(t.columnas, true, t.columnas.map(() => false));
-    if (t.filas.length === 0) { asegurar(14); pagina.drawText("Sin registros.", { x: MARGEN + 3, y: y - 11, size: 9, font: normal, color: GRIS }); y -= 16; }
-    for (const f of t.filas) {
-      const antes = pagina;
-      const celdas = f.map((c, i) => texto(c, t.formatoFilas?.[t.filas.indexOf(f)] ?? t.formato?.[i]));
+    fila(t.columnas, true, 0);
+    if (t.filas.length === 0) { asegurar(16); L.texto("Sin registros.", M + 4, y + 11, { tam: 8.5, color: C.gris }); y += 18; }
+    t.filas.forEach((fl, r) => {
+      const celdas = fl.map((c, i) => texto(c, fmtDe(r, i)));
+      const lineas = celdas.map((c, i) => partirMarca(limpiarMarca(c), f.normal, tam, anchos[i] - 8));
+      const alto = Math.max(...lineas.map((l) => l.length)) * interl + padV;
       // si la fila obliga a cambiar de página, se repite la cabecera
-      const lineas = celdas.map((c, i) => partir(c, normal, tam, anchos[i] - 6));
-      const alto = Math.max(...lineas.map((l) => l.length)) * 10 + 6;
-      if (y - alto < MARGEN + 14 && lineas.every((l) => l.length <= LINEAS_MAX)) { nueva(); fila(t.columnas, true, t.columnas.map(() => false)); }
-      void antes;
-      fila(celdas, false, der);
-    }
-    y -= 16;
+      if (y + alto > BASE && lineas.every((l) => l.length <= LINEAS_MAX)) { nueva(); fila(t.columnas, true, 0); }
+      fila(celdas, false, r, lineas);
+    });
+    y += 16;
   };
 
-  for (const t of doc.tablas) dibujarTabla(t);
+  for (const t of doc.tablas) if (!t.omitirEnPdf) dibujarTabla(t);
 
-  paginas.forEach((p, i) => p.drawText(`Página ${i + 1} de ${paginas.length}`, { x: A4_H[0] - MARGEN - 60, y: 18, size: 8, font: normal, color: GRIS }));
+  // ---- Pie de cada página ---------------------------------------------------------------------------
+  paginas.forEach((p, i) => {
+    const l = new Lienzo(p, f);
+    l.linea(M, A4_H[1] - 36, A4_H[0] - M, A4_H[1] - 36, C.borde, 0.6);
+    l.texto(`${NOMBRE_PLATAFORMA} · ${NOMBRE_EMPRESA}  |  Documento generado automáticamente con los datos de la plataforma el ${doc.generado}.  Montos en pesos colombianos (COP).`, M, A4_H[1] - 24, { tam: 7, color: C.gris, ancho: ANCHO - 80 });
+    l.texto(`Página ${i + 1} de ${paginas.length}`, A4_H[0] - M, A4_H[1] - 24, { tam: 7, color: C.gris, derecha: true });
+  });
   return pdf.save();
 }

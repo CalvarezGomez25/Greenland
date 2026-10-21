@@ -1,13 +1,13 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.2.1, actualizada el 21 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.3.1, actualizada el 21 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.2.1, única versión vigente |
-| Última actualización | 21 de octubre de 2026 (revisión de coherencia: cifras, versiones y pendientes alineados con lo construido hasta el 16 de octubre; guías de operación en la sección 16) |
+| Versión | 3.3.1, única versión vigente |
+| Última actualización | 21 de octubre de 2026 (revisión de coherencia sobre lo construido y decidido hasta el 17 de octubre de 2026; guías de operación en la sección 16) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
 | Código y documentación técnica | `README.md` (instalación y variables), `docs/SUPUESTOS.md`, `docs/AUDITORIA.md`, `docs/presentacion-faro/`, `docs/memoria/` (historia, marco teórico, decisiones, trazabilidad y lecciones) |
@@ -20,18 +20,19 @@ Versión 3.2.1, actualizada el 21 de octubre de 2026. Es la única versión vige
 | 3.0 | 11 de octubre de 2026 | Estado de construcción (sección 0.1); marca PMO360, menú lateral, ayuda y glosario (secciones 1.1, 3 y 5.Q); aprobación de contratos nuevos por el director (M); alertas por correo (5.O); presupuesto sobre la EDT (J); riesgos ampliados e importación desde Excel (E); informe gerencial de una página y envío semanal (5.P); auditoría y correcciones (12.1); festivos automáticos (N); parámetros, modelo de datos, roles, supuestos y pendientes actualizados; marco FARO para presentar y pilotear la plataforma (sección 17) |
 | 3.1 | 15 de octubre de 2026 | Ajustes del tablero del proyecto del 12 de octubre (gráfico de avance, resumen de control, tablero ordenado por código; sección 3 y hito 21); marco FARO completo con su estado de material y pendientes (sección 17 y hito 20); marco de referencia ampliado con PMBOK 8.ª edición, ISO 21502, ISO 31000, historia del valor ganado y Ley 594 de 2000, con nivel de verificación (sección 2); memoria del proyecto `docs/memoria/` (sección 18 y hito 22); historia de cómo se llegó al nombre PMO360 (sección 1.2); decisión de no crear un rol «gerente junior» (secciones 8 y 14); pendientes P26 a P32; estado al 15 de octubre (sección 0.1) |
 | 3.2 | 16 de octubre de 2026 | Correo y teléfono en los interesados y directorio de contactos reutilizable entre proyectos (módulo C, secciones 7 y 8, migración 0023, hito 23, supuesto S18, pendiente P33); estado de pruebas actualizado |
-| 3.2.1 | 21 de octubre de 2026 | Revisión de coherencia (conteo de fichas de decisión, cifras de pruebas, estado de P16 y P17); guías de operación de la sección 16: crear usuarios con su rol y configurar y probar el envío de correos por fases; aviso de que los avisos inmediatos solo necesitan el proveedor de correo (módulo O) |
+| 3.3 | 16 de octubre de 2026 | Módulo R, Actividades y «Mi trabajo»: un mínimo de trabajo colaborativo (secciones 4, 5, 7 y 8, migración 0024, hito 24, supuesto S19, pendiente P34); pendientes P35 (rol futuro de Carlos y administrador único de TI) y P36 (quién crea proyectos y arma equipos) |
+| 3.3.1 | 21 de octubre de 2026 | Revisión de coherencia al unir dos líneas de trabajo (cifras de pruebas, conteo de fichas de decisión, estado de P16 y P17); guías de operación de la sección 16: crear usuarios con su rol y configurar y probar el envío de correos por fases; aviso de que los avisos inmediatos solo necesitan el proveedor de correo (módulo O); se registra la exploración de Microsoft 365 como decisión abierta (P37) |
 
 ### 0.1 Estado actual de un vistazo (16 de octubre de 2026)
 
 | Aspecto | Estado |
 | --- | --- |
 | Hitos 1 a 11 de la sección 12 | Construidos. Todos los módulos del mapa (sección 4) están disponibles en la aplicación |
-| Extensiones posteriores | Construidas: aprobación de contratos, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial y su envío semanal, marca, menú lateral y ayuda, y los ajustes del tablero del proyecto (hito 21). Material del marco FARO producido (hito 20). Memoria del proyecto creada (hito 22). Directorio de contactos construido (hito 23) |
-| Pruebas automáticas | 314 pruebas unitarias (Vitest, 34 archivos) y 532 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas al 16 de octubre de 2026 (el 14 de octubre eran 305 y 494, antes del hito 23) |
+| Extensiones posteriores | Construidas: aprobación de contratos, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial y su envío semanal, marca, menú lateral y ayuda, y los ajustes del tablero del proyecto (hito 21). Material del marco FARO producido (hito 20). Memoria del proyecto creada (hito 22). Directorio de contactos construido (hito 23). Actividades y «Mi trabajo» construidos (hito 24) |
+| Pruebas automáticas | 328 pruebas unitarias (Vitest, 35 archivos) y 586 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
 | Producción | El usuario instaló el SQL de la base en Supabase y desplegó en Vercel; confirmó que funciona con datos ficticios |
 | Aún no ocurrido | Ningún correo se ha enviado en producción (falta configurar el proveedor, `CRON_SECRET` y el usuario de solo lectura); no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
-| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 22 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
+| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 27 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
 | Condiciones antes de datos reales | Definir región y confidencialidad; plan de alojamiento apto para uso comercial; revisión de seguridad (pendientes P12 a P14) |
 
 ## 1. Visión, alcance y principios
@@ -138,6 +139,8 @@ N1  TABLERO DEL PROYECTO
 
 **Acceso de la interventoría.** No entra por N0. Ingresa directo al proyecto y solo ve los contratos que tiene asignados y su documentación (módulo N, sección 5; permisos en la sección 8).
 
+**Pantalla de inicio por rol (v3.3).** Quien tiene rol global (administrador, director general, analista PMO y finanzas) ve todo el portafolio y entra al **tablero de control** (`/`). Las demás personas (gerentes, supervisores, patrocinio, consulta e interventoría) entran a **«Mi trabajo»** (`/mi-trabajo`): sus actividades pendientes a primera vista y, debajo, la lista de sus proyectos. «Mis proyectos» lista aquellos donde la persona está asignada; quien tiene rol global la ve solo si además está asignado a algún proyecto (para no listarle todo el portafolio). Su tablero de control limitado a sus proyectos sigue disponible en el menú lateral como «Tablero de mis proyectos» (`/tablero`); quien ve todo el portafolio que entre a `/tablero` vuelve a `/`. **La interventoría** (sin rol global y con todas sus asignaciones como interventoría) no tiene tablero de control, en coherencia con que no entra por el portafolio: su menú no trae «Tablero de mis proyectos», `/tablero` la lleva a «Mi trabajo» y su lista de proyectos está en «Mi trabajo»; una persona que es interventoría en un proyecto y gerente en otro conserva el tablero propio. En el menú de las personas sin rol global, «Mi trabajo» va primero. Los enlaces «Volver al portafolio» de las pantallas de proyecto llevan al tablero que corresponde a cada persona.
+
 **Reglas de navegación.** Cada cifra del dashboard enlaza a la pantalla que la calcula; los cuadros principales y las filas del tablero son clicables. Por ejemplo: un SPI en rojo lleva al cronograma de ese proyecto; un riesgo crítico lleva al registro de riesgos filtrado. En la v3.0 la ruta de migas se reemplazó por el menú lateral (siguiente bloque) y por enlaces «Volver» en cada pantalla.
 
 **Menú lateral izquierdo (v3.0).**
@@ -174,6 +177,7 @@ En la parte superior de cada pantalla de proyecto se muestra su nombre y código
 | O. Alertas por correo | Transversal | Monitoreo y control | Medición | Solicitud del usuario, 10 de octubre de 2026 |
 | P. Informe gerencial de una página | Transversal | Monitoreo y control | Medición | Solicitud del usuario, 11 de octubre de 2026 |
 | Q. Ayuda y glosario | Transversal | Todos | Trabajo del proyecto | Solicitud del usuario, 10 de octubre de 2026 |
+| R. Actividades y Mi trabajo | Gestión, por proyecto, y transversal | Ejecución, Monitoreo y control | Trabajo del proyecto | Solicitud del usuario, 16 de octubre de 2026 |
 
 ## 5. Especificación por módulo
 
@@ -417,6 +421,18 @@ Objetivo: que quien debe decidir se entere cuando la decisión nace, sin entrar 
 - **Glosario** (en el menú, «Ayuda»): lista buscable de términos con su definición en español sencillo.
 - **Guías por módulo:** el enlace «Ver guía» de cada pantalla de proyecto abre los pasos de ese módulo y quién lo usa.
 
+### R. Actividades y Mi trabajo
+
+Objetivo: que el equipo reparta y siga el trabajo diario en una sola herramienta, con responsable real y fecha, en lugar de que cada persona lo lleve a su manera. Es un **mínimo**; la fase siguiente depende de que el piloto muestre uso real (P34).
+
+- **Actividad.** Título, detalle, responsable (una persona con cuenta, del equipo del proyecto o con rol global de administrador, director general o analista PMO; opcional), fecha límite (opcional), prioridad (alta, media, baja) y estado (por hacer, en curso, bloqueada, hecha). Ligas opcionales a un riesgo (por ejemplo, la acción de su plan de respuesta) y a un elemento de la EDT del mismo proyecto. Al marcarla hecha se guarda la fecha de cierre; si se reabre, se borra.
+- **Vencida** = no está hecha y su fecha límite ya pasó (fecha de Colombia). Vence hoy no es vencida. La tarjeta lo dice con la palabra, no solo con el color.
+- **Pantalla «Actividades» de cada proyecto.** Tablero Kanban de cuatro columnas con contador, filtro «Solo las mías» y, en «Hecha», las 12 más recientes (con enlace para ver todas). Cada tarjeta muestra prioridad, plazo, responsable y ligas. Se mueve **arrastrándola** a otra columna (el cambio se ve al instante y vuelve atrás si la base de datos lo rechaza) o con el selector «Mover a», que es la vía en el celular y con teclado. Dentro de cada columna el orden es por fecha límite; no se reordena a mano.
+- **Pantalla «Mi trabajo»** (menú lateral, para todos). El mismo tablero Kanban con las actividades de la persona en todos sus proyectos (en «Hecha», las 8 más recientes) y, arriba, cuántas están vencidas y cuántas vencen en los próximos 7 días.
+- **No son las tareas del cronograma** (módulo K): estas tienen peso y mueven el valor ganado; las actividades no.
+- **Permisos** (aplicados en la base de datos; ver sección 8): ven quienes ya ven el proyecto; crean, editan y borran administrador, gerente del proyecto, director general y analista PMO; la persona responsable solo cambia el estado; la interventoría ve solo lo que le asignaron o creó y se asigna únicamente a sí misma.
+- **Fuera de este mínimo:** comentarios y menciones, adjuntos, avisos por correo o dentro de la plataforma, reordenar tarjetas dentro de una columna, subtareas, tareas recurrentes, plantillas, liga a cambios e hitos y aporte de las vencidas al semáforo y al resumen diario.
+
 ## 6. Integración entre módulos: indicador, fórmula y fuente
 
 Esta tabla es el contrato de datos. Define de dónde sale cada número del dashboard.
@@ -504,6 +520,12 @@ Esta tabla es el contrato de datos. Define de dónde sale cada número del dashb
 | asesorias | id, proyecto_id, tema, tipo (estudio_mercado, investigacion, estudios_previos_pliegos), fuentes, conclusiones, recomendacion, autor_id, fecha |
 | informes_interventoria | id, proyecto_id, alcance_id, tipo (periodico, especial, sancionatorio, final), periodo, acta_pago_id (opcional), contenido, firmado_por, fecha |
 
+**Actividades (v3.3, migración 0024)**
+
+| Tabla | Campos principales |
+| --- | --- |
+| actividades | id, proyecto_id, titulo, descripcion, responsable_id (perfil, opcional), fecha_limite, prioridad (alta, media, baja), estado (por_hacer, en_curso, bloqueada, hecha), riesgo_id (opcional), wbs_id (opcional), creado_por, completada_en, creado_en, actualizado_en |
+
 **Monitoreo, control y cierre**
 
 | Tabla | Campos principales |
@@ -521,6 +543,7 @@ Esta tabla es el contrato de datos. Define de dónde sale cada número del dashb
 
 | Tabla | Cambio |
 | --- | --- |
+| actividades | v3.3, migración 0024: tabla con seguridad por filas, auditoría y disparador `actividades_validar` (responsable del equipo, ligas del mismo proyecto, fecha de cierre y límite de lo que cambia quien solo es responsable); función `puede_gestionar_actividades` |
 | stakeholders y contactos | v3.2, migración 0023: columnas correo, telefono y contacto_id; tabla `contactos`; función `puede_usar_directorio` y disparador `interesado_vincular_contacto` |
 | riesgos | Nuevas columnas: frente, causa, consecuencia, momento_control, fecha_objetivo, referencia. Función `riesgos_importar`. Ahora con auditoría |
 | contratos | Nuevas columnas: estado_aprobacion (pendiente, aprobado), aprobado_por, aprobado_en. Los contratos existentes quedan aprobados |
@@ -547,6 +570,8 @@ Los valores derivados no se guardan; se calculan a partir de estos datos. Excepc
 | Supervisor de obra | Obras asignadas | Crear bitácoras, subir fotos, actualizar avance de sus tareas |
 | Interventoría | Contratos asignados | Ver, conceptuar, verificar avance, registrar hallazgos e informes. No edita datos del contrato ni aprueba (módulo N y matriz siguiente). Sub-roles: director, técnico, administrativo, financiero, jurídico o contable |
 | Consulta | Proyectos asignados | Solo lectura (cliente, directivos) |
+
+**Actividades (v3.3).** Las ven quienes ya ven el proyecto (administrador, director general, analista PMO, finanzas y el equipo). Las crean, editan y borran el administrador, el gerente del proyecto, el director general y el analista PMO. La persona responsable cambia solo el estado de las suyas. La interventoría ve únicamente las que le asignaron o creó, solo puede asignárselas a sí misma, no las liga a riesgos (que no ve) y puede editar y borrar las que creó. Supervisor, patrocinador, consulta y finanzas no crean actividades. Las reglas viven en la base de datos (`puede_gestionar_actividades`, seguridad por filas y disparador).
 
 **Directorio de contactos (v3.2).** Lo ven, crean y editan el administrador, el director general, el analista PMO y quien sea gerente de algún proyecto; solo el administrador elimina. Finanzas, supervisión, patrocinio, consulta e interventoría no lo ven. Las reglas viven en la base de datos (`puede_usar_directorio`, seguridad por filas).
 
@@ -648,7 +673,7 @@ Planes, límites y precios de estas herramientas cambian: verificarlos en sus si
 - Idioma español, formato numérico y de fechas de Colombia, moneda COP.
 - Seguridad: acceso por rol y por proyecto; archivos privados; auditoría de cambios en contratos, pagos, anticipos, línea base y parámetros.
 - Respaldos de base de datos y archivos.
-- Pruebas automáticas de los cálculos con los casos de la sección 13 (314 pruebas unitarias y 532 comprobaciones de base de datos al 16 de octubre de 2026). Comandos: `npm run verificar` (tipos, lint, pruebas y compilación) y `npm run test:sql`.
+- Pruebas automáticas de los cálculos con los casos de la sección 13 (328 pruebas unitarias y 586 comprobaciones de base de datos al 21 de octubre de 2026). Comandos: `npm run verificar` (tipos, lint, pruebas y compilación) y `npm run test:sql`.
 - Exportación a Excel y PDF: construida (hito 10) para el dashboard, el reporte semanal, el valor ganado, los cambios, los contratos y el informe gerencial.
 
 ## 12. Hitos de construcción
@@ -689,6 +714,8 @@ Los hitos 1 a 11 están **construidos**, con pruebas de base de datos (`pruebas-
 | 21. Tablero del proyecto y orden por código | Tablero de control con proyectos ordenados por código; gráfico de avance «planeado frente a construido»; resumen de control en rejilla (estado, SPI, CPI, BAC, AC, EAC, riesgos, cambios y decisiones); ficha compacta bajo el nombre del proyecto (sección 3) | Construido el 12 de octubre de 2026. Verificado en pantalla ancha y en celular de 390 px; `tsc`, `eslint` y compilación correctos |
 | 22. Memoria del proyecto | Repositorio `docs/memoria/` (sección 18): historia, marco teórico, buenas prácticas de documentación, fichas de decisión, trazabilidad, lecciones, fuentes, gobierno y un PDF de origen y propósito | Creado el 14 de octubre de 2026. Enlaces internos verificados; no es código |
 | 23. Interesados con contacto y directorio reutilizable | Correo y teléfono en el interesado; directorio de contactos con vinculación automática, selector «Reutilizar un contacto del directorio» al agregar, pantalla del directorio con búsqueda y edición y enlace en el menú lateral (módulo C) | Construido el 16 de octubre de 2026. `t-contactos` (38 comprobaciones de base de datos), 9 pruebas unitarias nuevas y recorrido en navegador (escritorio y celular de 390 px, gerente y supervisor) |
+| 24. Actividades y Mi trabajo | Trabajo asignado a personas con responsable, fecha límite, prioridad y estado, ligable a un riesgo y a un elemento de la EDT; tablero por proyecto y pantalla «Mi trabajo» (módulo R; migración 0024) | Construido el 16 de octubre de 2026. `t-actividades` (54 comprobaciones de base de datos), 7 pruebas unitarias nuevas, `tsc`, `eslint` y compilación correctos. **Sin recorrido en navegador todavía** |
+| 25. Exportaciones con la identidad de la marca | PDF y Excel de todas las tablas (tablero de control, reporte semanal, valor ganado, cambios y contratos) con logo, tipografías Baloo 2 y Roboto, paleta verde, etiquetas de semáforo y, en el PDF del tablero, tarjetas de indicadores | Construido el 17 de octubre de 2026. 4 pruebas unitarias nuevas; revisado en imagen (PDF y Excel convertido) con datos de ejemplo |
 
 ## 13. Casos de prueba de referencia
 
@@ -807,6 +834,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | Roles y creación de proyectos | No se crea un rol «gerente junior». Solo el administrador crea proyectos; un gerente nuevo se asigna como «Gerente de proyecto» (15 de octubre de 2026) |
 | Memoria del proyecto | Se documenta la historia, las decisiones y la trazabilidad en `docs/memoria/`, con niveles de verificación y regla de no inventar (14 de octubre de 2026) |
 | Interesados y directorio | Los interesados llevan correo y teléfono; los contactos se guardan en un directorio compartido entre proyectos y se reutilizan al registrar interesados nuevos (16 de octubre de 2026) |
+| Gestor de tareas y Microsoft 365 | Se mantiene «Actividades» como mínimo propio; la integración con Microsoft 365 (Teams y Planner) queda en exploración, con una guía para TI y una prueba en un proyecto antes de integrar (16 y 17 de octubre de 2026; P37, ADR-0026) |
 
 **Discrepancias detectadas en los documentos del usuario**
 
@@ -841,6 +869,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | S16 | El informe semanal lo reciben los roles globales (todos los proyectos activos) y las personas miembros de un proyecto (ese proyecto), excepto la interventoría; el correo no incluye datos de proyectos que la persona no ve en la plataforma |
 | S17 | La hora de los avisos es la de Colombia (sin horario de verano): 12:00 UTC el resumen diario y 12:30 UTC el informe semanal; en Vercel Hobby el minuto exacto no está garantizado |
 | S18 | El directorio se alimenta solo al guardar interesados (sin captura aparte), identifica a la persona por correo y, sin correo, por nombre; el último dato guardado gana y lo vacío no borra. Lo ven quienes gestionan proyectos, no toda la plataforma. Son supuestos del asesor: validar con el uso real |
+| S19 | Las actividades son un mínimo propio y separado de las tareas del cronograma (sin peso ni efecto en el valor ganado); el responsable es una persona con cuenta; la interventoría solo gestiona las suyas. Son supuestos del asesor: validar con el uso real |
 
 **Pendientes**
 
@@ -879,6 +908,10 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | P31 | Consultar con Jurídica o con un archivista si la Ley 594 de 2000 aplica a la información de la plataforma | Abierto; memoria M-3 |
 | P32 | Verificar la disponibilidad del nombre PMO360 como marca (registro de la SIC) y como dominio antes de usarlo fuera de la empresa | Abierto; no verificado |
 | P33 | **Datos personales en el directorio** (nombre, correo y teléfono de terceros): definir con Jurídica la base legal, el aviso a los titulares y quién puede ver y exportar el directorio antes de cargar contactos reales (Ley 1581 de 2012 y normas de datos personales, **no verificadas** en esta versión). Se suma a P12 | Abierto; hoy solo hay datos ficticios |
+| P34 | **Adopción de Actividades:** la organización no usa hoy ninguna herramienta de tareas, por lo que el riesgo es que el tablero no se actualice. Medir en el piloto de 90 días con un proyecto: porcentaje de actividades con fecha y responsable, actividades que se mueven de estado cada semana y preferencia del equipo. Decidir con esos datos si se construyen comentarios, adjuntos y avisos | Abierto; sin datos de uso |
+| P35 | **Rol futuro de Carlos y administrador único de TI.** Más adelante Carlos dejará de ser administrador y será gerente de proyectos con visión del portafolio; quedará un solo administrador, el de TI (nunca dos). Propuesta: Carlos con rol global «Analista PMO» (ve todo el portafolio sin administrar) más rol de proyecto «Gerente de proyecto» en sus proyectos; no usar «Director general» salvo que deba aprobar cambios críticos y contratos nuevos. Orden del traspaso: 1) crear y asignar al administrador de TI, 2) asignar a Carlos el rol global y sus roles de gerente, 3) recién entonces quitarle el rol de administrador (la plataforma exige siempre al menos uno). A decidir con ello: el administrador de TI **ve los datos de todos los proyectos** (presupuestos, contratos, riesgos); si debe administrar sin verlos haría falta un rol nuevo «solo administración», que conviene resolver junto con P12 a P14 (confidencialidad y datos reales). El nombre «Analista PMO» no refleja el caso de Carlos; se puede mostrar con otro nombre | Abierto. Decidido el 17 de octubre de 2026: **por ahora todo sigue igual** (Carlos es administrador, crea los proyectos y el equipo). **Regla de traspaso:** siempre hay exactamente un administrador; al nombrar a otra persona administradora, quien lo era lo deja automáticamente (nunca quedan dos). Hoy la plataforma solo garantiza «al menos un administrador» (migración 0017) y permite varios, así que el traspaso automático **está por construir** antes de usarse. **Decidido (17 de octubre de 2026): Carlos, al dejar de ser administrador, pasa automáticamente a «Analista PMO»** para conservar el acceso al portafolio; sus roles de gerente en cada proyecto se mantienen. A definir al construirlo: una confirmación para que un cambio accidental no deje sin acceso al administrador actual |
+| P36 | **Quién crea proyectos y arma los equipos.** Hoy solo el administrador crea proyectos y asigna personas a ellos (decisión del 15 de octubre de 2026). Con un administrador de TI cada proyecto nuevo y cada cambio de equipo pasaría por TI, un posible cuello de botella para la PMO. Opciones: a) dejarlo así (TI lo hace por solicitud; lo más sencillo y controlado); b) ampliar permisos para que un rol de la PMO cree proyectos y arme equipos sin administrar usuarios ni parámetros (cambio pequeño en permisos de base de datos, pantallas y pruebas). Decidir **antes** de traspasar el rol de administrador (P35). Mientras Carlos sea administrador, sin cambios | **Decidido (17 de octubre de 2026): cuando el administrador sea el de TI, el director general de planificación y proyectos crea los proyectos y arma los equipos** (opción b: sin administrar usuarios ni parámetros). Rige desde el traspaso de P35; **aún no se hace**: hoy esos permisos son solo del administrador y Carlos sigue siendo el administrador que crea los proyectos. Por construir con el traspaso. A definir entonces: alcance exacto del director (crear proyectos, editar la ficha, asignar y quitar miembros, reabrir proyectos cerrados, que hoy solo reabre el administrador) y que no pueda asignar roles globales |
+| P37 | **Integración con Microsoft 365 (Teams y Planner).** Se exploró usar la licencia corporativa de Microsoft como capa de trabajo y dejar a PMO360 como capa de control (lectura de tareas por Microsoft Graph, solo lectura); **no se ha construido nada ni hay decisión definitiva** (ADR-0026). Pendiente del usuario: confirmar el plan de Microsoft 365. Pendiente de TI: cinco preguntas (plan, invitados externos para la interventoría, quién crea equipos, registro de aplicación en Entra ID, Power Automate) y una prueba con un solo proyecto. Lo citado de Microsoft salió de resultados de búsqueda, no de sus páginas | Abierto; relacionado con P34 (adopción de Actividades) |
 
 ## 15. Trazabilidad: hoja del libro a módulo
 
@@ -930,7 +963,7 @@ La plataforma ya está construida (secciones 0.1 y 12.1). Este documento es la b
 6. Envío real: borrar `CORREO_PROVEEDOR`, redesplegar y probar primero con una sola persona. Repetir el informe semanal con envío real escribe a **todos** los destinatarios.
 Estado al 21 de octubre de 2026: el usuario aún no ha hecho la configuración final (P16 y P17); nada se ha enviado en producción.
 
-> Lee ESPECIFICACION.md completo (versión 3.2.1), README.md y docs/memoria/README.md. La plataforma PMO360 ya está construida: revisa las secciones 0.1 y 12.1. Soy gerente de proyectos y no sé programar: explícame cada paso en lenguaje sencillo y pídeme confirmación antes de instalar, ejecutar o publicar cualquier cosa. Antes de cambiar código, resume lo que entendiste y lista tus dudas. Mantén todas las reglas y umbrales como parámetros configurables (sección 9). Nunca uses ni me pidas la clave secreta (service_role) de Supabase, y no guardes contraseñas en el repositorio. Valida cada cambio con `npm run verificar`, `npm run test:sql` y los casos de la sección 13. No inventes cifras: si un dato no existe, dilo.
+> Lee ESPECIFICACION.md completo (versión 3.3.1), README.md y docs/memoria/README.md. La plataforma PMO360 ya está construida: revisa las secciones 0.1 y 12.1. Soy gerente de proyectos y no sé programar: explícame cada paso en lenguaje sencillo y pídeme confirmación antes de instalar, ejecutar o publicar cualquier cosa. Antes de cambiar código, resume lo que entendiste y lista tus dudas. Mantén todas las reglas y umbrales como parámetros configurables (sección 9). Nunca uses ni me pidas la clave secreta (service_role) de Supabase, y no guardes contraseñas en el repositorio. Valida cada cambio con `npm run verificar`, `npm run test:sql` y los casos de la sección 13. No inventes cifras: si un dato no existe, dilo.
 
 ## 17. Presentación y adopción: marco FARO
 
@@ -1009,7 +1042,7 @@ Repositorio `docs/memoria/`, creado el 14 de octubre de 2026 para explicar cómo
 | `02-historia.md` | Cronología desde los antecedentes hasta hoy, con commits |
 | `03-marco-teorico.md` | Teoría, normativa y nivel de verificación de cada afirmación |
 | `04-buenas-practicas-documentacion.md` | Investigación sobre cómo documentar proyectos, diagnóstico y brechas |
-| `decisiones/` | 22 fichas de decisión (ADR) |
+| `decisiones/` | 27 fichas de decisión (ADR) |
 | `06-trazabilidad.md` | Módulo → decisión → migración → prueba → commit |
 | `07-lecciones-aprendidas.md` | Incidentes y qué cambió |
 | `08-fuentes-y-verificacion.md` | Bibliografía con niveles N1 a N3 |
@@ -1018,6 +1051,6 @@ Repositorio `docs/memoria/`, creado el 14 de octubre de 2026 para explicar cómo
 
 **Reglas de rigor.** No se inventan fechas, cifras, normas ni citas; lo no conocido se escribe como «no disponible» y se lista como brecha. Cada afirmación se etiqueta: **Verificado** (con fuente y nivel), **Declarado** (lo dijo el usuario), **Supuesto** o **Estimación**. Una decisión aceptada no se reescribe: se marca como reemplazada y se enlaza la nueva. No se guardan credenciales ni identificadores de proyecto de Supabase.
 
-**Límites.** Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (P27). Las fichas de decisión se redactaron después de las decisiones, a partir del registro de la sesión.
+**Límites.** Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (P27). Las fichas ADR-0001 a ADR-0021 se redactaron después de las decisiones, a partir del registro de la sesión; las ADR-0022 a ADR-0027 se escribieron el día de cada decisión.
 
 **Cuándo se actualiza.** Con cada decisión, cambio de módulo o migración, incidente, cambio de versión de este documento y cierre de jornada (tabla de disparadores en `docs/memoria/09-gobierno-de-la-memoria.md`). Al subir de versión esta especificación se revisan también `README.md` y `docs/memoria/CHANGELOG.md` para que coincidan (lección L-8).

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { armarProyectosNav, enlacesAdministracion, ordenarPorCodigo, proyectoDeRuta, puedeUsarDirectorio } from "./navegacion";
+import { armarProyectosNav, enlacesAdministracion, ordenarPorCodigo, proyectoDeRuta, puedeUsarDirectorio, rutaDeInicio, rutaDelTablero, esSoloInterventoria, mostrarMisProyectos } from "./navegacion";
 
 const ID = "8e6e8184-2e51-41ee-a903-2396c5a42212";
 const p = (usa_obra: boolean | null = true) => [{ id: ID, nombre: "Obra", codigo: "GL-001", estado: "activo", usa_obra }];
@@ -41,6 +41,28 @@ describe("menú lateral", () => {
     expect(puedeUsarDirectorio("finanzas", [])).toBe(false);
     expect(puedeUsarDirectorio(null, ["supervisor", "consulta", "interventoria"])).toBe(false);
     expect(puedeUsarDirectorio(null, ["supervisor", "gerente"])).toBe(true);
+  });
+  it("primera pantalla: el tablero para quien ve todo el portafolio; «Mi trabajo» para los demás", () => {
+    for (const r of ["administrador", "director_general", "analista_pmo", "finanzas"] as const) {
+      expect(rutaDeInicio(r), r).toBe("/");
+      expect(rutaDelTablero(r), r).toBe("/");
+    }
+    expect(rutaDeInicio(null)).toBe("/mi-trabajo");
+    expect(rutaDelTablero(null)).toBe("/tablero"); // su tablero propio, limitado a sus proyectos
+  });
+  it("solo es interventoría quien no tiene rol global y todas sus asignaciones son de interventoría", () => {
+    expect(esSoloInterventoria(null, ["interventoria"])).toBe(true);
+    expect(esSoloInterventoria(null, ["interventoria", "interventoria"])).toBe(true);
+    expect(esSoloInterventoria(null, ["interventoria", "gerente"])).toBe(false); // gerente en otro proyecto: sí usa tablero propio
+    expect(esSoloInterventoria(null, ["supervisor"])).toBe(false);
+    expect(esSoloInterventoria(null, [])).toBe(false);
+    expect(esSoloInterventoria("analista_pmo", ["interventoria"])).toBe(false);
+  });
+  it("«Mis proyectos»: siempre sin rol global; con rol global, solo si está asignado a proyectos", () => {
+    expect(mostrarMisProyectos(null, 0)).toBe(true);
+    expect(mostrarMisProyectos(null, 2)).toBe(true);
+    expect(mostrarMisProyectos("administrador", 2)).toBe(true);
+    expect(mostrarMisProyectos("administrador", 0)).toBe(false);
   });
   it("detecta el proyecto de la dirección actual", () => {
     expect(proyectoDeRuta(`/proyectos/${ID}/cambios/x`)).toBe(ID);

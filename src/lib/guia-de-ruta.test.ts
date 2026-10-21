@@ -13,6 +13,7 @@ describe("guía según la pantalla", () => {
     expect(guiaDeRuta(`/proyectos/${ID}/r/stakeholders`)).toBe("interesados");
     expect(guiaDeRuta(`/proyectos/${ID}/r/wbs/nuevo`)).toBe("edt");
     expect(guiaDeRuta(`/proyectos/${ID}/r/tareas/nuevo`)).toBe("cronograma");
+    expect(guiaDeRuta(`/proyectos/${ID}/r/actividades/nuevo`)).toBe("actividades");
     expect(guiaDeRuta(`/proyectos/${ID}/r/desconocido`)).toBeNull();
   });
   it("la ficha del proyecto no tiene guía", () => {
@@ -21,7 +22,7 @@ describe("guía según la pantalla", () => {
   });
   it("toda guía a la que se enlaza existe", () => {
     const claves = new Set(GUIAS.map((g) => g.clave));
-    for (const r of ["acta", "evm", "cambios", "reportes", "cronograma", "contratos", "bitacora", "documentos", "cierre", "presupuesto", "interventoria", "r/stakeholders", "r/wbs", "r/riesgos", "r/hitos", "r/reuniones", "r/lecciones", "r/tareas"]) {
+    for (const r of ["acta", "evm", "cambios", "reportes", "cronograma", "contratos", "bitacora", "documentos", "cierre", "presupuesto", "interventoria", "r/stakeholders", "r/wbs", "r/riesgos", "r/hitos", "r/reuniones", "r/lecciones", "r/tareas", "actividades", "r/actividades"]) {
       const g = guiaDeRuta(`/proyectos/${ID}/${r}`);
       expect(g, r).not.toBeNull();
       expect(claves.has(g!), r).toBe(true);

@@ -70,3 +70,4 @@ Dejar **trazabilidad** (por qué existe cada cosa y qué la prueba) y **la histo
 | M-5 | Designar revisor técnico independiente | Propietario |
 | M-6 | Aportar las conversaciones o resúmenes de la fase 0 (libro, especificación v1, prototipos) para completar la historia | Propietario |
 | M-7 | Reemplazar los marcadores `[Tu nombre]` y `[por definir]` del material FARO | Propietario |
+| M-8 | Verificar en las páginas de origen las fuentes de Microsoft y de Supabase citadas en [08-fuentes-y-verificacion.md](08-fuentes-y-verificacion.md) (integración con Microsoft 365) y confirmar el plan de licencias de la compañía | Propietario y TI |

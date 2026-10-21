@@ -2,12 +2,31 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
-## [3.2.1] · 21 de octubre de 2026
+## [3.3.1] · 21 de octubre de 2026
 ### Corregido
-- `ESPECIFICACION.md`: conteo de fichas de decisión (22), cifras de pruebas (314 unitarias y 532 de base de datos al 16 de octubre) y estado de P16 y P17 (el recordatorio del 12 de octubre ya se cumplió; configuración de correos aún pendiente).
-- Memoria: cifras del guion de origen y propósito alineadas (846 comprobaciones automáticas en total) y PDF regenerado.
+- `ESPECIFICACION.md`: cifras de pruebas (328 unitarias y 586 de base de datos, verificadas de nuevo el 21 de octubre sobre el código unido) y estado de P16 y P17 (el recordatorio del 12 de octubre ya se cumplió; configuración de correos aún pendiente).
+- Memoria: cifras del guion de origen y propósito alineadas (914 comprobaciones automáticas en total) y PDF regenerado.
+### Cambiado
+- Se unieron las dos líneas de trabajo de la rama (interesados y directorio, y actividades, Kanban, inicio por rol y traspaso); la versión vigente de la especificación pasa a 3.3.1.
 ### Añadido
 - Guías de operación en la especificación (sección 16) y en el README: crear usuarios con su rol y configurar y probar el envío de correos por fases.
+
+## [3.3] · 16 de octubre de 2026
+### Añadido
+- Módulo **Actividades**: trabajo asignado a personas del proyecto, con responsable real, fecha límite, prioridad y estado (por hacer, en curso, bloqueada, hecha), ligable a un riesgo y a un elemento de la EDT; tablero de cuatro columnas por proyecto (migración 0024, [ADR-0023](decisiones/ADR-0023-actividades-y-mi-trabajo.md)).
+- Pantalla **Mi trabajo** (menú lateral): las actividades pendientes de la persona en todos sus proyectos, agrupadas por urgencia.
+- **Pantalla de inicio por rol:** quien no ve todo el portafolio (sin rol global) entra a «Mi trabajo», con sus actividades pendientes y la lista de sus proyectos; el tablero de control sigue siendo el inicio de quien tiene rol global. Los demás conservan su tablero limitado a sus proyectos como «Tablero de mis proyectos» (`/tablero`); la interventoría no lo tiene (su lista de proyectos ya está en «Mi trabajo»). Verificado en un navegador real con administrador, gerente e interventoría.
+- «Mis proyectos» de «Mi trabajo» también se muestra a quien tiene rol global y está asignado a proyectos (antes solo a quien no tenía rol global). Lista los proyectos donde la persona está asignada.
+- Guía «Actividades y Mi trabajo» en la ayuda.
+- Tablero Kanban real en «Actividades» y «Mi trabajo»: cuatro columnas lado a lado, tarjetas que se arrastran de una columna a otra con cambio inmediato (vuelve atrás si la base de datos lo rechaza) y selector «Mover a» para celular y teclado. Verificado en un navegador real con un Supabase simulado.
+- Pruebas: `t-actividades` (54 comprobaciones de base de datos) y 7 pruebas unitarias.
+### Cambiado
+- **Exportaciones a PDF y Excel con la identidad de la marca** (la del informe gerencial): logo, tipografías Baloo 2 y Roboto, paleta verde, filas alternadas y etiquetas de color para el semáforo, los niveles de riesgo y Sí / No. El PDF del tablero de control suma tarjetas de indicadores (proyectos activos, verde / amarillo / rojo / sin datos, BAC, AC, SPI y CPI del portafolio), encabezado en cada hoja y pie con número de página. El Excel lleva el logo, encabezado de marca, sin cuadrícula, paneles fijos, formato de pesos y «S/I» donde falta información, e imprime en horizontal ajustado al ancho con la fila de títulos repetida. Aplica a todos los PDF y Excel de tablas de la plataforma (tablero, reporte semanal, valor ganado, cambios, contratos).
+- `ESPECIFICACION.md` a la versión 3.3 (módulo R, secciones 4, 7 y 8, hito 24, S19 y P34).
+- Memoria del proyecto actualizada (17 de octubre de 2026): fichas ADR-0024 a ADR-0027, lecciones L-14 a L-17, fuentes de la integración con Microsoft 365, bitácora de sesión, historia (fase 10), trazabilidad y resumen ejecutivo; pendiente M-8.
+### Pendiente
+- Dos decisiones registradas como pendientes (17 de octubre de 2026): P35, rol futuro de Carlos (Analista PMO con visión del portafolio y gerente de sus proyectos) y administrador único de TI; y P36, quién crea proyectos y arma los equipos una vez el administrador sea de TI. P36 decidido: cuando el administrador sea el de TI, el director general de planificación y proyectos crea los proyectos y arma los equipos (por construir con el traspaso; hoy lo hace Carlos como administrador). Regla acordada para P35: siempre exactamente un administrador; al nombrar a otro, el anterior deja de serlo automáticamente (por construir; hoy la plataforma permite varios). Decidido: en el traspaso, Carlos pasa automáticamente a «Analista PMO» (conserva el acceso al portafolio y sus roles de gerente). Por ahora todo sigue igual: Carlos es administrador.
+- Recorrido en navegador con datos ficticios y validación de adopción en el piloto (P34). Comentarios, adjuntos y avisos quedan para una fase siguiente, solo si hay uso real.
 
 ## [3.2] · 16 de octubre de 2026
 ### Añadido

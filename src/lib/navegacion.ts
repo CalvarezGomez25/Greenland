@@ -53,6 +53,34 @@ export function enlacesAdministracion(rolGlobal: RolGlobal | null, conDirectorio
   return out;
 }
 
+// Primera pantalla de cada persona. Quien ve todo el portafolio (rol global) entra al tablero de control; las demás
+// personas (gerentes, supervisores, patrocinio, consulta e interventoría) entran a «Mi trabajo», con sus actividades
+// pendientes a primera vista, y desde ahí van a sus proyectos.
+export const RUTA_TABLERO_PROPIO = "/tablero"; // el tablero limitado a los proyectos de quien no ve todo el portafolio
+export function rutaDeInicio(rolGlobal: RolGlobal | null): "/" | "/mi-trabajo" {
+  return rolGlobal ? "/" : "/mi-trabajo";
+}
+// Dirección del tablero de control que le corresponde a la persona.
+export function rutaDelTablero(rolGlobal: RolGlobal | null): "/" | typeof RUTA_TABLERO_PROPIO {
+  return rolGlobal ? "/" : RUTA_TABLERO_PROPIO;
+}
+
+// ¿Solo es interventoría? Sin rol global y con todas sus asignaciones como interventoría. Esa persona no usa tablero de
+// control (la interventoría no entra por el portafolio): su inicio es «Mi trabajo», que ya lista sus proyectos.
+export function esSoloInterventoria(rolGlobal: RolGlobal | null, roles: Iterable<RolProyecto>): boolean {
+  if (rolGlobal) return false;
+  let hay = false;
+  for (const r of roles) { if (r !== "interventoria") return false; hay = true; }
+  return hay;
+}
+
+// «Mis proyectos» de «Mi trabajo»: los proyectos donde la persona está asignada. Quien no tiene rol global siempre ve la
+// sección (si no tiene proyectos, se le explica); quien sí lo tiene (y ve todo el portafolio) la ve solo si además está
+// asignado a algún proyecto, para no listarle todo el portafolio.
+export function mostrarMisProyectos(rolGlobal: RolGlobal | null, asignaciones: number): boolean {
+  return rolGlobal === null || asignaciones > 0;
+}
+
 // Id del proyecto que se está viendo (según la dirección), o null.
 export function proyectoDeRuta(ruta: string): string | null {
   const m = /^\/proyectos\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:\/|$)/i.exec(ruta);

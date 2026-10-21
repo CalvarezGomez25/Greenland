@@ -16,6 +16,7 @@ export type Modulo = {
 const general = (p: Permisos) => !p.interventor;
 
 export const MODULOS: Modulo[] = [
+  { clave: "actividades", corto: "Actividades", titulo: "Actividades", descripcion: "Trabajo asignado: responsable, fecha límite y estado", ruta: "actividades", area: "gestion", disponible: true, ver: () => true },
   { clave: "acta", corto: "Acta de constitución", titulo: "Ficha y acta de constitución", descripcion: "Propósito, alcance, supuestos y firmas", ruta: "acta", area: "gestion", disponible: true, ver: general },
   { clave: "evm", corto: "Valor ganado", titulo: "Valor ganado", descripcion: "Presupuesto, valor planificado, valor ganado, costo real e índices de desempeño", ruta: "evm", area: "gestion", disponible: true, ver: general },
   { clave: "stakeholders", corto: "Interesados", titulo: "Interesados", descripcion: "Matriz poder-interés y estrategia", ruta: "r/stakeholders", area: "gestion", disponible: true, ver: general },

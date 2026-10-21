@@ -10,6 +10,8 @@ type Props = {
   proyectos: NavProyecto[];
   administracion: NavEnlace[];
   puedeCrear: boolean;
+  conPortafolio: boolean; // ve todo el portafolio: su tablero es el general; si no, «Mi trabajo» va primero y el tablero es solo de sus proyectos
+  conTableroPropio: boolean; // false para la interventoría: no usa tablero de control, su inicio es «Mi trabajo»
   usuario: { nombre: string; rol: string | null };
   nombrePlataforma: string;
   salir: ReactNode; // botón «Salir» (formulario con acción del servidor)
@@ -33,6 +35,8 @@ const ICONOS: Record<string, string> = {
   bitacora: "M4 5a2 2 0 012-2h6v18H6a2 2 0 01-2-2z M20 5a2 2 0 00-2-2h-6v18h6a2 2 0 002-2z",
   interventoria: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z M9 12l2 2 4-4",
   glosario: "M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z M4 21V5 M9 8h6 M9 12h6",
+  actividades: "M4 5h4v4H4z M4 15h4v4H4z M12 7h8 M12 17h8 M5 7l1 1 2-2",
+  mitrabajo: "M9 12l2 2 4-4 M12 21a9 9 0 100-18 9 9 0 000 18z",
   tablero: "M3 3h7v9H3z M14 3h7v5h-7z M14 12h7v9h-7z M3 16h7v5H3z",
   usuarios: "M9 11a3 3 0 100-6 3 3 0 000 6z M3 20c0-3 3-5 6-5s6 2 6 5",
   organizacion: "M4 21V8l8-5 8 5v13 M9 21v-6h6v6",
@@ -59,7 +63,7 @@ const claseEnlace = (activo: boolean) =>
   `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${activo ? "bg-leaf-100 font-semibold text-leaf-900" : "text-leaf-800 hover:bg-leaf-50"}`;
 const etiquetaSeccion = "px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted";
 
-export function BarraLateral({ proyectos, administracion, puedeCrear, usuario, nombrePlataforma, salir, cambiarUsuario }: Props) {
+export function BarraLateral({ proyectos, administracion, puedeCrear, conPortafolio, conTableroPropio, usuario, nombrePlataforma, salir, cambiarUsuario }: Props) {
   const ruta = usePathname();
   const actualId = proyectoDeRuta(ruta);
   const actual = proyectos.find((p) => p.id === actualId) ?? null;
@@ -119,7 +123,7 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, usuario, n
       <aside id="menu-lateral" aria-label="Menú de navegación" className={`fixed inset-y-0 left-0 z-50 flex w-72 max-w-[85vw] flex-col border-r border-soil-border bg-white transition-transform lg:sticky lg:top-0 lg:z-auto lg:h-screen lg:w-64 lg:max-w-none lg:shrink-0 lg:translate-x-0 xl:w-72 ${movil ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex items-start justify-between px-5 pb-1 pt-5">
           <div>
-            <Link href="/" aria-label="Ir al tablero de control" className="block"><Image src="/logo-greenland.png" alt="GreenLand" width={1737} height={528} className="h-auto w-32" priority /></Link>
+            <Link href="/" aria-label="Ir a la pantalla de inicio" className="block"><Image src="/logo-greenland.png" alt="GreenLand" width={1737} height={528} className="h-auto w-32" priority /></Link>
             <p className="mt-1 font-display text-xl font-bold leading-none text-leaf-600">{nombrePlataforma}</p>
           </div>
           <button type="button" onClick={() => setMovil(false)} aria-label="Cerrar el menú" className="rounded-lg p-2 text-leaf-800 hover:bg-leaf-100 lg:hidden">
@@ -129,7 +133,17 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, usuario, n
 
         <nav aria-label="Principal" className="min-h-0 flex-1 overflow-y-auto px-3 pb-4">
           <p className={etiquetaSeccion}>Espacio de trabajo</p>
-          <Link href="/" aria-current={ruta === "/" ? "page" : undefined} className={claseEnlace(ruta === "/")}><Icono clave="tablero" /> Tablero de control</Link>
+          {conPortafolio ? (
+            <>
+              <Link href="/" aria-current={ruta === "/" ? "page" : undefined} className={claseEnlace(ruta === "/")}><Icono clave="tablero" /> Tablero de control</Link>
+              <Link href="/mi-trabajo" aria-current={ruta === "/mi-trabajo" ? "page" : undefined} className={claseEnlace(ruta === "/mi-trabajo")}><Icono clave="mitrabajo" /> Mi trabajo</Link>
+            </>
+          ) : (
+            <>
+              <Link href="/mi-trabajo" aria-current={ruta === "/mi-trabajo" ? "page" : undefined} className={claseEnlace(ruta === "/mi-trabajo")}><Icono clave="mitrabajo" /> Mi trabajo</Link>
+              {conTableroPropio && <Link href="/tablero" aria-current={ruta === "/tablero" ? "page" : undefined} className={claseEnlace(ruta === "/tablero")}><Icono clave="tablero" /> Tablero de mis proyectos</Link>}
+            </>
+          )}
           <Link href="/glosario" aria-current={ruta === "/glosario" ? "page" : undefined} className={claseEnlace(ruta === "/glosario")}><Icono clave="glosario" /> Ayuda</Link>
 
           <div className="relative mt-2">

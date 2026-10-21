@@ -3,6 +3,7 @@ import { PDFDocument } from "pdf-lib";
 import { describe, expect, it } from "vitest";
 import { aExcel, nombreHoja } from "./excel";
 import { aPdf, limpiar } from "./pdf";
+import { tonoDeTexto } from "./tonos";
 import { documentoDashboard } from "./dashboard";
 import { documentoContratos, documentoEvm } from "./proyecto";
 import { armarPortafolio } from "../pmo/portafolio";
@@ -40,7 +41,31 @@ describe("exportación del dashboard coincide con la pantalla (caso 13.4)", () =
     let spi: number | null = null;
     hoja.eachRow((r) => { if (r.getCell(1).value === "Desempeño del cronograma - SPI del portafolio") spi = Number(r.getCell(2).value); });
     expect(spi).toBeCloseTo(0.8833, 4);
-    expect(libro.getWorksheet("Semáforo de proyectos")!.getRow(6).getCell(1).value).toBe("Planta");
+    const nombres: unknown[] = [];
+    libro.getWorksheet("Semáforo de proyectos")!.eachRow((r) => nombres.push(r.getCell(1).value));
+    expect(nombres.filter((n) => ["Planta", "Edificio Ñandú", "Vía Cañón"].includes(n as string))).toEqual(["Planta", "Edificio Ñandú", "Vía Cañón"]);
+  });
+  it("Excel con la identidad de la plataforma: logo, encabezado verde, etiquetas de color y vista de impresión", async () => {
+    const libro = new ExcelJS.Workbook();
+    await libro.xlsx.load((await aExcel(doc)) as unknown as ArrayBuffer);
+    const hoja = libro.getWorksheet("Semáforo de proyectos")!;
+    expect((libro as unknown as { model: { media: unknown[] } }).model.media.length).toBeGreaterThanOrEqual(1); // el logo
+    expect(hoja.getImages().length).toBe(1);
+    let cab = 0;
+    hoja.eachRow((r, n) => { if (r.getCell(1).value === "Proyecto") cab = n; });
+    expect(cab).toBeGreaterThan(0);
+    expect((hoja.getCell(cab, 1).fill as ExcelJS.FillPattern).fgColor?.argb).toBe("FF4C700B");
+    let rojo: ExcelJS.Cell | null = null;
+    hoja.eachRow((r) => { if (r.getCell(5).value === "Rojo") rojo = r.getCell(5); });
+    expect((rojo as unknown as ExcelJS.Cell).font.color?.argb).toBe("FF7F1D1D"); // etiqueta roja del semáforo
+    expect(hoja.views[0].showGridLines).toBe(false);
+    expect(hoja.pageSetup.orientation).toBe("landscape");
+    expect(hoja.pageSetup.fitToWidth).toBe(1);
+  });
+  it("PDF: las tarjetas reemplazan a la tabla de resumen y el documento sigue siendo válido", async () => {
+    expect(doc.tarjetas?.flat().length).toBe(9);
+    expect(doc.tablas[0].omitirEnPdf).toBe(true);
+    expect(doc.tarjetas![1][2].valor).toBe("0,88"); // SPI del portafolio, el mismo del caso 13.4
   });
   it("PDF: es un PDF válido con texto en español", async () => {
     const bytes = await aPdf(doc);
@@ -73,6 +98,14 @@ describe("PDF y Excel con muchas filas", () => {
     expect(nombreHoja("Datos: 2026/10?", u)).toBe("Datos  2026 10");
     expect(nombreHoja("Datos: 2026/10?", u)).not.toBe("Datos  2026 10");
     expect(nombreHoja("x".repeat(60), new Set()).length).toBeLessThanOrEqual(31);
+  });
+});
+
+describe("etiquetas de color", () => {
+  it("semáforo, niveles de riesgo y Sí / No", () => {
+    expect(["Verde", "Amarillo", "Rojo", "Sin datos", "Crítico", "Alto", "Medio", "Bajo", "Sí", "No"].map((t) => tonoDeTexto(t))).toEqual(["verde", "amarillo", "rojo", "gris", "rojo", "naranja", "amarillo", "verde", "verde", "rojo"]);
+    expect(tonoDeTexto("—")).toBeNull();
+    expect(tonoDeTexto("Cualquier otro texto")).toBeNull();
   });
 });
 
