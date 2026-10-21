@@ -1,13 +1,13 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.3.2, actualizada el 21 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.4.0, actualizada el 21 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.3.2, única versión vigente |
-| Última actualización | 21 de octubre de 2026 (revisión de coherencia sobre lo construido y decidido hasta el 17 de octubre de 2026; guías de operación en la sección 16) |
+| Versión | 3.4.0, única versión vigente |
+| Última actualización | 21 de octubre de 2026 (imagen corporativa: sistema de diseño GreenLand v1.0.0 aplicado a la interfaz, las exportaciones, el informe gerencial y los correos; sección 1.1 y hito 26) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
 | Código y documentación técnica | `README.md` (instalación y variables), `docs/SUPUESTOS.md`, `docs/AUDITORIA.md`, `docs/presentacion-faro/`, `docs/memoria/` (historia, marco teórico, decisiones, trazabilidad y lecciones) |
@@ -23,6 +23,7 @@ Versión 3.3.2, actualizada el 21 de octubre de 2026. Es la única versión vige
 | 3.3 | 16 de octubre de 2026 | Módulo R, Actividades y «Mi trabajo»: un mínimo de trabajo colaborativo (secciones 4, 5, 7 y 8, migración 0024, hito 24, supuesto S19, pendiente P34); pendientes P35 (rol futuro de Carlos y administrador único de TI) y P36 (quién crea proyectos y arma equipos) |
 | 3.3.1 | 21 de octubre de 2026 | Revisión de coherencia al unir dos líneas de trabajo (cifras de pruebas, conteo de fichas de decisión, estado de P16 y P17); guías de operación de la sección 16: crear usuarios con su rol y configurar y probar el envío de correos por fases; aviso de que los avisos inmediatos solo necesitan el proveedor de correo (módulo O); se registra la exploración de Microsoft 365 como decisión abierta (P37) |
 | 3.3.2 | 21 de octubre de 2026 | Se registra que la rama principal es `claude/especificacion-project-manager-495kj0` (secciones 14 y 16, pendiente P38) |
+| 3.4.0 | 21 de octubre de 2026 | Nueva imagen corporativa: sistema de diseño GreenLand v1.0.0 en toda la interfaz (paleta verde #027001, texto #5E5E5E, tipografía Archivo, píldoras y tarjetas con muesca, sin sombras ni mayúsculas sostenidas, alertas sobrias), exportaciones PDF y Excel, informe gerencial y correos; identidad (sección 1.1), hito 26, decisión de no mantener una versión paralela y ancla de reversión (ADR-0028), supuesto S20 y pendiente P39 |
 
 ### 0.1 Estado actual de un vistazo (16 de octubre de 2026)
 
@@ -33,7 +34,7 @@ Versión 3.3.2, actualizada el 21 de octubre de 2026. Es la única versión vige
 | Pruebas automáticas | 328 pruebas unitarias (Vitest, 35 archivos) y 586 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
 | Producción | El usuario instaló el SQL de la base en Supabase y desplegó en Vercel; confirmó que funciona con datos ficticios |
 | Aún no ocurrido | Ningún correo se ha enviado en producción (falta configurar el proveedor, `CRON_SECRET` y el usuario de solo lectura); no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
-| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 27 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
+| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 28 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
 | Condiciones antes de datos reales | Definir región y confidencialidad; plan de alojamiento apto para uso comercial; revisión de seguridad (pendientes P12 a P14) |
 
 ## 1. Visión, alcance y principios
@@ -59,8 +60,11 @@ Versión 3.3.2, actualizada el 21 de octubre de 2026. Es la única versión vige
 | Mensaje bajo el título | Control integral de Proyectos |
 | Empresa | GreenLand (logo como imagen principal) |
 | Significado del nombre | El 360 es la vuelta completa (visión integral, sin puntos ciegos); el marco FARO lo explica como una luz que gira en cuatro cuartos de vuelta (sección 17) |
-| Tipografías | Baloo 2 (títulos) y Roboto (texto); los documentos exportados las incrustan |
-| Paleta | Verdes de la marca (hoja #4c700b, #386631, #164504) y tierra #7c401d; semáforo Verde, Amarillo y Rojo siempre acompañado de la palabra |
+| Sistema de diseño | GreenLand Design System v1.0.0 (21 de octubre de 2026), que reemplaza al anterior (Baloo 2, Roboto, verdes #4c700b y tierra #7c401d). Fuente única: el sistema en claude.ai; esta plataforma no mantiene una versión paralela |
+| Tipografía | Archivo, sustituta oficial de Non Natural Grotesk Plain (licenciada, no incluida): Light para títulos, Regular para el texto y Medium como máximo para énfasis. En pantalla se carga de Google Fonts; en los PDF va incrustada (licencia OFL) |
+| Paleta | Verde de trabajo #027001 (títulos, píldoras, contornos y encabezados de tabla); texto de cuerpo gris #5E5E5E, nunca negro; líneas #E4E4E4; superficie #F2F2F2; fondo blanco; acento #84B71E y serie de gráficos #027001, #84B71E, #1C6C36, #98B73F, #71986B, #A7A7A7, #225B30, #5E5E5E |
+| Alertas | Paleta de alertas 2.1 (propuesta pendiente de validación de la marca): Cumple #027001, Atención #9A5B00, Crítico #A32A1F e Informativo #5E5E5E, siempre con texto y en píldora de contorno de 1,5 px. Verde, Amarillo y Rojo del semáforo conservan sus palabras y usan esos colores; el nivel de riesgo Alto usa Atención y Medio usa Informativo |
+| Formas y estilo | Solo dos radios (píldora completa y 20 px), contorno de 1,5 px, sin sombras, degradados ni texturas, tarjetas con muesca (título en píldora verde sobre el borde), mayúscula solo inicial, hover y presionado con opacidad 0,85 |
 
 **Fuera de alcance de la v3.1:** hoja de ruta de certificación PMP del libro (es desarrollo personal del gerente, no gestión de proyectos); módulo de flujo de caja; programas (el campo queda reservado); multimoneda; reajustes por IPC; impuestos y pólizas.
 
@@ -717,6 +721,7 @@ Los hitos 1 a 11 están **construidos**, con pruebas de base de datos (`pruebas-
 | 23. Interesados con contacto y directorio reutilizable | Correo y teléfono en el interesado; directorio de contactos con vinculación automática, selector «Reutilizar un contacto del directorio» al agregar, pantalla del directorio con búsqueda y edición y enlace en el menú lateral (módulo C) | Construido el 16 de octubre de 2026. `t-contactos` (38 comprobaciones de base de datos), 9 pruebas unitarias nuevas y recorrido en navegador (escritorio y celular de 390 px, gerente y supervisor) |
 | 24. Actividades y Mi trabajo | Trabajo asignado a personas con responsable, fecha límite, prioridad y estado, ligable a un riesgo y a un elemento de la EDT; tablero por proyecto y pantalla «Mi trabajo» (módulo R; migración 0024) | Construido el 16 de octubre de 2026. `t-actividades` (54 comprobaciones de base de datos), 7 pruebas unitarias nuevas, `tsc`, `eslint` y compilación correctos. **Sin recorrido en navegador todavía** |
 | 25. Exportaciones con la identidad de la marca | PDF y Excel de todas las tablas (tablero de control, reporte semanal, valor ganado, cambios y contratos) con logo, tipografías Baloo 2 y Roboto, paleta verde, etiquetas de semáforo y, en el PDF del tablero, tarjetas de indicadores | Construido el 17 de octubre de 2026. 4 pruebas unitarias nuevas; revisado en imagen (PDF y Excel convertido) con datos de ejemplo |
+| 26. Imagen corporativa GreenLand v1.0.0 | Interfaz completa con el sistema de diseño (tokens de color y tipografía en `src/app/globals.css`, píldoras, campos, tarjetas con muesca, tablas con encabezado verde, estados con la paleta de alertas, gráficos con la serie oficial); exportaciones PDF y Excel (formato de hojas de cálculo del sistema), informe gerencial y correos con la misma identidad | Construido el 21 de octubre de 2026 sobre la rama principal. Verificado en navegador (escritorio y celular de 390 px) y con las muestras de PDF y Excel; 328 pruebas unitarias y 586 de base de datos correctas. Sin cambios de base de datos |
 
 ## 13. Casos de prueba de referencia
 
@@ -837,6 +842,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | Interesados y directorio | Los interesados llevan correo y teléfono; los contactos se guardan en un directorio compartido entre proyectos y se reutilizan al registrar interesados nuevos (16 de octubre de 2026) |
 | Gestor de tareas y Microsoft 365 | Se mantiene «Actividades» como mínimo propio; la integración con Microsoft 365 (Teams y Planner) queda en exploración, con una guía para TI y una prueba en un proyecto antes de integrar (16 y 17 de octubre de 2026; P37, ADR-0026) |
 | Rama principal | La rama principal del repositorio es `claude/especificacion-project-manager-495kj0`; todo el trabajo se integra ahí y los despliegues de producción salen de ella (decisión del usuario, 21 de octubre de 2026) |
+| Imagen corporativa | Se adopta el sistema de diseño GreenLand v1.0.0 en toda la plataforma (el usuario dejó al asesor decidir si crear una versión aparte). **No se mantiene una versión paralela:** el cambio es solo de presentación, sin cambios de base de datos, y la reversión se hace con `git revert` de un único *merge* (ancla: commit `4324528`). ADR-0028 (21 de octubre de 2026) |
 
 **Discrepancias detectadas en los documentos del usuario**
 
@@ -872,6 +878,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | S17 | La hora de los avisos es la de Colombia (sin horario de verano): 12:00 UTC el resumen diario y 12:30 UTC el informe semanal; en Vercel Hobby el minuto exacto no está garantizado |
 | S18 | El directorio se alimenta solo al guardar interesados (sin captura aparte), identifica a la persona por correo y, sin correo, por nombre; el último dato guardado gana y lo vacío no borra. Lo ven quienes gestionan proyectos, no toda la plataforma. Son supuestos del asesor: validar con el uso real |
 | S19 | Las actividades son un mínimo propio y separado de las tareas del cronograma (sin peso ni efecto en el valor ganado); el responsable es una persona con cuenta; la interventoría solo gestiona las suyas. Son supuestos del asesor: validar con el uso real |
+| S20 | En la nueva imagen, Verde, Amarillo y Rojo del semáforo conservan sus palabras y usan los colores de Cumple, Atención y Crítico; el nivel de riesgo Alto se muestra como Atención y Medio como Informativo; el logotipo y los iconos del menú se mantienen mientras no haya paquete oficial en la sesión. Son decisiones del asesor, por validar con el responsable de marca |
 
 **Pendientes**
 
@@ -915,6 +922,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | P36 | **Quién crea proyectos y arma los equipos.** Hoy solo el administrador crea proyectos y asigna personas a ellos (decisión del 15 de octubre de 2026). Con un administrador de TI cada proyecto nuevo y cada cambio de equipo pasaría por TI, un posible cuello de botella para la PMO. Opciones: a) dejarlo así (TI lo hace por solicitud; lo más sencillo y controlado); b) ampliar permisos para que un rol de la PMO cree proyectos y arme equipos sin administrar usuarios ni parámetros (cambio pequeño en permisos de base de datos, pantallas y pruebas). Decidir **antes** de traspasar el rol de administrador (P35). Mientras Carlos sea administrador, sin cambios | **Decidido (17 de octubre de 2026): cuando el administrador sea el de TI, el director general de planificación y proyectos crea los proyectos y arma los equipos** (opción b: sin administrar usuarios ni parámetros). Rige desde el traspaso de P35; **aún no se hace**: hoy esos permisos son solo del administrador y Carlos sigue siendo el administrador que crea los proyectos. Por construir con el traspaso. A definir entonces: alcance exacto del director (crear proyectos, editar la ficha, asignar y quitar miembros, reabrir proyectos cerrados, que hoy solo reabre el administrador) y que no pueda asignar roles globales |
 | P37 | **Integración con Microsoft 365 (Teams y Planner).** Se exploró usar la licencia corporativa de Microsoft como capa de trabajo y dejar a PMO360 como capa de control (lectura de tareas por Microsoft Graph, solo lectura); **no se ha construido nada ni hay decisión definitiva** (ADR-0026). Pendiente del usuario: confirmar el plan de Microsoft 365. Pendiente de TI: cinco preguntas (plan, invitados externos para la interventoría, quién crea equipos, registro de aplicación en Entra ID, Power Automate) y una prueba con un solo proyecto. Lo citado de Microsoft salió de resultados de búsqueda, no de sus páginas | Abierto; relacionado con P34 (adopción de Actividades) |
 | P38 | **Ramas secundarias.** `prueba/gestor-colaborativo` no tiene trabajo propio (todo su contenido ya está en la rama principal): se puede archivar o borrar cuando el usuario lo decida. `vercel/install-vercel-web-analytics-x313y1` tiene 1 commit creado por Vercel («Install Vercel Web Analytics», 17 de octubre de 2026) que **no está en la rama principal** y quedó 13 commits atrás; no se integró porque no fue solicitado. Decidir si se integra o se descarta | Abierto; decide el usuario |
+| P39 | **Brechas de la imagen corporativa:** (1) falta el paquete oficial `GreenLand_DS_Export_v1.0.zip`; los logotipos de `public/` y los íconos del menú lateral (trazos propios, no los 20 glifos de la biblioteca cerrada) deben revisarse contra el paquete; (2) la fuente licenciada Non Natural Grotesk Plain no está incluida (se usa Archivo); (3) la paleta de alertas y la serie de gráficos son propuestas por validar con el responsable de marca; (4) decidir si los estados pasan a llamarse Cumple, Atención y Crítico; (5) la voz y la persona gramatical («tú») siguen sin definir; (6) el material de `docs/presentacion-faro/` conserva la identidad anterior | Abierto; el usuario aporta el paquete y valida con marca |
 
 ## 15. Trazabilidad: hoja del libro a módulo
 
@@ -1047,7 +1055,7 @@ Repositorio `docs/memoria/`, creado el 14 de octubre de 2026 para explicar cómo
 | `02-historia.md` | Cronología desde los antecedentes hasta hoy, con commits |
 | `03-marco-teorico.md` | Teoría, normativa y nivel de verificación de cada afirmación |
 | `04-buenas-practicas-documentacion.md` | Investigación sobre cómo documentar proyectos, diagnóstico y brechas |
-| `decisiones/` | 27 fichas de decisión (ADR) |
+| `decisiones/` | 28 fichas de decisión (ADR) |
 | `06-trazabilidad.md` | Módulo → decisión → migración → prueba → commit |
 | `07-lecciones-aprendidas.md` | Incidentes y qué cambió |
 | `08-fuentes-y-verificacion.md` | Bibliografía con niveles N1 a N3 |

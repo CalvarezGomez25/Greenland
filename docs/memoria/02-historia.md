@@ -117,6 +117,10 @@ El usuario preguntó si convenía darle a la plataforma la forma de un gestor co
 - **Microsoft 365.** Tras comprobar que la organización no usa ninguna herramienta de tareas, el usuario planteó usar la licencia corporativa de Microsoft; se preparó una guía para TI (documento) y se dejó como propuesta — [ADR-0026](decisiones/ADR-0026-integracion-con-microsoft-365.md).
 - **Administración futura.** El usuario decidió: por ahora Carlos sigue como administrador; más adelante habrá un único administrador de TI, Carlos pasará a Analista PMO y el director general creará los proyectos y los equipos. Quedó como pendientes P35 y P36 (`4e85691` a `fd3c101`) — [ADR-0027](decisiones/ADR-0027-administrador-unico-y-traspaso.md).
 
+## Fase 11 · Nueva imagen corporativa (21 de octubre)
+
+El usuario pidió aplicar el sistema de diseño renovado de GreenLand (v1.0.0, publicado ese día) a toda la plataforma para desplegar con la nueva imagen, y dejó al asesor decidir si crear una versión aparte para poder volver. Se evaluaron tres opciones y se eligió cambiar en la rama principal con un único punto de reversión ([ADR-0028](decisiones/ADR-0028-sistema-de-diseno-greenland-v1.md)). Primero se remapearon los tokens de color y tipografía, luego se barrieron los componentes (píldoras, campos, tarjetas con muesca, tablas, alertas) y se verificó en navegador en escritorio y celular; después se aplicó la misma identidad a las exportaciones PDF y Excel, al informe gerencial y a los correos. Quedan brechas con el paquete oficial, los íconos y la fuente licenciada (P39).
+
 ## Estado al 17 de octubre de 2026
 
 Ver [01-resumen-ejecutivo.md](01-resumen-ejecutivo.md).
