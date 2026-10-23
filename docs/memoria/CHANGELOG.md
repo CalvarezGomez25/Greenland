@@ -2,7 +2,13 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
-## [3.4.0] · 21 de octubre de 2026
+## [3.5.0] · 23 de octubre de 2026
+### Cambiado
+- **Se vuelve a la imagen anterior (sistema de diseño previo de GreenLand)** por decisión del usuario: se revirtió el código de la v3.4.0 con `git revert -m 1 9df595b` (`dc309ba`). La documentación de la v3.4.0 se conserva como registro; el estado de [ADR-0028](decisiones/ADR-0028-sistema-de-diseno-greenland-v1.md) pasa a «Revertida».
+### Añadido
+- **Línea de tiempo en «Mi trabajo»**: horizonte entre lo más atrasado y lo más lejano que tiene pendiente la persona, con un hito por fecha límite, «hoy» marcado, colores por proyecto asignado y leyenda. Pruebas unitarias en `actividades.test.ts`. Sin cambios de base de datos.
+
+## [3.4.0] · 21 de octubre de 2026 (código revertido el 23 de octubre)
 ### Cambiado
 - **Nueva imagen corporativa: sistema de diseño GreenLand v1.0.0** en toda la interfaz (verde #027001, texto #5E5E5E, Archivo, píldoras, tarjetas con muesca, sin sombras ni mayúsculas sostenidas, alertas sobrias) (`506d98a`), en las exportaciones PDF y Excel, el informe gerencial y los correos (`f6d9f22`). Decisión y forma de volver atrás en [ADR-0028](decisiones/ADR-0028-sistema-de-diseno-greenland-v1.md). Sin cambios de base de datos.
 - `ESPECIFICACION.md` a la versión 3.4.0 (§1.1, hito 26, S20, P39).

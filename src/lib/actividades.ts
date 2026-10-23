@@ -103,3 +103,47 @@ export function textoPlazo(fechaLimite: string, hoy: string): string {
   if (d === 1) return "Vence mañana";
   return `Vence en ${d} días`;
 }
+
+// Línea de tiempo de «Mi trabajo»: un hito por fecha límite de lo pendiente, desde la actividad más atrasada
+// hasta la más lejana. «Hoy» siempre está dentro del horizonte.
+export type Hito<T> = { fecha: string; dias: number; items: T[]; x: number };
+export type LineaDeTiempo<T> = { hitos: Hito<T>[]; xHoy: number; ancho: number; vencidas: number; proximos: number };
+
+// Posiciones en píxeles: proporcionales a los días, pero con una separación mínima entre hitos para que los rótulos se lean.
+// Entre dos hitos la distancia nunca es menor que `separacion`; por eso la escala es aproximada y lo que manda es el orden.
+export function construirLineaDeTiempo<T extends Pick<Actividad, "estado" | "fecha_limite">>(
+  lista: T[], hoy: string, opciones: { anchoMinimo?: number; separacion?: number; margen?: number } = {},
+): LineaDeTiempo<T> {
+  const { anchoMinimo = 640, separacion = 120, margen = 70 } = opciones;
+  const porFecha = new Map<string, T[]>();
+  for (const a of lista) {
+    if (a.estado === "hecha" || a.fecha_limite === null) continue;
+    porFecha.set(a.fecha_limite, [...(porFecha.get(a.fecha_limite) ?? []), a]);
+  }
+  const fechas = [...porFecha.keys()].sort();
+  const inicio = fechas[0] !== undefined && fechas[0] < hoy ? fechas[0] : hoy;
+  const fin = fechas.length > 0 && fechas[fechas.length - 1] > hoy ? fechas[fechas.length - 1] : hoy;
+  const total = Math.max(diasParaVencer(fin, inicio), 1);
+
+  const ancho = Math.max(anchoMinimo, (fechas.length + 1) * separacion + 2 * margen);
+  const util = ancho - 2 * margen;
+  const lineal = (f: string) => margen + (diasParaVencer(f, inicio) / total) * util;
+
+  // Puntos a ubicar: los hitos y «hoy», en orden de fecha (si coinciden, «hoy» va con el hito).
+  const x = new Map<string, number>();
+  let previo = -Infinity;
+  for (const f of [...new Set([...fechas, hoy])].sort()) {
+    const pos = Math.max(lineal(f), previo + (f === hoy && porFecha.has(hoy) ? 0 : separacion));
+    x.set(f, pos);
+    previo = pos;
+  }
+  const hitos = fechas.map((f) => ({ fecha: f, dias: diasParaVencer(f, hoy), items: porFecha.get(f)!, x: x.get(f)! }));
+  const ultimo = Math.max(...x.values());
+  return {
+    hitos,
+    xHoy: x.get(hoy)!,
+    ancho: Math.max(ancho, ultimo + margen),
+    vencidas: hitos.filter((h) => h.dias < 0).reduce((n, h) => n + h.items.length, 0),
+    proximos: hitos.filter((h) => h.dias >= 0).reduce((n, h) => n + h.items.length, 0),
+  };
+}

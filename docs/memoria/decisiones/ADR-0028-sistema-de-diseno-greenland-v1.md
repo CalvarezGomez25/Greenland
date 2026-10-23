@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Aceptada y vigente |
+| Estado | **Revertida el 2026-10-23** por decisión del usuario (se vuelve al sistema de diseño anterior). El código se revirtió con `git revert -m 1 9df595b` (`dc309ba`); este ADR se conserva como registro |
 | Fecha | 2026-10-21 |
 | Quién decidió | Usuario: pidió usar el sistema de diseño renovado en toda la plataforma para desplegar con la nueva imagen corporativa y **dejó al asesor la decisión** de crear o no una versión aparte. La decisión de no crearla es del asesor |
 

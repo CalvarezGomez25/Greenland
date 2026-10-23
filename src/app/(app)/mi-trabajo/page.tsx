@@ -6,6 +6,7 @@ import { mostrarMisProyectos } from "@/lib/navegacion";
 import { AvisoResultado } from "@/components/aviso-resultado";
 import { Aviso, Titulo } from "@/components/ui";
 import { TableroActividades } from "@/components/tablero-actividades";
+import { LineaDeTiempo } from "@/components/linea-de-tiempo";
 
 export const metadata = { title: "Mi trabajo · PMO360" };
 const HECHAS_VISIBLES = 8;
@@ -63,7 +64,7 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string
     <>
       <Titulo>Mi trabajo</Titulo>
       <p className="mt-3 max-w-3xl text-sm text-muted">
-        Tus actividades de todos los proyectos, en un tablero por estado. Arrastra una tarjeta a otra columna a medida que avanzas.
+        Tus actividades de todos los proyectos: el horizonte de tiempo arriba y un tablero por estado debajo. Arrastra una tarjeta a otra columna a medida que avanzas.
       </p>
       <p className="mt-2 text-sm text-muted">
         {abiertas.length} {abiertas.length === 1 ? "abierta" : "abiertas"}
@@ -72,6 +73,15 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string
       </p>
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
       {error && <div className="mt-4"><Aviso>No se pudo leer tu trabajo{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
+      {!error && (
+        <div className="mt-6">
+          <LineaDeTiempo
+            items={abiertas}
+            hoy={hoy}
+            proyectos={misProyectos.map((p) => ({ id: p.id, etiqueta: p.codigo ?? p.nombre }))}
+          />
+        </div>
+      )}
       {!error && (
         <div className="mt-6">
           <TableroActividades

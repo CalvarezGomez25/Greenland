@@ -1,12 +1,12 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.4.0, actualizada el 21 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.5.0, actualizada el 23 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.4.0, única versión vigente |
+| Versión | 3.5.0, única versión vigente |
 | Última actualización | 21 de octubre de 2026 (imagen corporativa: sistema de diseño GreenLand v1.0.0 aplicado a la interfaz, las exportaciones, el informe gerencial y los correos; sección 1.1 y hito 26) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
@@ -23,6 +23,7 @@ Versión 3.4.0, actualizada el 21 de octubre de 2026. Es la única versión vige
 | 3.3 | 16 de octubre de 2026 | Módulo R, Actividades y «Mi trabajo»: un mínimo de trabajo colaborativo (secciones 4, 5, 7 y 8, migración 0024, hito 24, supuesto S19, pendiente P34); pendientes P35 (rol futuro de Carlos y administrador único de TI) y P36 (quién crea proyectos y arma equipos) |
 | 3.3.1 | 21 de octubre de 2026 | Revisión de coherencia al unir dos líneas de trabajo (cifras de pruebas, conteo de fichas de decisión, estado de P16 y P17); guías de operación de la sección 16: crear usuarios con su rol y configurar y probar el envío de correos por fases; aviso de que los avisos inmediatos solo necesitan el proveedor de correo (módulo O); se registra la exploración de Microsoft 365 como decisión abierta (P37) |
 | 3.3.2 | 21 de octubre de 2026 | Se registra que la rama principal es `claude/especificacion-project-manager-495kj0` (secciones 14 y 16, pendiente P38) |
+| 3.5.0 | 23 de octubre de 2026 | Se vuelve a la imagen anterior de la interfaz (el usuario revirtió el sistema de diseño v1.0.0; ADR-0028 queda «Revertida»; la sección 1.1 describe la identidad anterior y la v1.0.0 queda como referencia) y se agrega la línea de tiempo en «Mi trabajo» |
 | 3.4.0 | 21 de octubre de 2026 | Nueva imagen corporativa: sistema de diseño GreenLand v1.0.0 en toda la interfaz (paleta verde #027001, texto #5E5E5E, tipografía Archivo, píldoras y tarjetas con muesca, sin sombras ni mayúsculas sostenidas, alertas sobrias), exportaciones PDF y Excel, informe gerencial y correos; identidad (sección 1.1), hito 26, decisión de no mantener una versión paralela y ancla de reversión (ADR-0028), supuesto S20 y pendiente P39 |
 
 ### 0.1 Estado actual de un vistazo (16 de octubre de 2026)

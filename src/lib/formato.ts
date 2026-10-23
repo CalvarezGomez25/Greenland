@@ -18,3 +18,10 @@ export function formatearFechaHora(iso: string): string {
   if (Number.isNaN(fecha.getTime())) return iso;
   return fecha.toLocaleString("es-CO", { timeZone: "America/Bogota", dateStyle: "medium", timeStyle: "short" });
 }
+
+// Fecha "AAAA-MM-DD" → "6 nov" (sin año; para rótulos cortos).
+export function formatearFechaCorta(iso: string): string {
+  const [a, m, d] = iso.split("-").map(Number);
+  if (!a || !m || !d) return iso;
+  return new Date(a, m - 1, d).toLocaleDateString("es-CO", { day: "numeric", month: "short" }).replace(".", "");
+}

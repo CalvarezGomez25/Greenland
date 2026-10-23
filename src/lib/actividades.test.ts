@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { agruparPorEstado, conEstado, agruparPorVencimiento, diasParaVencer, esEstadoActividad, estaVencida, hoyColombia, ordenarActividades, textoPlazo, type EstadoActividad, type PrioridadActividad } from "./actividades";
+import { construirLineaDeTiempo, agruparPorEstado, conEstado, agruparPorVencimiento, diasParaVencer, esEstadoActividad, estaVencida, hoyColombia, ordenarActividades, textoPlazo, type EstadoActividad, type PrioridadActividad } from "./actividades";
 
 const HOY = "2026-10-16";
 const a = (titulo: string, estado: EstadoActividad, fecha_limite: string | null, prioridad: PrioridadActividad = "media") => ({ titulo, estado, fecha_limite, prioridad });
@@ -59,5 +59,34 @@ describe("actividades", () => {
     // 2026-10-16 02:00 UTC es todavía el 15 en Colombia (UTC-5)
     expect(hoyColombia(new Date("2026-10-16T02:00:00Z"))).toBe("2026-10-15");
     expect(hoyColombia(new Date("2026-10-16T12:00:00Z"))).toBe("2026-10-16");
+  });
+});
+
+describe("línea de tiempo", () => {
+  const t = (fecha_limite: string | null, estado: EstadoActividad = "por_hacer") => ({ fecha_limite, estado });
+  it("va de lo más atrasado a lo más lejano, con hoy dentro y sin las hechas ni las sin fecha", () => {
+    const l = construirLineaDeTiempo([t("2026-10-10"), t("2026-10-30"), t("2026-10-20", "hecha"), t(null)], HOY);
+    expect(l.hitos.map((h) => h.fecha)).toEqual(["2026-10-10", "2026-10-30"]);
+    expect(l.vencidas).toBe(1);
+    expect(l.proximos).toBe(1);
+    expect(l.xHoy).toBeGreaterThan(l.hitos[0].x);
+    expect(l.xHoy).toBeLessThan(l.hitos[1].x);
+  });
+  it("agrupa en un hito las actividades de la misma fecha y respeta la separación mínima", () => {
+    const l = construirLineaDeTiempo([t("2026-10-17"), t("2026-10-17"), t("2026-10-18"), t("2026-12-30")], HOY, { separacion: 100 });
+    expect(l.hitos[0].items).toHaveLength(2);
+    for (let i = 1; i < l.hitos.length; i++) expect(l.hitos[i].x - l.hitos[i - 1].x).toBeGreaterThanOrEqual(100);
+    expect(l.ancho).toBeGreaterThan(l.hitos[l.hitos.length - 1].x);
+  });
+  it("sin fechas queda solo «hoy»; con todo atrasado, hoy cierra el horizonte", () => {
+    const vacia = construirLineaDeTiempo([t(null)], HOY);
+    expect(vacia.hitos).toHaveLength(0);
+    const atrasadas = construirLineaDeTiempo([t("2026-10-01"), t("2026-10-05")], HOY);
+    expect(atrasadas.xHoy).toBeGreaterThan(atrasadas.hitos[1].x);
+    expect(atrasadas.proximos).toBe(0);
+  });
+  it("una actividad que vence hoy comparte posición con hoy", () => {
+    const l = construirLineaDeTiempo([t(HOY), t("2026-10-25")], HOY);
+    expect(l.hitos[0].x).toBe(l.xHoy);
   });
 });
