@@ -34,7 +34,7 @@ async function Contenido({ params }: { params: Promise<{ id: string }> }) {
       </p>
 
       {cambios.length === 0 ? (
-        <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-center text-sm text-muted">Todavía no hay cambios registrados.</p>
+        <p className="mt-6 rounded-card bg-leaf-50 p-6 text-center text-sm text-muted">Todavía no hay cambios registrados.</p>
       ) : (
         <>
           {cambios.length === LIMITE && <p className="mt-4 text-sm text-muted">Se muestran los últimos {LIMITE} cambios.</p>}

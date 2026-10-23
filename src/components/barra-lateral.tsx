@@ -60,8 +60,8 @@ const ChevronAbajo = ({ abierta }: { abierta: boolean }) => (
 );
 
 const claseEnlace = (activo: boolean) =>
-  `flex items-center gap-3 rounded-full border-[1.5px] px-3 py-2 text-sm ${activo ? "border-leaf-500 font-medium text-leaf-500" : "border-transparent text-leaf-800"}`;
-const etiquetaSeccion = "px-3 pb-1 pt-3 text-[11px] font-semibold text-muted";
+  `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${activo ? "bg-leaf-100 font-semibold text-leaf-900" : "text-leaf-800 hover:bg-leaf-50"}`;
+const etiquetaSeccion = "px-3 pb-1 pt-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted";
 
 export function BarraLateral({ proyectos, administracion, puedeCrear, conPortafolio, conTableroPropio, usuario, nombrePlataforma, salir, cambiarUsuario }: Props) {
   const ruta = usePathname();
@@ -111,7 +111,7 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, conPortafo
   return (
     <>
       <div className="sticky top-0 z-30 flex items-center justify-between border-b border-soil-border bg-white px-4 py-2.5 lg:hidden">
-        <button type="button" onClick={() => setMovil(true)} aria-label="Abrir el menú" aria-expanded={movil} aria-controls="menu-lateral" className="rounded-full p-2 text-leaf-800 hover:bg-leaf-100">
+        <button type="button" onClick={() => setMovil(true)} aria-label="Abrir el menú" aria-expanded={movil} aria-controls="menu-lateral" className="rounded-lg p-2 text-leaf-800 hover:bg-leaf-100">
           <svg aria-hidden viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
         </button>
         <Link href="/" className="font-display text-xl font-bold text-leaf-600">{nombrePlataforma}</Link>
@@ -126,7 +126,7 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, conPortafo
             <Link href="/" aria-label="Ir a la pantalla de inicio" className="block"><Image src="/logo-greenland.png" alt="GreenLand" width={1737} height={528} className="h-auto w-32" priority /></Link>
             <p className="mt-1 font-display text-xl font-bold leading-none text-leaf-600">{nombrePlataforma}</p>
           </div>
-          <button type="button" onClick={() => setMovil(false)} aria-label="Cerrar el menú" className="rounded-full p-2 text-leaf-800 hover:bg-leaf-100 lg:hidden">
+          <button type="button" onClick={() => setMovil(false)} aria-label="Cerrar el menú" className="rounded-lg p-2 text-leaf-800 hover:bg-leaf-100 lg:hidden">
             <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
           </button>
         </div>
@@ -147,7 +147,7 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, conPortafo
           <Link href="/glosario" aria-current={ruta === "/glosario" ? "page" : undefined} className={claseEnlace(ruta === "/glosario")}><Icono clave="glosario" /> Ayuda</Link>
 
           <div className="relative mt-2">
-            <button type="button" onClick={() => setSelector((v) => !v)} aria-expanded={selector} aria-haspopup="listbox" className="flex w-full items-center gap-3 rounded-[20px] border-[1.5px] border-soil-border bg-white px-3 py-2.5 text-left">
+            <button type="button" onClick={() => setSelector((v) => !v)} aria-expanded={selector} aria-haspopup="listbox" className="flex w-full items-center gap-3 rounded-xl border border-soil-border bg-leaf-50/60 px-3 py-2.5 text-left hover:bg-leaf-50">
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-semibold text-leaf-900">{actual ? actual.nombre : "Proyectos"}</span>
                 <span className="block truncate text-xs text-muted">{actual ? (actual.codigo ?? "Proyecto actual") : `${proyectos.length} ${proyectos.length === 1 ? "proyecto" : "proyectos"} · elige uno`}</span>
@@ -155,15 +155,15 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, conPortafo
               <ChevronAbajo abierta={selector} />
             </button>
             {selector && (
-              <div className="absolute inset-x-0 top-full z-10 mt-1 max-h-[60vh] overflow-y-auto rounded-[20px] border border-soil-border bg-white p-2 ">
+              <div className="absolute inset-x-0 top-full z-10 mt-1 max-h-[60vh] overflow-y-auto rounded-xl border border-soil-border bg-white p-2 shadow-card">
                 {proyectos.length > 5 && (
-                  <input type="search" autoFocus value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar proyecto…" aria-label="Buscar proyecto" className="mb-2 h-9 w-full rounded-full border border-soil-border px-3 text-sm focus:border-leaf-500 focus:outline-none focus:ring-2 focus:ring-leaf-500/30" />
+                  <input type="search" autoFocus value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar proyecto…" aria-label="Buscar proyecto" className="mb-2 h-9 w-full rounded-lg border border-soil-border px-3 text-sm focus:border-leaf-500 focus:outline-none focus:ring-2 focus:ring-leaf-500/30" />
                 )}
                 {proyectos.length === 0 && <p className="px-3 py-2 text-sm text-muted">Aún no tienes proyectos.</p>}
                 {proyectos.length > 0 && vigentes.length === 0 && cerrados.length === 0 && <p className="px-3 py-2 text-sm text-muted">Sin coincidencias.</p>}
                 <ul>{vigentes.map(filaProyecto)}</ul>
                 {cerrados.length > 0 && (<><p className={etiquetaSeccion}>Cerrados</p><ul>{cerrados.map(filaProyecto)}</ul></>)}
-                {puedeCrear && <Link href="/proyectos/nuevo" className="mt-1 flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-leaf-600 hover:bg-leaf-50">+ Nuevo proyecto</Link>}
+                {puedeCrear && <Link href="/proyectos/nuevo" className="mt-1 flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-leaf-600 hover:bg-leaf-50">+ Nuevo proyecto</Link>}
               </div>
             )}
           </div>
@@ -176,7 +176,7 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, conPortafo
             return (
               <div key={area} className="mb-1">
                 {areas.length > 1 && (
-                  <button type="button" onClick={() => alternar(grupo)} aria-expanded={abierto} className="flex w-full items-center justify-between rounded-full px-3 py-1.5 text-xs font-semibold text-leaf-700 hover:bg-leaf-50">
+                  <button type="button" onClick={() => alternar(grupo)} aria-expanded={abierto} className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs font-semibold text-leaf-700 hover:bg-leaf-50">
                     {ETIQUETA_AREA[area]} <Flecha abierta={abierto} clase="h-3.5 w-3.5" />
                   </button>
                 )}

@@ -35,7 +35,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <p className="mt-3 max-w-3xl text-sm text-muted">Investigaciones y estudios de mercado que la interventoría aporta al gerente, incluido el apoyo a estudios previos y pliegos. No contrata diseños ni estudios.</p>
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
       {error && <div className="mt-4"><Aviso>No se pudieron leer las asesorías{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
-      {items.length === 0 && !error ? <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">Aún no hay asesorías.</p> : (
+      {items.length === 0 && !error ? <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">Aún no hay asesorías.</p> : (
         <ul className="mt-6 flex flex-col gap-3">
           {items.map((a) => (
             <li key={a.id} className="rounded-card border border-soil-border p-4 text-sm">
@@ -49,7 +49,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         </ul>
       )}
       {permisos.interventor && (
-        <section className="mt-8 rounded-card border-[1.5px] border-soil-border p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Nueva asesoría</h2>
+        <section className="mt-8 rounded-card bg-leaf-50 p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Nueva asesoría</h2>
           <FormularioRegistro accion={crearAsesoria.bind(null, id)} campos={campos} opciones={{}} iniciales={{}} editando={false} volverA={`/proyectos/${id}/interventoria`} /></section>
       )}
     </>

@@ -1,5 +1,5 @@
-import { TarjetaMuesca } from "@/components/tarjeta-muesca";
 import { Suspense } from "react";
+import { Ayuda } from "@/components/ayuda";
 import { temaDe } from "@/lib/glosario";
 import Link from "next/link";
 import { cargarProyecto } from "@/lib/contexto-proyecto";
@@ -53,12 +53,12 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           ["Avance usado en el EV", pct(av.usado), usaVerificado ? "verificado si existe" : "reportado"],
           ["Planificado a hoy", pct(planificadoPct(tareas, k)), "según el cronograma"],
         ] as [string, string, string][]).map(([t, v, n]) => (
-          <TarjetaMuesca key={t} titulo={t} tema={temaDe(t)}><p className="mt-1 font-display text-xl font-bold text-leaf-700">{v}</p><p className="text-xs text-muted">{n}</p></TarjetaMuesca>
+          <Ayuda key={t} modo="tarjeta" tema={temaDe(t)} className="rounded-card bg-leaf-100 p-4"><p className="pr-6 text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</p><p className="mt-1 font-display text-xl font-bold text-leaf-700">{v}</p><p className="text-xs text-muted">{n}</p></Ayuda>
         ))}
       </section>
 
       {tareas.length === 0 && !error ? (
-        <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">Aún no hay tareas. {permisos.gestionar ? "Agrega la primera con su semana de inicio, su duración y su peso (los pesos deben sumar 100 %)." : ""}</p>
+        <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">Aún no hay tareas. {permisos.gestionar ? "Agrega la primera con su semana de inicio, su duración y su peso (los pesos deben sumar 100 %)." : ""}</p>
       ) : (
         <>
           <section className="mt-8" aria-labelledby="t-gantt">
@@ -76,7 +76,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
             <h2 id="t-tabla" className="mb-3 font-display text-2xl font-bold text-leaf-700">Tareas</h2>
             <div className="overflow-x-auto rounded-card border border-soil-border">
               <table className="w-full min-w-[820px] text-left text-sm">
-                <thead className="border-b-[1.5px] border-leaf-500 text-sm font-medium text-leaf-500">
+                <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
                   <tr>{["Tarea", "Inicio", "Duración", "Peso", "Avance", "Verificado", ""].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr>
                 </thead>
                 <tbody className="divide-y divide-soil-border">
@@ -89,7 +89,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
                       <td className="px-3 py-2">
                         {puedeAvance ? (
                           <form action={guardarAvance.bind(null, id, t.id)} className="flex items-center gap-1">
-                            <input name="avance" inputMode="decimal" defaultValue={String(Number(t.avance_pct)).replace(".", ",")} aria-label={`Avance de ${t.nombre}`} className="h-9 w-20 rounded-[20px] border border-soil-border px-2" />
+                            <input name="avance" inputMode="decimal" defaultValue={String(Number(t.avance_pct)).replace(".", ",")} aria-label={`Avance de ${t.nombre}`} className="h-9 w-20 rounded-[10px] border border-soil-border px-2" />
                             <BotonEnviar className="text-sm font-medium text-leaf-600 underline" textoEnviando="…">Guardar</BotonEnviar>
                           </form>
                         ) : pct(Number(t.avance_pct))}
@@ -97,8 +97,8 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
                       <td className="px-3 py-2">
                         {permisos.interventor ? (
                           <form action={verificarAvance.bind(null, id, t.id)} className="flex flex-col gap-1">
-                            <input name="verificado" inputMode="decimal" defaultValue={t.avance_verificado_pct === null ? "" : String(Number(t.avance_verificado_pct)).replace(".", ",")} aria-label={`Avance verificado de ${t.nombre}`} className="h-9 w-20 rounded-[20px] border border-soil-border px-2" />
-                            <input name="nota" defaultValue={t.nota_verificacion ?? ""} placeholder="Nota de verificación" maxLength={500} aria-label="Nota de verificación" className="h-9 w-44 rounded-[20px] border border-soil-border px-2" />
+                            <input name="verificado" inputMode="decimal" defaultValue={t.avance_verificado_pct === null ? "" : String(Number(t.avance_verificado_pct)).replace(".", ",")} aria-label={`Avance verificado de ${t.nombre}`} className="h-9 w-20 rounded-[10px] border border-soil-border px-2" />
+                            <input name="nota" defaultValue={t.nota_verificacion ?? ""} placeholder="Nota de verificación" maxLength={500} aria-label="Nota de verificación" className="h-9 w-44 rounded-[10px] border border-soil-border px-2" />
                             <BotonEnviar className="self-start text-sm font-medium text-leaf-600 underline" textoEnviando="…">Verificar</BotonEnviar>
                           </form>
                         ) : t.avance_verificado_pct === null ? "—" : <span title={t.nota_verificacion ?? ""}>{pct(Number(t.avance_verificado_pct))}</span>}

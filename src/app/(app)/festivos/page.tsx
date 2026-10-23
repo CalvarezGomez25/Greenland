@@ -16,7 +16,7 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ anio?: stri
     <>
       <Titulo>Calendario de festivos</Titulo>
       <p className="mt-3 max-w-3xl text-sm text-muted">Los festivos de Colombia se calculan solos para cualquier año (Ley 51 de 1983: fijos, trasladados al lunes y los de Semana Santa) y se usan para contar los días hábiles de los plazos. No hay que cargarlos. Esta pantalla solo sirve para agregar o quitar una fecha excepcional (por ejemplo, un puente decretado). La lista de abajo muestra únicamente fechas registradas aparte.</p>
-      <form className="mt-4 flex items-end gap-3" aria-label="Año"><label className="flex flex-col gap-1.5"><span className="text-[13px] font-medium text-leaf-800">Año</span><input name="anio" defaultValue={a} inputMode="numeric" className="h-[42px] w-28 rounded-[20px] border border-soil-border px-3.5" /></label><button className="inline-flex h-10 items-center rounded-full border-[1.5px] border-leaf-500 px-5 text-sm font-medium text-leaf-900">Ver</button></form>
+      <form className="mt-4 flex items-end gap-3" aria-label="Año"><label className="flex flex-col gap-1.5"><span className="text-[13px] font-medium text-leaf-800">Año</span><input name="anio" defaultValue={a} inputMode="numeric" className="h-[42px] w-28 rounded-[10px] border border-soil-border px-3.5" /></label><button className="inline-flex h-10 items-center rounded-full bg-leaf-100 px-5 text-sm font-medium text-leaf-900">Ver</button></form>
       <ul className="mt-6 divide-y divide-soil-border rounded-card border border-soil-border text-sm">
         {lista.length === 0 && <li className="p-4 text-muted">No hay fechas excepcionales registradas para {a}.</li>}
         {lista.map((f) => (
@@ -24,7 +24,7 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ anio?: stri
             <form action={quitarFestivo.bind(null, f.fecha)}><BotonEnviar className="text-sm font-medium text-danger underline" textoEnviando="…">Quitar</BotonEnviar></form></li>
         ))}
       </ul>
-      <div className="mt-6 rounded-card border-[1.5px] border-soil-border p-5"><h2 className="mb-3 font-display text-lg font-bold text-leaf-700">Agregar un festivo</h2><FormularioFestivo accion={agregarFestivo} /></div>
+      <div className="mt-6 rounded-card bg-leaf-50 p-5"><h2 className="mb-3 font-display text-lg font-bold text-leaf-700">Agregar un festivo</h2><FormularioFestivo accion={agregarFestivo} /></div>
     </>
   );
 }

@@ -33,11 +33,11 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <div className="mt-3 flex flex-wrap items-center gap-3"><span className="text-sm text-muted">Exportar:</span><BotonesExportar base={`/proyectos/${id}/exportar/contratos`} /></div>
       {error && <div className="mt-4"><Aviso>No se pudieron leer los contratos{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
       {contratos.length === 0 && !error ? (
-        <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">Aún no hay contratos.</p>
+        <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">Aún no hay contratos.</p>
       ) : (
         <div className="mt-6 overflow-x-auto rounded-card border border-soil-border">
           <table className="w-full min-w-[900px] text-left text-sm">
-            <thead className="border-b-[1.5px] border-leaf-500 text-sm font-medium text-leaf-500">
+            <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
               <tr>{["Contrato", "Valor (COP)", "Facturado", "Ejecutado", "Anticipo pendiente", "Desembolsado", "Retención"].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr>
             </thead>
             <tbody className="divide-y divide-soil-border">
@@ -46,7 +46,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
                 const r = resumenContrato({ valor: desdeJson(c.valor, 2), anticipoPct: Number(c.anticipo_pct), anticipoValor: desdeJson(c.anticipo_valor, 2), retencionPct: Number(c.retencion_pct) }, propias, c.retencion_liberada);
                 return (
                   <tr key={c.id}>
-                    <td className="px-3 py-2"><Link href={`/proyectos/${id}/contratos/${c.id}`} className="font-medium text-leaf-700 hover:underline">{c.contratista}</Link>{c.estado_aprobacion === "pendiente" && <span className="ml-2 rounded-full border-[1.5px] border-leaf-500 px-2 py-0.5 text-xs font-medium text-leaf-800">Pendiente de aprobación</span>}<p className="text-xs text-muted">{ETIQUETA_TIPO_CONTRATO[c.tipo]} · {c.objeto.length > 60 ? `${c.objeto.slice(0, 60)}…` : c.objeto}</p></td>
+                    <td className="px-3 py-2"><Link href={`/proyectos/${id}/contratos/${c.id}`} className="font-medium text-leaf-700 hover:underline">{c.contratista}</Link>{c.estado_aprobacion === "pendiente" && <span className="ml-2 rounded-full bg-leaf-100 px-2 py-0.5 text-xs font-medium text-leaf-800">Pendiente de aprobación</span>}<p className="text-xs text-muted">{ETIQUETA_TIPO_CONTRATO[c.tipo]} · {c.objeto.length > 60 ? `${c.objeto.slice(0, 60)}…` : c.objeto}</p></td>
                     <td className="px-3 py-2">{centavos(desdeJson(c.valor, 2))}</td>
                     <td className="px-3 py-2">{centavos(r.facturado)}</td>
                     <td className="px-3 py-2">{porcentaje(r.ejecutadoPct)}</td>

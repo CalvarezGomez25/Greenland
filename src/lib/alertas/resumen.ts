@@ -52,12 +52,12 @@ export function componerResumen(r: ResumenPersona, urlBase: string, fecha: strin
     ...grupos.flatMap(([proyecto, ds]) => [proyecto.toUpperCase(), ...ds.map((d) => `- ${d.tipo}: ${d.detalle}\n  ${enlace(d)}`), ""]),
     `Entra a ${urlBase} para revisarlas. Este correo se envía cada día mientras haya decisiones pendientes.`,
   ].join("\n");
-  const html = `<div style="font-family:Archivo,'Helvetica Neue',Helvetica,Arial,sans-serif;color:#5e5e5e;max-width:620px">
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;color:#1f2d0f;max-width:620px">
 <p>Hola ${esc(r.persona.nombre)},</p>
 <p>Estas son las decisiones que esperan tu atención (${esc(fecha)}):</p>
-${grupos.map(([proyecto, ds]) => `<h3 style="margin:18px 0 6px;color:#027001">${esc(proyecto)}</h3><ul style="padding-left:18px;margin:0">${ds.map((d) => `<li style="margin:6px 0"><strong>${esc(d.tipo)}</strong>: ${esc(d.detalle)} — <a href="${esc(enlace(d))}" style="color:#027001">abrir</a></li>`).join("")}</ul>`).join("")}
-<p style="margin-top:20px"><a href="${esc(urlBase)}" style="background:#027001;color:#fff;padding:10px 26px;border-radius:999px;text-decoration:none">Abrir ${esc(NOMBRE_PLATAFORMA)}</a></p>
-<p style="font-size:12px;color:#5e5e5e">Este correo se envía cada día mientras haya decisiones pendientes.</p></div>`;
+${grupos.map(([proyecto, ds]) => `<h3 style="margin:18px 0 6px;color:#4c700b">${esc(proyecto)}</h3><ul style="padding-left:18px;margin:0">${ds.map((d) => `<li style="margin:6px 0"><strong>${esc(d.tipo)}</strong>: ${esc(d.detalle)} — <a href="${esc(enlace(d))}" style="color:#4c700b">abrir</a></li>`).join("")}</ul>`).join("")}
+<p style="margin-top:20px"><a href="${esc(urlBase)}" style="background:#4c700b;color:#fff;padding:10px 18px;border-radius:20px;text-decoration:none">Abrir ${esc(NOMBRE_PLATAFORMA)}</a></p>
+<p style="font-size:12px;color:#6b6b60">Este correo se envía cada día mientras haya decisiones pendientes.</p></div>`;
   return { asunto, texto, html };
 }
 
@@ -66,9 +66,9 @@ export function componerAviso(p: { titulo: string; detalle: string; proyecto: st
   const url = `${urlBase}${p.href}`;
   const asunto = `[${NOMBRE_PLATAFORMA}] ${p.titulo} — ${p.proyecto}`;
   const texto = `${p.titulo}\nProyecto: ${p.proyecto}\n\n${p.detalle}\n\nRevísalo aquí: ${url}`;
-  const html = `<div style="font-family:Archivo,'Helvetica Neue',Helvetica,Arial,sans-serif;color:#5e5e5e;max-width:620px">
-<h2 style="color:#027001;margin:0 0 6px">${esc(p.titulo)}</h2><p style="margin:0 0 12px;color:#5e5e5e">Proyecto: ${esc(p.proyecto)}</p>
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;color:#1f2d0f;max-width:620px">
+<h2 style="color:#4c700b;margin:0 0 6px">${esc(p.titulo)}</h2><p style="margin:0 0 12px;color:#6b6b60">Proyecto: ${esc(p.proyecto)}</p>
 <p>${esc(p.detalle).replace(/\n/g, "<br>")}</p>
-<p style="margin-top:18px"><a href="${esc(url)}" style="background:#027001;color:#fff;padding:10px 26px;border-radius:999px;text-decoration:none">Revisar y decidir</a></p></div>`;
+<p style="margin-top:18px"><a href="${esc(url)}" style="background:#4c700b;color:#fff;padding:10px 18px;border-radius:20px;text-decoration:none">Revisar y decidir</a></p></div>`;
   return { asunto, texto, html };
 }

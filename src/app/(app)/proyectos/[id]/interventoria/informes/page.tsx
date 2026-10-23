@@ -38,7 +38,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <p className="mt-3 max-w-3xl text-sm text-muted">Cuatro tipos: periódico (uno por cada pago), especial, para proceso sancionatorio y final. El director de interventoría firma y con la firma el informe queda fijo.</p>
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
       {error && <div className="mt-4"><Aviso>No se pudieron leer los informes{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
-      {informes.length === 0 && !error ? <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">Aún no hay informes.</p> : (
+      {informes.length === 0 && !error ? <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">Aún no hay informes.</p> : (
         <ul className="mt-6 divide-y divide-soil-border rounded-card border border-soil-border text-sm">
           {informes.map((i) => (
             <li key={i.id} className="flex flex-wrap items-center justify-between gap-2 p-4">
@@ -49,7 +49,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         </ul>
       )}
       {permisos.interventor && alcOp.length > 0 && (
-        <section className="mt-8 rounded-card border-[1.5px] border-soil-border p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Nuevo informe</h2>
+        <section className="mt-8 rounded-card bg-leaf-50 p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Nuevo informe</h2>
           <FormularioRegistro accion={crearInforme.bind(null, id)} campos={campos} opciones={{ alcances: alcOp, actas: o.actas }} iniciales={{}} editando={false} volverA={`/proyectos/${id}/interventoria`} /></section>
       )}
     </>

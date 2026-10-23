@@ -87,12 +87,12 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string
         <section className="mt-10" aria-labelledby="t-mis-proyectos">
           <h2 id="t-mis-proyectos" className="font-display text-2xl font-bold text-leaf-700">Mis proyectos</h2>
           {misProyectos.length === 0 ? (
-            <p className="mt-3 rounded-card border-[1.5px] border-soil-border p-5 text-sm text-muted">Todavía no tienes proyectos asignados, o tu asignación aún no está vigente. Pide al administrador o al gerente del proyecto que te asigne.</p>
+            <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Todavía no tienes proyectos asignados, o tu asignación aún no está vigente. Pide al administrador o al gerente del proyecto que te asigne.</p>
           ) : (
             <ul className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {misProyectos.map((p) => (
                 <li key={p.id}>
-                  <Link href={`/proyectos/${p.id}`} className="block h-full rounded-card border-[1.5px] border-leaf-500 p-4 transition hover:opacity-85 ">
+                  <Link href={`/proyectos/${p.id}`} className="block h-full rounded-card bg-leaf-100 p-4 transition hover:-translate-y-0.5 hover:shadow-card">
                     <h3 className="font-display text-lg font-bold text-leaf-700">{p.nombre}</h3>
                     <p className="mt-1 text-sm">{[p.codigo, p.cliente, p.ubicacion].filter(Boolean).join(" · ")}</p>
                   </Link>

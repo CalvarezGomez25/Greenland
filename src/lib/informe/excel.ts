@@ -1,5 +1,5 @@
 // Informe gerencial de UNA hoja de Excel, listo para imprimir en una sola página A4 vertical.
-// Mismo contenido y misma paleta que el PDF (sistema de diseño GreenLand v1.0.0: Archivo, verde #027001, texto #5E5E5E, alertas sobrias); las cifras van como números reales (se pueden copiar y operar).
+// Mismo contenido y misma paleta que el PDF; las cifras van como números reales (se pueden copiar y operar).
 import ExcelJS from "exceljs";
 import { LEMA_PLATAFORMA, NOMBRE_EMPRESA, NOMBRE_PLATAFORMA } from "../marca";
 import { ETIQUETA_ESTADO, ETIQUETA_FASE, type EstadoProyecto, type FaseProyecto } from "../tipos";
@@ -8,24 +8,22 @@ import { LOGO_PNG } from "./fuentes";
 import { ETIQUETA_NIVEL, causasSemaforo, fechaCorta, puntosPrincipales, recortar, type InformeProyecto } from "./modelo";
 
 const argb = (h: string) => `FF${h.replace("#", "").toUpperCase()}`;
-const VERDE = { h600: argb("#027001"), h700: argb("#027001"), h800: argb("#5e5e5e"), h900: argb("#5e5e5e"), h100: argb("#ffffff"), h50: argb("#ffffff"), tierra: argb("#027001"), borde: argb("#e4e4e4"), gris: argb("#5e5e5e") };
-// Paleta de alertas 2.1: texto del estado y fondo tenue. Verde = Cumple, Amarillo = Atención, Rojo = Crítico.
+const VERDE = { h600: argb("#4c700b"), h700: argb("#386631"), h800: argb("#2f5517"), h900: argb("#164504"), h100: argb("#e6f1d1"), h50: argb("#f4f9ea"), tierra: argb("#7c401d"), borde: argb("#dcdcd8"), gris: argb("#555552") };
 const SEM: Record<Color, { fondo: string; texto: string; nombre: string }> = {
-  verde: { fondo: argb("#e6f0e6"), texto: argb("#027001"), nombre: "Verde" },
-  amarillo: { fondo: argb("#fbefd9"), texto: argb("#9a5b00"), nombre: "Amarillo" },
-  rojo: { fondo: argb("#f8e6e4"), texto: argb("#a32a1f"), nombre: "Rojo" },
+  verde: { fondo: argb("#e6f1d1"), texto: argb("#2f5517"), nombre: "Verde" },
+  amarillo: { fondo: argb("#fef3c7"), texto: argb("#78350f"), nombre: "Amarillo" },
+  rojo: { fondo: argb("#fee2e2"), texto: argb("#7f1d1d"), nombre: "Rojo" },
 };
-const NIVEL: Record<string, { fondo: string; texto: string }> = { critico: SEM.rojo, alto: { fondo: argb("#fbefd9"), texto: argb("#9a5b00") }, medio: { fondo: argb("#f2f2f2"), texto: argb("#5e5e5e") }, bajo: SEM.verde };
-const SIN_DATOS = { fondo: argb("#f2f2f2"), texto: argb("#5e5e5e"), nombre: "Sin datos" };
-const FUENTE = "Archivo";
-const FUENTE_TITULO = "Archivo Light";
+const NIVEL: Record<string, { fondo: string; texto: string }> = { critico: SEM.rojo, alto: { fondo: argb("#ffedd5"), texto: argb("#7c2d12") }, medio: SEM.amarillo, bajo: SEM.verde };
+const SIN_DATOS = { fondo: argb("#f4f4f2"), texto: argb("#555552"), nombre: "Sin datos" };
+const FUENTE = "Calibri";
 const COLS = 12;
 
 export async function informeAExcel(i: InformeProyecto): Promise<Buffer> {
   const libro = new ExcelJS.Workbook();
   libro.creator = `${NOMBRE_PLATAFORMA} · ${NOMBRE_EMPRESA}`;
   libro.created = new Date();
-  const h = libro.addWorksheet("Informe gerencial", { views: [{ showGridLines: false }], properties: { defaultRowHeight: 15, tabColor: { argb: argb("#027001") } } });
+  const h = libro.addWorksheet("Informe gerencial", { views: [{ showGridLines: false }], properties: { defaultRowHeight: 15 } });
   for (let c = 1; c <= COLS; c++) h.getColumn(c).width = 11.5;
 
   let fila = 1;
@@ -53,7 +51,7 @@ export async function informeAExcel(i: InformeProyecto): Promise<Buffer> {
   h.getRow(1).height = 22; h.getRow(2).height = 18; h.getRow(3).height = 8;
   const logo = libro.addImage({ base64: LOGO_PNG, extension: "png" });
   h.addImage(logo, { tl: { col: 0.1, row: 0.15 }, ext: { width: 142, height: 43 } });
-  unir(1, 7, 1, COLS, "Informe gerencial", { font: { name: FUENTE_TITULO, size: 15, color: { argb: VERDE.h600 } }, alinear: { horizontal: "right" } });
+  unir(1, 7, 1, COLS, "INFORME GERENCIAL", { font: { bold: true, size: 15, color: { argb: VERDE.h600 } }, alinear: { horizontal: "right" } });
   unir(2, 7, 2, COLS, `${NOMBRE_PLATAFORMA} · ${LEMA_PLATAFORMA}`, { font: { size: 9, color: { argb: VERDE.gris } }, alinear: { horizontal: "right" } });
   for (let c = 1; c <= COLS; c++) h.getCell(3, c).border = { bottom: { style: "medium", color: { argb: VERDE.h600 } } };
   fila = 4;
@@ -61,7 +59,7 @@ export async function informeAExcel(i: InformeProyecto): Promise<Buffer> {
   // ---- Proyecto ------------------------------------------------------------------------------
   const p = i.proyecto;
   h.getRow(fila).height = 30;
-  unir(fila, 1, fila, COLS, p.nombre, { font: { name: FUENTE_TITULO, size: 20, color: { argb: VERDE.h700 } }, alinear: { vertical: "bottom" } });
+  unir(fila, 1, fila, COLS, p.nombre, { font: { bold: true, size: 20, color: { argb: VERDE.h700 } }, alinear: { vertical: "bottom" } });
   fila++;
   const meta = [p.codigo, p.cliente && `Cliente: ${p.cliente}`, p.ubicacion, ETIQUETA_FASE[p.fase as FaseProyecto] ?? p.fase, ETIQUETA_ESTADO[p.estado as EstadoProyecto] ?? p.estado].filter(Boolean).join("  ·  ");
   unir(fila++, 1, fila - 1, COLS, meta, { font: { size: 9.5, color: { argb: VERDE.gris } } });
@@ -75,7 +73,7 @@ export async function informeAExcel(i: InformeProyecto): Promise<Buffer> {
   const causas = causasSemaforo(i);
   const explicacion = g === null ? "Aún no hay mediciones de valor ganado ni riesgos registrados." : g === "verde" ? "Cronograma, costo, riesgos y cambios dentro de los umbrales." : `Se explica por: ${causas.join("; ")}.`;
   h.getRow(fila).height = 22; h.getRow(fila + 1).height = 22;
-  unir(fila, 1, fila + 1, 3, `Estado general: ${est.nombre}`, { font: { size: 13, color: { argb: est.texto } }, fondo: est.fondo, alinear: { horizontal: "left", indent: 1 } });
+  unir(fila, 1, fila + 1, 3, `● ESTADO GENERAL: ${est.nombre.toUpperCase()}`, { font: { bold: true, size: 13, color: { argb: est.texto } }, fondo: est.fondo, alinear: { horizontal: "left", indent: 1 } });
   unir(fila, 4, fila + 1, COLS, explicacion, { font: { size: 10, color: { argb: est.texto } }, fondo: est.fondo });
   marco(fila, 1, fila + 1, COLS, est.texto);
   fila += 2;
@@ -84,7 +82,7 @@ export async function informeAExcel(i: InformeProyecto): Promise<Buffer> {
   const dims: [string, Color | null][] = [["Cronograma", i.semaforo.spi], ["Costo", i.semaforo.cpi], ["Riesgos", i.semaforo.riesgos], ["Cambios", i.semaforo.cambios]];
   dims.forEach(([n, c], k) => {
     const s = c ? SEM[c] : SIN_DATOS;
-    unir(fila, k * 3 + 1, fila, k * 3 + 3, `${n}: ${s.nombre}`, { font: { size: 10, color: { argb: s.texto } }, fondo: s.fondo, alinear: { horizontal: "center" } });
+    unir(fila, k * 3 + 1, fila, k * 3 + 3, `● ${n}: ${s.nombre}`, { font: { bold: true, size: 10, color: { argb: s.texto } }, fondo: s.fondo, alinear: { horizontal: "center" } });
     marco(fila, k * 3 + 1, fila, k * 3 + 3, s.texto);
   });
   fila++;
@@ -96,26 +94,26 @@ export async function informeAExcel(i: InformeProyecto): Promise<Buffer> {
   const pctN = (n: number | null) => (n === null ? null : n);
   const filasT: Tarjeta[][] = [
     [
-      ["Cronograma (SPI)", i.spi, i.avancePlan !== null ? `Avance planeado ${i.avancePlan.toLocaleString("es-CO", { maximumFractionDigits: 1 })} %` : "Sin medición", "0.00"],
-      ["Costo (CPI)", i.cpi, i.avanceFinanciero !== null ? `Costo real ${i.avanceFinanciero.toLocaleString("es-CO", { maximumFractionDigits: 1 })} % del BAC` : "Sin medición", "0.00"],
-      ["Avance físico (%)", pctN(i.avanceFisico), i.avancePlan !== null ? `Planeado ${i.avancePlan.toLocaleString("es-CO", { maximumFractionDigits: 1 })} %` : "Sin medición", '0.0"%"'],
-      ["Presupuesto BAC (COP)", i.bac, i.ac !== null ? `Costo real ${Math.round(i.ac).toLocaleString("es-CO")}` : "Sin medición", '"$" #,##0'],
+      ["CRONOGRAMA (SPI)", i.spi, i.avancePlan !== null ? `Avance planeado ${i.avancePlan.toLocaleString("es-CO", { maximumFractionDigits: 1 })} %` : "Sin medición", "0.00"],
+      ["COSTO (CPI)", i.cpi, i.avanceFinanciero !== null ? `Costo real ${i.avanceFinanciero.toLocaleString("es-CO", { maximumFractionDigits: 1 })} % del BAC` : "Sin medición", "0.00"],
+      ["AVANCE FÍSICO (%)", pctN(i.avanceFisico), i.avancePlan !== null ? `Planeado ${i.avancePlan.toLocaleString("es-CO", { maximumFractionDigits: 1 })} %` : "Sin medición", '0.0"%"'],
+      ["PRESUPUESTO BAC (COP)", i.bac, i.ac !== null ? `Costo real ${Math.round(i.ac).toLocaleString("es-CO")}` : "Sin medición", '"$" #,##0'],
     ],
     [
-      ["Costo final proyectado (COP)", i.eac, vac === null ? "Requiere costo real y avance" : `${vac >= 0 ? "Ahorro" : "Sobrecosto"} ${Math.round(Math.abs(vac)).toLocaleString("es-CO")}`, '"$" #,##0'],
-      ["Riesgos activos", i.riesgos.activos, `${i.riesgos.criticos} crítico(s) · ${i.riesgos.altos} alto(s)`, "0"],
-      ["Cambios pendientes", i.cambios.pendientes, `${i.cambios.criticos} crítico(s)`, "0"],
-      ["Decisiones pendientes", i.decisiones.length, "De la dirección", "0"],
+      ["COSTO FINAL PROYECTADO (COP)", i.eac, vac === null ? "Requiere costo real y avance" : `${vac >= 0 ? "Ahorro" : "Sobrecosto"} ${Math.round(Math.abs(vac)).toLocaleString("es-CO")}`, '"$" #,##0'],
+      ["RIESGOS ACTIVOS", i.riesgos.activos, `${i.riesgos.criticos} crítico(s) · ${i.riesgos.altos} alto(s)`, "0"],
+      ["CAMBIOS PENDIENTES", i.cambios.pendientes, `${i.cambios.criticos} crítico(s)`, "0"],
+      ["DECISIONES PENDIENTES", i.decisiones.length, "De la dirección", "0"],
     ],
   ];
   for (const fT of filasT) {
     h.getRow(fila).height = 15; h.getRow(fila + 1).height = 30; h.getRow(fila + 2).height = 15;
     fT.forEach(([etq, valor, sub, fmt], k) => {
       const c1 = k * 3 + 1, c2 = c1 + 2;
-      unir(fila, c1, fila, c2, etq, { font: { size: 8, color: { argb: VERDE.h800 } }, fondo: VERDE.h100, alinear: { horizontal: "left", indent: 1, vertical: "bottom" } });
-      unir(fila + 1, c1, fila + 1, c2, valor === null ? "—" : valor, { font: { size: 18, color: { argb: VERDE.h700 } }, fondo: VERDE.h100, alinear: { horizontal: "left", indent: 1 }, fmt });
+      unir(fila, c1, fila, c2, etq, { font: { bold: true, size: 8, color: { argb: VERDE.h800 } }, fondo: VERDE.h100, alinear: { horizontal: "left", indent: 1, vertical: "bottom" } });
+      unir(fila + 1, c1, fila + 1, c2, valor === null ? "—" : valor, { font: { bold: true, size: 18, color: { argb: VERDE.h700 } }, fondo: VERDE.h100, alinear: { horizontal: "left", indent: 1 }, fmt });
       unir(fila + 2, c1, fila + 2, c2, sub, { font: { size: 8, color: { argb: VERDE.gris } }, fondo: VERDE.h100, alinear: { horizontal: "left", indent: 1, vertical: "top" } });
-      marco(fila, c1, fila + 2, c2, argb("#027001"));
+      marco(fila, c1, fila + 2, c2, argb("#cfe3a8"));
     });
     fila += 3;
     h.getRow(fila++).height = 6;
@@ -123,7 +121,7 @@ export async function informeAExcel(i: InformeProyecto): Promise<Buffer> {
   h.getRow(fila++).height = 4;
 
   // ---- Lectura rápida ------------------------------------------------------------------------
-  unir(fila, 1, fila, COLS, "Lectura rápida", { font: { size: 12, color: { argb: VERDE.h700 } }, fondo: VERDE.h50, alinear: { indent: 1 } });
+  unir(fila, 1, fila, COLS, "Lectura rápida", { font: { bold: true, size: 12, color: { argb: VERDE.h700 } }, fondo: VERDE.h50, alinear: { indent: 1 } });
   h.getRow(fila++).height = 20;
   const puntos = puntosPrincipales(i).slice(0, 5);
   const ini = fila;
@@ -132,13 +130,13 @@ export async function informeAExcel(i: InformeProyecto): Promise<Buffer> {
     unir(fila, 1, fila, COLS, `•  ${t}`, { font: { size: 9.5 }, fondo: VERDE.h50, alinear: { indent: 1, vertical: "top" } });
     fila++;
   }
-  marco(ini - 1, 1, fila - 1, COLS, argb("#e4e4e4"));
+  marco(ini - 1, 1, fila - 1, COLS, argb("#cfe3a8"));
   h.getRow(fila++).height = 10;
 
   // ---- Riesgos principales (izq.) y decisiones + hitos (der.) --------------------------------
   const inicioBloque = fila;
   const sub = (r: number, c1: number, c2: number, t: string, der?: string) => {
-    unir(r, c1, r, c2, t, { font: { size: 12, color: { argb: VERDE.h700 } } });
+    unir(r, c1, r, c2, t, { font: { bold: true, size: 12, color: { argb: VERDE.h700 } } });
     if (der) h.getCell(r, c2).value = null;
     h.getRow(r).height = 20;
   };
@@ -151,9 +149,9 @@ export async function informeAExcel(i: InformeProyecto): Promise<Buffer> {
   for (const r of i.riesgos.principales) {
     h.getRow(fr).height = 28;
     const n = NIVEL[r.nivel];
-    unir(fr, 1, fr, 1, r.codigo, { font: { size: 9, color: { argb: VERDE.h800 } } });
+    unir(fr, 1, fr, 1, r.codigo, { font: { bold: true, size: 9, color: { argb: VERDE.h800 } } });
     unir(fr, 2, fr, 6, recortar(r.descripcion, 150), { font: { size: 9 } });
-    unir(fr, 7, fr, 7, ETIQUETA_NIVEL[r.nivel], { font: { size: 9, color: { argb: n.texto } }, fondo: n.fondo, alinear: { horizontal: "center" } });
+    unir(fr, 7, fr, 7, ETIQUETA_NIVEL[r.nivel], { font: { bold: true, size: 9, color: { argb: n.texto } }, fondo: n.fondo, alinear: { horizontal: "center" } });
     lineaFina(fr, 1, 7);
     fr++;
   }
@@ -171,7 +169,7 @@ export async function informeAExcel(i: InformeProyecto): Promise<Buffer> {
   if (hitos.length === 0) { unir(fd, 8, fd, COLS, "Sin hitos pendientes registrados.", { font: { size: 9.5, color: { argb: VERDE.gris } } }); fd++; }
   for (const [nombre, fecha, vencido] of hitos) {
     h.getRow(fd).height = Math.max(h.getRow(fd).height ?? 15, 15);
-    unir(fd, 8, fd, COLS, `${vencido ? "Vencido " : ""}${fechaCorta(fecha)} — ${recortar(nombre, 60)}`, { font: { size: 9, color: { argb: vencido ? SEM.rojo.texto : VERDE.h900 }, bold: vencido } });
+    unir(fd, 8, fd, COLS, `${vencido ? "● Vencido " : "● "}${fechaCorta(fecha)} — ${recortar(nombre, 60)}`, { font: { size: 9, color: { argb: vencido ? SEM.rojo.texto : VERDE.h900 }, bold: vencido } });
     lineaFina(fd, 8, COLS);
     fd++;
   }
@@ -186,7 +184,7 @@ export async function informeAExcel(i: InformeProyecto): Promise<Buffer> {
   if (i.cambios.lista.length === 0) { unir(fc, 1, fc, 6, "Sin cambios pendientes.", { font: { size: 9.5, color: { argb: VERDE.gris } } }); fc++; }
   for (const c of i.cambios.lista) {
     h.getRow(fc).height = 15;
-    unir(fc, 1, fc, 1, c.codigo, { font: { size: 9, color: { argb: VERDE.h800 } } });
+    unir(fc, 1, fc, 1, c.codigo, { font: { bold: true, size: 9, color: { argb: VERDE.h800 } } });
     unir(fc, 2, fc, 6, `${recortar(c.descripcion, 55)} · ${c.estado}`, { font: { size: 9 } });
     lineaFina(fc, 1, 6);
     fc++;

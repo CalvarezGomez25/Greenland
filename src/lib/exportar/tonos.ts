@@ -1,19 +1,17 @@
 // Colores de las etiquetas de estado (semáforo, nivel de riesgo, Sí / No): los mismos del informe gerencial.
 import type { Tono } from "./tipos";
 
-// Paleta de alertas 2.1 del sistema de diseño GreenLand: texto y contorno del mismo color, fondo tenue solo en celdas.
-const t = (texto: string, fondo: string) => ({ fondo, borde: texto, punto: texto, texto });
 export const TONOS: Record<Tono, { fondo: string; borde: string; punto: string; texto: string }> = {
-  verde: t("#027001", "#e6f0e6"),
-  amarillo: t("#9a5b00", "#fbefd9"),
-  naranja: t("#9a5b00", "#fbefd9"),
-  rojo: t("#a32a1f", "#f8e6e4"),
-  gris: t("#5e5e5e", "#f2f2f2"),
+  verde: { fondo: "#e6f1d1", borde: "#7fa62e", punto: "#5d870e", texto: "#2f5517" },
+  amarillo: { fondo: "#fef3c7", borde: "#f59e0b", punto: "#f59e0b", texto: "#78350f" },
+  naranja: { fondo: "#ffedd5", borde: "#f97316", punto: "#f97316", texto: "#7c2d12" },
+  rojo: { fondo: "#fee2e2", borde: "#ef4444", punto: "#dc2626", texto: "#7f1d1d" },
+  gris: { fondo: "#f4f4f2", borde: "#dcdcd8", punto: "#9a9a95", texto: "#555552" },
 };
 
 const POR_TEXTO: Record<string, Tono> = {
   verde: "verde", bajo: "verde", "sí": "verde",
-  amarillo: "amarillo", medio: "gris",
+  amarillo: "amarillo", medio: "amarillo",
   alto: "naranja",
   rojo: "rojo", "crítico": "rojo", no: "rojo",
   "sin datos": "gris",

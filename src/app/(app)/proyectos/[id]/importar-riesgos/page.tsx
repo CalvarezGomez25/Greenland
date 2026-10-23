@@ -15,7 +15,7 @@ async function Contenido({ params }: { params: Promise<{ id: string }> }) {
       <Link href={`/proyectos/${id}/r/riesgos`} className="text-sm font-medium text-leaf-600 hover:underline">← Volver a riesgos</Link>
       <div className="mt-4"><Titulo>Importar riesgos desde Excel</Titulo></div>
       <p className="mt-3 text-sm text-muted">{proyecto.nombre}</p>
-      <div className="mt-6 max-w-2xl rounded-card border-[1.5px] border-soil-border p-5 text-sm">
+      <div className="mt-6 max-w-2xl rounded-card bg-leaf-50 p-5 text-sm">
         <h2 className="font-display text-lg font-bold text-leaf-700">Cómo debe ser el archivo</h2>
         <ul className="mt-2 list-disc space-y-1 pl-5">
           <li>Libro de Excel <strong>.xlsx</strong> con una hoja llamada <strong>Registro</strong>: una fila por riesgo y los encabezados en la primera fila.</li>

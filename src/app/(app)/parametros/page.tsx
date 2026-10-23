@@ -54,7 +54,7 @@ async function Contenido() {
       <section className="mt-10">
         <h2 className="font-display text-2xl font-bold text-leaf-700">Ajustes por portafolio o proyecto</h2>
         {ajustes.length === 0 ? (
-          <p className="mt-3 rounded-card border-[1.5px] border-soil-border p-5 text-sm text-muted">No hay ajustes. Todos los proyectos usan los valores globales.</p>
+          <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">No hay ajustes. Todos los proyectos usan los valores globales.</p>
         ) : (
           <ul className="mt-4 divide-y divide-soil-border rounded-card border border-soil-border">
             {ajustes.map((p) => (
@@ -73,7 +73,7 @@ async function Contenido() {
           </ul>
         )}
         {esAdmin && (
-          <div className="mt-6 rounded-card border-[1.5px] border-soil-border p-5">
+          <div className="mt-6 rounded-card bg-leaf-50 p-5">
             <h3 className="mb-3 font-display text-lg font-bold text-leaf-700">Agregar un ajuste</h3>
             <FormularioAjuste
               claves={globales.map((g) => g.clave)}

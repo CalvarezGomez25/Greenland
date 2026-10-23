@@ -22,7 +22,7 @@ export function FormularioContrato({ accion, iniciales, volverA }: { accion: Acc
       </div>
       <label className="flex flex-col gap-1.5">
         <span className="text-[13px] font-medium text-leaf-800">Objeto del contrato</span>
-        <textarea name="objeto" rows={3} required maxLength={1000} defaultValue={v("objeto")} className="w-full rounded-[20px] border border-soil-border bg-white px-3.5 py-2.5 text-[15px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30" />
+        <textarea name="objeto" rows={3} required maxLength={1000} defaultValue={v("objeto")} className="w-full rounded-[10px] border border-soil-border bg-white px-3.5 py-2.5 text-[15px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30" />
       </label>
       <Campo etiqueta="Valor del contrato (COP)" name="valor" required inputMode="decimal" defaultValue={v("valor")} ayuda="Formato colombiano (1.234.567,50). La retención de garantía se fija con el porcentaje vigente hoy." />
       {estado.error && <Aviso>{estado.error}</Aviso>}

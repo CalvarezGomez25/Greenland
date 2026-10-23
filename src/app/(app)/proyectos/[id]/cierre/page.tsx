@@ -38,7 +38,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <section className="mt-6" aria-labelledby="t-cierre">
         <h2 id="t-cierre" className="font-display text-2xl font-bold text-leaf-700">Acta de entrega y cierre</h2>
         {cerrado && cierre ? (
-          <div className="mt-3 rounded-card border-[1.5px] border-leaf-500 p-5 text-sm">
+          <div className="mt-3 rounded-card bg-leaf-100 p-5 text-sm">
             <p><strong>Proyecto cerrado.</strong> Entregado el {formatearFecha(cierre.fecha_entrega)} a {cierre.receptor}.</p>
             {cierre.observaciones && <p className="mt-1 whitespace-pre-wrap text-muted">{cierre.observaciones}</p>}
             <p className="mt-1 text-muted">Cerrado por {nombres.get(cierre.cerrado_por) ?? "—"} el {formatearFechaHora(cierre.cerrado_en)}. Ya no aparece en el tablero de control activo; se consulta en el histórico.</p>
@@ -51,9 +51,9 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
               <li>{(vencidos ?? 0) > 0 ? <span>⚠️ Hay {vencidos} hito(s) vencido(s) sin cumplir: <Link href={`/proyectos/${id}/r/hitos`} className="underline">revísalos</Link> (no impide el cierre).</span> : "✅ No hay hitos vencidos."}</li>
               <li>✅ Registra las lecciones aprendidas abajo antes de cerrar.</li>
             </ul>
-            <div className="rounded-card border-[1.5px] border-soil-border p-5"><FormularioCierre accion={cerrarProyecto.bind(null, id)} hoy={hoy} /></div>
+            <div className="rounded-card bg-leaf-50 p-5"><FormularioCierre accion={cerrarProyecto.bind(null, id)} hoy={hoy} /></div>
           </div>
-        ) : <p className="mt-3 rounded-card border-[1.5px] border-soil-border p-5 text-sm text-muted">El proyecto sigue abierto. El cierre lo registra el gerente.</p>}
+        ) : <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">El proyecto sigue abierto. El cierre lo registra el gerente.</p>}
       </section>
 
       <section className="mt-8" aria-labelledby="t-lec">
@@ -61,7 +61,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           <h2 id="t-lec" className="font-display text-2xl font-bold text-leaf-700">Lecciones aprendidas</h2>
           {permisos.gestionar && <Link href={`/proyectos/${id}/r/lecciones/nuevo`} className={claseBoton.secundario}>Agregar lección</Link>}
         </div>
-        {lecciones.length === 0 ? <p className="mt-3 rounded-card border-[1.5px] border-soil-border p-5 text-sm text-muted">Aún no hay lecciones registradas.</p> : (
+        {lecciones.length === 0 ? <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Aún no hay lecciones registradas.</p> : (
           <ul className="mt-3 divide-y divide-soil-border rounded-card border border-soil-border text-sm">
             {lecciones.map((l) => (
               <li key={l.id} className="flex flex-wrap items-start justify-between gap-3 p-4">

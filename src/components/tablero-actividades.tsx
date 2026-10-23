@@ -10,9 +10,9 @@ import {
 import { formatearFecha } from "@/lib/formato";
 
 const CLASE_PRIORIDAD: Record<PrioridadActividad, string> = {
-  alta: "bg-white text-alerta-crit border-alerta-crit",
-  media: "bg-white text-alerta-aten border-alerta-aten",
-  baja: "bg-white text-alerta-info border-alerta-info",
+  alta: "bg-red-100 text-red-900 border-red-500",
+  media: "bg-amber-100 text-amber-900 border-amber-500",
+  baja: "bg-leaf-100 text-leaf-800 border-leaf-400",
 };
 const insignia = "inline-block rounded-full border px-2 py-0.5 text-xs font-medium";
 
@@ -48,10 +48,10 @@ export function TableroActividades({
 
   return (
     <div>
-      <p aria-live="polite" role={error ? "alert" : undefined} className={error ? "mb-3 rounded-[20px] border-[1.5px] border-alerta-crit bg-white px-3.5 py-2.5 text-sm text-danger" : "sr-only"}>
+      <p aria-live="polite" role={error ? "alert" : undefined} className={error ? "mb-3 rounded-[10px] border border-danger/40 bg-red-50 px-3.5 py-2.5 text-sm text-danger" : "sr-only"}>
         {error ?? ""}
       </p>
-      {lista.length === 0 && vacio && <p className="mb-4 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">{vacio}</p>}
+      {lista.length === 0 && vacio && <p className="mb-4 rounded-card bg-leaf-50 p-6 text-sm text-muted">{vacio}</p>}
       <p className="mb-2 text-xs text-muted">Arrastra una tarjeta a otra columna para cambiar su estado. En el celular, usa «Mover a».</p>
       <div className="flex items-start gap-3 overflow-x-auto pb-3">
         {ESTADOS_ACTIVIDAD.map((e) => {
@@ -69,7 +69,7 @@ export function TableroActividades({
                 const a = lista.find((x) => x.id === (arrastrando ?? ev.dataTransfer.getData("text/plain")));
                 if (a) cambiar(a, e); else { setArrastrando(null); setSobre(null); }
               }}
-              className={`min-w-[200px] flex-1 basis-0 rounded-card border-[1.5px] border-soil-border p-3 ${activa ? "border-leaf-500" : ""}`}
+              className={`min-w-[200px] flex-1 basis-0 rounded-card bg-leaf-50 p-3 transition-shadow ${activa ? "ring-2 ring-leaf-500" : ""}`}
             >
               <h2 className="flex items-center justify-between px-1 pb-2 font-display text-lg font-bold text-leaf-700">
                 {ETIQUETA_ESTADO_ACTIVIDAD[e]}
@@ -80,7 +80,7 @@ export function TableroActividades({
                   <Tarjeta key={a.id} a={a} hoy={hoy} arrastrando={arrastrando === a.id} onArrastrar={(v) => { setArrastrando(v ? a.id : null); if (!v) setSobre(null); }} onMover={(estado) => cambiar(a, estado)} />
                 ))}
                 {tarjetas.length === 0 && (
-                  <li className="rounded-[20px] border border-dashed border-soil-border px-3 py-4 text-center text-xs text-muted">
+                  <li className="rounded-[10px] border border-dashed border-soil-border px-3 py-4 text-center text-xs text-muted">
                     {activa ? "Suelta aquí" : "Nada por aquí."}
                   </li>
                 )}
@@ -113,7 +113,7 @@ function Tarjeta({
       draggable={a.puedeMover}
       onDragStart={(ev) => { ev.dataTransfer.setData("text/plain", a.id); ev.dataTransfer.effectAllowed = "move"; onArrastrar(true); }}
       onDragEnd={() => onArrastrar(false)}
-      className={`rounded-card border bg-white p-3 text-sm ${vencida ? "border-alerta-crit" : "border-soil-border"} ${a.puedeMover ? "cursor-grab active:cursor-grabbing" : ""} ${arrastrando ? "opacity-40" : ""}`}
+      className={`rounded-card border bg-white p-3 text-sm shadow-sm ${vencida ? "border-red-500" : "border-soil-border"} ${a.puedeMover ? "cursor-grab active:cursor-grabbing" : ""} ${arrastrando ? "opacity-40" : ""}`}
     >
       {a.proyecto && (
         <p className="mb-1 text-xs text-muted">
@@ -125,7 +125,7 @@ function Tarjeta({
         <span className={`${insignia} ${CLASE_PRIORIDAD[a.prioridad]}`}>Prioridad {ETIQUETA_PRIORIDAD[a.prioridad].toLowerCase()}</span>
         {a.fecha_limite && (
           vencida
-            ? <span className={`${insignia} border-alerta-crit bg-white text-alerta-crit`}>{textoPlazo(a.fecha_limite, hoy)}</span>
+            ? <span className={`${insignia} border-red-500 bg-red-100 text-red-900`}>{textoPlazo(a.fecha_limite, hoy)}</span>
             : <span className="text-xs text-muted">{a.estado === "hecha" ? `Límite ${formatearFecha(a.fecha_limite)}` : `${textoPlazo(a.fecha_limite, hoy)} · ${formatearFecha(a.fecha_limite)}`}</span>
         )}
       </div>
@@ -146,7 +146,7 @@ function Tarjeta({
                 value={a.estado}
                 aria-label={`Mover «${a.titulo}» a otra columna`}
                 onChange={(ev) => { if (esEstadoActividad(ev.target.value)) onMover(ev.target.value); }}
-                className="h-8 w-full min-w-0 rounded-full border border-soil-border bg-white px-2 text-xs text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-2 focus:ring-leaf-500/30"
+                className="h-8 w-full min-w-0 rounded-lg border border-soil-border bg-white px-2 text-xs text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-2 focus:ring-leaf-500/30"
               >
                 {ESTADOS_ACTIVIDAD.map((e) => <option key={e} value={e}>{ETIQUETA_ESTADO_ACTIVIDAD[e]}</option>)}
               </select>

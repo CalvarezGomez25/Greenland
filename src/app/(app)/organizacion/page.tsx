@@ -22,7 +22,7 @@ async function Contenido() {
       <p className="mt-3 max-w-3xl text-sm text-muted">Estructura para agrupar los proyectos. El portafolio de cada proyecto se elige al crearlo o desde su ficha.</p>
       <ul className="mt-6 flex flex-col gap-4">
         {organizaciones.map((o) => (
-          <li key={o.id} className="rounded-card border-[1.5px] border-leaf-500 p-5">
+          <li key={o.id} className="rounded-card bg-leaf-100 p-5">
             <h2 className="font-display text-xl font-bold text-leaf-700">{o.nombre} <span className="text-sm font-normal text-muted">· {o.tipo}</span></h2>
             <ul className="mt-2 text-sm">
               {portafolios.filter((p) => p.organizacion_id === o.id).map((p) => (
@@ -33,8 +33,8 @@ async function Contenido() {
         ))}
       </ul>
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <div className="rounded-card border-[1.5px] border-soil-border p-5"><h3 className="mb-3 font-display text-lg font-bold text-leaf-700">Nueva organización</h3><FormularioOrganizacion accion={crearOrganizacion} /></div>
-        <div className="rounded-card border-[1.5px] border-soil-border p-5"><h3 className="mb-3 font-display text-lg font-bold text-leaf-700">Nuevo portafolio</h3><FormularioPortafolio accion={crearPortafolio} organizaciones={organizaciones} /></div>
+        <div className="rounded-card bg-leaf-50 p-5"><h3 className="mb-3 font-display text-lg font-bold text-leaf-700">Nueva organización</h3><FormularioOrganizacion accion={crearOrganizacion} /></div>
+        <div className="rounded-card bg-leaf-50 p-5"><h3 className="mb-3 font-display text-lg font-bold text-leaf-700">Nuevo portafolio</h3><FormularioPortafolio accion={crearPortafolio} organizaciones={organizaciones} /></div>
       </div>
     </>
   );

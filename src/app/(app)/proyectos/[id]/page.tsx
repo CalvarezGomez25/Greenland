@@ -112,7 +112,7 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
         </div>
       </div>
 
-      <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-2 rounded-card border-[1.5px] border-soil-border px-5 py-3 text-sm" aria-label="Datos del proyecto">
+      <dl className="mt-4 flex flex-wrap gap-x-8 gap-y-2 rounded-card bg-leaf-50 px-5 py-3 text-sm" aria-label="Datos del proyecto">
         <Dato etiqueta="Cliente" valor={p.cliente} />
         <Dato etiqueta="Ubicación" valor={p.ubicacion} />
         <Dato etiqueta="Inicio" valor={formatearFecha(p.fecha_inicio)} />
@@ -128,7 +128,7 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
       )}
 
       {bit && (
-        <Link href={`/proyectos/${p.id}/bitacora`} className="mt-4 block rounded-card border border-soil-border p-4 text-sm " aria-label="Resumen de la bitácora">
+        <Link href={`/proyectos/${p.id}/bitacora`} className="mt-4 block rounded-card border border-soil-border p-4 text-sm hover:shadow-card" aria-label="Resumen de la bitácora">
           <strong className="text-leaf-700">Bitácora de obra:</strong> {bit.entradas} entrada(s) · {bit.horasPerdidas.toLocaleString("es-CO")} h perdidas · {bit.retrasos} retraso(s) · {bit.incidentes} incidente(s){bit.accidentes ? ` (${bit.accidentes} accidente(s))` : ""}{bit.ultimaFecha ? ` · última: ${formatearFecha(bit.ultimaFecha)}` : ""}
         </Link>
       )}
@@ -149,7 +149,7 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
             <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {lista.map((m) => (
                 <li key={m.clave}>
-                  <Link href={`/proyectos/${p.id}/${m.ruta}`} className="block h-full rounded-card border border-soil-border p-4 transition hover:opacity-85 ">
+                  <Link href={`/proyectos/${p.id}/${m.ruta}`} className="block h-full rounded-card border border-soil-border p-4 transition hover:-translate-y-0.5 hover:shadow-card">
                     <p className="font-display text-lg font-bold text-leaf-700">{m.titulo}</p>
                     <p className="text-sm text-muted">{m.descripcion}</p>
                   </Link>
@@ -170,7 +170,7 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
         </p>
 
         {miembros.length === 0 ? (
-          <p className="mt-4 rounded-card border-[1.5px] border-soil-border p-5 text-sm text-muted">
+          <p className="mt-4 rounded-card bg-leaf-50 p-5 text-sm text-muted">
             Este proyecto aún no tiene personas asignadas.
           </p>
         ) : (
@@ -210,7 +210,7 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
                     </form>
                   </div>
                 ) : (
-                  <span className="rounded-full border-[1.5px] border-leaf-500 px-3 py-0.5 text-xs font-medium text-leaf-800">
+                  <span className="rounded-full bg-leaf-100 px-3 py-0.5 text-xs font-medium text-leaf-800">
                     {ETIQUETA_ROL_PROYECTO[m.rol]}
                   </span>
                 )}
@@ -220,7 +220,7 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
         )}
 
         {esAdmin && (
-          <div className="mt-6 rounded-card border-[1.5px] border-soil-border p-5">
+          <div className="mt-6 rounded-card bg-leaf-50 p-5">
             <h3 className="mb-3 font-display text-lg font-bold text-leaf-700">
               Asignar una persona
             </h3>
@@ -235,7 +235,7 @@ async function DetalleProyecto({ params }: { params: Promise<{ id: string }> }) 
 function Dato({ etiqueta, valor }: { etiqueta: string; valor: string | null }) {
   return (
     <div className="flex items-baseline gap-1.5">
-      <dt className="text-xs font-medium text-leaf-800">{etiqueta}</dt>
+      <dt className="text-xs font-medium uppercase tracking-wider text-leaf-800">{etiqueta}</dt>
       <dd className="text-leaf-900">{valor || "—"}</dd>
     </div>
   );

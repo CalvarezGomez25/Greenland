@@ -27,7 +27,7 @@ async function MenuLateral() {
       nombrePlataforma={NOMBRE_PLATAFORMA}
       cambiarUsuario={
         <form action={cambiarUsuario}>
-          <button type="submit" title="Cambiar de usuario" aria-label="Cambiar de usuario" className="rounded-full p-2 text-leaf-700 hover:bg-leaf-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf-600">
+          <button type="submit" title="Cambiar de usuario" aria-label="Cambiar de usuario" className="rounded-lg p-2 text-leaf-700 hover:bg-leaf-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf-600">
             <svg aria-hidden viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M7 7h11l-3-3 M18 7l-3 3 M17 17H6l3 3 M6 17l3-3" /></svg>
           </button>
         </form>

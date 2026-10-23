@@ -23,7 +23,7 @@ async function Contenido({ params }: { params: Promise<{ id: string }> }) {
       <p className="mt-3 max-w-3xl text-sm text-muted">{proyecto.nombre} · La interventoría conceptúa, verifica, observa e informa; no aprueba ni modifica datos del contrato, no contrata ni selecciona proveedores. {permisos.interventor ? "Solo ves lo asignado a tu contrato." : ""}</p>
       <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {SECCIONES.map(([ruta, titulo, texto]) => (
-          <li key={ruta}><Link href={`/proyectos/${id}/interventoria/${ruta}`} className="block h-full rounded-card border border-soil-border p-4 transition hover:opacity-85 "><p className="font-display text-lg font-bold text-leaf-700">{titulo}</p><p className="text-sm text-muted">{texto}</p></Link></li>
+          <li key={ruta}><Link href={`/proyectos/${id}/interventoria/${ruta}`} className="block h-full rounded-card border border-soil-border p-4 transition hover:-translate-y-0.5 hover:shadow-card"><p className="font-display text-lg font-bold text-leaf-700">{titulo}</p><p className="text-sm text-muted">{texto}</p></Link></li>
         ))}
       </ul>
     </>

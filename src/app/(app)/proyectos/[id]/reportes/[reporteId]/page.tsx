@@ -27,7 +27,7 @@ function Indicadores({ foto, titulo }: { foto: Foto; titulo: string }) {
       <h2 className="font-display text-xl font-bold text-leaf-700">{titulo}</h2>
       {foto.fecha_corte && <p className="text-sm text-muted">Medición de valor ganado del {formatearFecha(foto.fecha_corte)}</p>}
       <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {items.map(([t, v]) => <div key={t} className="rounded-card border-[1.5px] border-leaf-500 p-4"><p className="text-xs font-medium text-leaf-800">{t}</p><p className="mt-1 font-display text-xl font-bold text-leaf-700">{v}</p></div>)}
+        {items.map(([t, v]) => <div key={t} className="rounded-card bg-leaf-100 p-4"><p className="text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</p><p className="mt-1 font-display text-xl font-bold text-leaf-700">{v}</p></div>)}
       </div>
     </section>
   );
@@ -66,9 +66,9 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         ) : (
           <dl className="grid gap-4 sm:grid-cols-2">
             {([["logros", "Logros de la semana"], ["alertas", "Alertas y riesgos activos"], ["decisiones_requeridas", "Decisiones requeridas de la dirección"], ["proximos_hitos", "Próximos hitos (2 semanas)"]] as [string, string][]).map(([k, t]) => (
-              <div key={k}><dt className="text-xs font-medium text-leaf-800">{t}</dt><dd className="mt-0.5 whitespace-pre-wrap">{(r[k] as string) || "—"}</dd></div>
+              <div key={k}><dt className="text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</dt><dd className="mt-0.5 whitespace-pre-wrap">{(r[k] as string) || "—"}</dd></div>
             ))}
-            <div><dt className="text-xs font-medium text-leaf-800">Próxima revisión</dt><dd className="mt-0.5">{r.proxima_revision ? formatearFecha(String(r.proxima_revision)) : "—"}</dd></div>
+            <div><dt className="text-xs font-medium uppercase tracking-wider text-leaf-800">Próxima revisión</dt><dd className="mt-0.5">{r.proxima_revision ? formatearFecha(String(r.proxima_revision)) : "—"}</dd></div>
           </dl>
         )}
       </section>

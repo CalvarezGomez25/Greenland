@@ -1,4 +1,3 @@
-import { TarjetaMuesca } from "@/components/tarjeta-muesca";
 import Link from "next/link";
 import { obtenerSesion } from "@/lib/sesion";
 import { cargarDashboard } from "@/lib/pmo/dashboard";
@@ -79,13 +78,13 @@ export async function Dashboard({ searchParams, base }: { searchParams: Promise<
 
       <section aria-labelledby="t-semaforo">
         {filas.length === 0 ? (
-          <p className="mt-3 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">
+          <p className="mt-3 rounded-card bg-leaf-50 p-6 text-sm text-muted">
             {hayFiltro ? "Ningún proyecto coincide con los filtros." : esAdmin ? "Aún no hay proyectos. Crea el primero con el botón “Nuevo proyecto”." : "Todavía no tienes proyectos asignados. Pide al administrador que te agregue a uno."}
           </p>
         ) : (
           <div className="mt-3 overflow-x-auto rounded-card border border-soil-border">
             <table className="w-full min-w-[960px] text-left text-sm">
-              <thead className="border-b-[1.5px] border-leaf-500 text-sm font-medium text-leaf-500">
+              <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
                 <tr>{["Proyecto", "Estado", "Presupuesto (BAC)", "Costo real (AC)", "Cronograma (SPI)", "Costo (CPI)", "Riesgos", "Cambios", "Avance físico", "Avance presup.", "Reportado"].map((h) => <th key={h} className="px-2.5 py-2 font-medium"><span className="inline-flex items-center gap-1">{h}{temaDe(h) && <Ayuda tema={temaDe(h)} />}</span></th>)}</tr>
               </thead>
               <tbody className="divide-y divide-soil-border">
@@ -128,7 +127,7 @@ export async function Dashboard({ searchParams, base }: { searchParams: Promise<
       <section className="mt-10" aria-labelledby="t-decision">
         <h2 id="t-decision" className="font-display text-2xl font-bold text-leaf-700">Requiere decisión</h2>
         {decisiones.length === 0 ? (
-          <p className="mt-3 rounded-card border-[1.5px] border-soil-border p-5 text-sm text-muted">Nada pendiente de decisión.</p>
+          <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Nada pendiente de decisión.</p>
         ) : (
           <ul className="mt-3 divide-y divide-soil-border rounded-card border border-soil-border">
             {decisiones.map((d, i) => (
@@ -154,17 +153,23 @@ function FiltroCompacto({ etiqueta, children, ...resto }: { etiqueta: string; ch
   return (
     <label className="flex items-center gap-1.5 text-xs font-medium text-leaf-800">
       {etiqueta}
-      <select {...resto} className="h-9 max-w-[11rem] rounded-full border border-soil-border bg-white px-2 text-sm font-normal text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-2 focus:ring-leaf-500/30">{children}</select>
+      <select {...resto} className="h-9 max-w-[11rem] rounded-lg border border-soil-border bg-white px-2 text-sm font-normal text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-2 focus:ring-leaf-500/30">{children}</select>
     </label>
   );
 }
 
 function Tarjeta({ titulo, valor, nota, href }: { titulo: string; valor: string; nota?: string; href?: string }) {
+  const contenido = (
+    <>
+      <p className="pr-5 text-[11px] font-medium uppercase leading-tight tracking-wide text-leaf-800">{titulo}</p>
+      <p className="mt-0.5 font-display text-xl font-bold leading-tight text-leaf-700 [overflow-wrap:anywhere]">{valor}</p>
+      {nota && <p className="text-[11px] leading-tight text-muted">{nota}</p>}
+    </>
+  );
   return (
-    <TarjetaMuesca titulo={titulo} tema={temaDe(titulo)} href={href}>
-      <p className="font-display text-xl font-light leading-tight text-leaf-500 whitespace-nowrap">{valor}</p>
-      {nota && <p className="mt-0.5 text-[11px] leading-tight text-muted">{nota}</p>}
-    </TarjetaMuesca>
+    <Ayuda modo="tarjeta" tema={temaDe(titulo)} className="rounded-card bg-leaf-100">
+      {href ? <Link href={href} className="block rounded-card px-3 py-2 transition hover:shadow-card focus-visible:outline focus-visible:outline-2 focus-visible:outline-leaf-600">{contenido}</Link> : <div className="px-3 py-2">{contenido}</div>}
+    </Ayuda>
   );
 }
 

@@ -42,7 +42,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       </form>
       {error && <div className="mt-4"><Aviso>No se pudieron leer los documentos{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
       {docs.length === 0 && !error ? (
-        <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">No hay documentos{tipo ? " de ese tipo" : ""}.</p>
+        <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">No hay documentos{tipo ? " de ese tipo" : ""}.</p>
       ) : (
         <ul className="mt-6 divide-y divide-soil-border rounded-card border border-soil-border">
           {docs.map((d) => {

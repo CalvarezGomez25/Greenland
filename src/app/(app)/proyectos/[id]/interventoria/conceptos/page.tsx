@@ -46,10 +46,10 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <p className="mt-3 max-w-3xl text-sm text-muted">Registro único de pronunciamientos. Cada concepto guarda autor, sub-rol y fecha. El concepto no aprueba ni rechaza: lo decide quien corresponda.</p>
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
       {error && <div className="mt-4"><Aviso>No se pudieron leer los conceptos{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
-      {conceptos.length === 0 && !error ? <p className="mt-6 rounded-card border-[1.5px] border-soil-border p-6 text-sm text-muted">Aún no hay conceptos.</p> : (
+      {conceptos.length === 0 && !error ? <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">Aún no hay conceptos.</p> : (
         <div className="mt-6 overflow-x-auto rounded-card border border-soil-border">
           <table className="w-full min-w-[820px] text-left text-sm">
-            <thead className="border-b-[1.5px] border-leaf-500 text-sm font-medium text-leaf-500"><tr>{["Fecha", "Tipo", "Registro", "Resultado", "Autor", "Texto"].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr></thead>
+            <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800"><tr>{["Fecha", "Tipo", "Registro", "Resultado", "Autor", "Texto"].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr></thead>
             <tbody className="divide-y divide-soil-border">
               {conceptos.map((c) => (
                 <tr key={c.id}>
@@ -64,7 +64,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         </div>
       )}
       {permisos.interventor && (
-        <section className="mt-8 rounded-card border-[1.5px] border-soil-border p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Emitir un concepto</h2>
+        <section className="mt-8 rounded-card bg-leaf-50 p-5"><h2 className="mb-3 font-display text-xl font-bold text-leaf-700">Emitir un concepto</h2>
           <FormularioRegistro accion={emitirConcepto.bind(null, id)} campos={campos} opciones={{ registros }} iniciales={{}} editando={false} volverA={`/proyectos/${id}/interventoria`} /></section>
       )}
     </>

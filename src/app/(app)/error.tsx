@@ -12,7 +12,7 @@ export default function ErrorInterno({
   reset: () => void;
 }) {
   return (
-    <div className="mx-auto max-w-md rounded-card border-[1.5px] border-soil-border p-8 text-center">
+    <div className="mx-auto max-w-md rounded-card bg-leaf-50 p-8 text-center">
       <h1 className="mb-2 font-display text-2xl font-bold text-leaf-700">
         No pudimos completar la acción
       </h1>

@@ -37,7 +37,7 @@ async function Contenido() {
               <p className="mt-1 text-xs text-muted">{(porUsuario.get(u.id) ?? []).join(" · ") || "Sin proyectos asignados"}</p>
             </div>
             {u.id === perfil?.id ? (
-              <span className="rounded-full border-[1.5px] border-leaf-500 px-3 py-0.5 text-xs font-medium text-leaf-800">{u.rol_global ? ETIQUETA_ROL_GLOBAL[u.rol_global] : "Sin rol global"}</span>
+              <span className="rounded-full bg-leaf-100 px-3 py-0.5 text-xs font-medium text-leaf-800">{u.rol_global ? ETIQUETA_ROL_GLOBAL[u.rol_global] : "Sin rol global"}</span>
             ) : (
               <form action={asignarRolGlobal.bind(null, u.id)} className="flex items-end gap-2">
                 <Selector etiqueta="Rol global" name="rol" defaultValue={u.rol_global ?? ""}>
