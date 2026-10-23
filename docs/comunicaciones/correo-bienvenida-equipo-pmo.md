@@ -8,7 +8,7 @@ Plantilla para enviar al dar acceso a PMO360. Reemplaza lo que está entre [corc
 
 Hola [nombre / equipo]:
 
-Ya tienes acceso a **PMO360, Control integral de Proyectos**, la plataforma donde estamos reuniendo el seguimiento de nuestros proyectos: avance, presupuesto, riesgos, cambios, contratos y actividades. Todavía está en etapa de prueba y quiero que la **recorras con calma y me des tus impresiones**. Este correo te da el panorama para que no te pierdas, y adjunto una **guía rápida en PDF con capturas numeradas** (incluye el módulo de Obra). No necesitas más de 20 minutos.
+Ya tienes acceso a **PMO360, Control integral de Proyectos**, la plataforma donde estamos reuniendo el seguimiento de nuestros proyectos: avance, presupuesto, riesgos, cambios, contratos y actividades. Todavía está en etapa de prueba y quiero que la **recorras con calma y me des tus impresiones**. Este correo te da el panorama para que no te pierdas, y adjunto una **guía rápida en PDF con capturas numeradas** (incluye los módulos de Gestión y de Obra). No necesitas más de 20 minutos.
 
 [Opcional, solo si es cierto: Los proyectos que verás tienen datos ficticios de ejemplo; por favor no cargues información confidencial real todavía.]
 
@@ -38,7 +38,7 @@ Para crear actividades de un proyecto: entra al proyecto, abre **Actividades** y
 
 ## 4. Cómo verificar los avances
 - **Semáforo de cada proyecto** (en el tablero y en su página): Verde = en orden; Amarillo = alerta; Rojo = requiere atención. Toma la peor de cuatro señales: cronograma, costo, riesgo más alto y cambios pendientes.
-- **Dentro de un proyecto**, en el menú: **Valor ganado** (cómo van cronograma y costo), **Cronograma** y **Reporte semanal** (si el proyecto tiene área de obra) y **Riesgos** y **Control de cambios**.
+- **Dentro de un proyecto**, en el menú: **Valor ganado** (cómo van cronograma y costo), **Riesgos**, **Control de cambios** y **Reporte semanal**; y, si el proyecto tiene área de obra, **Cronograma**, **Presupuesto**, **Contratos y pagos** y **Bitácora**.
 - **Actividades vencidas:** aparecen marcadas en «Mi trabajo» y en la línea de tiempo.
 
 ## 5. Cómo mirar los proyectos
