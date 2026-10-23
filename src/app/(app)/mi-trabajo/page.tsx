@@ -6,7 +6,7 @@ import { mostrarMisProyectos } from "@/lib/navegacion";
 import { AvisoResultado } from "@/components/aviso-resultado";
 import { Aviso, Titulo } from "@/components/ui";
 import { TableroActividades } from "@/components/tablero-actividades";
-import { LineaDeTiempo } from "@/components/linea-de-tiempo";
+import { LineaDeTiempo, colorDeProyecto, type Proyecto } from "@/components/linea-de-tiempo";
 
 export const metadata = { title: "Mi trabajo · PMO360" };
 const HECHAS_VISIBLES = 8;
@@ -60,11 +60,19 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string
   const hechasMostradas = todasLasHechas ? hechasRecientes : hechasRecientes.slice(0, HECHAS_VISIBLES);
   const grupos = agruparPorVencimiento(abiertas, hoy);
 
+  // Los proyectos asignados y, si hay actividades de otro, también ese: el mismo orden da el mismo color en la línea y en las tarjetas.
+  const proyectosLinea: Proyecto[] = misProyectos.map((p) => ({ id: p.id, etiqueta: p.codigo ?? p.nombre }));
+  for (const a of abiertas) {
+    if (!proyectosLinea.some((p) => p.id === a.proyecto_id)) proyectosLinea.push({ id: a.proyecto_id, etiqueta: (a.proyecto ?? "Otro proyecto").split(" · ")[0] });
+  }
+  const conFecha = new Map<string, number>();
+  for (const a of abiertas) if (a.fecha_limite) conFecha.set(a.proyecto_id, (conFecha.get(a.proyecto_id) ?? 0) + 1);
+
   return (
     <>
       <Titulo>Mi trabajo</Titulo>
-      <p className="mt-3 max-w-3xl text-sm text-muted">
-        Tus actividades de todos los proyectos: el horizonte de tiempo arriba y un tablero por estado debajo. Arrastra una tarjeta a otra columna a medida que avanzas.
+      <p className="mt-2 max-w-3xl text-sm text-muted">
+        Tus actividades de todos los proyectos. Arrastra una tarjeta a otra columna a medida que avanzas.
       </p>
       <p className="mt-2 text-sm text-muted">
         {abiertas.length} {abiertas.length === 1 ? "abierta" : "abiertas"}
@@ -74,16 +82,37 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string
       <div className="mt-4"><AvisoResultado ok={ok} /></div>
       {error && <div className="mt-4"><Aviso>No se pudo leer tu trabajo{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
       {!error && (
-        <div className="mt-6">
-          <LineaDeTiempo
-            items={abiertas}
-            hoy={hoy}
-            proyectos={misProyectos.map((p) => ({ id: p.id, etiqueta: p.codigo ?? p.nombre }))}
-          />
+        <div className="mt-4">
+          <LineaDeTiempo items={abiertas} hoy={hoy} proyectos={proyectosLinea} />
         </div>
       )}
+      {perfil && mostrarMisProyectos(perfil.rol_global, idsAsignados.length) && (
+        <section className="mt-4" aria-labelledby="t-mis-proyectos">
+          <h2 id="t-mis-proyectos" className="font-display text-lg font-bold text-leaf-700">Mis proyectos</h2>
+          {misProyectos.length === 0 ? (
+            <p className="mt-2 rounded-card bg-leaf-50 p-4 text-sm text-muted">Todavía no tienes proyectos asignados, o tu asignación aún no está vigente. Pide al administrador o al gerente del proyecto que te asigne.</p>
+          ) : (
+            <ul className="mt-2 grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+              {misProyectos.map((p) => {
+                const n = conFecha.get(p.id) ?? 0;
+                return (
+                  <li key={p.id}>
+                    <Link href={`/proyectos/${p.id}`} className="flex h-full items-center gap-3 rounded-card bg-leaf-100 px-3 py-2 transition hover:-translate-y-0.5 hover:shadow-card">
+                      <span className="inline-block h-3 w-3 shrink-0 rotate-45" style={{ backgroundColor: colorDeProyecto(proyectosLinea.findIndex((x) => x.id === p.id)) }} aria-hidden="true" />
+                      <span className="min-w-0">
+                        <span className="block truncate font-display text-base font-bold leading-tight text-leaf-700">{p.nombre}</span>
+                        <span className="block truncate text-xs">{[p.codigo, p.cliente, p.ubicacion].filter(Boolean).join(" · ")} · {n} con fecha</span>
+                      </span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </section>
+      )}
       {!error && (
-        <div className="mt-6">
+        <div className="mt-5">
           <TableroActividades
             items={[...abiertas, ...hechasMostradas]}
             hoy={hoy}
@@ -92,25 +121,6 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string
             vacio="No tienes actividades. Cuando te asignen una, aparecerá aquí."
           />
         </div>
-      )}
-      {perfil && mostrarMisProyectos(perfil.rol_global, idsAsignados.length) && (
-        <section className="mt-10" aria-labelledby="t-mis-proyectos">
-          <h2 id="t-mis-proyectos" className="font-display text-2xl font-bold text-leaf-700">Mis proyectos</h2>
-          {misProyectos.length === 0 ? (
-            <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Todavía no tienes proyectos asignados, o tu asignación aún no está vigente. Pide al administrador o al gerente del proyecto que te asigne.</p>
-          ) : (
-            <ul className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-              {misProyectos.map((p) => (
-                <li key={p.id}>
-                  <Link href={`/proyectos/${p.id}`} className="block h-full rounded-card bg-leaf-100 p-4 transition hover:-translate-y-0.5 hover:shadow-card">
-                    <h3 className="font-display text-lg font-bold text-leaf-700">{p.nombre}</h3>
-                    <p className="mt-1 text-sm">{[p.codigo, p.cliente, p.ubicacion].filter(Boolean).join(" · ")}</p>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
       )}
       <p className="mt-8 text-sm text-muted">
         ¿Quieres ver el tablero de un proyecto completo? Elígelo en el menú lateral y entra a <strong>Actividades</strong>. <Link href="/glosario" className="font-medium text-leaf-600 hover:underline">Ver la guía</Link>.

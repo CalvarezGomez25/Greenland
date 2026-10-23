@@ -2,6 +2,13 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.5.1] · 23 de octubre de 2026
+### Seguridad
+- **Revisión de la alerta de Next.js** (`npm audit`): Next.js 16.4.0 estaba afectada por 3 avisos (2 críticos: ejecución remota de código en la optimización de imágenes con SVG y en funciones `use cache`; 1 alto: denegación de servicio con acciones de servidor). Se actualizó a **16.4.3** (versión de parche, sin cambios de código). Nodemailer pasó de 6.10.1 a **10.2.1** (tenía avisos altos y moderados; el uso es solo `createTransport` y `sendMail`).
+- Quedan 2 avisos moderados en `uuid` dentro de `exceljs`: afectan solo a quien pasa un búfer propio a `uuid` v3/v5/v6; no se actualiza porque la solución que propone `npm audit` es bajar `exceljs` a la 3.4.0 (cambio incompatible y retroceso).
+### Cambiado
+- Línea de tiempo de «Mi trabajo» más compacta; «Mis proyectos» pasa a una franja de tarjetas pequeñas (con el color de cada proyecto) entre la línea de tiempo y el tablero, que gana protagonismo.
+
 ## [3.5.0] · 23 de octubre de 2026
 ### Cambiado
 - **Se vuelve a la imagen anterior (sistema de diseño previo de GreenLand)** por decisión del usuario: se revirtió el código de la v3.4.0 con `git revert -m 1 9df595b` (`dc309ba`). La documentación de la v3.4.0 se conserva como registro; el estado de [ADR-0028](decisiones/ADR-0028-sistema-de-diseno-greenland-v1.md) pasa a «Revertida».
