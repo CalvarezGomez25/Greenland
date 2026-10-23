@@ -8,9 +8,9 @@ Plantilla para enviar al dar acceso a PMO360. Reemplaza lo que está entre [corc
 
 Hola [nombre / equipo]:
 
-Ya tienes acceso a **PMO360, Control integral de Proyectos**, la plataforma donde estamos reuniendo el seguimiento de nuestros proyectos: avance, presupuesto, riesgos, cambios, contratos y actividades. Todavía está en etapa de prueba y quiero que la **recorras con calma y me des tus impresiones**. Este correo te da el panorama para que no te pierdas. No necesitas más de 15 minutos.
+Ya tienes acceso a **PMO360, Control integral de Proyectos**, la plataforma donde estamos reuniendo el seguimiento de nuestros proyectos: avance, presupuesto, riesgos, cambios, contratos y actividades. Todavía está en etapa de prueba y quiero que la **recorras con calma y me des tus impresiones**. Este correo te da el panorama para que no te pierdas, y adjunto una **guía rápida en PDF con capturas numeradas** (incluye el módulo de Obra). No necesitas más de 20 minutos.
 
-[Opcional, solo si es cierto: Los proyectos que verás tienen datos de ejemplo; por favor no cargues información confidencial real todavía.]
+[Opcional, solo si es cierto: Los proyectos que verás tienen datos ficticios de ejemplo; por favor no cargues información confidencial real todavía.]
 
 ## 1. Por dónde ingresar
 1. Abre **[dirección web de la plataforma]** en tu navegador (Chrome, Edge, Safari o Firefox; también funciona en el celular).
@@ -48,10 +48,20 @@ Para crear actividades de un proyecto: entra al proyecto, abre **Actividades** y
 
 Recorrer no cambia nada: mira con confianza. Guarda con cuidado solo cuando registres información.
 
-## 6. Si tienes dudas
+## 6. Si tu proyecto tiene obra: el módulo «Obra»
+Si el proyecto incluye construcción, al elegirlo en el menú izquierdo aparece una zona **Obra** con cuatro pantallas. Te recomiendo recorrerlas en este orden (en el PDF adjunto están con capturas, figuras 8 a 15):
+
+1. **Presupuesto** (*Obra → Presupuesto*): aquí está el presupuesto por capítulos y partidas, los costos adicionales (administración, imprevistos, utilidad) y la **línea base de costo**. Más abajo está la **Curva S**: la línea punteada es lo planificado y la continua lo gastado realmente. Con **Registrar gasto** se anota el gasto real de cada mes y con **Importar CSV** se cargan las partidas desde un archivo.
+2. **Cronograma** (*Obra → Cronograma*): las tareas con su semana de inicio, duración y **peso** (suman 100 %). El **Gantt** muestra cada barra con su avance en tono oscuro y una línea vertical con la semana actual. Compara el **avance reportado** con el **planificado a hoy**: si el primero es menor, hay atraso. Para actualizar el avance de una tarea escribe el porcentaje y pulsa **Guardar**.
+3. **Contratos y pagos** (*Obra → Contratos y pagos*): una fila por contrato, con lo facturado, el porcentaje ejecutado, el anticipo por amortizar y la retención. Haz clic en un contrato para ver su **evolución de pagos**: cada acta con su valor bruto, la amortización del anticipo, la retención y el **neto a pagar**, con su estado (radicada, en revisión de interventoría, con observaciones o aprobada para pago). La plataforma registra y calcula; no ejecuta pagos.
+4. **Bitácora** (*Obra → Bitácora*): el registro diario de la obra, con clima, personal, actividades, retrasos e incidentes. Con **Nueva entrada** se llena el formulario del día; el avance que anotes se suma al de la tarea del cronograma. Una entrada guardada no se edita: si hay un error, se deja un comentario.
+
+Cuando hay presupuesto aprobado, cronograma y gasto, el **valor ganado se calcula solo** (menú *Valor ganado*): no tienes que hacer cuentas.
+
+## 7. Si tienes dudas
 Abre **Ayuda** en el menú izquierdo. Allí está el glosario (qué significan SPI, CPI, BAC y el semáforo) y una guía de diligenciamiento de cada módulo. Muchas pantallas tienen además un pequeño signo de ayuda junto a los campos. Si aun así no queda claro, anótalo: es justo lo que quiero saber.
 
-## 7. Lo que necesito de ti
+## 8. Lo que necesito de ti
 Después de recorrerla, respóndeme este correo con tus impresiones. Me sirve cualquier comentario; estas preguntas te guían:
 1. ¿Lo primero que viste te quedó claro? ¿Supiste a dónde ir?
 2. ¿Qué parte te resultó confusa, difícil o sobrante?
