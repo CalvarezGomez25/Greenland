@@ -48,8 +48,19 @@ Para crear actividades de un proyecto: entra al proyecto, abre **Actividades** y
 
 Recorrer no cambia nada: mira con confianza. Guarda con cuidado solo cuando registres información.
 
-## 6. Si tu proyecto tiene obra: el módulo «Obra»
-Si el proyecto incluye construcción, al elegirlo en el menú izquierdo aparece una zona **Obra** con cuatro pantallas. Te recomiendo recorrerlas en este orden (en el PDF adjunto están con capturas, figuras 8 a 15):
+## 6. Los demás módulos de «Gestión del proyecto»
+Dentro de un proyecto, en la zona **Gestión del proyecto** del menú izquierdo, están estos módulos (en el PDF adjunto tienen capturas, figuras 8 a 19):
+
+- **Interesados:** quién participa o influye en el proyecto. Cada persona tiene su poder y su interés (1 a 5) y la plataforma calcula la estrategia («Gestionar de cerca», «Mantener satisfecho», «Mantener informado»…). Al agregar uno puedes **reutilizar un contacto del directorio** y así no escribir sus datos otra vez.
+- **EDT:** el proyecto dividido en entregables (1, 1.1, 1.2.1…), con responsable y estado.
+- **Riesgos:** cada riesgo con su probabilidad e impacto (1 a 5); el puntaje define el nivel (Crítico, Alto, Medio o Bajo) y la matriz los ubica. Un riesgo crítico activo pone el proyecto en rojo. También puedes importar un registro desde Excel.
+- **Control de cambios:** cada solicitud de cambio recorre unas fases (Identificado, Radicado, En evaluación, En análisis de impacto, En aprobación, Aprobado, En implementación y Cerrado). El nivel (Menor, Moderado o Crítico) lo calcula la plataforma según el impacto en costo; los menores los aprueba el gerente y los moderados y críticos, el director general.
+- **Reporte semanal:** una tabla de indicadores de gestión y un reporte por semana. Con «Nuevo reporte» eliges la semana, completas logros, alertas, decisiones requeridas y próximos hitos, y lo envías; los indicadores quedan guardados como foto de ese momento. Allí mismo están los enlaces para registrar **Hitos** y **Reuniones**.
+- **Documentos:** planos, contratos, actas e informes con todas sus versiones; tú decides cuáles puede ver la interventoría.
+- **Cierre y lecciones:** el acta de entrega y las lecciones aprendidas. Para cerrar un proyecto no puede haber cambios sin resolver y deben estar registradas las lecciones.
+
+## 7. Si tu proyecto tiene obra: el módulo «Obra»
+Si el proyecto incluye construcción, al elegirlo en el menú izquierdo aparece una zona **Obra** con cuatro pantallas. Te recomiendo recorrerlas en este orden (en el PDF adjunto están con capturas, figuras 20 a 27):
 
 1. **Presupuesto** (*Obra → Presupuesto*): aquí está el presupuesto por capítulos y partidas, los costos adicionales (administración, imprevistos, utilidad) y la **línea base de costo**. Más abajo está la **Curva S**: la línea punteada es lo planificado y la continua lo gastado realmente. Con **Registrar gasto** se anota el gasto real de cada mes y con **Importar CSV** se cargan las partidas desde un archivo.
 2. **Cronograma** (*Obra → Cronograma*): las tareas con su semana de inicio, duración y **peso** (suman 100 %). El **Gantt** muestra cada barra con su avance en tono oscuro y una línea vertical con la semana actual. Compara el **avance reportado** con el **planificado a hoy**: si el primero es menor, hay atraso. Para actualizar el avance de una tarea escribe el porcentaje y pulsa **Guardar**.
@@ -58,10 +69,10 @@ Si el proyecto incluye construcción, al elegirlo en el menú izquierdo aparece 
 
 Cuando hay presupuesto aprobado, cronograma y gasto, el **valor ganado se calcula solo** (menú *Valor ganado*): no tienes que hacer cuentas.
 
-## 7. Si tienes dudas
+## 8. Si tienes dudas
 Abre **Ayuda** en el menú izquierdo. Allí está el glosario (qué significan SPI, CPI, BAC y el semáforo) y una guía de diligenciamiento de cada módulo. Muchas pantallas tienen además un pequeño signo de ayuda junto a los campos. Si aun así no queda claro, anótalo: es justo lo que quiero saber.
 
-## 8. Lo que necesito de ti
+## 9. Lo que necesito de ti
 Después de recorrerla, respóndeme este correo con tus impresiones. Me sirve cualquier comentario; estas preguntas te guían:
 1. ¿Lo primero que viste te quedó claro? ¿Supiste a dónde ir?
 2. ¿Qué parte te resultó confusa, difícil o sobrante?
