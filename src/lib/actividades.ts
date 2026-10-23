@@ -114,7 +114,7 @@ export type LineaDeTiempo<T> = { hitos: Hito<T>[]; xHoy: number; ancho: number; 
 export function construirLineaDeTiempo<T extends Pick<Actividad, "estado" | "fecha_limite">>(
   lista: T[], hoy: string, opciones: { anchoMinimo?: number; separacion?: number; margen?: number } = {},
 ): LineaDeTiempo<T> {
-  const { anchoMinimo = 640, separacion = 120, margen = 70 } = opciones;
+  const { anchoMinimo = 640, separacion = 120, margen = 100 } = opciones;
   const porFecha = new Map<string, T[]>();
   for (const a of lista) {
     if (a.estado === "hecha" || a.fecha_limite === null) continue;

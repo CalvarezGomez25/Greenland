@@ -6,9 +6,9 @@ import { DesplazarAHoy } from "./desplazar-a-hoy";
 // Un color por proyecto, dentro de la paleta del sistema de diseño.
 export const COLORES_PROYECTO = ["#4c700b", "#7c401d", "#386631", "#7fa62e", "#2f5517", "#a9c96c", "#5d870e", "#b23a22"];
 export const colorDeProyecto = (i: number) => COLORES_PROYECTO[i % COLORES_PROYECTO.length];
-const ALTO = 172;
-const EJE = 88; // altura del eje dentro del lienzo
-const ROTULO = 124; // ancho de cada rótulo
+const ALTO = 124;
+const EJE = 62; // altura del eje dentro del lienzo
+const ROTULO = 200; // cabe porque los vecinos de un mismo lado están a 2 separaciones (240 px) // ancho de cada rótulo
 
 export type Proyecto = { id: string; etiqueta: string };
 
@@ -27,10 +27,10 @@ export function LineaDeTiempo({ items, hoy, proyectos }: { items: ItemTablero[];
   ].filter(Boolean).join(" · ");
 
   return (
-    <section aria-labelledby="t-linea-tiempo" className="rounded-card bg-leaf-50 px-4 pb-2 pt-3">
+    <section aria-labelledby="t-linea-tiempo" className="rounded-card bg-leaf-50 px-3 pb-1 pt-2">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 border-b-2 border-leaf-500 pb-1">
-        <h2 id="t-linea-tiempo" className="font-display text-xl font-bold text-leaf-700">Línea de tiempo</h2>
-        {resumen && <p className="font-display text-sm font-bold text-leaf-600">{resumen}</p>}
+        <h2 id="t-linea-tiempo" className="font-display text-lg font-bold leading-tight text-leaf-700">Línea de tiempo</h2>
+        {resumen && <p className="font-display text-xs font-bold text-leaf-600">{resumen}</p>}
       </div>
 
       <p className="mt-1 text-xs text-muted sm:hidden">Desliza hacia los lados para recorrer el tiempo.</p>
@@ -41,8 +41,8 @@ export function LineaDeTiempo({ items, hoy, proyectos }: { items: ItemTablero[];
           <div className="absolute rounded-full bg-soil-border" style={{ left: linea.xHoy, width: linea.ancho - linea.xHoy, top: EJE - 3, height: 6 }} />
 
           {/* Hoy */}
-          <div className="absolute border-l-2 border-dashed border-danger/60" style={{ left: linea.xHoy, top: 22, height: ALTO - 22 }} aria-hidden="true" />
-          <span className="absolute -translate-x-1/2 rounded-full bg-danger px-2.5 text-xs font-medium leading-5 text-white" style={{ left: linea.xHoy, top: 0 }}>
+          <div className="absolute border-l-2 border-dashed border-danger/60" style={{ left: linea.xHoy, top: 16, height: ALTO - 16 }} aria-hidden="true" />
+          <span className="absolute -translate-x-1/2 rounded-full bg-danger whitespace-nowrap px-2 text-[11px] font-medium leading-4 text-white" style={{ left: linea.xHoy, top: 0 }}>
             HOY · {formatearFechaCorta(hoy)}
           </span>
           <span className="absolute h-3 w-3 -translate-x-1/2 rounded-full border-2 border-white bg-danger" style={{ left: linea.xHoy, top: EJE - 6 }} aria-hidden="true" />
@@ -55,30 +55,30 @@ export function LineaDeTiempo({ items, hoy, proyectos }: { items: ItemTablero[];
             const codigos = [...new Set(h.items.map((a) => (a.proyecto ?? "").split(" · ")[0]))].filter(Boolean).join(", ");
             const texto = (
               <>
-                <span className="block font-display text-sm font-bold leading-tight text-leaf-900 [overflow-wrap:anywhere] line-clamp-1">
+                <span className="block truncate font-display text-xs font-bold leading-4 text-leaf-900">
                   {unica ? unica.titulo : `${h.items.length} actividades`}
                 </span>
-                <span className={`block text-xs font-medium ${atrasado ? "text-danger" : "text-leaf-600"}`}>
-                  {atrasado ? "" : "~"}{formatearFechaCorta(h.fecha)}{h.dias === 0 ? " · hoy" : ""}
+                <span className="block truncate text-[11px] leading-4">
+                  <span className={`font-medium ${atrasado ? "text-danger" : "text-leaf-600"}`}>{atrasado ? "" : "~"}{formatearFechaCorta(h.fecha)}{h.dias === 0 ? " · hoy" : ""}</span>
+                  {codigos && <span className="text-muted"> · {codigos}</span>}
                 </span>
-                {codigos && <span className="block truncate text-[11px] leading-tight text-muted">{codigos}</span>}
               </>
             );
-            const estiloRotulo = { left: h.x - ROTULO / 2, width: ROTULO, ...(arriba ? { bottom: ALTO - EJE + 18 } : { top: EJE + 18 }) };
+            const estiloRotulo = { left: h.x - ROTULO / 2, width: ROTULO, ...(arriba ? { bottom: ALTO - EJE + 14 } : { top: EJE + 14 }) };
             return (
               <div key={h.fecha}>
-                <span className="absolute w-px bg-leaf-300" style={{ left: h.x, ...(arriba ? { top: EJE - 18, height: 18 } : { top: EJE, height: 18 }) }} aria-hidden="true" />
+                <span className="absolute w-px bg-leaf-300" style={{ left: h.x, ...(arriba ? { top: EJE - 14, height: 14 } : { top: EJE, height: 14 }) }} aria-hidden="true" />
                 <span
-                  className="absolute h-3.5 w-3.5 -translate-x-1/2 rotate-45 border-2 border-white"
-                  style={{ left: h.x, top: EJE - 7, backgroundColor: colorHito }}
+                  className="absolute h-3 w-3 -translate-x-1/2 rotate-45 border-2 border-white"
+                  style={{ left: h.x, top: EJE - 6, backgroundColor: colorHito }}
                   aria-hidden="true"
                 />
                 {h.items.length > 1 && (
-                  <span className="absolute -translate-x-1/2 text-[9px] font-medium text-white" style={{ left: h.x, top: EJE - 6 }} aria-hidden="true">{h.items.length}</span>
+                  <span className="absolute -translate-x-1/2 text-[8px] font-medium leading-none text-white" style={{ left: h.x, top: EJE - 4 }} aria-hidden="true">{h.items.length}</span>
                 )}
                 <div className="absolute text-center" style={estiloRotulo} title={h.items.map((a) => a.titulo).join("\n")}>
                   {unica
-                    ? <Link href={`/proyectos/${unica.proyecto_id}/actividades`} className="block rounded-[10px] px-1 hover:bg-white">{texto}</Link>
+                    ? <Link href={`/proyectos/${unica.proyecto_id}/actividades`} className="block rounded-lg px-1 hover:bg-white">{texto}</Link>
                     : <div className="px-1">{texto}</div>}
                 </div>
               </div>

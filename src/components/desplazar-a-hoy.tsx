@@ -7,7 +7,7 @@ export function DesplazarAHoy({ xHoy, children, etiqueta }: { xHoy: number; chil
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
-    if (el) el.scrollLeft = Math.max(0, xHoy - el.clientWidth / 3);
+    if (el) el.scrollLeft = xHoy > el.clientWidth * 0.7 ? xHoy - el.clientWidth / 3 : 0; // solo se desplaza si «hoy» no se ve cómodo
   }, [xHoy]);
   return (
     <div ref={ref} className="overflow-x-auto pb-2" role="group" aria-label={etiqueta} tabIndex={0}>
