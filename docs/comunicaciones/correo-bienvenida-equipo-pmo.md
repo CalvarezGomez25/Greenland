@@ -57,9 +57,9 @@ Marcar una actividad como «Hecha» **no actualiza el avance del cronograma**: e
 Recorrer no cambia nada: mira con confianza. Guarda con cuidado solo cuando registres información.
 
 ## 6. Los demás módulos de «Gestión del proyecto»
-Dentro de un proyecto, en la zona **Gestión del proyecto** del menú izquierdo, además de **Actividades** (sección 3), están estos módulos (en el PDF adjunto tienen capturas, figuras 6 y 8 a 19):
+Dentro de un proyecto, en la zona **Gestión del proyecto** del menú izquierdo, además de **Actividades** (sección 3), están estos módulos (en el PDF adjunto tienen capturas, figuras 6 y 8 a 20):
 
-- **Acta de constitución:** el punto de partida del proyecto: propósito, alcance, supuestos, restricciones y las firmas (quedan registradas con quién firmó y cuándo). El presupuesto que aparece allí es solo una referencia; el que vale es el que se aprueba en el módulo Presupuesto.
+- **Acta de constitución:** el punto de partida del proyecto: propósito, alcance, supuestos, restricciones y las firmas (quedan registradas con quién firmó y cuándo). El presupuesto que aparece allí es solo una referencia; el que vale es el que se aprueba en el módulo Presupuesto. Si se cambia el contenido de un acta ya firmada, las firmas se anulan y hay que firmar de nuevo. *(PDF, figura 8)*
 - **Valor ganado:** mide si el proyecto va bien en tiempo y costo con índices (SPI y CPI), variaciones y proyecciones al terminar (EAC, ETC, VAC, TCPI), con su historial. En proyectos con obra se calcula solo a partir del presupuesto aprobado, el cronograma y el gasto; si el proyecto no tiene esos datos, se registra una medición a mano (fecha de corte y los valores BAC, PV, EV y AC). El signo «?» de cada indicador explica qué significa. *(PDF, figura 6)*
 - **Interesados:** quién participa o influye en el proyecto. Cada persona tiene su poder y su interés (1 a 5) y la plataforma calcula la estrategia («Gestionar de cerca», «Mantener satisfecho», «Mantener informado»…). Al agregar uno puedes **reutilizar un contacto del directorio** y así no escribir sus datos otra vez.
 - **EDT:** el proyecto dividido en entregables (1, 1.1, 1.2.1…), con responsable y estado.
@@ -70,7 +70,7 @@ Dentro de un proyecto, en la zona **Gestión del proyecto** del menú izquierdo,
 - **Cierre y lecciones:** el acta de entrega y las lecciones aprendidas. Para cerrar un proyecto no puede haber cambios sin resolver y deben estar registradas las lecciones.
 
 ## 7. Si tu proyecto tiene obra: el módulo «Obra»
-Si el proyecto incluye construcción, al elegirlo en el menú izquierdo aparece una zona **Obra** con cuatro pantallas. Te recomiendo recorrerlas en este orden (en el PDF adjunto están con capturas, figuras 20 a 27):
+Si el proyecto incluye construcción, al elegirlo en el menú izquierdo aparece una zona **Obra** con cuatro pantallas. Te recomiendo recorrerlas en este orden (en el PDF adjunto están con capturas, figuras 21 a 28):
 
 1. **Presupuesto** (*Obra → Presupuesto*): aquí está el presupuesto por capítulos y partidas, los costos adicionales (administración, imprevistos, utilidad) y la **línea base de costo**. Más abajo está la **Curva S**: la línea punteada es lo planificado y la continua lo gastado realmente. Con **Registrar gasto** se anota el gasto real de cada mes y con **Importar CSV** se cargan las partidas desde un archivo.
 2. **Cronograma** (*Obra → Cronograma*): las tareas con su semana de inicio, duración y **peso** (suman 100 %). El **Gantt** muestra cada barra con su avance en tono oscuro y una línea vertical con la semana actual. Compara el **avance reportado** con el **planificado a hoy**: si el primero es menor, hay atraso. Para actualizar el avance de una tarea escribe el porcentaje y pulsa **Guardar**.
