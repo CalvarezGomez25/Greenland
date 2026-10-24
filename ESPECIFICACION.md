@@ -1,12 +1,12 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.5.0, actualizada el 23 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.6.0, actualizada el 24 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.5.0, única versión vigente |
+| Versión | 3.6.0, única versión vigente |
 | Última actualización | 21 de octubre de 2026 (imagen corporativa: sistema de diseño GreenLand v1.0.0 aplicado a la interfaz, las exportaciones, el informe gerencial y los correos; sección 1.1 y hito 26) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
@@ -24,6 +24,7 @@ Versión 3.5.0, actualizada el 23 de octubre de 2026. Es la única versión vige
 | 3.3.1 | 21 de octubre de 2026 | Revisión de coherencia al unir dos líneas de trabajo (cifras de pruebas, conteo de fichas de decisión, estado de P16 y P17); guías de operación de la sección 16: crear usuarios con su rol y configurar y probar el envío de correos por fases; aviso de que los avisos inmediatos solo necesitan el proveedor de correo (módulo O); se registra la exploración de Microsoft 365 como decisión abierta (P37) |
 | 3.3.2 | 21 de octubre de 2026 | Se registra que la rama principal es `claude/especificacion-project-manager-495kj0` (secciones 14 y 16, pendiente P38) |
 | 3.5.0 | 23 de octubre de 2026 | Se vuelve a la imagen anterior de la interfaz (el usuario revirtió el sistema de diseño v1.0.0; ADR-0028 queda «Revertida»; la sección 1.1 describe la identidad anterior y la v1.0.0 queda como referencia) y se agrega la línea de tiempo en «Mi trabajo» |
+| 3.6.0 | 24 de octubre de 2026 | Integración de contratos y costos (ADR-0029, migración 0025, hito 27): costos indirectos A.I.U., adicionales de obra, asignación de contratos al presupuesto y módulo Balance de costos (secciones 5.J y 5.M, 7 y 14; supuestos S21 a S24; pendiente P40) |
 | 3.4.0 | 21 de octubre de 2026 | Nueva imagen corporativa: sistema de diseño GreenLand v1.0.0 en toda la interfaz (paleta verde #027001, texto #5E5E5E, tipografía Archivo, píldoras y tarjetas con muesca, sin sombras ni mayúsculas sostenidas, alertas sobrias), exportaciones PDF y Excel, informe gerencial y correos; identidad (sección 1.1), hito 26, decisión de no mantener una versión paralela y ancla de reversión (ADR-0028), supuesto S20 y pendiente P39 |
 
 ### 0.1 Estado actual de un vistazo (16 de octubre de 2026)
@@ -32,10 +33,10 @@ Versión 3.5.0, actualizada el 23 de octubre de 2026. Es la única versión vige
 | --- | --- |
 | Hitos 1 a 11 de la sección 12 | Construidos. Todos los módulos del mapa (sección 4) están disponibles en la aplicación |
 | Extensiones posteriores | Construidas: aprobación de contratos, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial y su envío semanal, marca, menú lateral y ayuda, y los ajustes del tablero del proyecto (hito 21). Material del marco FARO producido (hito 20). Memoria del proyecto creada (hito 22). Directorio de contactos construido (hito 23). Actividades y «Mi trabajo» construidos (hito 24) |
-| Pruebas automáticas | 328 pruebas unitarias (Vitest, 35 archivos) y 586 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
+| Pruebas automáticas | 347 pruebas unitarias (Vitest, 36 archivos) y 626 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
 | Producción | El usuario instaló el SQL de la base en Supabase y desplegó en Vercel; confirmó que funciona con datos ficticios |
 | Aún no ocurrido | Ningún correo se ha enviado en producción (falta configurar el proveedor, `CRON_SECRET` y el usuario de solo lectura); no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
-| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 28 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
+| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 29 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
 | Condiciones antes de datos reales | Definir región y confidencialidad; plan de alojamiento apto para uso comercial; revisión de seguridad (pendientes P12 a P14) |
 
 ## 1. Visión, alcance y principios
@@ -301,6 +302,9 @@ Repositorio de planos, contratos, actas e informes con versiones, vinculables a 
 - **BAC** = suma de los capítulos del presupuesto aprobado. Cada aprobación de cambio crea una nueva versión.
 - **Presupuesto sobre la EDT (v3.0, migración 0020; supuesto S14):** cada capítulo puede ligarse a un elemento de la EDT. «Crear capítulos desde la EDT» crea (o liga, si ya existen con el mismo nombre) los capítulos de los elementos de un nivel elegido. Una tarea con elemento de la EDT y sin capítulo hereda el del ancestro más cercano. Los capítulos ligados no se borran aunque estén vacíos. La EDT muestra el costo directo de cada elemento sumando sus descendientes (no lo ve la interventoría). Es opcional: un presupuesto sin EDT sigue funcionando.
 - Curva S real: gasto mensual acumulado. Curva S planificada: el prototipo usa la distribución teórica 3t² − 2t³ (t = mes / duración). En la versión final se calcula desde el cronograma, distribuyendo el valor de cada tarea a lo largo de su duración.
+- **Costos indirectos (A.I.U.) (v3.6, migración 0025; ADR-0029):** el presupuesto es costo directo + costos indirectos. Cada concepto indirecto (antes «costos adicionales») tiene tipo: administración, imprevistos, utilidad, impuestos u otro; A.I.U. = administración + imprevistos + utilidad, y los impuestos y retenciones (IVA sobre la utilidad, retefuente) se muestran aparte. Los porcentajes los define el proyecto; la plataforma no fija tasas legales (valídalos con el contador).
+- **Adicionales de obra (v3.6):** concepto distinto del A.I.U. Son trabajos **no contemplados en la EDT original** o **añadidos durante la ejecución**. Código AD-001, descripción, origen, valor directo, si aplican los indirectos, elemento de la EDT (opcional) y cambio que los respalda (opcional). Su estado se **deriva del cambio**: sin cambio o con cambio en trámite = «En trámite»; cambio aprobado, en implementación o cerrado = «Aprobado»; cambio rechazado = «Rechazado». Solo los aprobados cuentan en el balance. No modifican el BAC por sí solos: el BAC cambia únicamente con cambios aprobados (módulo F). Los edita el administrador o el gerente; la interventoría no los ve.
+- **Balance de costos (v3.6):** por capítulo y por adicional aprobado muestra presupuesto directo, presupuesto con indirectos (el A.I.U. se reparte en proporción al costo directo; S21), contratado, por aprobar, facturado, saldo y % contratado. Marca lo **sobrecontratado** (contratado > presupuesto con indirectos) y los contratos con valor **sin asignar**.
 
 ### K. Cronograma y avance (obra)
 
@@ -333,6 +337,7 @@ Repositorio de planos, contratos, actas e informes con versiones, vinculables a 
 - **Nueva contratación (v3.0, migración 0018):** el director general de planificación y proyectos revisa y aprueba cada contrato nuevo. Un contrato creado por el gerente queda pendiente: no admite anticipo ni actas de pago, no sirve de base para el nivel de un cambio, y su valor no se modifica una vez aprobado sin el director (o un cambio aprobado). Si lo crea quien aprueba, nace aprobado. El administrador solo aprueba con el parámetro `contrato_admin_puede_aprobar` (para pruebas).
 - Cambios que afectan un contrato (otrosí) se tramitan por el módulo F.
 - **Tipo de contrato:** obra, interventoría, consultoría, suministro u otro. El contrato de interventoría se registra aquí como cualquier otro, y su valor entra al presupuesto como rubro (módulo J).
+- **Asignación al presupuesto (v3.6, migración 0025):** el valor de un contrato se reparte entre capítulos del presupuesto y adicionales de obra (una asignación por contrato y destino). La suma asignada no puede superar el valor del contrato y el valor del contrato no puede bajar de lo asignado. Un capítulo o adicional con contratos asignados no se borra sin quitar antes la asignación. Solo cuentan como «contratado» los contratos aprobados (S22); lo facturado de cada línea es el facturado del contrato por la fracción asignada (S23). La edición es del administrador y del gerente del proyecto.
 - **Estados del acta de pago:** Radicada, En revisión de interventoría, Con observaciones, Aprobada para pago. Si el contrato tiene interventoría asignada y el parámetro `interventoria_vb_acta_obligatorio` está activo, el acta no pasa a Aprobada para pago sin concepto favorable (Aprobado o Aprobado con observaciones) de los interventores técnico y financiero. La plataforma no ejecuta pagos.
 
 ### N. Interventoría
@@ -554,6 +559,7 @@ Esta tabla es el contrato de datos. Define de dónde sale cada número del dashb
 | riesgos | Nuevas columnas: frente, causa, consecuencia, momento_control, fecha_objetivo, referencia. Función `riesgos_importar`. Ahora con auditoría |
 | contratos | Nuevas columnas: estado_aprobacion (pendiente, aprobado), aprobado_por, aprobado_en. Los contratos existentes quedan aprobados |
 | capitulos | `wbs_id` en uso: liga opcional a la EDT, con funciones `capitulos_desde_edt` y `capitulos_vincular_edt` y herencia de capítulo en las tareas |
+| costos_adicionales, adicionales, contrato_asignaciones | v3.6, migración 0025: `costos_adicionales` (historico del nombre; en pantalla «costos indirectos») suma `categoria` (administracion, imprevistos, utilidad, impuestos, otro). Tabla `adicionales` (codigo AD-nnn, descripcion, origen no_contemplado/anadidura, wbs_id, valor_directo, aplica_indirectos, cambio_id, nota). Tabla `contrato_asignaciones` (contrato_id, capitulo_id o adicional_id, valor; exactamente uno de los dos destinos). Funciones `adicional_guardar`, `adicional_borrar`, `contrato_asignar`, `contrato_asignacion_borrar`; `presupuesto_importar` conserva y re-liga las asignaciones por nombre de capítulo y bloquea retirar un capítulo con contratos asignados. Acceso de lectura con `puede_ver_proyecto` (interventoría excluida) |
 | festivos | Solo fechas excepcionales; los festivos de Colombia se calculan por función |
 | contadores | Consecutivos por proyecto que no se reutilizan (códigos de riesgos, cambios y similares) |
 | migraciones_aplicadas | Control del instalador: cada migración se aplica una sola vez |
@@ -723,6 +729,7 @@ Los hitos 1 a 11 están **construidos**, con pruebas de base de datos (`pruebas-
 | 24. Actividades y Mi trabajo | Trabajo asignado a personas con responsable, fecha límite, prioridad y estado, ligable a un riesgo y a un elemento de la EDT; tablero por proyecto y pantalla «Mi trabajo» (módulo R; migración 0024) | Construido el 16 de octubre de 2026. `t-actividades` (54 comprobaciones de base de datos), 7 pruebas unitarias nuevas, `tsc`, `eslint` y compilación correctos. **Sin recorrido en navegador todavía** |
 | 25. Exportaciones con la identidad de la marca | PDF y Excel de todas las tablas (tablero de control, reporte semanal, valor ganado, cambios y contratos) con logo, tipografías Baloo 2 y Roboto, paleta verde, etiquetas de semáforo y, en el PDF del tablero, tarjetas de indicadores | Construido el 17 de octubre de 2026. 4 pruebas unitarias nuevas; revisado en imagen (PDF y Excel convertido) con datos de ejemplo |
 | 26. Imagen corporativa GreenLand v1.0.0 | Interfaz completa con el sistema de diseño (tokens de color y tipografía en `src/app/globals.css`, píldoras, campos, tarjetas con muesca, tablas con encabezado verde, estados con la paleta de alertas, gráficos con la serie oficial); exportaciones PDF y Excel (formato de hojas de cálculo del sistema), informe gerencial y correos con la misma identidad | Construido el 21 de octubre de 2026 sobre la rama principal. Verificado en navegador (escritorio y celular de 390 px) y con las muestras de PDF y Excel; 328 pruebas unitarias y 586 de base de datos correctas. Sin cambios de base de datos |
+| 27. Integración de contratos y costos | Costos indirectos A.I.U. con tipo, adicionales de obra, asignación de contratos a capítulos y adicionales, y módulo Balance de costos (0025, ADR-0029) | Construido. `t-contratos-costos` (40 comprobaciones) y pruebas unitarias de `calculos` y `balance`. **No validado con datos reales** |
 
 ## 13. Casos de prueba de referencia
 
@@ -880,6 +887,10 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | S18 | El directorio se alimenta solo al guardar interesados (sin captura aparte), identifica a la persona por correo y, sin correo, por nombre; el último dato guardado gana y lo vacío no borra. Lo ven quienes gestionan proyectos, no toda la plataforma. Son supuestos del asesor: validar con el uso real |
 | S19 | Las actividades son un mínimo propio y separado de las tareas del cronograma (sin peso ni efecto en el valor ganado); el responsable es una persona con cuenta; la interventoría solo gestiona las suyas. Son supuestos del asesor: validar con el uso real |
 | S20 | En la nueva imagen, Verde, Amarillo y Rojo del semáforo conservan sus palabras y usan los colores de Cumple, Atención y Crítico; el nivel de riesgo Alto se muestra como Atención y Medio como Informativo; el logotipo y los iconos del menú se mantienen mientras no haya paquete oficial en la sesión. Son decisiones del asesor, por validar con el responsable de marca |
+| S21 | El balance compara lo contratado contra el presupuesto **con indirectos**, repartiendo el A.I.U. entre capítulos en proporción a su costo directo, porque el valor de un contrato de obra suele incluir A.I.U. (propuesta del asesor; ADR-0029) |
+| S22 | Solo los contratos **aprobados** cuentan como contratado; los pendientes de aprobación se muestran como «por aprobar» |
+| S23 | Lo facturado de un capítulo o adicional se calcula repartiendo el facturado de cada contrato en proporción a lo asignado |
+| S24 | El estado de un adicional se deriva del estado del cambio que lo respalda; los adicionales no modifican el BAC por sí solos |
 
 **Pendientes**
 
@@ -924,6 +935,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | P37 | **Integración con Microsoft 365 (Teams y Planner).** Se exploró usar la licencia corporativa de Microsoft como capa de trabajo y dejar a PMO360 como capa de control (lectura de tareas por Microsoft Graph, solo lectura); **no se ha construido nada ni hay decisión definitiva** (ADR-0026). Pendiente del usuario: confirmar el plan de Microsoft 365. Pendiente de TI: cinco preguntas (plan, invitados externos para la interventoría, quién crea equipos, registro de aplicación en Entra ID, Power Automate) y una prueba con un solo proyecto. Lo citado de Microsoft salió de resultados de búsqueda, no de sus páginas | Abierto; relacionado con P34 (adopción de Actividades) |
 | P38 | **Ramas secundarias.** `prueba/gestor-colaborativo` no tiene trabajo propio (todo su contenido ya está en la rama principal): se puede archivar o borrar cuando el usuario lo decida. `vercel/install-vercel-web-analytics-x313y1` tiene 1 commit creado por Vercel («Install Vercel Web Analytics», 17 de octubre de 2026) que **no está en la rama principal** y quedó 13 commits atrás; no se integró porque no fue solicitado. Decidir si se integra o se descarta | Abierto; decide el usuario |
 | P39 | **Brechas de la imagen corporativa:** (1) falta el paquete oficial `GreenLand_DS_Export_v1.0.zip`; los logotipos de `public/` y los íconos del menú lateral (trazos propios, no los 20 glifos de la biblioteca cerrada) deben revisarse contra el paquete; (2) la fuente licenciada Non Natural Grotesk Plain no está incluida (se usa Archivo); (3) la paleta de alertas y la serie de gráficos son propuestas por validar con el responsable de marca; (4) decidir si los estados pasan a llamarse Cumple, Atención y Crítico; (5) la voz y la persona gramatical («tú») siguen sin definir; (6) el material de `docs/presentacion-faro/` conserva la identidad anterior | Abierto; el usuario aporta el paquete y valida con marca |
+| P40 | **Validar la integración de contratos y costos** con el equipo y con datos reales: (1) ¿la base «con indirectos» y el prorrateo del A.I.U. (S21) reproducen cómo se contrata en GreenLand?; (2) ¿hace falta repartir un contrato por partidas y no solo por capítulo?; (3) fases siguientes inspiradas en Casa Las Mercedes: evolución corte a corte (invertido, por invertir, proyectado, desviación frente al control anterior), «proyectado» estimado por el gerente y dos líneas base (interna y contractual); el director las pidió de forma gráfica y está **sin decidir** el orden y el alcance |
 
 ## 15. Trazabilidad: hoja del libro a módulo
 
@@ -1056,7 +1068,7 @@ Repositorio `docs/memoria/`, creado el 14 de octubre de 2026 para explicar cómo
 | `02-historia.md` | Cronología desde los antecedentes hasta hoy, con commits |
 | `03-marco-teorico.md` | Teoría, normativa y nivel de verificación de cada afirmación |
 | `04-buenas-practicas-documentacion.md` | Investigación sobre cómo documentar proyectos, diagnóstico y brechas |
-| `decisiones/` | 28 fichas de decisión (ADR) |
+| `decisiones/` | 29 fichas de decisión (ADR) |
 | `06-trazabilidad.md` | Módulo → decisión → migración → prueba → commit |
 | `07-lecciones-aprendidas.md` | Incidentes y qué cambió |
 | `08-fuentes-y-verificacion.md` | Bibliografía con niveles N1 a N3 |

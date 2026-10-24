@@ -1,5 +1,7 @@
-// Cálculos del presupuesto: costo directo, subtotales por capítulo, costos adicionales
-// (AIU, IVA sobre la utilidad, retefuente...) y costo total. Todo en aritmética exacta
+// Cálculos del presupuesto: costo directo, subtotales por capítulo, costos indirectos
+// (A.I.U.: administración, imprevistos y utilidad; más impuestos como el IVA sobre la utilidad
+// o la retefuente) y costo total. No confundir con los «adicionales de obra» (trabajos no
+// contemplados en la EDT original): esos tienen su propio módulo (ver balance.ts). Todo en aritmética exacta
 // (ver dinero.ts). Las funciones no tocan la base de datos: reciben datos y devuelven
 // resultados, para poder probarlas solas.
 
@@ -18,10 +20,17 @@ export type Partida = {
   precio: bigint; // escala 2
 };
 
-// Costo adicional: un porcentaje del costo directo, o de otra línea (p. ej. IVA sobre la utilidad).
+export type CategoriaCosto = "administracion" | "imprevistos" | "utilidad" | "impuestos" | "otro";
+export const ETIQUETA_CATEGORIA: Record<CategoriaCosto, string> = {
+  administracion: "Administración (A)", imprevistos: "Imprevistos (I)", utilidad: "Utilidad (U)", impuestos: "Impuestos y retenciones", otro: "Otro",
+};
+
+// Costo indirecto: un porcentaje del costo directo, o de otra línea (p. ej. IVA sobre la utilidad).
+// En la base de datos la tabla se llama costos_adicionales (nombre histórico).
 export type LineaCosto = {
   id: string;
   nombre: string;
+  categoria?: CategoriaCosto; // sin dato se trata como «otro»
   base: "costo_directo" | "linea";
   lineaBaseId: string | null;
   porcentaje: bigint; // escala 4 (19 % = 190000n)
@@ -43,7 +52,9 @@ export type Presupuesto = {
   capitulos: ResumenCapitulo[];
   costoDirecto: bigint;
   lineas: ValorLinea[];
-  totalAdicionales: bigint;
+  totalIndirectos: bigint; // todas las líneas (A.I.U. + impuestos y otros)
+  aiu: { administracion: bigint; imprevistos: bigint; utilidad: bigint; total: bigint };
+  impuestosYOtros: bigint;
   costoTotal: bigint;
 };
 
@@ -77,15 +88,26 @@ export function calcularPresupuesto(entrada: {
   for (const c of resumen) c.participacion = porcentajeDe(c.subtotal, costoDirecto);
 
   const lineas = calcularLineas(entrada.lineas, costoDirecto);
-  const totalAdicionales = lineas.reduce((suma, l) => suma + l.valor, 0n);
+  const totalIndirectos = lineas.reduce((suma, l) => suma + l.valor, 0n);
+  const de = (c: CategoriaCosto) => lineas.filter((l) => (l.categoria ?? "otro") === c).reduce((suma, l) => suma + l.valor, 0n);
+  const aiu = { administracion: de("administracion"), imprevistos: de("imprevistos"), utilidad: de("utilidad"), total: 0n };
+  aiu.total = aiu.administracion + aiu.imprevistos + aiu.utilidad;
 
   return {
     capitulos: resumen,
     costoDirecto,
     lineas,
-    totalAdicionales,
-    costoTotal: costoDirecto + totalAdicionales,
+    totalIndirectos,
+    aiu,
+    impuestosYOtros: totalIndirectos - aiu.total,
+    costoTotal: costoDirecto + totalIndirectos,
   };
+}
+
+// Lleva un valor de costo directo a «con indirectos»: aplica la misma proporción que el presupuesto
+// (costo total ÷ costo directo). Sin costo directo no hay proporción y el valor queda igual.
+export function conIndirectos(valorDirecto: bigint, p: Pick<Presupuesto, "costoDirecto" | "costoTotal">): bigint {
+  return p.costoDirecto === 0n ? valorDirecto : dividirRedondeado(valorDirecto * p.costoTotal, p.costoDirecto);
 }
 
 function calcularLineas(lineas: LineaCosto[], costoDirecto: bigint): ValorLinea[] {
@@ -97,7 +119,7 @@ function calcularLineas(lineas: LineaCosto[], costoDirecto: bigint): ValorLinea[
     const previo = calculadas.get(linea.id);
     if (previo !== undefined) return previo;
     if (visitando.has(linea.id)) {
-      throw new Error(`Los costos adicionales se calculan unos sobre otros en círculo ("${linea.nombre}").`);
+      throw new Error(`Los costos indirectos se calculan unos sobre otros en círculo ("${linea.nombre}").`);
     }
     visitando.add(linea.id);
 

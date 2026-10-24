@@ -13,8 +13,9 @@ import { ETIQUETA_ESTADO_ACTA, ETIQUETA_TIPO_CONTRATO, resumenContrato } from "@
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { AvisoResultado } from "@/components/aviso-resultado";
-import { aprobarContrato, autorizarAnticipo, borrarActa, cambiarEstadoActa, liberarRetencion, radicarActa } from "../acciones";
-import { FormularioActa, FormularioAnticipo } from "../formularios";
+import { aprobarContrato, asignarContrato, autorizarAnticipo, borrarActa, cambiarEstadoActa, liberarRetencion, quitarAsignacion, radicarActa } from "../acciones";
+import { FormularioActa, FormularioAnticipo, FormularioAsignacion } from "../formularios";
+import { formatearPesos } from "@/lib/presupuesto/dinero";
 
 type Acta = { id: string; numero: number; fecha: string; valor_bruto: number | string; amortizacion: number | string; retencion: number | string; neto: number | string; estado: string };
 
@@ -29,12 +30,24 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   const { supabase, proyecto, permisos } = await cargarProyecto(id);
   const { data: c } = await supabase.from("contratos").select("*").eq("id", contratoId).eq("proyecto_id", id).maybeSingle();
   if (!c) notFound();
-  const [{ data: as }, { data: pars }, { data: perfiles }, { data: camb }] = await Promise.all([
+  const [{ data: as }, { data: pars }, { data: perfiles }, { data: camb }, { data: asigs }, { data: caps }, { data: adis }] = await Promise.all([
     supabase.from("actas_pago").select("id, numero, fecha, valor_bruto, amortizacion, retencion, neto, estado").eq("contrato_id", contratoId).order("numero"),
     supabase.from("parametros").select("ambito, ambito_id, clave, valor"),
     supabase.from("perfiles").select("id, nombre"),
     supabase.from("cambios").select("id, codigo, estado_flujo, impacto_costo").eq("contrato_id", contratoId).order("codigo"),
+    supabase.from("contrato_asignaciones").select("id, capitulo_id, adicional_id, valor").eq("contrato_id", contratoId),
+    supabase.from("capitulos").select("id, codigo, nombre").eq("proyecto_id", id).order("orden"),
+    supabase.from("adicionales").select("id, codigo, descripcion").eq("proyecto_id", id).order("codigo"),
   ]);
+  const asignaciones = (asigs ?? []) as { id: string; capitulo_id: string | null; adicional_id: string | null; valor: number | string }[];
+  const capitulos = (caps ?? []) as { id: string; codigo: string; nombre: string }[];
+  const adicionales = (adis ?? []) as { id: string; codigo: string; descripcion: string }[];
+  const nombreDestino = new Map<string, string>([
+    ...capitulos.map((x) => [x.id, `Capítulo ${x.codigo} · ${x.nombre}`] as [string, string]),
+    ...adicionales.map((x) => [x.id, `Adicional ${x.codigo} · ${x.descripcion}`] as [string, string]),
+  ]);
+  const asignado = asignaciones.reduce((t, a) => t + desdeJson(a.valor, 2), 0n);
+  const sinAsignar = desdeJson(c.valor, 2) - asignado;
   const actas = (as ?? []) as Acta[];
   const parametros = (pars ?? []) as FilaParametro[];
   const nombres = new Map(((perfiles ?? []) as { id: string; nombre: string }[]).map((p) => [p.id, p.nombre]));
@@ -88,6 +101,47 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         <Dato t="Retención de garantía" v={`${Number(c.retencion_pct).toLocaleString("es-CO")} % (vigente al crear el contrato)${c.retencion_liberada ? " · liberada" : ""}`} />
         <Dato t="Anticipo" v={Number(c.anticipo_pct) > 0 ? `${Number(c.anticipo_pct).toLocaleString("es-CO")} % — autorizado por ${nombres.get(c.anticipo_autorizado_por) ?? "—"}${c.anticipo_autorizado_en ? ` el ${formatearFechaHora(c.anticipo_autorizado_en)}` : ""}. Motivo: ${c.anticipo_motivo ?? "—"}` : "Sin anticipo"} />
       </dl>
+
+
+      {!permisos.interventor && (
+        <section className="mt-8" aria-labelledby="t-asig">
+          <h2 id="t-asig" className="font-display text-2xl font-bold text-leaf-700">Asignación al presupuesto</h2>
+          <p className="mt-1 text-sm text-muted">
+            Reparte el valor del contrato entre los capítulos del presupuesto y los adicionales de obra. Así el <Link href={`/proyectos/${id}/presupuesto/balance`} className="font-medium text-leaf-600 underline">balance</Link> compara
+            lo presupuestado contra lo contratado. Asignado {centavos(asignado)} de {centavos(desdeJson(c.valor, 2))} COP; sin asignar {centavos(sinAsignar)}.
+          </p>
+          {asignaciones.length === 0 ? (
+            <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Este contrato aún no está asignado a ningún capítulo ni adicional.</p>
+          ) : (
+            <div className="mt-3 overflow-x-auto rounded-card border border-soil-border">
+              <table className="w-full min-w-[520px] text-left text-sm">
+                <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800"><tr><th className="px-3 py-2 font-medium">Capítulo o adicional</th><th className="px-3 py-2 text-right font-medium">Valor asignado</th><th className="px-3 py-2"><span className="sr-only">Acciones</span></th></tr></thead>
+                <tbody className="divide-y divide-soil-border">
+                  {asignaciones.map((a) => (
+                    <tr key={a.id}>
+                      <td className="px-3 py-2">{nombreDestino.get((a.capitulo_id ?? a.adicional_id) as string) ?? "—"}</td>
+                      <td className="px-3 py-2 text-right tabular-nums">{centavos(desdeJson(a.valor, 2))}</td>
+                      <td className="px-3 py-2 text-right">{permisos.gestionar && <form action={quitarAsignacion.bind(null, id, contratoId, a.id)}><BotonEnviar className="text-sm font-medium text-danger underline" textoEnviando="…">Quitar</BotonEnviar></form>}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {permisos.gestionar && (capitulos.length > 0 || adicionales.length > 0) && (
+            <div className="mt-4 rounded-card bg-leaf-50 p-5">
+              <FormularioAsignacion
+                accion={asignarContrato.bind(null, id, contratoId)}
+                sinAsignar={`${formatearPesos(sinAsignar * 10_000n)} COP`}
+                destinos={[
+                  { grupo: "Capítulos del presupuesto", opciones: capitulos.map((x) => ({ valor: `c:${x.id}`, etiqueta: `${x.codigo} · ${x.nombre}` })) },
+                  ...(adicionales.length > 0 ? [{ grupo: "Adicionales de obra", opciones: adicionales.map((x) => ({ valor: `a:${x.id}`, etiqueta: `${x.codigo} · ${x.descripcion.slice(0, 60)}` })) }] : []),
+                ]}
+              />
+            </div>
+          )}
+        </section>
+      )}
 
       <section className="mt-8" aria-labelledby="t-anticipo">
         <h2 id="t-anticipo" className="font-display text-2xl font-bold text-leaf-700">Anticipo</h2>

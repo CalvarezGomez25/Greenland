@@ -30,6 +30,7 @@ const ICONOS: Record<string, string> = {
   documentos: "M3 6h6l2 2h10v11H3z",
   cierre: "M12 21a9 9 0 100-18 9 9 0 000 18z M8 12l3 3 5-6",
   presupuesto: "M3 7h15a3 3 0 013 3v8H3z M3 7l2-3h11 M16 13h2",
+  balance: "M12 3v18 M5 7h14 M5 7l-2 6a3 3 0 006 0z M19 7l-2 6a3 3 0 006 0z",
   cronograma: "M4 6h16v14H4z M4 10h16 M8 3v4 M16 3v4",
   contratos: "M6 3h9l4 4v14H6z M14 3v5h5 M9 15l2 2 4-4",
   bitacora: "M4 5a2 2 0 012-2h6v18H6a2 2 0 01-2-2z M20 5a2 2 0 00-2-2h-6v18h6a2 2 0 002-2z",
@@ -183,7 +184,9 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, conPortafo
                 {(abierto || areas.length === 1) && (
                   <ul>
                     {lista.map((m) => {
-                      const activo = ruta === m.href || ruta.startsWith(`${m.href}/`);
+                      // un módulo anidado en otro (Balance dentro de Presupuesto) tiene prioridad sobre el que lo contiene
+                      const propio = ruta === m.href || ruta.startsWith(`${m.href}/`);
+                      const activo = propio && !lista.some((o) => o !== m && o.href.length > m.href.length && (ruta === o.href || ruta.startsWith(`${o.href}/`)));
                       return <li key={m.clave}><Link href={m.href} aria-current={activo ? "page" : undefined} className={claseEnlace(activo)}><Icono clave={m.clave} />{m.titulo}</Link></li>;
                     })}
                   </ul>

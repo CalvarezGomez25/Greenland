@@ -146,7 +146,7 @@ export function ImportarCsv({
                 <p className="font-medium text-earth-600">Esto reemplaza todo el presupuesto actual</p>
                 <p className="mt-1 text-sm text-muted">
                   Hoy el proyecto tiene {actuales.partidas} partidas con costo directo de $ {actuales.costoDirecto}. Las partidas
-                  actuales se borran y se sustituyen por las del archivo. Los costos adicionales y el gasto real no se tocan.
+                  actuales se borran y se sustituyen por las del archivo. Los costos indirectos, los adicionales de obra, las asignaciones de contratos y el gasto real no se tocan.
                   La operación es de todo o nada y queda en el registro de cambios.
                 </p>
                 <div className="mt-3">

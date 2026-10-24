@@ -135,7 +135,7 @@ describe("costos adicionales (AIU, IVA sobre la utilidad, retefuente)", () => {
   });
 
   it("suma los adicionales y el costo total", () => {
-    expect(p.totalAdicionales).toBe(pesos(301_216_665));
+    expect(p.totalIndirectos).toBe(pesos(301_216_665));
     expect(p.costoTotal).toBe(pesos(1_533_186_665));
     expect(formatearPesos(p.costoTotal)).toBe("1.533.186.665");
   });
@@ -147,7 +147,7 @@ describe("costos adicionales (AIU, IVA sobre la utilidad, retefuente)", () => {
 
   it("con todos los porcentajes en 0, el total es el costo directo", () => {
     const ceros = presupuestoDeEjemplo(lineas.map((l) => ({ ...l, porcentaje: 0n })));
-    expect(ceros.totalAdicionales).toBe(0n);
+    expect(ceros.totalIndirectos).toBe(0n);
     expect(ceros.costoTotal).toBe(ceros.costoDirecto);
   });
 

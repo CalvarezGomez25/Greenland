@@ -13,7 +13,7 @@ import { avanceFisico, planificadoDesdeCronograma, sumaPesos, type Tarea } from 
 import { describirFallo } from "@/lib/presupuesto/fallos";
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import {
-  SeccionAdicionales,
+  SeccionIndirectos,
   SeccionCurva,
   SeccionGasto,
   SeccionIndicadores,
@@ -95,10 +95,12 @@ async function ContenidoPresupuesto({
             <>
               <Link href={`${base}/importar`} className={claseBoton.primario}>Importar CSV</Link>
               <Link href={`${base}/partidas/nueva`} className={claseBoton.secundario}>Agregar partida</Link>
-              <Link href={`${base}/costos`} className={claseBoton.secundario}>Costos adicionales</Link>
+              <Link href={`${base}/costos`} className={claseBoton.secundario}>Costos indirectos (A.I.U.)</Link>
               <Link href={`${base}/gasto`} className={claseBoton.secundario}>Registrar gasto</Link>
             </>
           )}
+          <Link href={`${base}/adicionales`} className={claseBoton.secundario}>Adicionales de obra</Link>
+          <Link href={`${base}/balance`} className={claseBoton.secundario}>Balance con contratos</Link>
           {permisos.verAuditoria && (
             <Link href={`${base}/cambios`} className={claseBoton.contorno}>Registro de cambios</Link>
           )}
@@ -127,7 +129,7 @@ async function ContenidoPresupuesto({
       <SeccionCurva serie={serie} desdeCronograma={desdeCronograma} />
       {permisos.editar && <SeccionCapitulosEdt idProyecto={id} elementos={edt} accion={crearCapitulosDesdeEdt.bind(null, id)} nCapitulos={presupuesto.capitulos.length} />}
       <SeccionPartidas presupuesto={presupuesto} hrefEditar={permisos.editar ? (idPartida) => `${base}/partidas/${idPartida}` : undefined} codigosEdt={new Map(edt.map((e) => [e.id, e.codigo]))} />
-      <SeccionAdicionales presupuesto={presupuesto} />
+      <SeccionIndirectos presupuesto={presupuesto} />
       <SeccionGasto serie={serie} gastoPorMes={datos.gastoPorMes} duracion={proyecto.duracion} />
     </>
   );

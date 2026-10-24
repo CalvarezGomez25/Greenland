@@ -21,6 +21,7 @@ Las columnas «Migración» y «Prueba» se verificaron contra los archivos del 
 | K · Cronograma y avance | Cronograma (PMBOK 8); curva S | — | 0010 | `t-h6` | `bf2cc37` |
 | L · Bitácora de obra | Registro de campo; información documentada | — | 0012 | `t-h8` | `e658ec9` |
 | M · Contratos y pagos | Adquisiciones; Ley 80 | [0010](decisiones/ADR-0010-anticipo-discrecional-tope-20.md), [0012](decisiones/ADR-0012-director-aprueba-contratos-nuevos.md) | 0011, 0018 | `t-h7` | `fda2ead`, `d2e2737` |
+| J/M · Integración de contratos y costos (A.I.U., adicionales, balance) | Costo/finanzas y adquisiciones (PMBOK 8); petición del usuario del 24 oct; modelo de control de costos de Casa Las Mercedes (solo concepto, sin datos) | [0029](decisiones/ADR-0029-integracion-contratos-y-costos.md) | 0025 | `t-contratos-costos`; unitarias `calculos`, `balance` | — |
 | N · Interventoría | Ley 80 art. 32; Ley 1474 (N2); Ley 51 de 1983 | [0011](decisiones/ADR-0011-interventoria-sin-presupuesto.md), [0021](decisiones/ADR-0021-festivos-automaticos.md) | 0014, 0015, 0016 | `t-h11` | `f437299`, `3dc98d8` |
 | O · Alertas por correo | Gestión por excepción (criterio propio) | [0017](decisiones/ADR-0017-correos-por-cron-con-usuario-de-solo-lectura.md) | 0019 | `t-alertas` | `1ecb136` |
 | P · Informe gerencial | Informe de una página; sistema de diseño GreenLand | [0018](decisiones/ADR-0018-informe-gerencial-una-pagina.md) | 0022 | pruebas unitarias en `src/lib/informe/` | `db2ac62` |

@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { Aviso, Campo, Selector, claseBoton } from "@/components/ui";
+import { ETIQUETA_CATEGORIA, type CategoriaCosto } from "@/lib/presupuesto/calculos";
 import type { Estado } from "@/lib/presupuesto/estado";
 
 export function FormularioCosto({
@@ -24,6 +25,11 @@ export function FormularioCosto({
 
   return (
     <form action={enviar} key={estado.valores ? JSON.stringify(estado.valores) : "inicial"} className="flex max-w-xl flex-col gap-4">
+      <Selector etiqueta="Tipo de costo indirecto" name="categoria" required defaultValue={v("categoria") || "otro"} ayuda="Administración, imprevistos y utilidad forman el A.I.U.; los impuestos y retenciones se muestran aparte.">
+        {(Object.keys(ETIQUETA_CATEGORIA) as CategoriaCosto[]).map((c) => (
+          <option key={c} value={c}>{ETIQUETA_CATEGORIA[c]}</option>
+        ))}
+      </Selector>
       <Campo etiqueta="Concepto" name="nombre" required maxLength={80} defaultValue={v("nombre")} ayuda="Por ejemplo Administración, Imprevistos, Utilidad, IVA sobre la utilidad, Retefuente." />
       <Selector etiqueta="Se calcula sobre" name="base" required defaultValue={v("base") || "costo_directo"}>
         <option value="costo_directo">Costo directo</option>

@@ -9,7 +9,7 @@ import { borrarCostoAdicional, guardarCostoAdicional } from "../../acciones";
 import { FormularioBorrar } from "../../_formularios/formulario-borrar";
 import { FormularioCosto } from "../../_formularios/formulario-costo";
 
-type Linea = { id: string; nombre: string; base: string; linea_base_id: string | null; porcentaje: number | string };
+type Linea = { id: string; nombre: string; base: string; linea_base_id: string | null; porcentaje: number | string; categoria: string };
 
 async function Contenido({ params }: { params: Promise<{ id: string; lineaId: string }> }) {
   const { id, lineaId } = await params;
@@ -18,7 +18,7 @@ async function Contenido({ params }: { params: Promise<{ id: string; lineaId: st
 
   const { data } = await supabase
     .from("costos_adicionales")
-    .select("id, nombre, base, linea_base_id, porcentaje")
+    .select("id, nombre, base, linea_base_id, porcentaje, categoria")
     .eq("proyecto_id", id)
     .order("orden");
   const lineas = (data ?? []) as Linea[];
@@ -32,6 +32,7 @@ async function Contenido({ params }: { params: Promise<{ id: string; lineaId: st
 
   const inicial = {
     nombre: linea.nombre,
+    categoria: linea.categoria,
     base: linea.base === "linea" && linea.linea_base_id ? linea.linea_base_id : "costo_directo",
     porcentaje: formatearDecimal(desdeJson(linea.porcentaje, ESCALA.porcentaje), ESCALA.porcentaje),
   };
@@ -39,10 +40,10 @@ async function Contenido({ params }: { params: Promise<{ id: string; lineaId: st
   return (
     <>
       <Link href={`/proyectos/${id}/presupuesto/costos`} className="text-sm font-medium text-leaf-600 hover:underline">
-        ← Volver a costos adicionales
+        ← Volver a costos indirectos
       </Link>
       <div className="mt-4">
-        <Titulo>Editar costo adicional</Titulo>
+        <Titulo>Editar costo indirecto</Titulo>
       </div>
       <p className="mt-3 text-sm text-muted">
         {proyecto.nombre} · {linea.nombre}

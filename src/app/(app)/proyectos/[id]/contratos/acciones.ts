@@ -115,3 +115,27 @@ export async function aprobarContrato(proyectoId: string, contratoId: string): P
   revalidatePath("/", "layout");
   redirect(`${base(proyectoId)}/${contratoId}?${error ? `error=${encodeURIComponent(mensaje(error))}` : "ok=guardado"}`);
 }
+
+
+// Reparto del valor del contrato entre capítulos del presupuesto y adicionales de obra.
+export async function asignarContrato(proyectoId: string, contratoId: string, _p: Estado, d: FormData): Promise<Estado> {
+  if (!ES_UUID.test(contratoId)) return { error: "Dirección no válida." };
+  const { supabase } = await cargarProyecto(proyectoId);
+  const destino = String(d.get("destino") ?? "");
+  const [tipo, destinoId] = [destino.slice(0, 2), destino.slice(2)];
+  if ((tipo !== "c:" && tipo !== "a:") || !ES_UUID.test(destinoId)) return { error: "Elige el capítulo o el adicional.", valores: valoresDe(d) };
+  const valor = leerNumeroColombiano(String(d.get("valor") ?? ""), 2, 13);
+  if (!valor.ok) return { error: `El valor ${valor.motivo}.`, valores: valoresDe(d) };
+  const { error } = await supabase.rpc("contrato_asignar", {
+    p_contrato: contratoId, p_capitulo: tipo === "c:" ? destinoId : null, p_adicional: tipo === "a:" ? destinoId : null, p_valor: valor.valor,
+  });
+  if (error) return { error: mensaje(error), valores: valoresDe(d) };
+  return terminar(proyectoId, contratoId, "asignacion");
+}
+
+export async function quitarAsignacion(proyectoId: string, contratoId: string, asignacionId: string): Promise<void> {
+  if (!ES_UUID.test(asignacionId)) return terminar(proyectoId, contratoId, "", "Asignación no válida.");
+  const { supabase } = await cargarProyecto(proyectoId);
+  const { error } = await supabase.rpc("contrato_asignacion_borrar", { p_asignacion: asignacionId });
+  return terminar(proyectoId, contratoId, "asignacion_borrada", error ? mensaje(error) : undefined);
+}

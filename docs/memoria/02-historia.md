@@ -121,6 +121,10 @@ El usuario preguntó si convenía darle a la plataforma la forma de un gestor co
 
 El usuario pidió aplicar el sistema de diseño renovado de GreenLand (v1.0.0, publicado ese día) a toda la plataforma para desplegar con la nueva imagen, y dejó al asesor decidir si crear una versión aparte para poder volver. Se evaluaron tres opciones y se eligió cambiar en la rama principal con un único punto de reversión ([ADR-0028](decisiones/ADR-0028-sistema-de-diseno-greenland-v1.md)). Primero se remapearon los tokens de color y tipografía, luego se barrieron los componentes (píldoras, campos, tarjetas con muesca, tablas, alertas) y se verificó en navegador en escritorio y celular; después se aplicó la misma identidad a las exportaciones PDF y Excel, al informe gerencial y a los correos. Quedan brechas con el paquete oficial, los íconos y la fuente licenciada (P39).
 
+## 24 de octubre de 2026 · Integración de contratos y costos
+
+El usuario pidió ligar los contratos al presupuesto para confrontar lo presupuestado con lo contratado, dividir el presupuesto entre costos directos e indirectos (A.I.U.) y tratar los adicionales como un concepto aparte (trabajos no contemplados en la EDT original o añadidos durante la ejecución). Se construyó en [ADR-0029](decisiones/ADR-0029-integracion-contratos-y-costos.md): tipos de costo indirecto, adicionales con estado derivado del cambio, asignación de contratos a capítulos y adicionales, y un módulo Balance de costos. Del tablero de control de costos de Casa Las Mercedes se tomó solo el concepto (corte a corte); su evolución gráfica quedó como fase posterior sin decidir (P40).
+
 ## Estado al 17 de octubre de 2026
 
 Ver [01-resumen-ejecutivo.md](01-resumen-ejecutivo.md).

@@ -52,3 +52,8 @@ fácil de cambiar; deben validarse con el uso real.
 - El último dato guardado gana y lo que llega vacío no borra lo que el directorio ya tiene. Poder, interés, necesidades y canal no se copian: son de cada proyecto.
 - Lo ven, crean y editan administrador, director general, analista PMO y gerentes de algún proyecto; solo el administrador elimina contactos.
 - Contiene datos personales de terceros: antes de cargar contactos reales hay que definir con Jurídica base legal, aviso y acceso (P33; normas de datos personales no verificadas).
+
+## Integración de contratos y costos (migración 0025, ADR-0029)
+- «Costos adicionales» pasa a llamarse **costos indirectos (A.I.U.)**; cada concepto tiene tipo (administración, imprevistos, utilidad, impuestos, otro). Los porcentajes los define el proyecto; la plataforma no fija tasas legales (S21 a S24 en la sección 14 de `ESPECIFICACION.md`).
+- Los **adicionales de obra** son trabajos no contemplados en la EDT original o añadidos durante la ejecución; su estado sale del cambio que los respalda y no modifican el BAC por sí solos.
+- Los contratos se reparten entre capítulos y adicionales; el balance compara contra el presupuesto **con indirectos** (A.I.U. prorrateado por costo directo). Es una propuesta a validar con el equipo (P40).

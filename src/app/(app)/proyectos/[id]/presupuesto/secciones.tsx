@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Ayuda } from "@/components/ayuda";
 import { temaDe, type TemaAyuda } from "@/lib/glosario";
 import Link from "next/link";
-import type { Presupuesto } from "@/lib/presupuesto/calculos";
+import { ETIQUETA_CATEGORIA, type Presupuesto } from "@/lib/presupuesto/calculos";
 import type { Indicadores, SerieCurva } from "@/lib/presupuesto/curva";
 import { ESCALA, formatearDecimal, formatearPesos } from "@/lib/presupuesto/dinero";
 import { CurvaS } from "@/components/curva-s";
@@ -51,7 +51,7 @@ export function SeccionIndicadores({ indicadores: i, hayPresupuesto, avanceFisic
         <Tarjeta
           titulo="Costo total"
           valor={`$ ${formatearPesos(i.costoTotal)}`}
-          detalle="Costo directo más costos adicionales"
+          detalle="Costo directo más costos indirectos"
         />
         <Tarjeta
           titulo="Gastado a la fecha"
@@ -201,24 +201,26 @@ export function SeccionPartidas({
   );
 }
 
-export function SeccionAdicionales({ presupuesto }: { presupuesto: Presupuesto }) {
+export function SeccionIndirectos({ presupuesto }: { presupuesto: Presupuesto }) {
   const nombrePorId = new Map(presupuesto.lineas.map((l) => [l.id, l.nombre]));
+  const { aiu } = presupuesto;
   return (
     <Seccion
-      id="adicionales"
-      titulo="Costos adicionales"
-      nota="Porcentajes definidos por el proyecto (por ejemplo AIU, IVA sobre la utilidad y retefuente)."
+      id="indirectos"
+      titulo="Costos indirectos (A.I.U.)"
+      nota="Administración, imprevistos y utilidad, más impuestos y retenciones, como porcentajes definidos por el proyecto. Los adicionales de obra son otro concepto."
     >
       {presupuesto.lineas.length === 0 ? (
         <p className="rounded-card bg-leaf-50 p-6 text-center text-sm text-muted">
-          Aún no se han configurado costos adicionales; por ahora el costo total es igual al costo directo.
+          Aún no se han configurado costos indirectos; por ahora el costo total es igual al costo directo.
         </p>
       ) : (
         <div className="overflow-x-auto rounded-card border border-soil-border">
-          <table className="w-full min-w-[520px] text-sm">
+          <table className="w-full min-w-[560px] text-sm">
             <thead className="bg-leaf-100 text-left text-leaf-800">
               <tr>
                 <th scope="col" className={CELDA}>Concepto</th>
+                <th scope="col" className={CELDA}>Tipo</th>
                 <th scope="col" className={CELDA}>Se calcula sobre</th>
                 <th scope="col" className={`${NUMERO} font-medium`}>Porcentaje</th>
                 <th scope="col" className={`${NUMERO} font-medium`}>Valor</th>
@@ -228,6 +230,7 @@ export function SeccionAdicionales({ presupuesto }: { presupuesto: Presupuesto }
               {presupuesto.lineas.map((l) => (
                 <tr key={l.id} className="border-t border-soil-border">
                   <td className={CELDA}>{l.nombre}</td>
+                  <td className={CELDA}>{ETIQUETA_CATEGORIA[l.categoria ?? "otro"]}</td>
                   <td className={CELDA}>
                     {l.base === "costo_directo" ? "Costo directo" : (nombrePorId.get(l.lineaBaseId ?? "") ?? "Otra línea")}
                   </td>
@@ -238,11 +241,21 @@ export function SeccionAdicionales({ presupuesto }: { presupuesto: Presupuesto }
             </tbody>
             <tfoot className="font-medium text-leaf-900">
               <tr className="border-t-2 border-leaf-700 bg-leaf-50">
-                <th scope="row" colSpan={3} className={`${CELDA} text-left`}>Total costos adicionales</th>
-                <td className={NUMERO}>{formatearPesos(presupuesto.totalAdicionales)}</td>
+                <th scope="row" colSpan={4} className={`${CELDA} text-left`}>A.I.U. (administración + imprevistos + utilidad)</th>
+                <td className={NUMERO}>{formatearPesos(aiu.total)}</td>
+              </tr>
+              {presupuesto.impuestosYOtros !== 0n && (
+                <tr className="bg-leaf-50">
+                  <th scope="row" colSpan={4} className={`${CELDA} text-left`}>Impuestos, retenciones y otros</th>
+                  <td className={NUMERO}>{formatearPesos(presupuesto.impuestosYOtros)}</td>
+                </tr>
+              )}
+              <tr className="bg-leaf-50">
+                <th scope="row" colSpan={4} className={`${CELDA} text-left`}>Total costos indirectos</th>
+                <td className={NUMERO}>{formatearPesos(presupuesto.totalIndirectos)}</td>
               </tr>
               <tr className="bg-leaf-50 font-bold">
-                <th scope="row" colSpan={3} className={`${CELDA} text-left`}>Costo total (directo + adicionales)</th>
+                <th scope="row" colSpan={4} className={`${CELDA} text-left`}>Costo total (directo + indirectos)</th>
                 <td className={NUMERO}>{formatearPesos(presupuesto.costoTotal)}</td>
               </tr>
             </tfoot>

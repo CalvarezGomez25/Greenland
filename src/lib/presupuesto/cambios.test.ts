@@ -51,7 +51,7 @@ describe("describirCambio: costos adicionales", () => {
   const linea = { id: "l", nombre: "IVA sobre la utilidad", base: "linea", linea_base_id: "u", porcentaje: 19 };
   it("edición del porcentaje", () => {
     const r = describirCambio(fila({ entidad: "costo_adicional", antes: linea, despues: { ...linea, porcentaje: 16 } }));
-    expect(r.titulo).toBe("Costo adicional editado: IVA sobre la utilidad");
+    expect(r.titulo).toBe("Costo indirecto editado: IVA sobre la utilidad");
     expect(r.detalles).toEqual(["Porcentaje: 19 % → 16 %"]);
   });
   it("creación", () => {

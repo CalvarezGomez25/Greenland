@@ -97,7 +97,7 @@ export function describirCambio(c: CambioFila): CambioDescrito {
       return { titulo: `Capítulo ${verboM}: ${texto(ref?.nombre)}`, detalles: [] };
 
     case "costo_adicional": {
-      const titulo = `Costo adicional ${verboM}: ${texto(ref?.nombre)}`;
+      const titulo = `Costo indirecto ${verboM}: ${texto(ref?.nombre)}`;
       if (c.operacion === "editar") {
         const lista = diferencias(c.antes, c.despues, CAMPOS_COSTO);
         if (c.antes && c.despues && !mismo(c.antes.linea_base_id, c.despues.linea_base_id)) lista.push("Cambió la línea base");

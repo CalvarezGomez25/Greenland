@@ -8,7 +8,7 @@ import { leerCsvPresupuesto, leerNumeroColombiano } from "@/lib/presupuesto/csv"
 import type { Estado } from "@/lib/presupuesto/estado";
 import { refrescarMedicion } from "@/lib/obra/refrescar";
 import { cargarDatosPresupuesto } from "@/lib/presupuesto/datos";
-import { calcularPresupuesto } from "@/lib/presupuesto/calculos";
+import { calcularPresupuesto, ETIQUETA_CATEGORIA } from "@/lib/presupuesto/calculos";
 import { aTextoPunto, redondearAPesos } from "@/lib/presupuesto/dinero";
 
 // Todas las acciones llaman a las funciones de la base de datos, que vuelven a verificar
@@ -142,7 +142,7 @@ export async function borrarPartida(proyectoId: string, partidaId: string, _prev
   terminar(proyectoId, "", "partida_borrada");
 }
 
-// ---- Costos adicionales -----------------------------------------------------
+// ---- Costos indirectos (A.I.U.) ---------------------------------------------
 
 export async function guardarCostoAdicional(
   proyectoId: string,
@@ -159,6 +159,9 @@ export async function guardarCostoAdicional(
   const base = campo(datos, "base");
   if (base !== "costo_directo" && !ES_UUID.test(base)) return conError("Elige sobre qué se calcula.", datos);
 
+  const categoria = campo(datos, "categoria") || "otro";
+  if (!(Object.keys(ETIQUETA_CATEGORIA) as string[]).includes(categoria)) return conError("Elige el tipo de costo indirecto.", datos);
+
   const { supabase } = await obtenerSesion();
   const { error } = await supabase.rpc("costo_adicional_guardar", {
     p_proyecto: proyectoId,
@@ -168,6 +171,7 @@ export async function guardarCostoAdicional(
     p_linea_base: base === "costo_directo" ? null : base,
     p_porcentaje: porcentaje.valor,
     p_motivo: campo(datos, "motivo") || null,
+    p_categoria: categoria,
   });
   if (error) return conError(mensajeDeRpc(error), datos);
   terminar(proyectoId, "/costos", "costos");
@@ -243,4 +247,43 @@ export async function aprobarPresupuesto(proyectoId: string): Promise<void> {
   await refrescarMedicion(supabase, proyectoId);
   revalidatePath(`/proyectos/${proyectoId}`, "layout");
   redirect(`/proyectos/${proyectoId}/presupuesto?ok=linea_base`);
+}
+
+
+// ---- Adicionales de obra ----------------------------------------------------
+// Trabajos no contemplados en la EDT original o añadidos durante la ejecución. Su estado sale del cambio que los respalda.
+
+export async function guardarAdicional(proyectoId: string, adicionalId: string | null, _prev: Estado, datos: FormData): Promise<Estado> {
+  if (!ES_UUID.test(proyectoId) || (adicionalId !== null && !ES_UUID.test(adicionalId))) return { error: DIRECCION_INVALIDA };
+  const valor = numero(datos, "valor", "El valor directo", 2, 13);
+  if (valor.error) return conError(valor.error, datos);
+  const origen = campo(datos, "origen");
+  if (origen !== "no_contemplado" && origen !== "anadidura") return conError("Elige el origen del adicional.", datos);
+  const wbs = campo(datos, "wbs");
+  const cambio = campo(datos, "cambio");
+  if ((wbs && !ES_UUID.test(wbs)) || (cambio && !ES_UUID.test(cambio))) return conError("Elemento o cambio no válido.", datos);
+
+  const { supabase } = await obtenerSesion();
+  const { error } = await supabase.rpc("adicional_guardar", {
+    p_proyecto: proyectoId,
+    p_id: adicionalId,
+    p_descripcion: campo(datos, "descripcion"),
+    p_origen: origen,
+    p_valor: valor.valor,
+    p_aplica_indirectos: datos.get("aplica_indirectos") === "on",
+    p_wbs: wbs || null,
+    p_cambio: cambio || null,
+    p_nota: campo(datos, "nota") || null,
+  });
+  if (error) return conError(mensajeDeRpc(error), datos);
+  terminar(proyectoId, "/adicionales", "adicional");
+}
+
+export async function borrarAdicional(proyectoId: string, adicionalId: string, _prev: Estado, datos: FormData): Promise<Estado> {
+  if (!ES_UUID.test(proyectoId) || !ES_UUID.test(adicionalId)) return { error: DIRECCION_INVALIDA };
+  if (!motivoObligatorio(datos)) return conError("Escribe el motivo (mínimo 3 caracteres).", datos);
+  const { supabase } = await obtenerSesion();
+  const { error } = await supabase.rpc("adicional_borrar", { p_adicional: adicionalId });
+  if (error) return conError(mensajeDeRpc(error), datos);
+  terminar(proyectoId, "/adicionales", "adicional_borrado");
 }

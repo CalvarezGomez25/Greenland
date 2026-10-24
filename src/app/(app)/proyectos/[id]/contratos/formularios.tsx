@@ -56,3 +56,21 @@ export function FormularioActa({ accion, hoy }: { accion: Accion; hoy: string })
     </form>
   );
 }
+
+export function FormularioAsignacion({ accion, destinos, sinAsignar }: { accion: Accion; destinos: { grupo: string; opciones: { valor: string; etiqueta: string }[] }[]; sinAsignar: string }) {
+  const [estado, enviar] = useActionState(accion, {} as Estado);
+  const v = (k: string) => estado.valores?.[k] ?? "";
+  return (
+    <form action={enviar} key={estado.valores ? JSON.stringify(estado.valores) : "i"} className="flex flex-wrap items-end gap-3">
+      <Selector etiqueta="Capítulo o adicional" name="destino" required defaultValue={v("destino")} className="min-w-[260px] flex-1">
+        <option value="" disabled>Elige…</option>
+        {destinos.map((g) => (
+          <optgroup key={g.grupo} label={g.grupo}>{g.opciones.map((o) => <option key={o.valor} value={o.valor}>{o.etiqueta}</option>)}</optgroup>
+        ))}
+      </Selector>
+      <Campo etiqueta="Valor asignado (COP)" name="valor" required inputMode="decimal" defaultValue={v("valor")} ayuda={`Sin asignar: ${sinAsignar}. Si ya existe, reemplaza el valor.`} />
+      <BotonEnviar className={claseBoton.primario} textoEnviando="Guardando…">Asignar</BotonEnviar>
+      {estado.error && <div className="w-full"><Aviso>{estado.error}</Aviso></div>}
+    </form>
+  );
+}

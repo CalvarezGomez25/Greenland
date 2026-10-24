@@ -2,6 +2,15 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.6.0] · 24 de octubre de 2026
+### Añadido
+- **Integración de contratos y costos** ([ADR-0029](decisiones/ADR-0029-integracion-contratos-y-costos.md), migración 0025): el presupuesto se divide en costos directos e **indirectos (A.I.U.)** con tipo por concepto (administración, imprevistos, utilidad, impuestos, otro); **adicionales de obra** (trabajos no contemplados en la EDT original o añadidos durante la ejecución, con estado derivado del cambio que los respalda); **asignación de cada contrato a capítulos y adicionales**; y módulo **Balance de costos** (presupuesto con indirectos frente a contratado, por aprobar, facturado y saldo; alertas de sobrecontratación y de contratos sin asignar). 40 comprobaciones SQL nuevas (`t-contratos-costos`) y pruebas unitarias del balance.
+### Cambiado
+- «Costos adicionales» pasa a llamarse **«Costos indirectos (A.I.U.)»** en pantallas, guías y glosario (términos nuevos: A.I.U., adicional de obra, sobrecontratado). Los nombres técnicos en la base de datos no cambian.
+- El menú lateral resalta solo «Balance de costos» cuando se está en esa pantalla (antes también resaltaba «Presupuesto»).
+### Pendiente
+- Evolución corte a corte del control de costos estilo Casa Las Mercedes (fases 1 a 3 de la recomendación), validación con el equipo y con datos reales (P40).
+
 ## [3.5.1] · 23 de octubre de 2026
 ### Seguridad
 - **Revisión de la alerta de Next.js** (`npm audit`): Next.js 16.4.0 estaba afectada por 3 avisos (2 críticos: ejecución remota de código en la optimización de imágenes con SVG y en funciones `use cache`; 1 alto: denegación de servicio con acciones de servidor). Se actualizó a **16.4.3** (versión de parche, sin cambios de código). Nodemailer pasó de 6.10.1 a **10.2.1** (tenía avisos altos y moderados; el uso es solo `createTransport` y `sendMail`).

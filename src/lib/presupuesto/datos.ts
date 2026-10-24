@@ -2,7 +2,7 @@
 // consulta: las reglas de acceso de la base de datos deciden qué filas devuelve.
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Capitulo, LineaCosto, Partida } from "./calculos";
+import type { CategoriaCosto, Capitulo, LineaCosto, Partida } from "./calculos";
 import { gastoAMonto } from "./curva";
 import { desdeJson, ESCALA } from "./dinero";
 import { ErrorDeBase, leerTodo } from "./paginar";
@@ -76,10 +76,11 @@ export async function cargarDatosPresupuesto(
       linea_base_id: string | null;
       porcentaje: Numero;
       orden: number;
+      categoria: CategoriaCosto;
     }>("costos_adicionales", (desde, hasta) =>
       supabase
         .from("costos_adicionales")
-        .select("id, nombre, base, linea_base_id, porcentaje, orden")
+        .select("id, nombre, base, linea_base_id, porcentaje, orden, categoria")
         .eq("proyecto_id", proyectoId)
         .order("orden")
         .range(desde, hasta),
@@ -112,6 +113,7 @@ export async function cargarDatosPresupuesto(
       lineaBaseId: l.linea_base_id,
       porcentaje: desdeJson(l.porcentaje, ESCALA.porcentaje),
       orden: l.orden,
+      categoria: l.categoria ?? "otro",
     })),
     gastoPorMes: new Map(gastos.map((g) => [g.mes, gastoAMonto(desdeJson(g.valor_real, ESCALA.precio))])),
   };

@@ -15,10 +15,10 @@ async function Contenido({ params }: { params: Promise<{ id: string }> }) {
   return (
     <>
       <Link href={`/proyectos/${id}/presupuesto/costos`} className="text-sm font-medium text-leaf-600 hover:underline">
-        ← Volver a costos adicionales
+        ← Volver a costos indirectos
       </Link>
       <div className="mt-4">
-        <Titulo>Agregar costo adicional</Titulo>
+        <Titulo>Agregar costo indirecto</Titulo>
       </div>
       <p className="mt-3 text-sm text-muted">{proyecto.nombre}</p>
       <div className="mt-6">
