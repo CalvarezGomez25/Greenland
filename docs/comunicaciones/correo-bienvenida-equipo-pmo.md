@@ -42,6 +42,8 @@ Para crear actividades de un proyecto: entra al proyecto, abre **Actividades** y
 - **Tareas con peso y fechas del plan** → Cronograma (Gantt); su avance alimenta el valor ganado.
 - **Quién hace qué esta semana** → Actividades (tablero Kanban).
 
+Marcar una actividad como «Hecha» **no actualiza el avance del cronograma**: ese avance se registra en **Cronograma** (porcentaje y Guardar) o en la **Bitácora**.
+
 ## 4. Cómo verificar los avances
 - **Semáforo de cada proyecto** (en el tablero y en su página): Verde = en orden; Amarillo = alerta; Rojo = requiere atención. Toma la peor de cuatro señales: cronograma, costo, riesgo más alto y cambios pendientes.
 - **Dentro de un proyecto**, en el menú: **Valor ganado** (cómo van cronograma y costo), **Riesgos**, **Control de cambios** y **Reporte semanal**; y, si el proyecto tiene área de obra, **Cronograma**, **Presupuesto**, **Contratos y pagos** y **Bitácora**.
@@ -55,8 +57,10 @@ Para crear actividades de un proyecto: entra al proyecto, abre **Actividades** y
 Recorrer no cambia nada: mira con confianza. Guarda con cuidado solo cuando registres información.
 
 ## 6. Los demás módulos de «Gestión del proyecto»
-Dentro de un proyecto, en la zona **Gestión del proyecto** del menú izquierdo, están estos módulos (en el PDF adjunto tienen capturas, figuras 8 a 19):
+Dentro de un proyecto, en la zona **Gestión del proyecto** del menú izquierdo, además de **Actividades** (sección 3), están estos módulos (en el PDF adjunto tienen capturas, figuras 6 y 8 a 19):
 
+- **Acta de constitución:** el punto de partida del proyecto: propósito, alcance, supuestos, restricciones y las firmas (quedan registradas con quién firmó y cuándo). El presupuesto que aparece allí es solo una referencia; el que vale es el que se aprueba en el módulo Presupuesto.
+- **Valor ganado:** mide si el proyecto va bien en tiempo y costo con índices (SPI y CPI), variaciones y proyecciones al terminar (EAC, ETC, VAC, TCPI), con su historial. En proyectos con obra se calcula solo a partir del presupuesto aprobado, el cronograma y el gasto; si el proyecto no tiene esos datos, se registra una medición a mano (fecha de corte y los valores BAC, PV, EV y AC). El signo «?» de cada indicador explica qué significa. *(PDF, figura 6)*
 - **Interesados:** quién participa o influye en el proyecto. Cada persona tiene su poder y su interés (1 a 5) y la plataforma calcula la estrategia («Gestionar de cerca», «Mantener satisfecho», «Mantener informado»…). Al agregar uno puedes **reutilizar un contacto del directorio** y así no escribir sus datos otra vez.
 - **EDT:** el proyecto dividido en entregables (1, 1.1, 1.2.1…), con responsable y estado.
 - **Riesgos:** cada riesgo con su probabilidad e impacto (1 a 5); el puntaje define el nivel (Crítico, Alto, Medio o Bajo) y la matriz los ubica. Un riesgo crítico activo pone el proyecto en rojo. También puedes importar un registro desde Excel.
