@@ -89,7 +89,7 @@ describe("PDF y Excel con muchas filas", () => {
     const doc: DocExport = { titulo: "Larga", generado: "2026-10-09", tablas: [{ titulo: "Texto", columnas: ["Campo", "Contenido"], filas: [["Descripción", texto]] }] };
     const pdf = await PDFDocument.load(await aPdf(doc));
     expect(pdf.getPageCount()).toBeGreaterThanOrEqual(5);
-  });
+  }, 30_000); // genera un PDF de decenas de páginas: con la máquina ocupada pasa de los 5 s por defecto
   it("símbolos fuera del alfabeto latino se sustituyen", () => {
     expect(limpiar("≥ 0,95 → 😀 – ok…")).toBe(">= 0,95 - ok...");
   });

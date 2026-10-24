@@ -42,6 +42,16 @@ export const GUIAS: Guia[] = [
     notas: ["La interventoría no ve el presupuesto."],
   },
   {
+    clave: "controlcostos", titulo: "Control de costos por cortes", quien: "Gerente, administrador, director y analista; el supervisor lo consulta",
+    pasos: [
+      "Cada corte es una medición de valor ganado (calculada o manual); se crean en «Valor ganado».",
+      "Lee las tarjetas del último corte: invertido, por invertir, proyectado (EAC) y línea base.",
+      "En el gráfico, la barra completa es lo proyectado: la parte oscura ya se invirtió y la clara falta por invertir; la línea discontinua es la línea base.",
+      "En la tabla, el rojo marca lo que se encarece frente al corte anterior o frente a la línea base.",
+    ],
+    notas: ["El proyectado es siempre el EAC que calcula la plataforma; sin avance o gasto no hay proyección."],
+  },
+  {
     clave: "cronograma", titulo: "Cronograma y avance", quien: "Gerente (crea las tareas); supervisor (avance reportado); interventoría (avance verificado)",
     pasos: [
       "Crea cada tarea con su semana de inicio (1 = primera semana del proyecto), su duración en semanas y su peso. Si la ligas a un elemento de la EDT que tiene capítulo en el presupuesto, el capítulo se completa solo.",

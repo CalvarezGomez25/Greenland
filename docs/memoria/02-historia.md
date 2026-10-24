@@ -125,6 +125,8 @@ El usuario pidió aplicar el sistema de diseño renovado de GreenLand (v1.0.0, p
 
 El usuario pidió ligar los contratos al presupuesto para confrontar lo presupuestado con lo contratado, dividir el presupuesto entre costos directos e indirectos (A.I.U.) y tratar los adicionales como un concepto aparte (trabajos no contemplados en la EDT original o añadidos durante la ejecución). Se construyó en [ADR-0029](decisiones/ADR-0029-integracion-contratos-y-costos.md): tipos de costo indirecto, adicionales con estado derivado del cambio, asignación de contratos a capítulos y adicionales, y un módulo Balance de costos. Del tablero de control de costos de Casa Las Mercedes se tomó solo el concepto (corte a corte); su evolución gráfica quedó como fase posterior sin decidir (P40).
 
+Ese mismo día el usuario aceptó los supuestos de diseño (P40), dijo que al gerente le basta con el EAC calculado y pidió la fase 1 del gráfico tipo Casa Las Mercedes ([ADR-0030](decisiones/ADR-0030-control-de-costos-por-cortes.md)): pantalla «Control de costos» con invertido, por invertir y proyectado corte a corte. La fase 2 (por capítulo) quedó habilitada por la asignación de contratos.
+
 ## Estado al 17 de octubre de 2026
 
 Ver [01-resumen-ejecutivo.md](01-resumen-ejecutivo.md).

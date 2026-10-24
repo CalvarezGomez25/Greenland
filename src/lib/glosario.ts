@@ -86,6 +86,7 @@ export const GLOSARIO = {
   costo_total: { titulo: "Costo total", texto: "Costo directo más los costos indirectos (A.I.U., impuestos y otros) del presupuesto." },
   aiu: { titulo: "Costos indirectos (A.I.U.)", texto: "Administración, imprevistos y utilidad como porcentajes del costo directo; los impuestos y retenciones (por ejemplo IVA sobre la utilidad) se muestran aparte. Los porcentajes los define el proyecto." },
   adicional_obra: { titulo: "Adicional de obra", texto: "Trabajo que no estaba contemplado en la EDT original o que llegó como añadidura durante la ejecución. Es distinto de los costos indirectos. Queda aprobado cuando el cambio que lo respalda se aprueba." },
+  corte_costos: { titulo: "Corte de control de costos", texto: "Cada medición de valor ganado es un corte. Invertido = costo real (AC); proyectado = estimación a la conclusión (EAC) calculada con el rendimiento real; por invertir = proyectado − invertido. Se compara con el corte anterior y con la línea base de costo (BAC)." },
   sobrecontratado: { titulo: "Sobrecontratado", texto: "Lo contratado (contratos aprobados) para un capítulo o adicional supera su presupuesto con indirectos." },
   gastado: { titulo: "Gastado a la fecha", texto: "Suma del gasto real registrado por mes hasta el mes de corte." },
   gasto_plan: { titulo: "Gasto frente al plan", texto: "Cuánto más o menos se ha gastado frente a lo que la curva S planeaba a esta fecha. Positivo: se ha gastado más de lo planificado." },
@@ -115,7 +116,7 @@ const POR_ROTULO: Record<string, TemaAyuda> = {
   "Desempeño requerido (TCPI)": "tcpi", "Variación a la conclusión (VAC, COP)": "vac",
   "Avance físico": "avance_fisico", "Avance plan": "avance_plan", "Avance financiero": "avance_financiero", "Avance presup.": "avance_financiero",
   "Avance físico / financiero": "avance_fisico", "Riesgos": "riesgo_puntaje", "Cambios": "cambios_pendientes", "Reportado": "reportado",
-  "Nivel": "nivel_cambio", "Costo directo": "costo_directo", "Costo total": "costo_total", "Costos indirectos (A.I.U.)": "aiu", "Gastado a la fecha": "gastado",
+  "Nivel": "nivel_cambio", "Costo directo": "costo_directo", "Costo total": "costo_total", "Costos indirectos (A.I.U.)": "aiu", "Proyectado (EAC)": "corte_costos", "Gastado a la fecha": "gastado",
   "Gasto frente al plan": "gasto_plan", "Facturado (bruto)": "facturado", "Ejecutado": "ejecutado_contrato", "Saldo por ejecutar": "saldo_contrato",
   "Anticipo autorizado": "anticipo", "Anticipo por amortizar": "anticipo_pendiente", "Retención acumulada": "retencion", "Desembolsado": "desembolsado",
   "Avance reportado": "avance_reportado", "Avance verificado": "avance_verificado", "Diferencia": "avance_diferencia",
@@ -130,7 +131,7 @@ export const temaDe = (rotulo: string): TemaAyuda | undefined => POR_ROTULO[rotu
 export const CATEGORIAS_GLOSARIO: { titulo: string; temas: TemaAyuda[] }[] = [
   { titulo: "Valor ganado e indicadores", temas: ["bac", "pv", "ev", "ac", "spi", "cpi", "sv", "cv", "eac", "etc", "tcpi", "vac", "avance_fisico", "avance_plan", "avance_financiero", "fecha_corte", "medicion", "calculo_obra"] },
   { titulo: "Semáforo, riesgos y cambios", temas: ["semaforo", "proyectos_activos", "reportado", "riesgo_puntaje", "cambios_pendientes", "nivel_cambio"] },
-  { titulo: "Presupuesto y costos", temas: ["linea_base", "costo_directo", "aiu", "adicional_obra", "sobrecontratado", "costo_total", "gastado", "gasto_plan", "curva_s"] },
+  { titulo: "Presupuesto y costos", temas: ["linea_base", "costo_directo", "aiu", "adicional_obra", "sobrecontratado", "corte_costos", "costo_total", "gastado", "gasto_plan", "curva_s"] },
   { titulo: "Contratos y pagos", temas: ["facturado", "ejecutado_contrato", "saldo_contrato", "anticipo", "anticipo_pendiente", "retencion", "desembolsado"] },
   { titulo: "Cronograma y avance", temas: ["avance_reportado", "avance_verificado", "avance_diferencia", "avance_usado", "planificado_hoy"] },
 ];

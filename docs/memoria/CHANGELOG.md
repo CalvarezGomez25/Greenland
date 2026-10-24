@@ -2,6 +2,15 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.7.0] · 24 de octubre de 2026
+### Añadido
+- **Control de costos por cortes (fase 1)** ([ADR-0030](decisiones/ADR-0030-control-de-costos-por-cortes.md)): pantalla nueva en Obra con invertido, por invertir y proyectado (EAC calculado) por corte, gráfico corte a corte con la línea base, y variación frente al corte anterior y a la línea base. Sin migración: usa las mediciones de valor ganado. 5 pruebas unitarias (`cortes.test.ts`).
+### Cambiado
+- Se aceptan los supuestos S21 a S24 de la integración de contratos y costos (P40, puntos 1 y 3). Nuevo supuesto S25: el «proyectado» es el EAC calculado.
+- El balance de costos lee los cambios en una consulta aparte (en vez de un cruce de tablas) y el porcentaje contratado no se parte en dos líneas.
+### Pendiente
+- Fase 2 (el mismo control por capítulo; habilitada por la asignación de contratos) y fase 3 (dos líneas base): sin construir ni decidir.
+
 ## [3.6.0] · 24 de octubre de 2026
 ### Añadido
 - **Integración de contratos y costos** ([ADR-0029](decisiones/ADR-0029-integracion-contratos-y-costos.md), migración 0025): el presupuesto se divide en costos directos e **indirectos (A.I.U.)** con tipo por concepto (administración, imprevistos, utilidad, impuestos, otro); **adicionales de obra** (trabajos no contemplados en la EDT original o añadidos durante la ejecución, con estado derivado del cambio que los respalda); **asignación de cada contrato a capítulos y adicionales**; y módulo **Balance de costos** (presupuesto con indirectos frente a contratado, por aprobar, facturado y saldo; alertas de sobrecontratación y de contratos sin asignar). 40 comprobaciones SQL nuevas (`t-contratos-costos`) y pruebas unitarias del balance.

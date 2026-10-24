@@ -20,7 +20,7 @@ function Barra({ f }: { f: FilaBalance }) {
       <div className="h-2 w-20 overflow-hidden rounded-full bg-leaf-100" aria-hidden="true">
         <div className={`h-full ${f.sobrecontratado ? "bg-danger" : "bg-leaf-600"}`} style={{ width: `${Math.min(100, p)}%` }} />
       </div>
-      <span className={f.sobrecontratado ? "font-medium text-danger" : ""}>{p.toLocaleString("es-CO", { minimumFractionDigits: 1 })} %</span>
+      <span className={`whitespace-nowrap ${f.sobrecontratado ? "font-medium text-danger" : ""}`}>{p.toLocaleString("es-CO", { minimumFractionDigits: 1 })} %</span>
     </div>
   );
 }
