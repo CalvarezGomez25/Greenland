@@ -111,7 +111,7 @@ async function Contenido({ params }: { params: Promise<{ id: string }> }) {
       <section className="mt-8" aria-labelledby="t-cap">
         <h2 id="t-cap" className="font-display text-2xl font-bold text-leaf-700">Por capítulo, a la fecha</h2>
         <p className="mt-1 max-w-3xl text-sm text-muted">
-          Presupuesto de cada capítulo con sus indirectos, el avance de sus tareas del cronograma (ponderado por peso) y lo facturado a los contratos asignados. El proyectado se calcula como en el proyecto: presupuesto × invertido ÷ valor ganado.
+          Presupuesto de cada capítulo con sus indirectos, el avance de sus tareas del cronograma (ponderado por peso) y lo facturado a los contratos asignados. El proyectado se calcula como en el proyecto: presupuesto × invertido ÷ valor ganado. «Vs. presupuesto» y «Vs. contrato» comparan lo proyectado con el presupuesto y con lo contratado.
           El «invertido» de un capítulo es lo facturado de sus contratos, así que no coincide necesariamente con el gasto real del proyecto.
         </p>
         {capitulos === null ? (
@@ -120,25 +120,25 @@ async function Contenido({ params }: { params: Promise<{ id: string }> }) {
           <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Aún no hay capítulos en el presupuesto.</p>
         ) : (
           <div className="mt-3 overflow-x-auto rounded-card border border-soil-border">
-            <table className="w-full min-w-[1000px] text-sm">
+            <table className="w-full min-w-[860px] text-sm">
               <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
                 <tr>
-                  <th scope="col" className="px-3 py-2 text-left font-medium">Capítulo</th>
-                  {["Presupuesto", "Avance", "Invertido", "Por invertir", "Proyectado (EAC)", "Contratado", "Proyectado vs. presupuesto", "Proyectado vs. contrato"].map((h) => <th key={h} scope="col" className="px-3 py-2 text-right font-medium">{h}</th>)}
+                  <th scope="col" className="px-2 py-2 text-left font-medium">Capítulo</th>
+                  {["Presupuesto", "Avance", "Invertido", "Por invertir", "Proyectado (EAC)", "Contratado", "Vs. presupuesto", "Vs. contrato"].map((h) => <th key={h} scope="col" className="px-2 py-2 text-right font-medium">{h}</th>)}
                 </tr>
               </thead>
               <tbody>
                 {capitulos.map((c) => (
                   <tr key={c.id} className="border-t border-soil-border">
-                    <td className="px-3 py-2"><span className="font-medium">{c.codigo}</span> {c.nombre}{c.proyectado === null && <p className="text-xs text-muted">{c.avance === null ? "Sin tareas ligadas al capítulo" : c.invertido === 0n ? "Sin facturado asignado" : "Sin avance"}</p>}</td>
-                    <td className="px-3 py-2 text-right tabular-nums">{formatearPesos(c.presupuesto)}</td>
-                    <td className="px-3 py-2 text-right tabular-nums">{c.avance === null ? "—" : `${c.avance.toLocaleString("es-CO", { minimumFractionDigits: 1 })} %`}</td>
-                    <td className="px-3 py-2 text-right tabular-nums">{formatearPesos(c.invertido)}</td>
-                    <td className="px-3 py-2 text-right tabular-nums">{c.porInvertir === null ? "—" : formatearPesos(c.porInvertir)}</td>
-                    <td className="px-3 py-2 text-right tabular-nums">{c.proyectado === null ? "—" : formatearPesos(c.proyectado)}</td>
-                    <td className="px-3 py-2 text-right tabular-nums">{c.contratado === 0n ? "—" : formatearPesos(c.contratado)}</td>
-                    <td className={`px-3 py-2 text-right tabular-nums ${c.sobrePresupuesto !== null && c.sobrePresupuesto > 0n ? "text-danger" : ""}`}>{c.sobrePresupuesto === null ? "—" : `${c.sobrePresupuesto > 0n ? "+" : c.sobrePresupuesto < 0n ? "−" : ""}${formatearPesos(c.sobrePresupuesto < 0n ? -c.sobrePresupuesto : c.sobrePresupuesto)}`}</td>
-                    <td className={`px-3 py-2 text-right tabular-nums ${c.sobreContrato !== null && c.sobreContrato > 0n ? "text-danger" : ""}`}>{c.sobreContrato === null ? "—" : `${c.sobreContrato > 0n ? "+" : c.sobreContrato < 0n ? "−" : ""}${formatearPesos(c.sobreContrato < 0n ? -c.sobreContrato : c.sobreContrato)}`}</td>
+                    <td className="px-2 py-2"><span className="font-medium">{c.codigo}</span> {c.nombre}{c.proyectado === null && <p className="text-xs text-muted">{c.avance === null ? "Sin tareas ligadas al capítulo" : c.invertido === 0n ? "Sin facturado asignado" : "Sin avance"}</p>}</td>
+                    <td className="px-2 py-2 text-right tabular-nums">{formatearPesos(c.presupuesto)}</td>
+                    <td className="px-2 py-2 text-right tabular-nums">{c.avance === null ? "—" : `${c.avance.toLocaleString("es-CO", { minimumFractionDigits: 1 })} %`}</td>
+                    <td className="px-2 py-2 text-right tabular-nums">{formatearPesos(c.invertido)}</td>
+                    <td className="px-2 py-2 text-right tabular-nums">{c.porInvertir === null ? "—" : formatearPesos(c.porInvertir)}</td>
+                    <td className="px-2 py-2 text-right tabular-nums">{c.proyectado === null ? "—" : formatearPesos(c.proyectado)}</td>
+                    <td className="px-2 py-2 text-right tabular-nums">{c.contratado === 0n ? "—" : formatearPesos(c.contratado)}</td>
+                    <td className={`px-2 py-2 text-right tabular-nums ${c.sobrePresupuesto !== null && c.sobrePresupuesto > 0n ? "text-danger" : ""}`}>{c.sobrePresupuesto === null ? "—" : `${c.sobrePresupuesto > 0n ? "+" : c.sobrePresupuesto < 0n ? "−" : ""}${formatearPesos(c.sobrePresupuesto < 0n ? -c.sobrePresupuesto : c.sobrePresupuesto)}`}</td>
+                    <td className={`px-2 py-2 text-right tabular-nums ${c.sobreContrato !== null && c.sobreContrato > 0n ? "text-danger" : ""}`}>{c.sobreContrato === null ? "—" : `${c.sobreContrato > 0n ? "+" : c.sobreContrato < 0n ? "−" : ""}${formatearPesos(c.sobreContrato < 0n ? -c.sobreContrato : c.sobreContrato)}`}</td>
                   </tr>
                 ))}
               </tbody>

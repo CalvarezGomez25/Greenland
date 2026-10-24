@@ -44,16 +44,19 @@ Para cada elemento: qué es, qué permite y qué aporta.
 16. **Cierre y lecciones aprendidas.** Acta de entrega y registro de lecciones. *Aporta:* el aprendizaje queda disponible para proyectos futuros.
 
 **C. Obra** (si el proyecto tiene construcción)
-17. **Presupuesto y costos.** Capítulos, partidas, costos adicionales, línea base, gasto real mensual y **Curva S** (planificado vs. gastado).
-18. **Cronograma y avance.** Tareas con peso, **Gantt**, avance reportado por el supervisor y avance verificado por la interventoría.
-19. **Contratos y pagos.** Contratos, anticipo, actas de pago (bruto, amortización, retención y neto) y evolución de pagos; la plataforma registra y calcula, no ejecuta pagos.
-20. **Bitácora de obra.** Registro diario con clima, personal, actividades, retrasos e incidentes; el avance diario se suma al cronograma. *Aporta (zona Obra):* costo, tiempo, contratos y obra conectados entre sí.
+17. **Presupuesto y costos.** Capítulos, partidas, **costos indirectos (A.I.U.)** (administración, imprevistos, utilidad y, si aplican, impuestos), línea base, gasto real mensual y **Curva S** (planificado vs. gastado).
+18. **Adicionales de obra.** Trabajos **no contemplados en la EDT original** o **añadidos durante la ejecución**, ligados a un cambio: quedan aprobados cuando el cambio se aprueba y no modifican la línea base por sí solos. *Aporta:* lo sobrevenido queda separado y trazable frente a lo original.
+19. **Balance de costos.** Por capítulo y adicional: presupuesto (con su parte de A.I.U.) frente a lo **contratado** y **facturado**, saldo y alertas de sobrecontratación y de contratos sin asignar. *Aporta:* ver cómo cada contrato afecta la «bolsa» de cada capítulo.
+20. **Control de costos por cortes.** Corte a corte: **invertido**, **por invertir** y **proyectado** (la estimación a la conclusión que calcula la plataforma), con su variación frente al corte anterior y a la línea base, y el mismo control por capítulo. *Aporta:* la vista gráfica de cómo evoluciona el costo, sin cifras escritas a mano.
+21. **Cronograma y avance.** Tareas con peso, **Gantt**, avance reportado por el supervisor y avance verificado por la interventoría; las tareas se ligan a capítulos.
+22. **Contratos y pagos.** Contratos, anticipo, actas de pago (bruto, amortización, retención y neto) y evolución de pagos; cada contrato se **reparte entre capítulos y adicionales**. La plataforma registra y calcula, no ejecuta pagos.
+23. **Bitácora de obra.** Registro diario con clima, personal, actividades, retrasos e incidentes; el avance diario se suma al cronograma. *Aporta (zona Obra):* costo, tiempo, contratos y obra conectados entre sí.
 
 **D. Interventoría**
-21. **Interventoría.** Conceptos, hallazgos, diseños, evaluaciones e informes. La interventoría conceptúa y verifica; no aprueba ni modifica datos del contrato, y ve solo lo que se le asigna.
+24. **Interventoría.** Conceptos, hallazgos, diseños, evaluaciones e informes. La interventoría conceptúa y verifica; no aprueba ni modifica datos del contrato, y ve solo lo que se le asigna.
 
 **E. Salidas**
-22. **Informe gerencial** (una página) y **exportaciones a Excel y PDF** en el tablero y en los módulos principales, generados del mismo dato.
+25. **Informe gerencial** (una página) y **exportaciones a Excel y PDF** en el tablero y en los módulos principales, generados del mismo dato.
 
 ## 4. Lo que le corresponde decidir
 - **Cambios moderados y críticos** (los menores los aprueba el gerente; si supera el 5 %, firma también el patrocinador).
@@ -66,7 +69,7 @@ Para cada elemento: qué es, qué permite y qué aporta.
 - No tenemos todavía cifras medidas de ahorro de tiempo o costo; se medirán en el piloto previsto.
 
 ## 6. Lo que le pido
-1. Recorrer los 22 elementos con la guía (unos 30 a 40 minutos) y anotar dudas.
+1. Recorrer los 25 elementos con la guía (unos 30 a 40 minutos) y anotar dudas.
 2. Probar la aprobación de un cambio y de un contrato.
 3. Decirme qué dato o indicador echa de menos para el seguimiento del portafolio.
 

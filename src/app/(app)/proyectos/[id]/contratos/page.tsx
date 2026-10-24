@@ -40,9 +40,9 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         <p className="mt-6 rounded-card bg-leaf-50 p-6 text-sm text-muted">Aún no hay contratos.</p>
       ) : (
         <div className="mt-6 overflow-x-auto rounded-card border border-soil-border">
-          <table className="w-full min-w-[1000px] text-left text-sm">
+          <table className="w-full min-w-[900px] text-left text-sm">
             <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800">
-              <tr>{["Contrato", "Valor (COP)", "Asignado al presupuesto", "Facturado", "Ejecutado", "Anticipo pendiente", "Desembolsado", "Retención"].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr>
+              <tr>{["Contrato", "Valor (COP)", "Asignado", "Facturado", "Ejecutado", "Anticipo pendiente", "Desembolsado", "Retención"].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr>
             </thead>
             <tbody className="divide-y divide-soil-border">
               {contratos.map((c) => {

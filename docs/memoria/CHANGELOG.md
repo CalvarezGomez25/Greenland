@@ -6,6 +6,7 @@ Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Correg
 ### Añadido
 - **Control de costos por capítulo (fase 2)** ([ADR-0031](decisiones/ADR-0031-control-de-costos-por-capitulo.md)): en la pantalla Control de costos, tabla «Por capítulo, a la fecha» con presupuesto, avance de las tareas del capítulo, invertido (facturado asignado), por invertir, proyectado (EAC) y comparación con el presupuesto y con lo contratado. Sin migración. 3 pruebas unitarias.
 ### Cambiado
+- **Materiales de comunicación al día** (`docs/comunicaciones/`): la guía rápida en PDF pasa a 36 páginas con 33 figuras (Obra: figuras 21 a 32, con costos indirectos, adicionales, balance y control de costos nuevos y el detalle del contrato con su asignación), la tarjeta de referencia (cara 3 y cara 4) y la tabla de módulos (elementos 7 a 23); los correos de bienvenida (largo y corto) y el del director (versión 2, ahora con 25 elementos) usan los términos nuevos. El correo del director versión 1 queda como registro, sin actualizar.
 - Supuesto S26: el invertido por capítulo es lo facturado de sus contratos.
 
 ## [3.7.0] · 24 de octubre de 2026
