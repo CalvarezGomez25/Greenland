@@ -2,6 +2,12 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.8.0] · 24 de octubre de 2026
+### Añadido
+- **Control de costos por capítulo (fase 2)** ([ADR-0031](decisiones/ADR-0031-control-de-costos-por-capitulo.md)): en la pantalla Control de costos, tabla «Por capítulo, a la fecha» con presupuesto, avance de las tareas del capítulo, invertido (facturado asignado), por invertir, proyectado (EAC) y comparación con el presupuesto y con lo contratado. Sin migración. 3 pruebas unitarias.
+### Cambiado
+- Supuesto S26: el invertido por capítulo es lo facturado de sus contratos.
+
 ## [3.7.0] · 24 de octubre de 2026
 ### Añadido
 - **Control de costos por cortes (fase 1)** ([ADR-0030](decisiones/ADR-0030-control-de-costos-por-cortes.md)): pantalla nueva en Obra con invertido, por invertir y proyectado (EAC calculado) por corte, gráfico corte a corte con la línea base, y variación frente al corte anterior y a la línea base. Sin migración: usa las mediciones de valor ganado. 5 pruebas unitarias (`cortes.test.ts`).

@@ -13,7 +13,7 @@ Repositorio de trazabilidad e historia del desarrollo de la plataforma PMO360 ·
 | 02 | [Historia](02-historia.md) | Explicación | Cronología desde los antecedentes hasta hoy |
 | 03 | [Marco teórico](03-marco-teorico.md) | Explicación | Teoría de gestión de proyectos, normativa y su verificación |
 | 04 | [Buenas prácticas de documentación](04-buenas-practicas-documentacion.md) | Explicación | Investigación, diagnóstico y brechas |
-| 05 | [Decisiones](decisiones/README.md) | Referencia | 30 fichas ADR |
+| 05 | [Decisiones](decisiones/README.md) | Referencia | 31 fichas ADR |
 | 06 | [Trazabilidad](06-trazabilidad.md) | Referencia | Módulo → decisión → migración → prueba → commit |
 | 07 | [Lecciones aprendidas](07-lecciones-aprendidas.md) | Explicación | Incidentes y qué cambió |
 | 08 | [Fuentes y verificación](08-fuentes-y-verificacion.md) | Referencia | Bibliografía con nivel N1–N3 |

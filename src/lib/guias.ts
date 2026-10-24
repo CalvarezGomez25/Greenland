@@ -48,6 +48,7 @@ export const GUIAS: Guia[] = [
       "Lee las tarjetas del último corte: invertido, por invertir, proyectado (EAC) y línea base.",
       "En el gráfico, la barra completa es lo proyectado: la parte oscura ya se invirtió y la clara falta por invertir; la línea discontinua es la línea base.",
       "En la tabla, el rojo marca lo que se encarece frente al corte anterior o frente a la línea base.",
+      "Más abajo, «Por capítulo, a la fecha» proyecta cada capítulo con el avance de sus tareas y lo facturado a sus contratos. Para que aparezca, liga las tareas del cronograma a capítulos y asigna los contratos en «Asignación al presupuesto».",
     ],
     notas: ["El proyectado es siempre el EAC que calcula la plataforma; sin avance o gasto no hay proyección."],
   },

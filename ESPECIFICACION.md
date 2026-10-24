@@ -1,12 +1,12 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.7.0, actualizada el 24 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.8.0, actualizada el 24 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.7.0, única versión vigente |
+| Versión | 3.8.0, única versión vigente |
 | Última actualización | 21 de octubre de 2026 (imagen corporativa: sistema de diseño GreenLand v1.0.0 aplicado a la interfaz, las exportaciones, el informe gerencial y los correos; sección 1.1 y hito 26) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
@@ -26,6 +26,7 @@ Versión 3.7.0, actualizada el 24 de octubre de 2026. Es la única versión vige
 | 3.5.0 | 23 de octubre de 2026 | Se vuelve a la imagen anterior de la interfaz (el usuario revirtió el sistema de diseño v1.0.0; ADR-0028 queda «Revertida»; la sección 1.1 describe la identidad anterior y la v1.0.0 queda como referencia) y se agrega la línea de tiempo en «Mi trabajo» |
 | 3.6.0 | 24 de octubre de 2026 | Integración de contratos y costos (ADR-0029, migración 0025, hito 27): costos indirectos A.I.U., adicionales de obra, asignación de contratos al presupuesto y módulo Balance de costos (secciones 5.J y 5.M, 7 y 14; supuestos S21 a S24; pendiente P40) |
 | 3.7.0 | 24 de octubre de 2026 | Control de costos por cortes, fase 1 (ADR-0030, hito 28, módulo J, supuesto S25); se aceptan S21 a S24 (P40 parcialmente resuelto) |
+| 3.8.0 | 24 de octubre de 2026 | Control de costos por capítulo, fase 2 (ADR-0031, hito 29, supuesto S26) |
 | 3.4.0 | 21 de octubre de 2026 | Nueva imagen corporativa: sistema de diseño GreenLand v1.0.0 en toda la interfaz (paleta verde #027001, texto #5E5E5E, tipografía Archivo, píldoras y tarjetas con muesca, sin sombras ni mayúsculas sostenidas, alertas sobrias), exportaciones PDF y Excel, informe gerencial y correos; identidad (sección 1.1), hito 26, decisión de no mantener una versión paralela y ancla de reversión (ADR-0028), supuesto S20 y pendiente P39 |
 
 ### 0.1 Estado actual de un vistazo (16 de octubre de 2026)
@@ -34,10 +35,10 @@ Versión 3.7.0, actualizada el 24 de octubre de 2026. Es la única versión vige
 | --- | --- |
 | Hitos 1 a 11 de la sección 12 | Construidos. Todos los módulos del mapa (sección 4) están disponibles en la aplicación |
 | Extensiones posteriores | Construidas: aprobación de contratos, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial y su envío semanal, marca, menú lateral y ayuda, y los ajustes del tablero del proyecto (hito 21). Material del marco FARO producido (hito 20). Memoria del proyecto creada (hito 22). Directorio de contactos construido (hito 23). Actividades y «Mi trabajo» construidos (hito 24) |
-| Pruebas automáticas | 352 pruebas unitarias (Vitest, 37 archivos) y 626 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
+| Pruebas automáticas | 355 pruebas unitarias (Vitest, 38 archivos) y 626 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
 | Producción | El usuario instaló el SQL de la base en Supabase y desplegó en Vercel; confirmó que funciona con datos ficticios |
 | Aún no ocurrido | Ningún correo se ha enviado en producción (falta configurar el proveedor, `CRON_SECRET` y el usuario de solo lectura); no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
-| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 30 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
+| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 31 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
 | Condiciones antes de datos reales | Definir región y confidencialidad; plan de alojamiento apto para uso comercial; revisión de seguridad (pendientes P12 a P14) |
 
 ## 1. Visión, alcance y principios
@@ -307,6 +308,7 @@ Repositorio de planos, contratos, actas e informes con versiones, vinculables a 
 - **Adicionales de obra (v3.6):** concepto distinto del A.I.U. Son trabajos **no contemplados en la EDT original** o **añadidos durante la ejecución**. Código AD-001, descripción, origen, valor directo, si aplican los indirectos, elemento de la EDT (opcional) y cambio que los respalda (opcional). Su estado se **deriva del cambio**: sin cambio o con cambio en trámite = «En trámite»; cambio aprobado, en implementación o cerrado = «Aprobado»; cambio rechazado = «Rechazado». Solo los aprobados cuentan en el balance. No modifican el BAC por sí solos: el BAC cambia únicamente con cambios aprobados (módulo F). Los edita el administrador o el gerente; la interventoría no los ve.
 - **Balance de costos (v3.6):** por capítulo y por adicional aprobado muestra presupuesto directo, presupuesto con indirectos (el A.I.U. se reparte en proporción al costo directo; S21), contratado, por aprobar, facturado, saldo y % contratado. Marca lo **sobrecontratado** (contratado > presupuesto con indirectos) y los contratos con valor **sin asignar**.
 - **Control de costos por cortes (v3.7, fase 1; ADR-0030):** cada medición de valor ganado es un corte. Por corte: invertido (AC), proyectado (EAC calculado), por invertir (EAC − AC), invertido en el periodo, variación del proyectado frente al corte anterior, variación frente a la línea base (EAC − BAC), cambio de la línea base y CPI. Gráfico de barras corte a corte con la línea base. El proyectado es siempre el EAC calculado, nunca un valor escrito (S25); sin avance o gasto no hay proyección. Oculto a interventoría.
+- **Control de costos por capítulo (v3.8, fase 2; ADR-0031):** para cada capítulo, a la fecha: presupuesto con indirectos; avance = promedio ponderado por peso de las tareas del cronograma ligadas al capítulo; EV = presupuesto × avance; invertido = facturado asignado (S26); EAC = presupuesto × invertido / EV; por invertir = EAC − invertido; comparación del EAC con el presupuesto y con lo contratado. Sin tareas, sin avance o sin facturado no hay proyección. Sin historial por corte.
 
 ### K. Cronograma y avance (obra)
 
@@ -733,6 +735,7 @@ Los hitos 1 a 11 están **construidos**, con pruebas de base de datos (`pruebas-
 | 26. Imagen corporativa GreenLand v1.0.0 | Interfaz completa con el sistema de diseño (tokens de color y tipografía en `src/app/globals.css`, píldoras, campos, tarjetas con muesca, tablas con encabezado verde, estados con la paleta de alertas, gráficos con la serie oficial); exportaciones PDF y Excel (formato de hojas de cálculo del sistema), informe gerencial y correos con la misma identidad | Construido el 21 de octubre de 2026 sobre la rama principal. Verificado en navegador (escritorio y celular de 390 px) y con las muestras de PDF y Excel; 328 pruebas unitarias y 586 de base de datos correctas. Sin cambios de base de datos |
 | 27. Integración de contratos y costos | Costos indirectos A.I.U. con tipo, adicionales de obra, asignación de contratos a capítulos y adicionales, y módulo Balance de costos (0025, ADR-0029) | Construido. `t-contratos-costos` (40 comprobaciones) y pruebas unitarias de `calculos` y `balance`. **No validado con datos reales** |
 | 28. Control de costos por cortes (fase 1) | Pantalla, gráfico y tabla por corte a partir de las mediciones de valor ganado (sin migración, ADR-0030) | Construido. `cortes.test.ts` (5 pruebas); revisado en navegador con datos ficticios. Fases 2 (por capítulo) y 3 (dos líneas base) sin construir |
+| 29. Control de costos por capítulo (fase 2) | Tabla por capítulo con avance, invertido, proyectado y comparación con presupuesto y contrato (ADR-0031) | Construido. `proyeccion-capitulos.test.ts` (3 pruebas); revisado en navegador con datos ficticios. Historial por corte por capítulo y fase 3 sin construir |
 
 ## 13. Casos de prueba de referencia
 
@@ -895,6 +898,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | S23 | Lo facturado de un capítulo o adicional se calcula repartiendo el facturado de cada contrato en proporción a lo asignado |
 | S24 | El estado de un adicional se deriva del estado del cambio que lo respalda; los adicionales no modifican el BAC por sí solos |
 | S25 | En el control de costos por cortes, el «proyectado» es siempre el EAC calculado (BAC × AC / EV); el gerente no escribe una estimación propia (decisión del usuario; ADR-0030) |
+| S26 | En el control por capítulo, el invertido es el facturado de los contratos asignados (el gasto mensual no se lleva por capítulo); el avance sale de las tareas ligadas al capítulo (ADR-0031) |
 
 **Pendientes**
 
@@ -939,7 +943,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | P37 | **Integración con Microsoft 365 (Teams y Planner).** Se exploró usar la licencia corporativa de Microsoft como capa de trabajo y dejar a PMO360 como capa de control (lectura de tareas por Microsoft Graph, solo lectura); **no se ha construido nada ni hay decisión definitiva** (ADR-0026). Pendiente del usuario: confirmar el plan de Microsoft 365. Pendiente de TI: cinco preguntas (plan, invitados externos para la interventoría, quién crea equipos, registro de aplicación en Entra ID, Power Automate) y una prueba con un solo proyecto. Lo citado de Microsoft salió de resultados de búsqueda, no de sus páginas | Abierto; relacionado con P34 (adopción de Actividades) |
 | P38 | **Ramas secundarias.** `prueba/gestor-colaborativo` no tiene trabajo propio (todo su contenido ya está en la rama principal): se puede archivar o borrar cuando el usuario lo decida. `vercel/install-vercel-web-analytics-x313y1` tiene 1 commit creado por Vercel («Install Vercel Web Analytics», 17 de octubre de 2026) que **no está en la rama principal** y quedó 13 commits atrás; no se integró porque no fue solicitado. Decidir si se integra o se descarta | Abierto; decide el usuario |
 | P39 | **Brechas de la imagen corporativa:** (1) falta el paquete oficial `GreenLand_DS_Export_v1.0.zip`; los logotipos de `public/` y los íconos del menú lateral (trazos propios, no los 20 glifos de la biblioteca cerrada) deben revisarse contra el paquete; (2) la fuente licenciada Non Natural Grotesk Plain no está incluida (se usa Archivo); (3) la paleta de alertas y la serie de gráficos son propuestas por validar con el responsable de marca; (4) decidir si los estados pasan a llamarse Cumple, Atención y Crítico; (5) la voz y la persona gramatical («tú») siguen sin definir; (6) el material de `docs/presentacion-faro/` conserva la identidad anterior | Abierto; el usuario aporta el paquete y valida con marca |
-| P40 | **Validar la integración de contratos y costos** con el equipo y con datos reales. El usuario aceptó los supuestos S21 a S24 el 24 oct; falta contrastarlos con contratos reales: (1) ¿la base «con indirectos» y el prorrateo del A.I.U. (S21) reproducen cómo se contrata en GreenLand?; (2) ¿hace falta repartir un contrato por partidas y no solo por capítulo?; (3) la fase 1 inspirada en Casa Las Mercedes está construida (hito 28); quedan la fase 2 (el mismo control por capítulo, habilitada por la asignación de contratos; falta decidir cómo proyectar un capítulo) y la fase 3 (dos líneas base, interna y contractual), **sin decidir** |
+| P40 | **Validar la integración de contratos y costos** con el equipo y con datos reales. El usuario aceptó los supuestos S21 a S24 el 24 oct; falta contrastarlos con contratos reales: (1) ¿la base «con indirectos» y el prorrateo del A.I.U. (S21) reproducen cómo se contrata en GreenLand?; (2) ¿hace falta repartir un contrato por partidas y no solo por capítulo?; (3) la fase 1 inspirada en Casa Las Mercedes está construida (hito 28); la fase 2 (por capítulo, a la fecha) está construida (hito 29); quedan el historial por corte de cada capítulo y la fase 3 (dos líneas base, interna y contractual), **sin decidir** |
 
 ## 15. Trazabilidad: hoja del libro a módulo
 
@@ -1072,7 +1076,7 @@ Repositorio `docs/memoria/`, creado el 14 de octubre de 2026 para explicar cómo
 | `02-historia.md` | Cronología desde los antecedentes hasta hoy, con commits |
 | `03-marco-teorico.md` | Teoría, normativa y nivel de verificación de cada afirmación |
 | `04-buenas-practicas-documentacion.md` | Investigación sobre cómo documentar proyectos, diagnóstico y brechas |
-| `decisiones/` | 30 fichas de decisión (ADR) |
+| `decisiones/` | 31 fichas de decisión (ADR) |
 | `06-trazabilidad.md` | Módulo → decisión → migración → prueba → commit |
 | `07-lecciones-aprendidas.md` | Incidentes y qué cambió |
 | `08-fuentes-y-verificacion.md` | Bibliografía con niveles N1 a N3 |
