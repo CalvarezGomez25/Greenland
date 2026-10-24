@@ -27,6 +27,7 @@ El **menú de la izquierda** lleva a todo lo demás (en el celular, se abre con 
 **3. Organizar tu trabajo y verificar avances**
 - En **Mi trabajo**: la **línea de tiempo** (tus pendientes de las atrasadas a las futuras, con la línea de HOY) y el **tablero** (Por hacer, En curso, Bloqueada, Hecha; arrastra la tarjeta cuando avances).
 - Para mirar un proyecto: elígelo en **Proyectos** (menú izquierdo). Verás su semáforo, el avance y los módulos que tu rol puede ver; arriba, el **Informe gerencial** en Excel o PDF.
+- **Actividades ≠ tareas del proyecto:** el tablero de Actividades reparte el trabajo del día a día (quién, qué y para cuándo). **No crea ni modifica** la EDT, los capítulos del presupuesto ni las tareas del cronograma, ni mueve el avance, el valor ganado o el semáforo. Esos se arman en EDT, Presupuesto y Cronograma.
 - Si un módulo no aparece, no es un error: tu rol no lo necesita o no tiene permiso.
 
 **4. Gestión y Obra**

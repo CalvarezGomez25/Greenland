@@ -34,7 +34,13 @@ Es la pantalla para saber qué te toca. De arriba hacia abajo:
 - **Mis proyectos:** tarjetas para entrar a cada uno.
 - **Tablero:** tus actividades en cuatro columnas: *Por hacer, En curso, Bloqueada* y *Hecha*. **Arrastra la tarjeta** a otra columna cuando avances (en el celular, usa «Mover a»). Si algo se traba, pásala a *Bloqueada* para que se vea.
 
-Para crear actividades de un proyecto: entra al proyecto, abre **Actividades** y pulsa **Agregar actividad** (disponible según tu rol).
+Para crear actividades de un proyecto: entra al proyecto, abre **Actividades** y pulsa **Agregar actividad** (según tu rol). Escribe qué hay que hacer, elige responsable y fecha límite.
+
+**Ojo: las actividades del tablero no son las tareas del proyecto.** Son el reparto del trabajo del día a día (quién hace qué y para cuándo), como una lista de pendientes compartida. **No crean ni modifican** la EDT, los capítulos del presupuesto ni las tareas del cronograma, y no mueven el avance, el valor ganado ni el semáforo. Lo que sí permiten es verlas en «Mi trabajo» y, si quieres, ligar una actividad a un riesgo o a un elemento de la EDT para saber a qué responde. Cada cosa se arma en su lugar:
+- **Entregables del proyecto** → EDT.
+- **Capítulos y partidas con costo** → Presupuesto (puedes crear los capítulos desde la EDT).
+- **Tareas con peso y fechas del plan** → Cronograma (Gantt); su avance alimenta el valor ganado.
+- **Quién hace qué esta semana** → Actividades (tablero Kanban).
 
 ## 4. Cómo verificar los avances
 - **Semáforo de cada proyecto** (en el tablero y en su página): Verde = en orden; Amarillo = alerta; Rojo = requiere atención. Toma la peor de cuatro señales: cronograma, costo, riesgo más alto y cambios pendientes.

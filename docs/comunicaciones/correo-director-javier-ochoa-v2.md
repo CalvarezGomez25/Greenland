@@ -32,7 +32,7 @@ Para cada elemento: qué es, qué permite y qué aporta.
 6. **Ayuda.** Glosario de siglas y guía de cada módulo. *Aporta:* autonomía para el equipo.
 
 **B. Gestión de cada proyecto** (menú del proyecto → Gestión del proyecto)
-7. **Actividades.** Tablero Kanban con responsable, fecha límite y estado; pueden ligarse a un riesgo o a la EDT.
+7. **Actividades.** Tablero Kanban con responsable, fecha límite y estado; pueden ligarse a un riesgo o a un elemento de la EDT. *Importante:* son el reparto del trabajo diario, **no** las tareas del proyecto: no crean ni modifican la EDT, los capítulos del presupuesto ni las tareas del cronograma, y no mueven el avance, el valor ganado ni el semáforo (eso se arma en EDT, Presupuesto y Cronograma).
 8. **Acta de constitución.** Propósito, alcance, supuestos, restricciones y firmas (quién y cuándo). *Aporta:* el punto de partida acordado.
 9. **Valor ganado.** SPI, CPI, variaciones y estimaciones al terminar (EAC, ETC, VAC, TCPI) con su historial. En proyectos de obra se calcula solo. *Aporta:* saber si el proyecto va bien en tiempo y costo, con una medida común.
 10. **Interesados.** Poder e interés (1 a 5), estrategia calculada y contacto. *Aporta:* gestionar la comunicación con criterio.
