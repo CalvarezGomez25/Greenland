@@ -8,7 +8,7 @@ Plantilla para enviar al dar acceso a PMO360. Reemplaza lo que está entre [corc
 
 Hola [nombre / equipo]:
 
-Ya tienes acceso a **PMO360, Control integral de Proyectos**, la plataforma donde estamos reuniendo el seguimiento de nuestros proyectos: avance, presupuesto, riesgos, cambios, contratos y actividades. Todavía está en etapa de prueba y quiero que la **recorras con calma y me des tus impresiones**. Este correo te da el panorama para que no te pierdas, y adjunto una **guía rápida en PDF con capturas numeradas** (incluye los módulos de Gestión y de Obra). No necesitas más de 20 minutos.
+Ya tienes acceso a **PMO360, Control integral de Proyectos**, la plataforma donde estamos reuniendo el seguimiento de nuestros proyectos: avance, presupuesto, riesgos, cambios, contratos y actividades. Todavía está en etapa de prueba y quiero que la **recorras con calma y me des tus impresiones**. Este correo te da el panorama para que no te pierdas, y adjunto una **guía rápida en PDF con capturas numeradas** (incluye los módulos de Gestión y de Obra) y una **tarjeta de referencia** de 2 hojas a doble cara para tener a mano junto al monitor. No necesitas más de 20 minutos.
 
 [Opcional, solo si es cierto: Los proyectos que verás tienen datos ficticios de ejemplo; por favor no cargues información confidencial real todavía.]
 
@@ -70,7 +70,7 @@ Si el proyecto incluye construcción, al elegirlo en el menú izquierdo aparece 
 Cuando hay presupuesto aprobado, cronograma y gasto, el **valor ganado se calcula solo** (menú *Valor ganado*): no tienes que hacer cuentas.
 
 ## 8. Si tienes dudas
-Abre **Ayuda** en el menú izquierdo. Allí está el glosario (qué significan SPI, CPI, BAC y el semáforo) y una guía de diligenciamiento de cada módulo. Muchas pantallas tienen además un pequeño signo de ayuda junto a los campos. Si aun así no queda claro, anótalo: es justo lo que quiero saber.
+Abre **Ayuda** en el menú izquierdo. Allí está el glosario (qué significan SPI, CPI, BAC y el semáforo) y una guía de diligenciamiento de cada módulo. Muchas pantallas tienen además un pequeño signo de ayuda junto a los campos. Y para consultas al vuelo, imprime la **tarjeta de referencia** adjunta (4 caras: navegación, gestión, obra y cómo leer los números). Si aun así no queda claro, anótalo: es justo lo que quiero saber.
 
 ## 9. Lo que necesito de ti
 Después de recorrerla, respóndeme este correo con tus impresiones. Me sirve cualquier comentario; estas preguntas te guían:
