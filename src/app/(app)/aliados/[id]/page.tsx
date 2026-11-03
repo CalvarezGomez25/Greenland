@@ -8,11 +8,18 @@ import { ETAPAS } from "@/lib/contratos/vigilancia";
 import { ETIQUETA_TIPO_CONTRATO } from "@/lib/obra/contratos";
 import { desdeJson, formatearPesos } from "@/lib/presupuesto/dinero";
 import { Titulo } from "@/components/ui";
+import { numeroParametro, type FilaParametro } from "@/lib/pmo/parametros";
 import { FormularioTercero } from "../formulario-tercero";
-import { guardarTercero } from "../acciones";
+import { borrarDocumento, guardarDocumento, guardarTercero } from "../acciones";
+import { FormularioDocumento } from "../formulario-documento";
+import { AvisoResultado } from "@/components/aviso-resultado";
+import { diasParaVencer, hoyColombia } from "@/lib/actividades";
+import { BotonEnviar } from "@/components/boton-enviar";
+import { formatearFecha } from "@/lib/formato";
 
-async function Contenido({ params }: { params: Promise<{ id: string }> }) {
+async function Contenido({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ ok?: string | string[] }> }) {
   const { id } = await params;
+  const { ok } = await searchParams;
   const nuevo = id === "nuevo";
   if (!nuevo && !ES_UUID.test(id)) notFound();
   const { supabase } = await obtenerSesion();
@@ -33,6 +40,22 @@ async function Contenido({ params }: { params: Promise<{ id: string }> }) {
     contratos = (cs ?? []) as unknown as typeof contratos;
   }
   const soloLectura = puedeEditar !== true;
+  let alertaDias = 30;
+  let documentos: { id: string; tipo: string; fecha_expedicion: string; enlace: string | null; observaciones: string | null }[] = [];
+  let tipos: { nombre: string; vigencia_dias: number }[] = [];
+  if (!nuevo) {
+    const [{ data: ds }, { data: ts }, { data: pars }] = await Promise.all([
+      supabase.from("tercero_documentos").select("id, tipo, fecha_expedicion, enlace, observaciones").eq("tercero_id", id).order("fecha_expedicion", { ascending: false }),
+      supabase.from("documento_tipos").select("nombre, vigencia_dias").order("orden"),
+      supabase.from("parametros").select("ambito, ambito_id, clave, valor"),
+    ]);
+    alertaDias = numeroParametro((pars ?? []) as FilaParametro[], "alerta_ambar_dias", {}, 30);
+    documentos = (ds ?? []) as typeof documentos;
+    tipos = (ts ?? []) as typeof tipos;
+  }
+  const hoy = hoyColombia();
+  const vigencia = new Map(tipos.map((t) => [t.nombre, t.vigencia_dias]));
+  const vistos = new Set<string>(); // el primero de cada tipo (el más reciente) es el vigente
 
   return (
     <>
@@ -41,7 +64,41 @@ async function Contenido({ params }: { params: Promise<{ id: string }> }) {
       {!nuevo && esNitTemporal(nit) && (
         <p className="mt-3 max-w-2xl rounded-card bg-amber-50 p-3 text-sm text-amber-900">Este tercero tiene un identificador temporal. Cuando llegue el RUT, reemplaza el campo «NIT o cédula» por el definitivo: los contratos se conservan.</p>
       )}
+      <div className="mt-4"><AvisoResultado ok={ok} /></div>
       <div className="mt-6"><FormularioTercero accion={guardarTercero.bind(null, nuevo ? null : id)} iniciales={iniciales} soloLectura={soloLectura} /></div>
+
+      {!nuevo && (
+        <section className="mt-10" aria-labelledby="t-docs">
+          <h2 id="t-docs" className="font-display text-2xl font-bold text-leaf-700">Documentos del tercero</h2>
+          <p className="mt-1 max-w-3xl text-sm text-muted">Solo enlaces a los soportes (no se guardan archivos ni cédulas). El vencimiento sale de la fecha de expedición y la vigencia del tipo de documento; cuenta el más reciente de cada tipo. Rojo: vencido; ámbar: vence pronto. Un tercero sin documentos queda en ámbar en el semáforo de sus contratos.</p>
+          {documentos.length === 0 ? (
+            <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Aún no hay documentos registrados.</p>
+          ) : (
+            <div className="mt-3 overflow-x-auto rounded-card border border-soil-border">
+              <table className="w-full min-w-[720px] text-left text-sm">
+                <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800"><tr>{["Documento", "Expedición", "Vence", "Estado", ""].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr></thead>
+                <tbody className="divide-y divide-soil-border">
+                  {documentos.map((dc) => {
+                    const vigente = !vistos.has(dc.tipo); vistos.add(dc.tipo);
+                    const dias = vigencia.has(dc.tipo) ? diasParaVencer(new Date(Date.parse(`${dc.fecha_expedicion}T00:00:00Z`) + (vigencia.get(dc.tipo) as number) * 86_400_000).toISOString().slice(0, 10), hoy) : null;
+                    const venc = vigencia.has(dc.tipo) ? new Date(Date.parse(`${dc.fecha_expedicion}T00:00:00Z`) + (vigencia.get(dc.tipo) as number) * 86_400_000).toISOString().slice(0, 10) : null;
+                    return (
+                      <tr key={dc.id} className={vigente ? "" : "text-muted"}>
+                        <td className="px-3 py-2 align-top font-medium">{dc.tipo}{dc.enlace && <a href={dc.enlace} target="_blank" rel="noopener noreferrer" className="ml-2 text-xs font-normal text-leaf-600 underline">soporte</a>}{dc.observaciones && <p className="text-xs font-normal text-muted">{dc.observaciones}</p>}</td>
+                        <td className="whitespace-nowrap px-3 py-2 align-top">{formatearFecha(dc.fecha_expedicion)}</td>
+                        <td className="whitespace-nowrap px-3 py-2 align-top">{venc && (vigencia.get(dc.tipo) as number) < 36500 ? formatearFecha(venc) : "Sin vencimiento"}</td>
+                        <td className="px-3 py-2 align-top">{!vigente ? "Reemplazado" : dias === null || (vigencia.get(dc.tipo) as number) >= 36500 ? "Vigente" : dias < 0 ? <span className="font-medium text-danger">Vencido hace {-dias} d</span> : dias <= alertaDias ? <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-900">Vence en {dias} d</span> : "Vigente"}</td>
+                        <td className="px-3 py-2 text-right align-top">{!soloLectura && <form action={borrarDocumento.bind(null, id, dc.id)}><BotonEnviar className="text-sm font-medium text-danger underline" textoEnviando="…">Borrar</BotonEnviar></form>}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {!soloLectura && <div className="mt-3 rounded-card bg-leaf-50 p-5"><FormularioDocumento accion={guardarDocumento.bind(null, id)} tipos={tipos} /></div>}
+        </section>
+      )}
 
       {!nuevo && (
         <section className="mt-10" aria-labelledby="t-contratos">
@@ -75,6 +132,6 @@ async function Contenido({ params }: { params: Promise<{ id: string }> }) {
   );
 }
 
-export default function PaginaTercero({ params }: PageProps<"/aliados/[id]">) {
-  return <Suspense fallback={<p className="text-sm text-muted">Cargando…</p>}><Contenido params={params} /></Suspense>;
+export default function PaginaTercero({ params, searchParams }: PageProps<"/aliados/[id]">) {
+  return <Suspense fallback={<p className="text-sm text-muted">Cargando…</p>}><Contenido params={params} searchParams={searchParams} /></Suspense>;
 }

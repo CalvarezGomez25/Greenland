@@ -185,3 +185,55 @@ export async function asignarContratante(proyectoId: string, _p: Estado, d: Form
   revalidatePath(`/proyectos/${proyectoId}`, "layout");
   redirect(`${base(proyectoId)}?ok=contratante_proyecto`);
 }
+
+
+// ---- Pólizas -----------------------------------------------------------------------------------------------
+export async function guardarPoliza(proyectoId: string, contratoId: string, _p: Estado, d: FormData): Promise<Estado> {
+  if (!ES_UUID.test(contratoId)) return { error: "Dirección no válida." };
+  const { supabase } = await cargarProyecto(proyectoId);
+  const datos: Record<string, string> = {};
+  for (const k of ["amparo", "aseguradora", "numero", "fecha_expedicion", "fecha_vencimiento", "estado", "enlace"]) datos[k] = String(d.get(k) ?? "").trim();
+  for (const k of ["fecha_expedicion", "fecha_vencimiento"]) if (datos[k] && !esFechaValida(datos[k])) return { error: "Indica una fecha válida.", valores: valoresDe(d) };
+  const valor = String(d.get("valor_asegurado") ?? "").trim();
+  if (valor) {
+    const v = leerNumeroColombiano(valor, 2, 13);
+    if (!v.ok) return { error: `El valor asegurado ${v.motivo}.`, valores: valoresDe(d) };
+    datos.valor_asegurado = v.valor;
+  }
+  const { error } = await supabase.rpc("poliza_guardar", { p_contrato: contratoId, p_datos: datos });
+  if (error) return { error: mensaje(error), valores: valoresDe(d) };
+  return terminar(proyectoId, contratoId, "poliza");
+}
+
+export async function borrarPoliza(proyectoId: string, contratoId: string, polizaId: string): Promise<void> {
+  if (!ES_UUID.test(polizaId)) return terminar(proyectoId, contratoId, "", "Póliza no válida.");
+  const { supabase } = await cargarProyecto(proyectoId);
+  const { error } = await supabase.rpc("poliza_borrar", { p_poliza: polizaId });
+  return terminar(proyectoId, contratoId, "poliza_borrada", error ? mensaje(error) : undefined);
+}
+
+// ---- Modificaciones ----------------------------------------------------------------------------------------
+export async function guardarModificacion(proyectoId: string, contratoId: string, modificacionId: string | null, _p: Estado, d: FormData): Promise<Estado> {
+  if (!ES_UUID.test(contratoId) || (modificacionId && !ES_UUID.test(modificacionId))) return { error: "Dirección no válida." };
+  const { supabase } = await cargarProyecto(proyectoId);
+  const datos: Record<string, string> = {};
+  for (const k of ["tipo", "descripcion", "justificacion", "estado", "fecha_firma", "nueva_fecha_fin", "cambio_id"]) datos[k] = String(d.get(k) ?? "").trim();
+  for (const k of ["fecha_firma", "nueva_fecha_fin"]) if (datos[k] && !esFechaValida(datos[k])) return { error: "Indica una fecha válida.", valores: valoresDe(d) };
+  if (datos.cambio_id && !ES_UUID.test(datos.cambio_id)) return { error: "Elige un cambio de la lista.", valores: valoresDe(d) };
+  const valor = String(d.get("valor") ?? "").trim();
+  if (valor) {
+    const v = leerNumeroColombiano(valor, 2, 13);
+    if (!v.ok) return { error: `El valor ${v.motivo}.`, valores: valoresDe(d) };
+    datos.valor = v.valor;
+  }
+  const { error } = await supabase.rpc("modificacion_guardar", { p_contrato: contratoId, p_id: modificacionId, p_datos: datos });
+  if (error) return { error: mensaje(error), valores: valoresDe(d) };
+  return terminar(proyectoId, contratoId, "modificacion");
+}
+
+export async function borrarModificacion(proyectoId: string, contratoId: string, modificacionId: string): Promise<void> {
+  if (!ES_UUID.test(modificacionId)) return terminar(proyectoId, contratoId, "", "Modificación no válida.");
+  const { supabase } = await cargarProyecto(proyectoId);
+  const { error } = await supabase.rpc("modificacion_borrar", { p_modificacion: modificacionId });
+  return terminar(proyectoId, contratoId, "modificacion_borrada", error ? mensaje(error) : undefined);
+}

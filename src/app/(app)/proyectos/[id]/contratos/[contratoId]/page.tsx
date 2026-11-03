@@ -5,7 +5,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cargarProyecto } from "@/lib/contexto-proyecto";
 import { ES_UUID, formatearFecha, formatearFechaHora } from "@/lib/formato";
-import { desdeJson } from "@/lib/presupuesto/dinero";
+import { desdeJson, formatearDecimal } from "@/lib/presupuesto/dinero";
+import { diasParaVencer } from "@/lib/actividades";
 import { hoyColombia } from "@/lib/pmo/cargar";
 import { centavos, porcentaje } from "@/lib/pmo/formato";
 import { numeroParametro, type FilaParametro } from "@/lib/pmo/parametros";
@@ -13,10 +14,11 @@ import { ETIQUETA_ESTADO_ACTA, ETIQUETA_TIPO_CONTRATO, resumenContrato } from "@
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { AvisoResultado } from "@/components/aviso-resultado";
-import { aprobarContrato, asignarContrato, autorizarAnticipo, avanzarEtapa, borrarActa, cambiarEstadoActa, devolverEtapa, guardarDatosContractuales, liberarRetencion, quitarAsignacion, radicarActa } from "../acciones";
-import { FormularioActa, FormularioAnticipo, FormularioAsignacion, FormularioDatosContractuales, FormularioDevolverEtapa } from "../formularios";
+import { aprobarContrato, asignarContrato, autorizarAnticipo, avanzarEtapa, borrarActa, borrarModificacion, borrarPoliza, cambiarEstadoActa, devolverEtapa, guardarDatosContractuales, guardarModificacion, guardarPoliza, liberarRetencion, quitarAsignacion, radicarActa } from "../acciones";
+import { FormularioActa, FormularioAnticipo, FormularioAsignacion, FormularioDatosContractuales, FormularioDevolverEtapa, FormularioModificacion, FormularioPoliza } from "../formularios";
+import { cargarExtrasVigilancia } from "@/lib/contratos/datos-vigilancia";
 import { SemaforoContrato } from "@/components/semaforo-contrato";
-import { ETAPAS, etapaPorNumero, parametrosDeVigilancia, semaforoContrato } from "@/lib/contratos/vigilancia";
+import { ETAPAS, ETIQUETA_TIPO_MODIFICACION, etapaPorNumero, parametrosDeVigilancia, semaforoContrato } from "@/lib/contratos/vigilancia";
 import { formatearNit } from "@/lib/aliados";
 import { formatearPesos } from "@/lib/presupuesto/dinero";
 
@@ -26,9 +28,9 @@ function Dato({ t, v }: { t: string; v: React.ReactNode }) {
   return <div><dt className="text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</dt><dd className="mt-0.5 whitespace-pre-wrap text-leaf-900">{v || "—"}</dd></div>;
 }
 
-async function Contenido({ params, searchParams }: { params: Promise<{ id: string; contratoId: string }>; searchParams: Promise<{ ok?: string; error?: string; aviso?: string }> }) {
+async function Contenido({ params, searchParams }: { params: Promise<{ id: string; contratoId: string }>; searchParams: Promise<{ ok?: string; error?: string; aviso?: string; mod?: string }> }) {
   const { id, contratoId } = await params;
-  const { ok, error: errorUrl, aviso } = await searchParams;
+  const { ok, error: errorUrl, aviso, mod: modEditar } = await searchParams;
   if (!ES_UUID.test(contratoId)) notFound();
   const { supabase, proyecto, permisos } = await cargarProyecto(id);
   const { data: c } = await supabase.from("contratos").select("*").eq("id", contratoId).eq("proyecto_id", id).maybeSingle();
@@ -51,10 +53,22 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   const { data: contr } = (proyC as { contratante_id: string | null } | null)?.contratante_id
     ? await supabase.from("contratantes").select("tope_smmlv").eq("id", (proyC as { contratante_id: string }).contratante_id).maybeSingle()
     : { data: null };
+  const [{ data: pols }, { data: mods }, { data: amps }, { data: cmbs }] = await Promise.all([
+    supabase.from("contrato_polizas").select("id, amparo, aseguradora, numero, valor_asegurado, fecha_expedicion, fecha_vencimiento, estado, enlace").eq("contrato_id", contratoId).order("amparo"),
+    supabase.from("contrato_modificaciones").select("id, tipo, numero, fecha_firma, nueva_fecha_fin, valor, descripcion, justificacion, estado, cambio_id").eq("contrato_id", contratoId).order("creado_en"),
+    supabase.from("poliza_amparos").select("nombre, orden").order("orden"),
+    supabase.from("cambios").select("id, codigo, estado_flujo, descripcion_despues").eq("contrato_id", contratoId).order("codigo"),
+  ]);
+  const hoy = hoyColombia();
+  const extras = (await cargarExtrasVigilancia(supabase, id, [{ id: contratoId, tercero_id: c.tercero_id, valor: c.valor, anticipo_valor: c.anticipo_valor }], hoy, parametrosDeVigilancia((pars ?? []) as FilaParametro[], id).alertaDias)).get(contratoId);
+  const polizas = (pols ?? []) as { id: string; amparo: string; aseguradora: string | null; numero: string | null; valor_asegurado: number | string | null; fecha_expedicion: string | null; fecha_vencimiento: string | null; estado: string; enlace: string | null }[];
+  const modificaciones = (mods ?? []) as { id: string; tipo: string; numero: number; fecha_firma: string | null; nueva_fecha_fin: string | null; valor: number | string; descripcion: string; justificacion: string | null; estado: string; cambio_id: string | null }[];
+  const cambiosContrato = (cmbs ?? []) as { id: string; codigo: string; estado_flujo: string; descripcion_despues: string }[];
+  const enEdicion = modEditar && ES_UUID.test(modEditar) ? modificaciones.find((m) => m.id === modEditar) : undefined;
   const tercero = ter as { id: string; nit: string; razon_social: string } | null;
   const historial = (hist ?? []) as { id: number; etapa_anterior: number | null; etapa_nueva: number; motivo: string | null; creado_en: string }[];
   const parametrosV = parametrosDeVigilancia((pars ?? []) as FilaParametro[], id);
-  const sem = semaforoContrato({ etapa: c.etapa, fechaEtapa: c.fecha_etapa, fechaFin: c.fecha_fin_inicial, valor: desdeJson(c.valor, 2), autorizacionAsamblea: c.autorizacion_asamblea, topeSmmlv: (contr as { tope_smmlv: number | null } | null)?.tope_smmlv }, hoyColombia(), parametrosV);
+  const sem = semaforoContrato({ etapa: c.etapa, fechaEtapa: c.fecha_etapa, fechaFin: c.fecha_fin_vigente, suspendidoDesde: c.suspendido_desde, polizas: extras?.polizas, documentos: extras?.documentos, valor: desdeJson(c.valor, 2), autorizacionAsamblea: c.autorizacion_asamblea, topeSmmlv: (contr as { tope_smmlv: number | null } | null)?.tope_smmlv }, hoy, parametrosV);
   const etapaActual = etapaPorNumero(c.etapa);
   const siguiente = c.etapa < 9 && !(c.estado_aprobacion === "pendiente" && c.etapa >= 3) ? ETAPAS[c.etapa] : null;
   const datosIniciales: Record<string, string> = {
@@ -135,7 +149,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           <ul className="mt-2 list-disc pl-5 text-sm">{[...sem.rojas, ...sem.ambar].map((t) => <li key={t}>{t}</li>)}</ul>
         )}
         <p className="mt-2 text-sm text-muted"><strong>Responsable:</strong> {etapaActual.responsable}. <strong>Siguiente acción:</strong> {etapaActual.accion}.</p>
-        <p className="mt-1 text-xs text-muted">El semáforo vigila la etapa, el plazo y la autorización de asamblea; las pólizas y los documentos del contratista se sumarán en la siguiente fase.</p>
+        <p className="mt-1 text-xs text-muted">El semáforo vigila la etapa, el plazo (con prórrogas y suspensiones firmadas), la autorización de asamblea, las pólizas y los documentos del contratista. Los compromisos de las comunicaciones llegarán después.</p>
         <ol className="mt-3 flex flex-wrap gap-1.5 text-xs" aria-label="Etapas">
           {ETAPAS.map((e) => <li key={e.n} className={`rounded-full border px-2.5 py-0.5 ${e.n === c.etapa ? "border-leaf-600 bg-leaf-600 font-medium text-white" : e.n < c.etapa ? "border-leaf-400 bg-leaf-100 text-leaf-800" : "border-soil-border text-muted"}`}>{e.n}. {e.nombre}</li>)}
         </ol>
@@ -159,12 +173,101 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         <h2 id="t-datos" className="font-display text-2xl font-bold text-leaf-700">Datos contractuales</h2>
         <p className="mt-1 text-sm text-muted">
           Contratista: {tercero ? <><Link href={`/aliados/${tercero.id}`} className="font-medium text-leaf-700 hover:underline">{tercero.razon_social}</Link> · NIT {formatearNit(tercero.nit)}</> : <>{c.contratista} (texto: ligarlo al maestro de aliados con «Editar»)</>}.{" "}
-          {c.fecha_fin_inicial ? <>Fecha fin inicial: <strong>{formatearFecha(c.fecha_fin_inicial)}</strong> (acta de inicio + plazo).</> : "Con el acta de inicio y el plazo se calcula la fecha fin."}
+          {c.fecha_fin_inicial ? <>Fecha fin inicial: <strong>{formatearFecha(c.fecha_fin_inicial)}</strong> (acta de inicio + plazo).{c.fecha_fin_vigente && c.fecha_fin_vigente !== c.fecha_fin_inicial && <> Fecha fin vigente: <strong>{formatearFecha(c.fecha_fin_vigente)}</strong> (con las prórrogas firmadas).</>}</> : "Con el acta de inicio y el plazo se calcula la fecha fin."}{c.suspendido_desde && <> <strong>Suspendido desde {formatearFecha(c.suspendido_desde)}.</strong></>}
         </p>
         {permisos.gestionar ? (
           <div className="mt-3 rounded-card bg-leaf-50 p-5"><FormularioDatosContractuales accion={guardarDatosContractuales.bind(null, id, contratoId)} iniciales={datosIniciales} /></div>
         ) : (
           <p className="mt-2 text-sm text-muted">Firma: {c.fecha_firma ? formatearFecha(c.fecha_firma) : "—"} · Acta de inicio: {c.fecha_acta_inicio ? formatearFecha(c.fecha_acta_inicio) : "—"} · Consecutivo: {c.consecutivo ?? "—"} · Orden de servicio: {c.orden_servicio_sap ?? "—"}</p>
+        )}
+      </section>
+
+      <section className="mt-8" aria-labelledby="t-pol">
+        <h2 id="t-pol" className="font-display text-2xl font-bold text-leaf-700">Pólizas</h2>
+        <p className="mt-1 text-sm text-muted">Una póliza por amparo. El mínimo exigido es el porcentaje del amparo sobre el valor del contrato (o del anticipo). Rojo: vencida o por debajo del mínimo; ámbar: vence en {parametrosV.alertaDias} días o menos, o falta un dato. Se guardan enlaces al soporte, no archivos.</p>
+        {polizas.length === 0 ? (
+          <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Aún no hay pólizas registradas para este contrato.</p>
+        ) : (
+          <div className="mt-3 overflow-x-auto rounded-card border border-soil-border">
+            <table className="w-full min-w-[820px] text-left text-sm">
+              <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800"><tr>{["Amparo", "Aseguradora y N.°", "Valor asegurado", "Mínimo exigido", "Vence", "Estado", ""].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr></thead>
+              <tbody className="divide-y divide-soil-border">
+                {polizas.map((z) => {
+                  const e = extras?.polizas.find((x) => x.amparo === z.amparo);
+                  const dias = z.fecha_vencimiento ? diasParaVencer(z.fecha_vencimiento, hoy) : null;
+                  const bajo = e && e.minimo !== null && e.valorAsegurado !== null && e.valorAsegurado < e.minimo;
+                  return (
+                    <tr key={z.id}>
+                      <td className="px-3 py-2 align-top font-medium">{z.amparo}{z.enlace && <a href={z.enlace} target="_blank" rel="noopener noreferrer" className="ml-2 text-xs font-normal text-leaf-600 underline">soporte</a>}</td>
+                      <td className="px-3 py-2 align-top">{z.aseguradora ?? "—"}<p className="text-xs text-muted">{z.numero ?? "sin número"}</p></td>
+                      <td className={`px-3 py-2 align-top tabular-nums ${bajo ? "font-medium text-danger" : ""}`}>{z.valor_asegurado === null ? "—" : centavos(desdeJson(z.valor_asegurado, 2))}{bajo && <p className="text-xs">Por debajo del mínimo</p>}</td>
+                      <td className="px-3 py-2 align-top tabular-nums">{e?.minimo != null ? centavos(e.minimo) : "—"}</td>
+                      <td className={`whitespace-nowrap px-3 py-2 align-top ${z.estado === "activa" && dias !== null && dias < 0 ? "font-medium text-danger" : ""}`}>{z.fecha_vencimiento ? formatearFecha(z.fecha_vencimiento) : "—"}{z.estado === "activa" && dias !== null && <p className="text-xs">{dias < 0 ? `vencida hace ${-dias} d` : `en ${dias} d`}</p>}</td>
+                      <td className="px-3 py-2 align-top">{z.estado === "cumplida" ? "Cumplida" : "Activa"}</td>
+                      <td className="px-3 py-2 text-right align-top">{permisos.gestionar && <form action={borrarPoliza.bind(null, id, contratoId, z.id)}><BotonEnviar className="text-sm font-medium text-danger underline" textoEnviando="…">Borrar</BotonEnviar></form>}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {permisos.gestionar && (
+          <details className="mt-3 rounded-card bg-leaf-50 p-5" open={polizas.length === 0}>
+            <summary className="cursor-pointer font-medium text-leaf-700">Registrar o corregir una póliza</summary>
+            <div className="mt-3"><FormularioPoliza accion={guardarPoliza.bind(null, id, contratoId)} amparos={((amps ?? []) as { nombre: string }[]).map((a) => a.nombre)} /></div>
+          </details>
+        )}
+      </section>
+
+      <section className="mt-8" aria-labelledby="t-mod">
+        <h2 id="t-mod" className="font-display text-2xl font-bold text-leaf-700">Modificaciones del contrato</h2>
+        <p className="mt-1 text-sm text-muted">Adiciones, otrosíes, prórrogas, suspensiones, reinicios y cesiones. Solo las <strong>firmadas</strong> mueven la fecha fin vigente y la suspensión. El valor vigente del contrato cambia con un cambio aprobado: liga aquí el cambio que originó la modificación.</p>
+        {modificaciones.length === 0 ? (
+          <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Este contrato no tiene modificaciones.</p>
+        ) : (
+          <div className="mt-3 overflow-x-auto rounded-card border border-soil-border">
+            <table className="w-full min-w-[820px] text-left text-sm">
+              <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800"><tr>{["Modificación", "Estado", "Firma", "Nueva fecha fin", "Valor", "Cambio", ""].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr></thead>
+              <tbody className="divide-y divide-soil-border">
+                {modificaciones.map((m) => {
+                  const cm = cambiosContrato.find((x) => x.id === m.cambio_id);
+                  return (
+                    <tr key={m.id}>
+                      <td className="px-3 py-2 align-top"><span className="font-medium">{ETIQUETA_TIPO_MODIFICACION[m.tipo]} N.° {m.numero}</span><p className="max-w-xs text-xs text-muted">{m.descripcion.length > 90 ? `${m.descripcion.slice(0, 90)}…` : m.descripcion}</p></td>
+                      <td className="px-3 py-2 align-top">{m.estado === "firmada" ? "Firmada" : <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-900">En trámite</span>}</td>
+                      <td className="whitespace-nowrap px-3 py-2 align-top">{m.fecha_firma ? formatearFecha(m.fecha_firma) : "—"}</td>
+                      <td className="whitespace-nowrap px-3 py-2 align-top">{m.nueva_fecha_fin ? formatearFecha(m.nueva_fecha_fin) : "—"}</td>
+                      <td className="px-3 py-2 align-top tabular-nums">{Number(m.valor) > 0 ? centavos(desdeJson(m.valor, 2)) : "—"}</td>
+                      <td className="px-3 py-2 align-top">{cm ? <Link href={`/proyectos/${id}/cambios/${cm.id}`} className="text-leaf-700 hover:underline">{cm.codigo}</Link> : "—"}</td>
+                      <td className="px-3 py-2 text-right align-top">
+                        {permisos.gestionar && (
+                          <div className="flex flex-wrap justify-end gap-3">
+                            <Link href={`${base}?mod=${m.id}#t-mod`} className="text-sm font-medium text-leaf-600 underline">Editar</Link>
+                            {(m.estado === "en_tramite" || permisos.admin) && <form action={borrarModificacion.bind(null, id, contratoId, m.id)}><BotonEnviar className="text-sm font-medium text-danger underline" textoEnviando="…">Borrar</BotonEnviar></form>}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {permisos.gestionar && !pendiente && (
+          <details className="mt-3 rounded-card bg-leaf-50 p-5" open={!!enEdicion || modificaciones.length === 0}>
+            <summary className="cursor-pointer font-medium text-leaf-700">{enEdicion ? `Editar ${ETIQUETA_TIPO_MODIFICACION[enEdicion.tipo]} N.° ${enEdicion.numero}` : "Registrar una modificación"}</summary>
+            <div className="mt-3">
+              <FormularioModificacion
+                key={enEdicion?.id ?? "nueva"}
+                accion={guardarModificacion.bind(null, id, contratoId, enEdicion?.id ?? null)}
+                cambios={cambiosContrato.map((x) => ({ id: x.id, etiqueta: `${x.codigo} · ${x.descripcion_despues.slice(0, 50)}` }))}
+                edicion={!!enEdicion} volverA={base}
+                iniciales={enEdicion ? { tipo: enEdicion.tipo, estado: enEdicion.estado, fecha_firma: enEdicion.fecha_firma ?? "", nueva_fecha_fin: enEdicion.nueva_fecha_fin ?? "", valor: Number(enEdicion.valor) > 0 ? formatearDecimal(desdeJson(enEdicion.valor, 2), 2) : "", cambio_id: enEdicion.cambio_id ?? "", descripcion: enEdicion.descripcion, justificacion: enEdicion.justificacion ?? "" } : {}}
+              />
+            </div>
+          </details>
         )}
       </section>
 

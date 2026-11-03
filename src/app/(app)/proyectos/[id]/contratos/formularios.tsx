@@ -140,3 +140,65 @@ export function FormularioContratanteProyecto({ accion, actual, opciones }: { ac
     </form>
   );
 }
+
+export function FormularioPoliza({ accion, amparos, iniciales = {} }: { accion: Accion; amparos: string[]; iniciales?: Record<string, string> }) {
+  const [estado, enviar] = useActionState(accion, {} as Estado);
+  const v = (k: string) => estado.valores?.[k] ?? iniciales[k] ?? "";
+  return (
+    <form action={enviar} key={estado.valores ? JSON.stringify(estado.valores) : "i"} className="flex max-w-3xl flex-col gap-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Selector etiqueta="Amparo" name="amparo" required defaultValue={v("amparo")} ayuda="Si el amparo ya tiene póliza, este formulario la corrige.">
+          <option value="">Elige…</option>
+          {amparos.map((a) => <option key={a} value={a}>{a}</option>)}
+        </Selector>
+        <Selector etiqueta="Estado" name="estado" defaultValue={v("estado") || "activa"}>
+          <option value="activa">Activa</option>
+          <option value="cumplida">Cumplida (ya no alerta)</option>
+        </Selector>
+        <Campo etiqueta="Aseguradora" name="aseguradora" maxLength={120} defaultValue={v("aseguradora")} />
+        <Campo etiqueta="N.° de póliza" name="numero" maxLength={60} defaultValue={v("numero")} />
+        <Campo etiqueta="Valor asegurado (COP)" name="valor_asegurado" inputMode="decimal" defaultValue={v("valor_asegurado")} />
+        <Campo etiqueta="Enlace al soporte (OneDrive o SharePoint)" name="enlace" type="url" maxLength={500} defaultValue={v("enlace")} />
+        <Campo etiqueta="Fecha de expedición" name="fecha_expedicion" type="date" defaultValue={v("fecha_expedicion")} />
+        <Campo etiqueta="Fecha de vencimiento" name="fecha_vencimiento" type="date" defaultValue={v("fecha_vencimiento")} />
+      </div>
+      {estado.error && <Aviso>{estado.error}</Aviso>}
+      <div><BotonEnviar className={claseBoton.primario} textoEnviando="Guardando…">Guardar póliza</BotonEnviar></div>
+    </form>
+  );
+}
+
+export function FormularioModificacion({ accion, cambios, iniciales = {}, edicion = false, volverA }: { accion: Accion; cambios: { id: string; etiqueta: string }[]; iniciales?: Record<string, string>; edicion?: boolean; volverA?: string }) {
+  const [estado, enviar] = useActionState(accion, {} as Estado);
+  const v = (k: string) => estado.valores?.[k] ?? iniciales[k] ?? "";
+  return (
+    <form action={enviar} key={estado.valores ? JSON.stringify(estado.valores) : "i"} className="flex max-w-3xl flex-col gap-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Selector etiqueta="Tipo" name="tipo" required defaultValue={v("tipo")} disabled={edicion} ayuda={edicion ? "El tipo no se cambia." : undefined}>
+          <option value="">Elige…</option>
+          <option value="adicion">Adición</option><option value="otrosi">Otrosí</option><option value="prorroga">Prórroga</option>
+          <option value="suspension">Suspensión</option><option value="reinicio">Reinicio</option><option value="cesion">Cesión</option>
+        </Selector>
+        <Selector etiqueta="Estado" name="estado" defaultValue={v("estado") || "en_tramite"} ayuda="Solo las firmadas mueven la fecha fin y la suspensión.">
+          <option value="en_tramite">En trámite</option>
+          <option value="firmada">Firmada</option>
+        </Selector>
+        <Campo etiqueta="Fecha de firma" name="fecha_firma" type="date" defaultValue={v("fecha_firma")} />
+        <Campo etiqueta="Nueva fecha fin (prórroga u otrosí)" name="nueva_fecha_fin" type="date" defaultValue={v("nueva_fecha_fin")} />
+        <Campo etiqueta="Valor de la modificación (COP, opcional)" name="valor" inputMode="decimal" defaultValue={v("valor")} ayuda="Informativo: el valor vigente del contrato cambia con un cambio aprobado." />
+        <Selector etiqueta="Cambio que la originó (opcional)" name="cambio_id" defaultValue={v("cambio_id")}>
+          <option value="">Sin cambio ligado</option>
+          {cambios.map((c) => <option key={c.id} value={c.id}>{c.etiqueta}</option>)}
+        </Selector>
+      </div>
+      <Campo etiqueta="Descripción" name="descripcion" required maxLength={1000} defaultValue={v("descripcion")} />
+      <Campo etiqueta="Justificación (opcional)" name="justificacion" maxLength={1000} defaultValue={v("justificacion")} />
+      {edicion && <input type="hidden" name="tipo" value={iniciales.tipo ?? ""} />}
+      {estado.error && <Aviso>{estado.error}</Aviso>}
+      <div className="flex gap-3">
+        <BotonEnviar className={claseBoton.primario} textoEnviando="Guardando…">{edicion ? "Guardar cambios" : "Registrar modificación"}</BotonEnviar>
+        {edicion && volverA && <Link href={volverA} className={claseBoton.contorno}>Cancelar</Link>}
+      </div>
+    </form>
+  );
+}

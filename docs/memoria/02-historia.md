@@ -131,6 +131,8 @@ Ese mismo día el usuario aceptó los supuestos de diseño (P40), dijo que al ge
 
 El usuario compartió el paquete de migración de RAÍZ (libro de Excel de aliados, proveedores y contratos, con 14 entidades, reglas, plantillas y un plan por fases) y pidió evaluar si ampliar PMO360 o solo mostrar el tablero filtrado por proyecto. Se evaluó la brecha frente a lo que ya existía y se decidió ampliar por capas, sin grandes cambios, empezando por el maestro de terceros, los contratantes y los datos contractuales con semáforo ([ADR-0032](decisiones/ADR-0032-aliados-y-proveedores-capa-1.md)), con datos ficticios y manteniendo la regla de anticipo de PMO360. Los datos reales del paquete no se cargaron ni se guardaron en el repositorio.
 
+El mismo día, el usuario pidió seguir con la capa 2 ([ADR-0033](decisiones/ADR-0033-aliados-capa-2-polizas-modificaciones-documentos.md)): pólizas de cada contrato, modificaciones contractuales (solo las firmadas mueven fechas) y documentos del tercero, con el semáforo ampliado. Se decidió que el valor vigente del contrato conserva una sola vía de cambio (cambio aprobado o director) para no duplicar lo que PMO360 ya tenía.
+
 ## Estado al 17 de octubre de 2026
 
 Ver [01-resumen-ejecutivo.md](01-resumen-ejecutivo.md).

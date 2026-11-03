@@ -61,3 +61,6 @@ fácil de cambiar; deben validarse con el uso real.
 ## Aliados y proveedores, capa 1 (migración 0026, ADR-0032)
 - El maestro de terceros usa el NIT (validado con el dígito de verificación) como llave; `PEND-` es temporal. No se guardan cédulas ni documentos (S31).
 - Se mantiene la regla de anticipo de PMO360 (S27). Días por etapa, alerta de 30 días y tope de asamblea son parámetros; los de RAÍZ son supuestos de diseño (S28, S29). La etapa inicial de los contratos existentes es un punto de partida (S30).
+
+## Aliados, capa 2 (migración 0027, ADR-0033)
+- Las modificaciones no suman valor por sí solas (S32); los amparos salen de la minuta de El Silencio GL y no se avisa si falta una póliza (S33); las vigencias de documentos son supuestos de RAÍZ, salvo el RUT (S34).

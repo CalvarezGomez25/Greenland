@@ -1,0 +1,110 @@
+// Aliados, capa 2 (migración 0027): pólizas, modificaciones contractuales y documentos del tercero.
+import { nuevaBase, ok, seccion, fin } from "./base.mjs";
+const { q, como, esperaError, usuario } = await nuevaBase();
+const A = await usuario("a@x.co", "administrador"), D = await usuario("d@x.co", "director_general"), AN = await usuario("an@x.co", "analista_pmo"),
+  G = await usuario("g@x.co"), G2 = await usuario("g2@x.co"), S = await usuario("s@x.co"), I = await usuario("i@x.co");
+const proy = async (n) => (await como(A, () => q("insert into public.proyectos (nombre, fecha_inicio, duracion_meses) values ($1,'2026-01-01',12) returning id", [n])))[0].id;
+const P1 = await proy("Obra 1"), P2 = await proy("Obra 2");
+for (const [p, u, r] of [[P1, G, "gerente"], [P1, S, "supervisor"], [P2, G2, "gerente"], [P1, I, "interventoria"]]) await como(A, () => q("insert into public.miembros_proyecto values ($1,$2,$3)", [p, u, r]));
+const T = (await como(G, () => q("insert into public.terceros (nit, razon_social) values ('901.519.601-4','Máxima Ejemplo S.A.S.') returning id")))[0].id;
+const crearC = async (p, u = G) => {
+  const id = (await como(u, () => q("select public.contrato_crear($1::uuid,$2::jsonb) as id", [p, JSON.stringify({ tipo: "obra", objeto: "Obra civil", valor: "100000000", tercero_id: T })])))[0].id;
+  return id;
+};
+const C = await crearC(P1);
+await esperaError("Con el contrato sin aprobar no se registran modificaciones", como(G, () => q("select public.modificacion_guardar($1::uuid,null,$2::jsonb)", [C, JSON.stringify({ tipo: "prorroga", descripcion: "x" })])), /no está aprobado/);
+await como(D, () => q("select public.contrato_aprobar($1::uuid)", [C]));
+await como(G, () => q("select public.contrato_datos_guardar($1::uuid,$2::jsonb)", [C, JSON.stringify({ fecha_firma: "2026-05-01", fecha_acta_inicio: "2026-05-04", plazo_valor: "30", plazo_unidad: "dias_calendario" })]));
+const cont = async () => (await q("select fecha_fin_inicial::text fi, fecha_fin_vigente::text fv, suspendido_desde::text sd from public.contratos where id=$1", [C]))[0];
+
+seccion("Configuración");
+ok((await q("select count(*)::int c from public.poliza_amparos"))[0].c === 6, "Seis amparos de póliza");
+ok((await q("select porcentaje::text p, base from public.poliza_amparos where nombre='Buen manejo del anticipo'"))[0].p === "100.00", "El amparo del anticipo exige el 100 % del valor del anticipo");
+ok((await q("select count(*)::int c from public.documento_tipos"))[0].c === 9, "Nueve tipos de documento");
+ok((await como(S, () => q("select count(*)::int c from public.poliza_amparos")))[0].c === 6, "Cualquier persona con sesión lee los amparos");
+ok((await q("select valor from public.parametros where clave='suspension_max_dias'"))[0].valor === "30", "Parámetro de 30 días de suspensión");
+
+seccion("Pólizas");
+const pol = (u, d) => como(u, () => q("select public.poliza_guardar($1::uuid,$2::jsonb) as id", [C, JSON.stringify(d)]));
+const id1 = (await pol(G, { amparo: "Cumplimiento", aseguradora: "Aseguradora Ejemplo", numero: "AB-123", valor_asegurado: "30000000", fecha_expedicion: "2026-05-04", fecha_vencimiento: "2027-05-04", enlace: "https://ejemplo.test/poliza.pdf" }))[0].id;
+const id2 = (await pol(G, { amparo: "Cumplimiento", aseguradora: "Aseguradora Ejemplo", numero: "AB-123", valor_asegurado: "35000000", fecha_expedicion: "2026-05-04", fecha_vencimiento: "2027-06-04" }))[0].id;
+ok(id1 === id2 && (await q("select count(*)::int c from public.contrato_polizas where contrato_id=$1", [C]))[0].c === 1, "Guardar el mismo amparo corrige la póliza, no la duplica");
+ok((await q("select valor_asegurado::text v, fecha_vencimiento::text f from public.contrato_polizas where id=$1", [id1]))[0].v === "35000000.00", "La póliza queda corregida");
+await esperaError("Amparo desconocido", pol(G, { amparo: "Inventado" }), /amparo/);
+await esperaError("Enlace que no es http(s)", pol(G, { amparo: "Estabilidad de la obra", enlace: "javascript:alert(1)" }), /http/);
+await esperaError("Vencimiento anterior a la expedición", pol(G, { amparo: "Estabilidad de la obra", fecha_expedicion: "2026-05-04", fecha_vencimiento: "2026-01-01" }), /no es válido|fechas/);
+await esperaError("Fecha mal escrita", pol(G, { amparo: "Estabilidad de la obra", fecha_vencimiento: "mañana" }), /no son válidos/);
+await esperaError("El supervisor no registra pólizas", pol(S, { amparo: "Calidad y buen funcionamiento" }), /permiso/);
+await esperaError("El gerente de otro proyecto tampoco", pol(G2, { amparo: "Calidad y buen funcionamiento" }), /permiso/);
+ok((await como(S, () => q("select count(*)::int c from public.contrato_polizas")))[0].c === 1, "El supervisor ve las pólizas del contrato");
+ok((await como(I, () => q("select count(*)::int c from public.contrato_polizas")))[0].c === 0, "La interventoría no ve pólizas de contratos que no le asignaron");
+await como(G, () => q("select public.poliza_borrar($1::uuid)", [id1]));
+ok((await q("select count(*)::int c from public.contrato_polizas"))[0].c === 0, "Se borra una póliza");
+
+seccion("Modificaciones y fecha fin vigente");
+const mod = (u, id, d) => como(u, () => q("select public.modificacion_guardar($1::uuid,$2::uuid,$3::jsonb) as id", [C, id, JSON.stringify(d)])).then((r) => r[0].id);
+ok((await cont()).fi === "2026-06-03" && (await cont()).fv === "2026-06-03", "Sin modificaciones, la fecha fin vigente es la inicial");
+const m1 = await mod(G, null, { tipo: "prorroga", descripcion: "Prórroga por lluvias", nueva_fecha_fin: "2026-07-03" });
+ok((await q("select numero, estado from public.contrato_modificaciones where id=$1", [m1]))[0].numero === 1, "La primera prórroga es la N.° 1");
+ok((await cont()).fv === "2026-06-03", "Una prórroga en trámite no mueve la fecha fin");
+await mod(G, m1, { estado: "firmada", fecha_firma: "2026-06-01", descripcion: "Prórroga por lluvias", nueva_fecha_fin: "2026-07-03" });
+ok((await cont()).fv === "2026-07-03" && (await cont()).fi === "2026-06-03", "Firmada, la prórroga mueve la fecha fin vigente (la inicial no cambia)");
+const m2 = await mod(G, null, { tipo: "prorroga", descripcion: "Segunda prórroga", nueva_fecha_fin: "2026-06-20", estado: "firmada", fecha_firma: "2026-06-10" });
+ok((await q("select numero from public.contrato_modificaciones where id=$1", [m2]))[0].numero === 2 && (await cont()).fv === "2026-07-03", "Rige la mayor fecha fin firmada");
+const a1 = await mod(G, null, { tipo: "adicion", descripcion: "Adición de obra", valor: "5000000" });
+ok((await q("select numero, valor::text v from public.contrato_modificaciones where id=$1", [a1]))[0].numero === 1, "El consecutivo es por tipo (adición N.° 1)");
+ok((await q("select valor::text v from public.contratos where id=$1", [C]))[0].v === "100000000.00", "Una modificación no cambia el valor vigente del contrato (eso lo hacen los cambios aprobados)");
+await esperaError("El valor solo aplica a adiciones y otrosíes", mod(G, null, { tipo: "prorroga", descripcion: "x", valor: "10" }), /valor solo aplica/);
+await esperaError("La nueva fecha fin no aplica a suspensiones", mod(G, null, { tipo: "suspension", descripcion: "x", nueva_fecha_fin: "2026-08-01" }), /nueva fecha fin/);
+await esperaError("Firmada exige fecha de firma", mod(G, null, { tipo: "otrosi", descripcion: "x", estado: "firmada" }), /fecha de firma/);
+await esperaError("Describir es obligatorio", mod(G, null, { tipo: "otrosi", descripcion: "" }), /Describe/);
+await esperaError("Tipo desconocido", mod(G, null, { tipo: "magia", descripcion: "x" }), /tipo/);
+
+seccion("Suspensión y reinicio");
+const s1 = await mod(G, null, { tipo: "suspension", descripcion: "Suspensión por orden público", estado: "firmada", fecha_firma: "2026-06-15" });
+ok((await cont()).sd === "2026-06-15", "Una suspensión firmada deja el contrato suspendido desde esa fecha");
+await mod(G, null, { tipo: "reinicio", descripcion: "Reinicio", estado: "firmada", fecha_firma: "2026-06-25" });
+ok((await cont()).sd === null, "El reinicio firmado levanta la suspensión");
+await mod(G, null, { tipo: "suspension", descripcion: "Segunda suspensión", fecha_firma: "2026-06-26" });
+ok((await cont()).sd === null, "Una suspensión en trámite no suspende");
+
+seccion("Ligar a un cambio y borrar");
+const cambio = (await q("insert into public.cambios (proyecto_id, codigo, contrato_id, tipo, descripcion_despues, justificacion, impacto_costo) values ($1,'CC-1',$2,'Costo','Más obra','Ampliación',5000000) returning id", [P1, C]))[0].id;
+const cambioOtro = (await q("insert into public.cambios (proyecto_id, codigo, tipo, descripcion_despues, justificacion) values ($1,'CC-2','Costo','x','y') returning id", [P1]))[0].id;
+await mod(G, a1, { tipo: "adicion", descripcion: "Adición de obra", valor: "5000000", cambio_id: cambio });
+ok((await q("select cambio_id from public.contrato_modificaciones where id=$1", [a1]))[0].cambio_id === cambio, "La adición se liga al cambio que la originó");
+await esperaError("Un cambio que no es de este contrato no sirve", mod(G, a1, { descripcion: "x", cambio_id: cambioOtro }), /no está ligado/);
+await mod(G, a1, { tipo: "otrosi", descripcion: "Adición de obra", valor: "5000000", cambio_id: cambio });
+ok((await q("select tipo from public.contrato_modificaciones where id=$1", [a1]))[0].tipo === "adicion", "El tipo de una modificación no cambia al editarla");
+await esperaError("El supervisor no registra modificaciones", mod(S, null, { tipo: "prorroga", descripcion: "x" }), /permiso/);
+ok((await como(S, () => q("select count(*)::int c from public.contrato_modificaciones")))[0].c === 6, "El supervisor ve las modificaciones del contrato");
+const del = (u, id) => como(u, () => q("select public.modificacion_borrar($1::uuid)", [id]));
+await del(G, a1);
+ok((await q("select count(*)::int c from public.contrato_modificaciones where id=$1", [a1]))[0].c === 0, "Se borra una modificación en trámite");
+await esperaError("Una firmada no la borra el gerente", del(G, m1), /administrador/);
+await del(A, m1);
+ok((await cont()).fv === "2026-06-20", "Al borrar la prórroga firmada, la fecha fin vigente se recalcula");
+
+seccion("Documentos del tercero");
+const doc = (u, d) => como(u, () => q("insert into public.tercero_documentos (tercero_id, tipo, fecha_expedicion, enlace) values ($1,$2,$3,$4)", [T, d.tipo, d.fecha, d.enlace ?? null]));
+await doc(G, { tipo: "RUT", fecha: "2025-01-10", enlace: "https://ejemplo.test/rut.pdf" });
+await doc(G, { tipo: "Certificado de existencia y representación legal", fecha: "2026-09-01" });
+await doc(G, { tipo: "Certificado de existencia y representación legal", fecha: "2026-10-20" });
+await esperaError("El supervisor no sube documentos", doc(S, { tipo: "RUT", fecha: "2026-01-01" }), /row-level security|permission/);
+await esperaError("El analista PMO lee pero no sube", doc(AN, { tipo: "RUT", fecha: "2026-01-01" }), /row-level security|permission/);
+await esperaError("Enlace inválido", doc(G, { tipo: "RUT", fecha: "2026-01-01", enlace: "ftp://x" }), /check|violates/);
+await esperaError("Tipo desconocido", doc(G, { tipo: "Inventado", fecha: "2026-01-01" }), /foreign key|violates/);
+ok((await como(AN, () => q("select count(*)::int c from public.tercero_documentos")))[0].c === 3, "El analista ve los documentos");
+ok((await como(S, () => q("select count(*)::int c from public.tercero_documentos")))[0].c === 0, "El supervisor no ve el maestro de documentos");
+const vig = (u) => como(u, () => q("select tipo, fecha_vencimiento::text f from public.terceros_documentos_vigencia($1::uuid[]) order by tipo", [[T]]));
+const vs = await vig(S);
+ok(vs.length === 2 && vs.find((x) => x.tipo === "RUT").f === "2124-12-17", `El supervisor, que ve el contrato, recibe la vigencia: ${vs.map((x) => x.tipo.slice(0, 6) + " " + x.f).join(" | ")}`);
+ok(vs.find((x) => x.tipo.startsWith("Certificado")).f === "2026-11-19", "Solo cuenta el último documento de cada tipo (certificado del 20-oct + 30 días)");
+ok((await vig(I)).length === 0, "La interventoría sin contrato asignado no recibe nada");
+ok((await vig(G2)).length === 2, "El gerente de otro proyecto sí (ve el maestro)");
+await como(G, () => q("delete from public.tercero_documentos where tipo='RUT'"));
+ok((await q("select count(*)::int c from public.tercero_documentos"))[0].c === 2, "Se borra un enlace de documento");
+
+seccion("Auditoría");
+ok((await q("select count(*)::int c from public.auditoria where tabla in ('contrato_polizas','contrato_modificaciones','tercero_documentos')"))[0].c > 0, "Los cambios quedan en la auditoría");
+fin();

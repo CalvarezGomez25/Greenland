@@ -90,6 +90,8 @@ export const GLOSARIO = {
   maestro_aliados: { titulo: "Maestro de aliados y proveedores", texto: "Lista única de contratistas, proveedores, consultores e interventores, con su NIT o cédula. Cada tercero se escribe una vez y se elige al registrar un contrato. Un identificador PEND- es temporal, hasta recibir el RUT." },
   etapa_contrato: { titulo: "Etapa del contrato", texto: "Ruta de 9 etapas: Preparación, Revisión del contratista, Aprobación Greenland, Firmas, Garantías e inicio, Ejecución, Liquidación, Garantías postcontractuales y Archivado. Avanza de una en una; devolverse exige motivo." },
   semaforo_contrato: { titulo: "Semáforo del contrato", texto: "Rojo: la etapa excede sus días o el plazo venció. Ámbar: algo vence en 30 días, falta un dato o supera el tope de asamblea sin autorización. Verde: al día. Hoy no incluye pólizas ni documentos del contratista." },
+  poliza_minimo: { titulo: "Valor mínimo de una póliza", texto: "Porcentaje del amparo (por ejemplo 30 % en cumplimiento) por el valor del contrato; en el buen manejo del anticipo, el 100 % del valor del anticipo. Una póliza asegurada por menos queda en rojo." },
+  modificacion_firmada: { titulo: "Modificación firmada", texto: "Adición, otrosí, prórroga, suspensión, reinicio o cesión. Solo las firmadas mueven la fecha fin vigente y la suspensión; las que están en trámite no cambian nada. El valor del contrato cambia con un cambio aprobado." },
   sobrecontratado: { titulo: "Sobrecontratado", texto: "Lo contratado (contratos aprobados) para un capítulo o adicional supera su presupuesto con indirectos." },
   gastado: { titulo: "Gastado a la fecha", texto: "Suma del gasto real registrado por mes hasta el mes de corte." },
   gasto_plan: { titulo: "Gasto frente al plan", texto: "Cuánto más o menos se ha gastado frente a lo que la curva S planeaba a esta fecha. Positivo: se ha gastado más de lo planificado." },
@@ -135,6 +137,6 @@ export const CATEGORIAS_GLOSARIO: { titulo: string; temas: TemaAyuda[] }[] = [
   { titulo: "Valor ganado e indicadores", temas: ["bac", "pv", "ev", "ac", "spi", "cpi", "sv", "cv", "eac", "etc", "tcpi", "vac", "avance_fisico", "avance_plan", "avance_financiero", "fecha_corte", "medicion", "calculo_obra"] },
   { titulo: "Semáforo, riesgos y cambios", temas: ["semaforo", "proyectos_activos", "reportado", "riesgo_puntaje", "cambios_pendientes", "nivel_cambio"] },
   { titulo: "Presupuesto y costos", temas: ["linea_base", "costo_directo", "aiu", "adicional_obra", "sobrecontratado", "corte_costos", "costo_total", "gastado", "gasto_plan", "curva_s"] },
-  { titulo: "Contratos y pagos", temas: ["facturado", "ejecutado_contrato", "saldo_contrato", "anticipo", "anticipo_pendiente", "retencion", "desembolsado", "maestro_aliados", "etapa_contrato", "semaforo_contrato"] },
+  { titulo: "Contratos y pagos", temas: ["facturado", "ejecutado_contrato", "saldo_contrato", "anticipo", "anticipo_pendiente", "retencion", "desembolsado", "maestro_aliados", "etapa_contrato", "semaforo_contrato", "poliza_minimo", "modificacion_firmada"] },
   { titulo: "Cronograma y avance", temas: ["avance_reportado", "avance_verificado", "avance_diferencia", "avance_usado", "planificado_hoy"] },
 ];

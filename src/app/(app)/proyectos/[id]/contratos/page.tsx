@@ -9,12 +9,13 @@ import { SemaforoContrato } from "@/components/semaforo-contrato";
 import { ETAPAS, ordenarPorUrgencia, parametrosDeVigilancia, semaforoContrato } from "@/lib/contratos/vigilancia";
 import { hoyColombia } from "@/lib/actividades";
 import { FormularioContratanteProyecto } from "./formularios";
+import { cargarExtrasVigilancia } from "@/lib/contratos/datos-vigilancia";
 import { asignarContratante } from "./acciones";
 import type { FilaParametro } from "@/lib/pmo/parametros";
 import { AvisoResultado } from "@/components/aviso-resultado";
 import { BotonesExportar } from "@/components/botones-exportar";
 
-type C = { id: string; tipo: string; contratista: string; objeto: string; valor: number | string; anticipo_pct: number | string; anticipo_valor: number | string; retencion_pct: number | string; retencion_liberada: boolean; estado_aprobacion?: string; etapa: number; fecha_etapa: string; fecha_fin_inicial: string | null; autorizacion_asamblea: string | null };
+type C = { id: string; tipo: string; contratista: string; objeto: string; valor: number | string; anticipo_pct: number | string; anticipo_valor: number | string; retencion_pct: number | string; retencion_liberada: boolean; estado_aprobacion?: string; etapa: number; fecha_etapa: string; fecha_fin_vigente: string | null; suspendido_desde: string | null; autorizacion_asamblea: string | null; tercero_id: string | null };
 type A = { contrato_id: string; valor_bruto: number | string; amortizacion: number | string; retencion: number | string; neto: number | string; estado: string };
 
 async function Contenido({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ ok?: string }> }) {
@@ -22,7 +23,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   const { ok } = await searchParams;
   const { supabase, proyecto, permisos } = await cargarProyecto(id);
   const [{ data: cs, error }, { data: as }, { data: asigs }, { data: pars }, { data: contratantes }, { data: proy }] = await Promise.all([
-    supabase.from("contratos").select("id, tipo, contratista, objeto, valor, anticipo_pct, anticipo_valor, retencion_pct, retencion_liberada, estado_aprobacion, etapa, fecha_etapa, fecha_fin_inicial, autorizacion_asamblea").eq("proyecto_id", id).order("creado_en"),
+    supabase.from("contratos").select("id, tipo, contratista, objeto, valor, anticipo_pct, anticipo_valor, retencion_pct, retencion_liberada, estado_aprobacion, etapa, fecha_etapa, fecha_fin_vigente, suspendido_desde, autorizacion_asamblea, tercero_id").eq("proyecto_id", id).order("creado_en"),
     supabase.from("actas_pago").select("contrato_id, valor_bruto, amortizacion, retencion, neto, estado").eq("proyecto_id", id),
     supabase.from("contrato_asignaciones").select("contrato_id, valor").eq("proyecto_id", id),
     supabase.from("parametros").select("ambito, ambito_id, clave, valor"),
@@ -34,9 +35,13 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   const hoy = hoyColombia();
   const asignadoPor = new Map<string, bigint>();
   for (const a of (asigs ?? []) as { contrato_id: string; valor: number | string }[]) asignadoPor.set(a.contrato_id, (asignadoPor.get(a.contrato_id) ?? 0n) + desdeJson(a.valor, 2));
+  const extras = await cargarExtrasVigilancia(supabase, id, ((cs ?? []) as C[]).map((c) => ({ id: c.id, tercero_id: c.tercero_id, valor: c.valor, anticipo_valor: c.anticipo_valor })), hoy, parametrosV.alertaDias);
   const contratos = ordenarPorUrgencia(((cs ?? []) as C[]).map((c) => ({
     ...c,
-    semaforo: semaforoContrato({ etapa: c.etapa, fechaEtapa: c.fecha_etapa, fechaFin: c.fecha_fin_inicial, valor: desdeJson(c.valor, 2), autorizacionAsamblea: c.autorizacion_asamblea, topeSmmlv: contratanteActual?.tope_smmlv }, hoy, parametrosV),
+    semaforo: semaforoContrato({
+      etapa: c.etapa, fechaEtapa: c.fecha_etapa, fechaFin: c.fecha_fin_vigente, suspendidoDesde: c.suspendido_desde, polizas: extras.get(c.id)?.polizas, documentos: extras.get(c.id)?.documentos,
+      valor: desdeJson(c.valor, 2), autorizacionAsamblea: c.autorizacion_asamblea, topeSmmlv: contratanteActual?.tope_smmlv,
+    }, hoy, parametrosV),
   })));
   const actas = (as ?? []) as A[];
   return (
@@ -55,7 +60,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         ) : (
           <p className="text-sm"><strong>Contratante:</strong> {contratanteActual ? `${contratanteActual.codigo} · ${contratanteActual.razon_social}` : "sin asignar"}</p>
         )}
-        <p className="mt-2 text-xs text-muted">El semáforo vigila la etapa de cada contrato, su plazo y la autorización de asamblea (tope de {contratanteActual?.tope_smmlv ?? parametrosV.topeSmmlv} SMMLV). Las pólizas y los documentos del contratista se sumarán en la siguiente fase. Orden: lo más urgente primero.</p>
+        <p className="mt-2 text-xs text-muted">El semáforo vigila la etapa de cada contrato, su plazo (con prórrogas y suspensiones firmadas), las pólizas, los documentos del contratista y la autorización de asamblea (tope de {contratanteActual?.tope_smmlv ?? parametrosV.topeSmmlv} SMMLV). Orden: lo más urgente primero.</p>
       </section>
       <div className="mt-3 flex flex-wrap items-center gap-3"><span className="text-sm text-muted">Exportar:</span><BotonesExportar base={`/proyectos/${id}/exportar/contratos`} /></div>
       {error && <div className="mt-4"><Aviso>No se pudieron leer los contratos{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}

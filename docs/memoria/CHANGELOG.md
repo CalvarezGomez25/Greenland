@@ -2,6 +2,15 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.10.0] · 3 de noviembre de 2026
+### Añadido
+- **Aliados, capa 2** ([ADR-0033](decisiones/ADR-0033-aliados-capa-2-polizas-modificaciones-documentos.md), migración 0027): pólizas por contrato y amparo con su mínimo exigido; modificaciones (adición, otrosí, prórroga, suspensión, reinicio, cesión) en trámite o firmadas, que mueven la fecha fin vigente y la suspensión solo al firmarse; documentos del tercero con vigencia por tipo. El semáforo del contrato suma suspensión, pólizas y documentos. 52 comprobaciones SQL y 11 pruebas unitarias nuevas.
+### Cambiado
+- El valor vigente de un contrato sigue cambiando solo por un cambio aprobado o por el director: las modificaciones documentan el instrumento y no suman valor por sí solas.
+- La lista de contratos del proyecto y el detalle usan la fecha fin vigente (con prórrogas firmadas) para el plazo.
+### Pendiente
+- Compromisos de comunicaciones, procesos y ofertas, minutas y campo (P41); amparos exigibles por tipo de contrato.
+
 ## [3.9.0] · 3 de noviembre de 2026
 ### Añadido
 - **Aliados y proveedores, capa 1** ([ADR-0032](decisiones/ADR-0032-aliados-y-proveedores-capa-1.md), migración 0026), a partir del paquete RAÍZ: maestro de terceros con NIT validado (`PEND-` temporal), contratantes y contratante de cada proyecto; en cada contrato, tercero, etapa (1 a 9) con historial, fechas, plazo con fecha fin calculada, autorización de asamblea, consecutivo y orden de servicio; semáforo por contrato en la lista del proyecto (ordenada por urgencia) y en el detalle. Pantallas `/aliados` y `/aliados/contratantes`. 66 comprobaciones SQL y 15+ pruebas unitarias nuevas.

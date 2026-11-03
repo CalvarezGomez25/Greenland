@@ -73,3 +73,29 @@ export async function guardarContratante(id: string | null, _anterior: Estado, d
   revalidatePath("/aliados/contratantes");
   redirect("/aliados/contratantes?ok=contratante");
 }
+
+
+export async function guardarDocumento(terceroId: string, _anterior: Estado, d: FormData): Promise<Estado> {
+  if (!ES_UUID.test(terceroId)) return { error: "Dirección no válida." };
+  const falla = (error: string): Estado => ({ error, valores: valoresDe(d) });
+  const tipo = texto(d, "tipo"), fecha = texto(d, "fecha_expedicion"), enlace = texto(d, "enlace");
+  if (!tipo) return falla("Elige el tipo de documento.");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha) || Number.isNaN(Date.parse(`${fecha}T00:00:00Z`))) return falla("Indica una fecha de expedición válida.");
+  if (enlace && !/^https?:\/\/\S+$/.test(enlace)) return falla("El enlace al soporte debe empezar por http:// o https://.");
+  const { supabase } = await obtenerSesion();
+  const { error } = await supabase.from("tercero_documentos").insert({ tercero_id: terceroId, tipo, fecha_expedicion: fecha, enlace: o(enlace), observaciones: o(texto(d, "observaciones")) });
+  if (error) {
+    if (error.code === "42501") return falla("No tienes permiso para registrar documentos de este tercero.");
+    return falla(mensajeDeBase(error));
+  }
+  revalidatePath(`/aliados/${terceroId}`);
+  redirect(`/aliados/${terceroId}?ok=documento`);
+}
+
+export async function borrarDocumento(terceroId: string, documentoId: string): Promise<void> {
+  if (!ES_UUID.test(terceroId) || !ES_UUID.test(documentoId)) redirect("/aliados");
+  const { supabase } = await obtenerSesion();
+  const { data, error } = await supabase.from("tercero_documentos").delete().eq("id", documentoId).eq("tercero_id", terceroId).select("id");
+  revalidatePath(`/aliados/${terceroId}`);
+  redirect(`/aliados/${terceroId}?ok=${error || !data || data.length === 0 ? "no_borrado" : "documento_borrado"}`);
+}

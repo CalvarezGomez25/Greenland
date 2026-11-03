@@ -1,6 +1,6 @@
 // Vigilancia de un contrato: la etapa de su ruta de vida y un semáforo único (Verde, Ámbar, Rojo).
-// Capa 1 del módulo de aliados (paquete RAÍZ): vigila la etapa, el plazo y la autorización de asamblea.
-// Quedan para la capa 2 las pólizas, los documentos del contratista, los compromisos y las suspensiones.
+// Vigila la etapa, el plazo, la autorización de asamblea (capa 1) y la suspensión, las pólizas y los documentos
+// del contratista (capa 2). Quedan para después los compromisos de las comunicaciones.
 // Funciones puras (sin red). Las reglas salen de RAÍZ (hoja de reglas de negocio); los días y topes son parámetros.
 
 import { diasParaVencer } from "../actividades";
@@ -20,21 +20,36 @@ export const ETAPAS: Etapa[] = [
   { n: 8, nombre: "Garantías postcontractuales", responsable: "Gerente del proyecto", accion: "Vigilar las pólizas de calidad y estabilidad hasta su vencimiento" },
   { n: 9, nombre: "Archivado", responsable: "Nadie", accion: "Ninguna: relación cerrada" },
 ];
+export const ETIQUETA_TIPO_MODIFICACION: Record<string, string> = {
+  adicion: "Adición", otrosi: "Otrosí", prorroga: "Prórroga", suspension: "Suspensión", reinicio: "Reinicio", cesion: "Cesión",
+};
 export const etapaPorNumero = (n: number): Etapa => ETAPAS.find((e) => e.n === n) ?? ETAPAS[0];
 
 export type Nivel = "rojo" | "ambar" | "verde" | "archivado";
 export const ETIQUETA_NIVEL: Record<Nivel, string> = { rojo: "Rojo", ambar: "Ámbar", verde: "Verde", archivado: "Archivado" };
 
+export type PolizaEntrada = {
+  amparo: string;
+  estado: "activa" | "cumplida";
+  vencimiento: string | null;
+  valorAsegurado: bigint | null; // centavos
+  minimo: bigint | null; // porcentaje × base del amparo, en centavos; null si no se puede calcular
+};
+export type DocumentosTercero = { tiene: boolean; vencidos: string[]; porVencer: { tipo: string; dias: number }[] };
+
 export type EntradaContrato = {
   etapa: number;
   fechaEtapa: string; // AAAA-MM-DD en que entró a la etapa
-  fechaFin: string | null; // fecha fin (acta de inicio + plazo); null si falta alguno
+  fechaFin: string | null; // fecha fin vigente (la inicial o la mayor de las prórrogas firmadas); null si falta el dato
+  suspendidoDesde?: string | null; // fecha de la última suspensión firmada sin reinicio
+  polizas?: PolizaEntrada[]; // si no se informa, no se vigilan
+  documentos?: DocumentosTercero | null; // si no se informa, no se vigilan
   valor: bigint; // valor del contrato en centavos (2 decimales)
   autorizacionAsamblea: string | null;
   topeSmmlv?: number | null; // tope propio del contratante; si falta, el parámetro general
 };
 
-export type ParametrosVigilancia = { smmlv: number; topeSmmlv: number; alertaDias: number; diasMaxEtapa: Record<number, number> };
+export type ParametrosVigilancia = { smmlv: number; topeSmmlv: number; alertaDias: number; suspensionMaxDias: number; diasMaxEtapa: Record<number, number> };
 
 export function parametrosDeVigilancia(filas: FilaParametro[], proyectoId?: string | null): ParametrosVigilancia {
   const ctx = { proyectoId: proyectoId ?? null, portafolioId: null };
@@ -47,6 +62,7 @@ export function parametrosDeVigilancia(filas: FilaParametro[], proyectoId?: stri
     smmlv: numeroParametro(filas, "smmlv_cop", ctx, 0),
     topeSmmlv: numeroParametro(filas, "tope_asamblea_smmlv", ctx, 600),
     alertaDias: numeroParametro(filas, "alerta_ambar_dias", ctx, 30),
+    suspensionMaxDias: numeroParametro(filas, "suspension_max_dias", ctx, 30),
     diasMaxEtapa,
   };
 }
@@ -55,6 +71,22 @@ export function parametrosDeVigilancia(filas: FilaParametro[], proyectoId?: stri
 export function topeAsamblea(p: ParametrosVigilancia, topePropio?: number | null): bigint | null {
   if (!(p.smmlv > 0)) return null;
   return BigInt(Math.round(p.smmlv)) * BigInt(topePropio && topePropio > 0 ? topePropio : p.topeSmmlv) * 100n;
+}
+
+// Valor mínimo que debe asegurar una póliza: porcentaje del amparo × base (valor del contrato o del anticipo), en centavos.
+export function minimoPoliza(porcentaje: number, base: bigint): bigint {
+  return (base * BigInt(Math.round(porcentaje * 100)) + 5_000n) / 10_000n;
+}
+
+// Estado de los documentos de un tercero a partir del último documento de cada tipo y su fecha de vencimiento.
+export function documentosDelTercero(docs: { tipo: string; vencimiento: string }[], hoy: string, alertaDias: number): DocumentosTercero {
+  const vencidos: string[] = [], porVencer: { tipo: string; dias: number }[] = [];
+  for (const d of docs) {
+    const dias = diasParaVencer(d.vencimiento, hoy);
+    if (dias < 0) vencidos.push(d.tipo);
+    else if (dias <= alertaDias) porVencer.push({ tipo: d.tipo, dias });
+  }
+  return { tiene: docs.length > 0, vencidos, porVencer };
 }
 
 export type Semaforo = { nivel: Nivel; rojas: string[]; ambar: string[]; accion: string; diasEnEtapa: number };
@@ -70,13 +102,39 @@ export function semaforoContrato(c: EntradaContrato, hoy: string, p: ParametrosV
   const max = p.diasMaxEtapa[c.etapa];
   if (max !== undefined && diasEnEtapa > max) rojas.push(`Etapa «${etapa.nombre}» vencida: ${plural(diasEnEtapa, "día", "días")} de ${max} permitidos`);
 
-  if (c.etapa === 6) {
+  const suspendido = !!c.suspendidoDesde;
+  if (suspendido) {
+    const d = Math.max(0, -diasParaVencer(c.suspendidoDesde as string, hoy));
+    if (d > p.suspensionMaxDias) rojas.push(`Suspendido hace ${plural(d, "día", "días")} (máximo ${p.suspensionMaxDias} antes de decidir)`);
+    else ambar.push(`Contrato suspendido hace ${plural(d, "día", "días")}`);
+  }
+  if (c.etapa === 6 && !suspendido) {
     if (c.fechaFin === null) ambar.push("Falta el acta de inicio o el plazo para calcular la fecha fin");
     else {
       const d = diasParaVencer(c.fechaFin, hoy);
       if (d < 0) rojas.push(`Plazo vencido hace ${plural(-d, "día", "días")}`);
       else if (d <= p.alertaDias) ambar.push(d === 0 ? "El plazo vence hoy" : `El plazo vence en ${plural(d, "día", "días")}`);
     }
+  }
+
+  if (c.polizas && c.etapa >= 5 && c.etapa <= 8) {
+    for (const z of c.polizas) {
+      if (z.estado === "cumplida") continue;
+      if (z.vencimiento === null) ambar.push(`Póliza «${z.amparo}» sin fecha de vencimiento`);
+      else {
+        const d = diasParaVencer(z.vencimiento, hoy);
+        if (d < 0) rojas.push(`Póliza «${z.amparo}» vencida hace ${plural(-d, "día", "días")}`);
+        else if (d <= p.alertaDias) ambar.push(`Póliza «${z.amparo}» vence en ${plural(d, "día", "días")}`);
+      }
+      if (z.valorAsegurado === null) ambar.push(`Póliza «${z.amparo}» sin valor asegurado`);
+      else if (z.minimo !== null && z.valorAsegurado < z.minimo) rojas.push(`Póliza «${z.amparo}» por debajo del mínimo exigido`);
+    }
+  }
+
+  if (c.documentos && c.etapa >= 1 && c.etapa <= 8) {
+    if (!c.documentos.tiene) ambar.push("El contratista no tiene documentos registrados");
+    for (const t of c.documentos.vencidos) rojas.push(`Documento del contratista vencido: ${t}`);
+    for (const t of c.documentos.porVencer) ambar.push(`Documento del contratista por vencer: ${t.tipo} (${plural(t.dias, "día", "días")})`);
   }
 
   const tope = topeAsamblea(p, c.topeSmmlv);

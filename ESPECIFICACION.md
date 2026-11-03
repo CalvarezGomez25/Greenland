@@ -1,12 +1,12 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.9.0, actualizada el 3 de noviembre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.10.0, actualizada el 3 de noviembre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.9.0, única versión vigente |
+| Versión | 3.10.0, única versión vigente |
 | Última actualización | 21 de octubre de 2026 (imagen corporativa: sistema de diseño GreenLand v1.0.0 aplicado a la interfaz, las exportaciones, el informe gerencial y los correos; sección 1.1 y hito 26) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
@@ -28,6 +28,7 @@ Versión 3.9.0, actualizada el 3 de noviembre de 2026. Es la única versión vig
 | 3.7.0 | 24 de octubre de 2026 | Control de costos por cortes, fase 1 (ADR-0030, hito 28, módulo J, supuesto S25); se aceptan S21 a S24 (P40 parcialmente resuelto) |
 | 3.8.0 | 24 de octubre de 2026 | Control de costos por capítulo, fase 2 (ADR-0031, hito 29, supuesto S26) |
 | 3.9.0 | 3 de noviembre de 2026 | Aliados y proveedores, capa 1, a partir del paquete RAÍZ (ADR-0032, migración 0026, módulo S, hito 30, supuestos S27 a S31, pendiente P41) |
+| 3.10.0 | 3 de noviembre de 2026 | Aliados, capa 2: pólizas, modificaciones contractuales y documentos del tercero (ADR-0033, migración 0027, hito 31, supuestos S32 a S34) |
 | 3.4.0 | 21 de octubre de 2026 | Nueva imagen corporativa: sistema de diseño GreenLand v1.0.0 en toda la interfaz (paleta verde #027001, texto #5E5E5E, tipografía Archivo, píldoras y tarjetas con muesca, sin sombras ni mayúsculas sostenidas, alertas sobrias), exportaciones PDF y Excel, informe gerencial y correos; identidad (sección 1.1), hito 26, decisión de no mantener una versión paralela y ancla de reversión (ADR-0028), supuesto S20 y pendiente P39 |
 
 ### 0.1 Estado actual de un vistazo (16 de octubre de 2026)
@@ -36,10 +37,10 @@ Versión 3.9.0, actualizada el 3 de noviembre de 2026. Es la única versión vig
 | --- | --- |
 | Hitos 1 a 11 de la sección 12 | Construidos. Todos los módulos del mapa (sección 4) están disponibles en la aplicación |
 | Extensiones posteriores | Construidas: aprobación de contratos, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial y su envío semanal, marca, menú lateral y ayuda, y los ajustes del tablero del proyecto (hito 21). Material del marco FARO producido (hito 20). Memoria del proyecto creada (hito 22). Directorio de contactos construido (hito 23). Actividades y «Mi trabajo» construidos (hito 24) |
-| Pruebas automáticas | 380 pruebas unitarias (Vitest, 40 archivos) y 692 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
+| Pruebas automáticas | 391 pruebas unitarias (Vitest, 40 archivos) y 744 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
 | Producción | El usuario instaló el SQL de la base en Supabase y desplegó en Vercel; confirmó que funciona con datos ficticios |
 | Aún no ocurrido | Ningún correo se ha enviado en producción (falta configurar el proveedor, `CRON_SECRET` y el usuario de solo lectura); no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
-| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 32 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
+| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 33 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
 | Condiciones antes de datos reales | Definir región y confidencialidad; plan de alojamiento apto para uso comercial; revisión de seguridad (pendientes P12 a P14) |
 
 ## 1. Visión, alcance y principios
@@ -459,6 +460,11 @@ Maestro de terceros y datos contractuales, tomados de la estructura de RAÍZ (pa
 - **Semáforo por contrato** (capa 1): rojo si la etapa excede sus días máximos o el plazo de ejecución venció; ámbar si el plazo vence en 30 días o menos, falta el dato para calcular el fin, o el valor supera el tope de asamblea (SMMLV × tope) sin autorización registrada entre las etapas 3 y 7; verde en los demás casos; archivado sale del tablero. Pólizas, documentos del contratista, compromisos y suspensiones llegan en la capa 2.
 - **Quién ve y edita:** ve el maestro todo el portafolio (administrador, director general, analista PMO y finanzas) y los gerentes de proyecto. Edita terceros el administrador, el director y los gerentes; edita contratantes el administrador y el director. En un proyecto solo se ven sus contratos.
 - **Parámetros** (editables en Parámetros): `smmlv_cop`, `tope_asamblea_smmlv` (600), `alerta_ambar_dias` (30) y `etapa_dias_max_1`…`5` y `_7`.
+- **Capa 2 (v3.10, ADR-0033):**
+  - **Pólizas:** una por contrato y amparo (cumplimiento 30 % del valor, buen manejo del anticipo 100 % del anticipo, salarios y prestaciones 20 %, calidad 30 %, estabilidad 30 %, responsabilidad civil 30 %; tabla `poliza_amparos`). Mínimo exigido = porcentaje × base. Se guarda el enlace al soporte.
+  - **Modificaciones:** adición, otrosí, prórroga, suspensión, reinicio y cesión, con estado en trámite o firmada. Solo las firmadas mueven la fecha fin vigente (la mayor entre la inicial y las nuevas fechas fin firmadas) y la suspensión. No suman valor por sí solas: el valor vigente cambia con un cambio aprobado o por el director (S32).
+  - **Documentos del tercero:** enlaces con fecha de expedición; vencimiento = expedición + vigencia del tipo (`documento_tipos`); cuenta el último de cada tipo.
+  - **Semáforo ampliado:** rojo por suspensión de más de `suspension_max_dias` (30), póliza vencida o por debajo del mínimo (etapas 5 a 8) o documento del contratista vencido (etapas 1 a 8); ámbar por contrato suspendido, póliza por vencer o con datos faltantes, contratista sin documentos o documento por vencer. Con el contrato suspendido, el plazo no alerta.
 
 ## 6. Integración entre módulos: indicador, fórmula y fuente
 
@@ -577,6 +583,7 @@ Esta tabla es el contrato de datos. Define de dónde sale cada número del dashb
 | capitulos | `wbs_id` en uso: liga opcional a la EDT, con funciones `capitulos_desde_edt` y `capitulos_vincular_edt` y herencia de capítulo en las tareas |
 | costos_adicionales, adicionales, contrato_asignaciones | v3.6, migración 0025: `costos_adicionales` (historico del nombre; en pantalla «costos indirectos») suma `categoria` (administracion, imprevistos, utilidad, impuestos, otro). Tabla `adicionales` (codigo AD-nnn, descripcion, origen no_contemplado/anadidura, wbs_id, valor_directo, aplica_indirectos, cambio_id, nota). Tabla `contrato_asignaciones` (contrato_id, capitulo_id o adicional_id, valor; exactamente uno de los dos destinos). Funciones `adicional_guardar`, `adicional_borrar`, `contrato_asignar`, `contrato_asignacion_borrar`; `presupuesto_importar` conserva y re-liga las asignaciones por nombre de capítulo y bloquea retirar un capítulo con contratos asignados. Acceso de lectura con `puede_ver_proyecto` (interventoría excluida) |
 | terceros, contratantes, contratos (ampliada), contrato_etapa_historial | v3.9, migración 0026: `terceros` (nit único normalizado, tipo_persona, razon_social, tipo_tercero, especialidad, municipio, contacto, representante_legal, estado, fuente), `contratantes` (codigo CT-nn, razon_social, nit, tope_smmlv, estado), `proyectos.contratante_id`, y en `contratos`: tercero_id, consecutivo, orden_servicio_sap, etapa, fecha_etapa, fecha_firma, fecha_acta_inicio, plazo_valor, plazo_unidad, fecha_fin_inicial, autorizacion_asamblea. Funciones `nit_normalizar`, `nit_digito`, `fecha_fin_plazo`, `contrato_datos_guardar`, `contrato_etapa_cambiar`, `proyecto_contratante_asignar`; `contrato_crear` y `contrato_actualizar` aceptan el tercero |
+| contrato_polizas, contrato_modificaciones, tercero_documentos, poliza_amparos, documento_tipos | v3.10, migración 0027: pólizas (único por contrato y amparo), modificaciones (consecutivo por contrato y tipo; estado en_tramite/firmada; cambio_id opcional), documentos del tercero (enlaces) y las tablas de configuración de amparos y tipos de documento. `contratos` suma `fecha_fin_vigente` y `suspendido_desde` (recalculados al cambiar las modificaciones). Funciones `poliza_guardar`, `poliza_borrar`, `modificacion_guardar`, `modificacion_borrar` y `terceros_documentos_vigencia` |
 | festivos | Solo fechas excepcionales; los festivos de Colombia se calculan por función |
 | contadores | Consecutivos por proyecto que no se reutilizan (códigos de riesgos, cambios y similares) |
 | migraciones_aplicadas | Control del instalador: cada migración se aplica una sola vez |
@@ -750,6 +757,7 @@ Los hitos 1 a 11 están **construidos**, con pruebas de base de datos (`pruebas-
 | 28. Control de costos por cortes (fase 1) | Pantalla, gráfico y tabla por corte a partir de las mediciones de valor ganado (sin migración, ADR-0030) | Construido. `cortes.test.ts` (5 pruebas); revisado en navegador con datos ficticios. Fases 2 (por capítulo) y 3 (dos líneas base) sin construir |
 | 29. Control de costos por capítulo (fase 2) | Tabla por capítulo con avance, invertido, proyectado y comparación con presupuesto y contrato (ADR-0031) | Construido. `proyeccion-capitulos.test.ts` (3 pruebas); revisado en navegador con datos ficticios. Historial por corte por capítulo y fase 3 sin construir |
 | 30. Aliados y proveedores, capa 1 | Maestro de terceros y contratantes, etapa y datos contractuales de cada contrato y semáforo por contrato (0026, ADR-0032) | Construido. `t-aliados` (66 comprobaciones), `vigilancia.test.ts` (15) y revisión en navegador con datos ficticios. Capas 2 a 4 sin construir; sin datos reales |
+| 31. Aliados, capa 2 | Pólizas, modificaciones y documentos del tercero; semáforo ampliado (0027, ADR-0033) | Construido. `t-polizas-modificaciones` (52 comprobaciones), `vigilancia.test.ts` y revisión en navegador con datos ficticios. Sin datos reales |
 
 ## 13. Casos de prueba de referencia
 
@@ -918,6 +926,9 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | S29 | SMMLV 2026 = $1.750.905 (Decreto 1469 de 2025), confirmado el 3 de nov de 2026 en fuentes secundarias; hay reportes sin verificar de una suspensión judicial del decreto: revisar la vigencia antes de usar el tope. El tope de 600 SMMLV sin asamblea sale de certificados de existencia según el paquete: confirmar con Jurídica |
 | S30 | La etapa inicial de los contratos que ya existían es un punto de partida (pendientes = 3; con actas = 6; el resto = 4); el gerente la ajusta |
 | S31 | El maestro de terceros no guarda cédulas de representantes ni documentos: minimización de datos hasta resolver la base legal (P33) y si se necesitan para las minutas |
+| S32 | Las modificaciones no suman valor por sí solas: el valor vigente de un contrato cambia con un cambio aprobado o por el director (una sola vía). Propuesta del asesor, a validar; al cargar datos reales, el valor vigente entra tal como lo trae RAÍZ |
+| S33 | Los amparos de póliza (porcentajes y bases) salen de la minuta de El Silencio GL; no se avisa si falta una póliza porque aún no se definió qué amparos exige cada tipo de contrato (Jurídica) |
+| S34 | Las vigencias de los tipos de documento (30, 90 y 365 días) son supuestos de diseño de RAÍZ, editables en la tabla `documento_tipos`; solo el RUT (sin vencimiento) está verificado |
 
 **Pendientes**
 
@@ -1096,7 +1107,7 @@ Repositorio `docs/memoria/`, creado el 14 de octubre de 2026 para explicar cómo
 | `02-historia.md` | Cronología desde los antecedentes hasta hoy, con commits |
 | `03-marco-teorico.md` | Teoría, normativa y nivel de verificación de cada afirmación |
 | `04-buenas-practicas-documentacion.md` | Investigación sobre cómo documentar proyectos, diagnóstico y brechas |
-| `decisiones/` | 32 fichas de decisión (ADR) |
+| `decisiones/` | 33 fichas de decisión (ADR) |
 | `06-trazabilidad.md` | Módulo → decisión → migración → prueba → commit |
 | `07-lecciones-aprendidas.md` | Incidentes y qué cambió |
 | `08-fuentes-y-verificacion.md` | Bibliografía con niveles N1 a N3 |

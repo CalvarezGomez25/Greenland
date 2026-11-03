@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { ETAPAS, ordenarPorUrgencia, parametrosDeVigilancia, semaforoContrato, topeAsamblea, type EntradaContrato, type ParametrosVigilancia } from "./vigilancia";
+import { ETAPAS, documentosDelTercero, minimoPoliza, ordenarPorUrgencia, parametrosDeVigilancia, semaforoContrato, topeAsamblea, type EntradaContrato, type ParametrosVigilancia } from "./vigilancia";
 
-const P: ParametrosVigilancia = { smmlv: 1_750_905, topeSmmlv: 600, alertaDias: 30, diasMaxEtapa: { 1: 7, 2: 5, 3: 7, 4: 5, 5: 15, 7: 60 } };
+const P: ParametrosVigilancia = { smmlv: 1_750_905, topeSmmlv: 600, alertaDias: 30, suspensionMaxDias: 30, diasMaxEtapa: { 1: 7, 2: 5, 3: 7, 4: 5, 5: 15, 7: 60 } };
 const base: EntradaContrato = { etapa: 6, fechaEtapa: "2026-09-01", fechaFin: "2027-01-31", valor: 100_000_000_00n, autorizacionAsamblea: null };
 const HOY = "2026-11-03";
 
@@ -86,5 +86,51 @@ describe("parametrosDeVigilancia y orden", () => {
     const s = (nivel: "rojo" | "ambar" | "verde" | "archivado", d: number) => ({ semaforo: { nivel, rojas: [], ambar: [], accion: "", diasEnEtapa: d } });
     const lista = [{ id: "v", ...s("verde", 90) }, { id: "a1", ...s("ambar", 5) }, { id: "r1", ...s("rojo", 3) }, { id: "r2", ...s("rojo", 20) }, { id: "x", ...s("archivado", 999) }, { id: "a2", ...s("ambar", 40) }];
     expect(ordenarPorUrgencia(lista).map((x) => x.id)).toEqual(["r2", "r1", "a2", "a1", "v", "x"]);
+  });
+});
+
+describe("suspensión, pólizas y documentos (capa 2)", () => {
+  it("un contrato suspendido no alerta por plazo; ámbar hasta el máximo y rojo después", () => {
+    const vencido = { ...base, fechaFin: "2026-10-01" };
+    const s1 = semaforoContrato({ ...vencido, suspendidoDesde: "2026-10-20" }, HOY, P);
+    expect(s1.nivel).toBe("ambar");
+    expect(s1.ambar).toEqual(["Contrato suspendido hace 14 días"]);
+    const s2 = semaforoContrato({ ...vencido, suspendidoDesde: "2026-10-03" }, HOY, P); // 31 días
+    expect(s2.nivel).toBe("rojo");
+    expect(s2.rojas[0]).toBe("Suspendido hace 31 días (máximo 30 antes de decidir)");
+    expect(semaforoContrato({ ...vencido, suspendidoDesde: "2026-10-04" }, HOY, P).nivel).toBe("ambar"); // 30 días justos
+  });
+  it("calcula el mínimo de una póliza (porcentaje × base)", () => {
+    expect(minimoPoliza(30, 727_173_092_61n)).toBe(218_151_927_78n); // 30 % de 727.173.092,61
+    expect(minimoPoliza(100, 50_000_000_00n)).toBe(50_000_000_00n);
+  });
+  it("póliza por debajo del mínimo = rojo; igual al mínimo = verde", () => {
+    const z = (valor: bigint | null) => ({ ...base, etapa: 6, polizas: [{ amparo: "Cumplimiento", estado: "activa" as const, vencimiento: "2027-06-01", valorAsegurado: valor, minimo: 30_000_000_00n }] });
+    expect(semaforoContrato(z(29_999_999_99n), HOY, P).rojas[0]).toBe("Póliza «Cumplimiento» por debajo del mínimo exigido");
+    expect(semaforoContrato(z(30_000_000_00n), HOY, P).nivel).toBe("verde");
+    expect(semaforoContrato(z(null), HOY, P).ambar[0]).toBe("Póliza «Cumplimiento» sin valor asegurado");
+  });
+  it("póliza vencida = rojo, por vencer = ámbar, sin fecha = ámbar, cumplida no alerta", () => {
+    const z = (vencimiento: string | null, estado: "activa" | "cumplida" = "activa") => ({ ...base, polizas: [{ amparo: "Estabilidad de la obra", estado, vencimiento, valorAsegurado: 1n, minimo: null }] });
+    expect(semaforoContrato(z("2026-11-01"), HOY, P).rojas[0]).toBe("Póliza «Estabilidad de la obra» vencida hace 2 días");
+    expect(semaforoContrato(z("2026-12-03"), HOY, P).ambar[0]).toBe("Póliza «Estabilidad de la obra» vence en 30 días");
+    expect(semaforoContrato(z(null), HOY, P).ambar[0]).toBe("Póliza «Estabilidad de la obra» sin fecha de vencimiento");
+    expect(semaforoContrato(z("2020-01-01", "cumplida"), HOY, P).nivel).toBe("verde");
+  });
+  it("las pólizas solo se vigilan entre las etapas 5 y 8", () => {
+    const z = { ...base, polizas: [{ amparo: "Cumplimiento", estado: "activa" as const, vencimiento: "2020-01-01", valorAsegurado: 1n, minimo: null }] };
+    expect(semaforoContrato({ ...z, etapa: 4, fechaEtapa: HOY, fechaFin: null }, HOY, P).nivel).toBe("verde");
+    expect(semaforoContrato({ ...z, etapa: 8, fechaEtapa: HOY }, HOY, P).nivel).toBe("rojo");
+  });
+  it("documentos del contratista: sin soportes ámbar, vencido rojo, por vencer ámbar", () => {
+    const hoy = HOY;
+    const d = documentosDelTercero([{ tipo: "RUT", vencimiento: "2124-12-17" }, { tipo: "PILA", vencimiento: "2026-11-01" }, { tipo: "SG-SST", vencimiento: "2026-11-20" }], hoy, 30);
+    expect(d).toEqual({ tiene: true, vencidos: ["PILA"], porVencer: [{ tipo: "SG-SST", dias: 17 }] });
+    const s = semaforoContrato({ ...base, documentos: d }, HOY, P);
+    expect(s.nivel).toBe("rojo");
+    expect(s.rojas).toEqual(["Documento del contratista vencido: PILA"]);
+    expect(s.ambar).toEqual(["Documento del contratista por vencer: SG-SST (17 días)"]);
+    expect(semaforoContrato({ ...base, documentos: documentosDelTercero([], hoy, 30) }, HOY, P).ambar[0]).toBe("El contratista no tiene documentos registrados");
+    expect(semaforoContrato({ ...base, documentos: null }, HOY, P).nivel).toBe("verde");
   });
 });
