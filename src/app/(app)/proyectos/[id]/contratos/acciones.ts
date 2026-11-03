@@ -38,6 +38,12 @@ export async function crearContrato(proyectoId: string, _p: Estado, d: FormData)
   if ("error" in dc) return { error: dc.error, valores: valoresDe(d) };
   const { data, error } = await supabase.rpc("contrato_crear", { p_proyecto: proyectoId, p_datos: dc.datos });
   if (error) return { error: mensaje(error), valores: valoresDe(d) };
+  // Si nace de un proceso adjudicado, se vincula (si no coincide el adjudicatario, el contrato queda creado y se avisa).
+  const procesoId = String(d.get("proceso_id") ?? "");
+  if (procesoId && ES_UUID.test(procesoId)) {
+    const { error: errVinculo } = await supabase.rpc("proceso_contrato_vincular", { p_proceso: procesoId, p_contrato: data as string });
+    if (errVinculo) console.error("No se pudo vincular el contrato al proceso:", errVinculo.code, errVinculo.message);
+  }
   // Un contrato nuevo espera la aprobación del director general: se le avisa por correo.
   const { data: nuevo } = await supabase.from("contratos").select("estado_aprobacion").eq("id", data as string).maybeSingle();
   if (nuevo?.estado_aprobacion === "pendiente") {
@@ -236,4 +242,32 @@ export async function borrarModificacion(proyectoId: string, contratoId: string,
   const { supabase } = await cargarProyecto(proyectoId);
   const { error } = await supabase.rpc("modificacion_borrar", { p_modificacion: modificacionId });
   return terminar(proyectoId, contratoId, "modificacion_borrada", error ? mensaje(error) : undefined);
+}
+
+
+// ---- Comunicaciones y compromisos ---------------------------------------------------------------------------
+export async function guardarComunicacion(proyectoId: string, contratoId: string, comunicacionId: string | null, _p: Estado, d: FormData): Promise<Estado> {
+  if (!ES_UUID.test(contratoId) || (comunicacionId && !ES_UUID.test(comunicacionId))) return { error: "Dirección no válida." };
+  const { supabase } = await cargarProyecto(proyectoId);
+  const datos: Record<string, string> = {};
+  for (const k of ["fecha", "canal", "asunto", "resumen", "enlace", "responsable", "fecha_compromiso", "estado"]) datos[k] = String(d.get(k) ?? "").trim();
+  for (const k of ["fecha", "fecha_compromiso"]) if (datos[k] && !esFechaValida(datos[k])) return { error: "Indica una fecha válida.", valores: valoresDe(d) };
+  datos.requiere_accion = d.get("requiere_accion") === "on" ? "si" : "no";
+  const { error } = await supabase.rpc("comunicacion_guardar", { p_contrato: contratoId, p_id: comunicacionId, p_datos: datos });
+  if (error) return { error: mensaje(error), valores: valoresDe(d) };
+  return terminar(proyectoId, contratoId, "comunicacion");
+}
+
+export async function borrarComunicacion(proyectoId: string, contratoId: string, comunicacionId: string): Promise<void> {
+  if (!ES_UUID.test(comunicacionId)) return terminar(proyectoId, contratoId, "", "Comunicación no válida.");
+  const { supabase } = await cargarProyecto(proyectoId);
+  const { error } = await supabase.rpc("comunicacion_borrar", { p_comunicacion: comunicacionId });
+  return terminar(proyectoId, contratoId, "comunicacion_borrada", error ? mensaje(error) : undefined);
+}
+
+export async function cerrarCompromiso(proyectoId: string, contratoId: string, c: { id: string; fecha: string; canal: string; asunto: string; resumen: string; enlace: string; responsable: string; fecha_compromiso: string }): Promise<void> {
+  if (!ES_UUID.test(c.id) || !ES_UUID.test(contratoId)) return terminar(proyectoId, contratoId, "", "Comunicación no válida.");
+  const { supabase } = await cargarProyecto(proyectoId);
+  const { error } = await supabase.rpc("comunicacion_guardar", { p_contrato: contratoId, p_id: c.id, p_datos: { ...c, id: undefined, requiere_accion: "si", estado: "cerrado" } });
+  return terminar(proyectoId, contratoId, "comunicacion", error ? mensaje(error) : undefined);
 }

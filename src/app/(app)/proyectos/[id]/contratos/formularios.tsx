@@ -16,6 +16,7 @@ export function FormularioContrato({ accion, iniciales, volverA, terceros }: { a
   const v = (k: string) => estado.valores?.[k] ?? iniciales[k] ?? "";
   return (
     <form action={enviar} key={estado.valores ? JSON.stringify(estado.valores) : "i"} className="flex max-w-2xl flex-col gap-4">
+      {iniciales.proceso_id && <input type="hidden" name="proceso_id" value={iniciales.proceso_id} />}
       <div className="grid gap-4 sm:grid-cols-2">
         <Selector etiqueta="Tipo de contrato" name="tipo" required defaultValue={v("tipo") || "obra"}>
           {TIPOS_CONTRATO.map((t) => <option key={t} value={t}>{ETIQUETA_TIPO_CONTRATO[t]}</option>)}
@@ -197,6 +198,36 @@ export function FormularioModificacion({ accion, cambios, iniciales = {}, edicio
       {estado.error && <Aviso>{estado.error}</Aviso>}
       <div className="flex gap-3">
         <BotonEnviar className={claseBoton.primario} textoEnviando="Guardando…">{edicion ? "Guardar cambios" : "Registrar modificación"}</BotonEnviar>
+        {edicion && volverA && <Link href={volverA} className={claseBoton.contorno}>Cancelar</Link>}
+      </div>
+    </form>
+  );
+}
+
+export const CANALES: [string, string][] = [["correo", "Correo"], ["reunion", "Reunión"], ["llamada", "Llamada"], ["chat", "Teams / chat"], ["visita_obra", "Visita de obra"], ["comunicacion_escrita", "Comunicación escrita"], ["acta", "Acta"], ["revision_aprobacion", "Revisión / aprobación"]];
+
+export function FormularioComunicacion({ accion, hoy, iniciales = {}, edicion = false, volverA }: { accion: Accion; hoy: string; iniciales?: Record<string, string>; edicion?: boolean; volverA?: string }) {
+  const [estado, enviar] = useActionState(accion, {} as Estado);
+  const v = (k: string) => estado.valores?.[k] ?? iniciales[k] ?? "";
+  const accionReq = estado.valores ? estado.valores.requiere_accion === "on" : iniciales.requiere_accion === "on";
+  return (
+    <form action={enviar} key={estado.valores ? JSON.stringify(estado.valores) : "i"} className="flex max-w-3xl flex-col gap-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Campo etiqueta="Fecha" name="fecha" type="date" required defaultValue={v("fecha") || hoy} />
+        <Selector etiqueta="Canal" name="canal" defaultValue={v("canal") || "correo"}>{CANALES.map(([k, t]) => <option key={k} value={k}>{t}</option>)}</Selector>
+        <Campo etiqueta="Responsable (opcional)" name="responsable" maxLength={200} defaultValue={v("responsable")} />
+        <Campo etiqueta="Enlace al original (opcional)" name="enlace" type="url" maxLength={500} defaultValue={v("enlace")} />
+      </div>
+      <Campo etiqueta="Asunto" name="asunto" required maxLength={200} defaultValue={v("asunto")} />
+      <Campo etiqueta="Resumen (opcional)" name="resumen" maxLength={1000} defaultValue={v("resumen")} />
+      <label className="flex items-start gap-2 text-sm"><input type="checkbox" name="requiere_accion" defaultChecked={accionReq} className="mt-1" /><span>Hay un compromiso: alguien debe hacer algo.</span></label>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Campo etiqueta="Fecha del compromiso" name="fecha_compromiso" type="date" defaultValue={v("fecha_compromiso")} ayuda="Obligatoria si hay un compromiso abierto." />
+        <Selector etiqueta="Estado" name="estado" defaultValue={v("estado") || "abierto"}><option value="abierto">Abierto</option><option value="cerrado">Cerrado</option></Selector>
+      </div>
+      {estado.error && <Aviso>{estado.error}</Aviso>}
+      <div className="flex gap-3">
+        <BotonEnviar className={claseBoton.primario} textoEnviando="Guardando…">{edicion ? "Guardar cambios" : "Registrar comunicación"}</BotonEnviar>
         {edicion && volverA && <Link href={volverA} className={claseBoton.contorno}>Cancelar</Link>}
       </div>
     </form>

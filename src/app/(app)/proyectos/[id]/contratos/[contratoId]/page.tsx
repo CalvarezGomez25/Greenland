@@ -14,8 +14,8 @@ import { ETIQUETA_ESTADO_ACTA, ETIQUETA_TIPO_CONTRATO, resumenContrato } from "@
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { AvisoResultado } from "@/components/aviso-resultado";
-import { aprobarContrato, asignarContrato, autorizarAnticipo, avanzarEtapa, borrarActa, borrarModificacion, borrarPoliza, cambiarEstadoActa, devolverEtapa, guardarDatosContractuales, guardarModificacion, guardarPoliza, liberarRetencion, quitarAsignacion, radicarActa } from "../acciones";
-import { FormularioActa, FormularioAnticipo, FormularioAsignacion, FormularioDatosContractuales, FormularioDevolverEtapa, FormularioModificacion, FormularioPoliza } from "../formularios";
+import { aprobarContrato, asignarContrato, autorizarAnticipo, avanzarEtapa, borrarActa, borrarModificacion, borrarPoliza, cambiarEstadoActa, cerrarCompromiso, devolverEtapa, guardarComunicacion, borrarComunicacion, guardarDatosContractuales, guardarModificacion, guardarPoliza, liberarRetencion, quitarAsignacion, radicarActa } from "../acciones";
+import { FormularioActa, FormularioAnticipo, FormularioAsignacion, FormularioDatosContractuales, FormularioDevolverEtapa, FormularioComunicacion, FormularioModificacion, FormularioPoliza, CANALES } from "../formularios";
 import { cargarExtrasVigilancia } from "@/lib/contratos/datos-vigilancia";
 import { SemaforoContrato } from "@/components/semaforo-contrato";
 import { ETAPAS, ETIQUETA_TIPO_MODIFICACION, etapaPorNumero, parametrosDeVigilancia, semaforoContrato } from "@/lib/contratos/vigilancia";
@@ -28,9 +28,9 @@ function Dato({ t, v }: { t: string; v: React.ReactNode }) {
   return <div><dt className="text-xs font-medium uppercase tracking-wider text-leaf-800">{t}</dt><dd className="mt-0.5 whitespace-pre-wrap text-leaf-900">{v || "—"}</dd></div>;
 }
 
-async function Contenido({ params, searchParams }: { params: Promise<{ id: string; contratoId: string }>; searchParams: Promise<{ ok?: string; error?: string; aviso?: string; mod?: string }> }) {
+async function Contenido({ params, searchParams }: { params: Promise<{ id: string; contratoId: string }>; searchParams: Promise<{ ok?: string; error?: string; aviso?: string; mod?: string; com?: string }> }) {
   const { id, contratoId } = await params;
-  const { ok, error: errorUrl, aviso, mod: modEditar } = await searchParams;
+  const { ok, error: errorUrl, aviso, mod: modEditar, com: comEditar } = await searchParams;
   if (!ES_UUID.test(contratoId)) notFound();
   const { supabase, proyecto, permisos } = await cargarProyecto(id);
   const { data: c } = await supabase.from("contratos").select("*").eq("id", contratoId).eq("proyecto_id", id).maybeSingle();
@@ -53,12 +53,15 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   const { data: contr } = (proyC as { contratante_id: string | null } | null)?.contratante_id
     ? await supabase.from("contratantes").select("tope_smmlv").eq("id", (proyC as { contratante_id: string }).contratante_id).maybeSingle()
     : { data: null };
-  const [{ data: pols }, { data: mods }, { data: amps }, { data: cmbs }] = await Promise.all([
+  const [{ data: pols }, { data: mods }, { data: amps }, { data: cmbs }, { data: coms }] = await Promise.all([
     supabase.from("contrato_polizas").select("id, amparo, aseguradora, numero, valor_asegurado, fecha_expedicion, fecha_vencimiento, estado, enlace").eq("contrato_id", contratoId).order("amparo"),
     supabase.from("contrato_modificaciones").select("id, tipo, numero, fecha_firma, nueva_fecha_fin, valor, descripcion, justificacion, estado, cambio_id").eq("contrato_id", contratoId).order("creado_en"),
     supabase.from("poliza_amparos").select("nombre, orden").order("orden"),
     supabase.from("cambios").select("id, codigo, estado_flujo, descripcion_despues").eq("contrato_id", contratoId).order("codigo"),
+    supabase.from("contrato_comunicaciones").select("id, fecha, canal, asunto, resumen, enlace, responsable, requiere_accion, fecha_compromiso, estado").eq("contrato_id", contratoId).order("fecha", { ascending: false }).limit(100),
   ]);
+  const comunicaciones = (coms ?? []) as { id: string; fecha: string; canal: string; asunto: string; resumen: string | null; enlace: string | null; responsable: string | null; requiere_accion: boolean; fecha_compromiso: string | null; estado: string }[];
+  const comEnEdicion = comEditar && ES_UUID.test(comEditar) ? comunicaciones.find((x) => x.id === comEditar) : undefined;
   const hoy = hoyColombia();
   const extras = (await cargarExtrasVigilancia(supabase, id, [{ id: contratoId, tercero_id: c.tercero_id, valor: c.valor, anticipo_valor: c.anticipo_valor }], hoy, parametrosDeVigilancia((pars ?? []) as FilaParametro[], id).alertaDias)).get(contratoId);
   const polizas = (pols ?? []) as { id: string; amparo: string; aseguradora: string | null; numero: string | null; valor_asegurado: number | string | null; fecha_expedicion: string | null; fecha_vencimiento: string | null; estado: string; enlace: string | null }[];
@@ -68,7 +71,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   const tercero = ter as { id: string; nit: string; razon_social: string } | null;
   const historial = (hist ?? []) as { id: number; etapa_anterior: number | null; etapa_nueva: number; motivo: string | null; creado_en: string }[];
   const parametrosV = parametrosDeVigilancia((pars ?? []) as FilaParametro[], id);
-  const sem = semaforoContrato({ etapa: c.etapa, fechaEtapa: c.fecha_etapa, fechaFin: c.fecha_fin_vigente, suspendidoDesde: c.suspendido_desde, polizas: extras?.polizas, documentos: extras?.documentos, valor: desdeJson(c.valor, 2), autorizacionAsamblea: c.autorizacion_asamblea, topeSmmlv: (contr as { tope_smmlv: number | null } | null)?.tope_smmlv }, hoy, parametrosV);
+  const sem = semaforoContrato({ etapa: c.etapa, fechaEtapa: c.fecha_etapa, fechaFin: c.fecha_fin_vigente, suspendidoDesde: c.suspendido_desde, polizas: extras?.polizas, documentos: extras?.documentos, compromisos: extras?.compromisos, valor: desdeJson(c.valor, 2), autorizacionAsamblea: c.autorizacion_asamblea, topeSmmlv: (contr as { tope_smmlv: number | null } | null)?.tope_smmlv }, hoy, parametrosV);
   const etapaActual = etapaPorNumero(c.etapa);
   const siguiente = c.etapa < 9 && !(c.estado_aprobacion === "pendiente" && c.etapa >= 3) ? ETAPAS[c.etapa] : null;
   const datosIniciales: Record<string, string> = {
@@ -266,6 +269,51 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
                 edicion={!!enEdicion} volverA={base}
                 iniciales={enEdicion ? { tipo: enEdicion.tipo, estado: enEdicion.estado, fecha_firma: enEdicion.fecha_firma ?? "", nueva_fecha_fin: enEdicion.nueva_fecha_fin ?? "", valor: Number(enEdicion.valor) > 0 ? formatearDecimal(desdeJson(enEdicion.valor, 2), 2) : "", cambio_id: enEdicion.cambio_id ?? "", descripcion: enEdicion.descripcion, justificacion: enEdicion.justificacion ?? "" } : {}}
               />
+            </div>
+          </details>
+        )}
+      </section>
+
+      <section className="mt-8" aria-labelledby="t-com">
+        <h2 id="t-com" className="font-display text-2xl font-bold text-leaf-700">Comunicaciones y compromisos</h2>
+        <p className="mt-1 text-sm text-muted">Lo que se acordó con el contratista. Un compromiso abierto con fecha entra al semáforo: rojo si venció, ámbar si vence en {parametrosV.alertaDias} días o menos. Se guardan enlaces al original, no los mensajes.</p>
+        {comunicaciones.length === 0 ? (
+          <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Aún no hay comunicaciones registradas.</p>
+        ) : (
+          <div className="mt-3 overflow-x-auto rounded-card border border-soil-border">
+            <table className="w-full min-w-[760px] text-left text-sm">
+              <thead className="bg-leaf-100 text-xs uppercase tracking-wider text-leaf-800"><tr>{["Fecha", "Asunto", "Compromiso", "Responsable", ""].map((h) => <th key={h} className="px-3 py-2 font-medium">{h}</th>)}</tr></thead>
+              <tbody className="divide-y divide-soil-border">
+                {comunicaciones.map((m) => {
+                  const dias = m.requiere_accion && m.estado === "abierto" && m.fecha_compromiso ? diasParaVencer(m.fecha_compromiso, hoy) : null;
+                  return (
+                    <tr key={m.id}>
+                      <td className="whitespace-nowrap px-3 py-2 align-top">{formatearFecha(m.fecha)}<p className="text-xs text-muted">{CANALES.find(([k]) => k === m.canal)?.[1]}</p></td>
+                      <td className="px-3 py-2 align-top font-medium">{m.asunto}{m.enlace && <a href={m.enlace} target="_blank" rel="noopener noreferrer" className="ml-2 text-xs font-normal text-leaf-600 underline">original</a>}{m.resumen && <p className="max-w-sm text-xs font-normal text-muted">{m.resumen}</p>}</td>
+                      <td className="px-3 py-2 align-top">{!m.requiere_accion ? "—" : m.estado === "cerrado" ? "Cerrado" : <span className={dias !== null && dias < 0 ? "font-medium text-danger" : ""}>{m.fecha_compromiso ? formatearFecha(m.fecha_compromiso) : "sin fecha"}{dias !== null && <span className="block text-xs">{dias < 0 ? `vencido hace ${-dias} d` : `en ${dias} d`}</span>}</span>}</td>
+                      <td className="px-3 py-2 align-top">{m.responsable ?? "—"}</td>
+                      <td className="px-3 py-2 text-right align-top">
+                        {permisos.gestionar && (
+                          <div className="flex flex-wrap justify-end gap-3">
+                            {m.requiere_accion && m.estado === "abierto" && <form action={cerrarCompromiso.bind(null, id, contratoId, { id: m.id, fecha: m.fecha, canal: m.canal, asunto: m.asunto, resumen: m.resumen ?? "", enlace: m.enlace ?? "", responsable: m.responsable ?? "", fecha_compromiso: m.fecha_compromiso ?? "" })}><BotonEnviar className="text-sm font-medium text-leaf-600 underline" textoEnviando="…">Cerrar</BotonEnviar></form>}
+                            <Link href={`${base}?com=${m.id}#t-com`} className="text-sm font-medium text-leaf-600 underline">Editar</Link>
+                            <form action={borrarComunicacion.bind(null, id, contratoId, m.id)}><BotonEnviar className="text-sm font-medium text-danger underline" textoEnviando="…">Borrar</BotonEnviar></form>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {permisos.gestionar && !pendiente && (
+          <details className="mt-3 rounded-card bg-leaf-50 p-5" open={!!comEnEdicion || comunicaciones.length === 0}>
+            <summary className="cursor-pointer font-medium text-leaf-700">{comEnEdicion ? `Editar: ${comEnEdicion.asunto}` : "Registrar una comunicación"}</summary>
+            <div className="mt-3">
+              <FormularioComunicacion key={comEnEdicion?.id ?? "nueva"} accion={guardarComunicacion.bind(null, id, contratoId, comEnEdicion?.id ?? null)} hoy={hoy} edicion={!!comEnEdicion} volverA={base}
+                iniciales={comEnEdicion ? { fecha: comEnEdicion.fecha, canal: comEnEdicion.canal, asunto: comEnEdicion.asunto, resumen: comEnEdicion.resumen ?? "", enlace: comEnEdicion.enlace ?? "", responsable: comEnEdicion.responsable ?? "", requiere_accion: comEnEdicion.requiere_accion ? "on" : "", fecha_compromiso: comEnEdicion.fecha_compromiso ?? "", estado: comEnEdicion.estado } : {}} />
             </div>
           </details>
         )}

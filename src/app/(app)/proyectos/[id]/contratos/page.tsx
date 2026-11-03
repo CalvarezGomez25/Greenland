@@ -39,7 +39,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   const contratos = ordenarPorUrgencia(((cs ?? []) as C[]).map((c) => ({
     ...c,
     semaforo: semaforoContrato({
-      etapa: c.etapa, fechaEtapa: c.fecha_etapa, fechaFin: c.fecha_fin_vigente, suspendidoDesde: c.suspendido_desde, polizas: extras.get(c.id)?.polizas, documentos: extras.get(c.id)?.documentos,
+      etapa: c.etapa, fechaEtapa: c.fecha_etapa, fechaFin: c.fecha_fin_vigente, suspendidoDesde: c.suspendido_desde, polizas: extras.get(c.id)?.polizas, documentos: extras.get(c.id)?.documentos, compromisos: extras.get(c.id)?.compromisos,
       valor: desdeJson(c.valor, 2), autorizacionAsamblea: c.autorizacion_asamblea, topeSmmlv: contratanteActual?.tope_smmlv,
     }, hoy, parametrosV),
   })));

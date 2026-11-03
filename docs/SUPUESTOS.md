@@ -64,3 +64,6 @@ fácil de cambiar; deben validarse con el uso real.
 
 ## Aliados, capa 2 (migración 0027, ADR-0033)
 - Las modificaciones no suman valor por sí solas (S32); los amparos salen de la minuta de El Silencio GL y no se avisa si falta una póliza (S33); las vigencias de documentos son supuestos de RAÍZ, salvo el RUT (S34).
+
+## Aliados, capa 3 (migración 0028, ADR-0034)
+- Los puntajes de las ofertas se calculan, no se guardan; los pesos y los días de evaluación son supuestos de RAÍZ editables (S36). El orden de la ronda y el menor valor siguen las decisiones de S35. La interventoría no ve procesos (S37).

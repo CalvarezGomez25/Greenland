@@ -134,3 +134,17 @@ describe("suspensión, pólizas y documentos (capa 2)", () => {
     expect(semaforoContrato({ ...base, documentos: null }, HOY, P).nivel).toBe("verde");
   });
 });
+
+describe("compromisos de las comunicaciones (capa 3)", () => {
+  const k = (fecha: string) => [{ asunto: "Entregar pólizas", fecha }];
+  it("vencido = rojo, por vencer = ámbar, lejano = verde", () => {
+    expect(semaforoContrato({ ...base, compromisos: k("2026-11-01") }, HOY, P).rojas[0]).toBe("Compromiso vencido hace 2 días: Entregar pólizas");
+    expect(semaforoContrato({ ...base, compromisos: k("2026-11-13") }, HOY, P).ambar[0]).toBe("Compromiso por vencer (en 10 días): Entregar pólizas");
+    expect(semaforoContrato({ ...base, compromisos: k(HOY) }, HOY, P).ambar[0]).toBe("Compromiso por vencer (hoy): Entregar pólizas");
+    expect(semaforoContrato({ ...base, compromisos: k("2026-12-04") }, HOY, P).nivel).toBe("verde");
+    expect(semaforoContrato({ ...base, compromisos: [] }, HOY, P).nivel).toBe("verde");
+  });
+  it("un contrato archivado no vigila compromisos", () => {
+    expect(semaforoContrato({ ...base, etapa: 9, compromisos: k("2020-01-01") }, HOY, P).nivel).toBe("archivado");
+  });
+});

@@ -133,6 +133,8 @@ El usuario compartió el paquete de migración de RAÍZ (libro de Excel de aliad
 
 El mismo día, el usuario pidió seguir con la capa 2 ([ADR-0033](decisiones/ADR-0033-aliados-capa-2-polizas-modificaciones-documentos.md)): pólizas de cada contrato, modificaciones contractuales (solo las firmadas mueven fechas) y documentos del tercero, con el semáforo ampliado. Se decidió que el valor vigente del contrato conserva una sola vía de cambio (cambio aprobado o director) para no duplicar lo que PMO360 ya tenía.
 
+Después, el usuario pidió las capas 3 y 4. La capa 3 ([ADR-0034](decisiones/ADR-0034-aliados-capa-3-procesos-ofertas-comunicaciones.md)) agregó los procesos de contratación con ofertas por ronda y puntaje calculado, la adjudicación (que lleva al contrato) y las comunicaciones con compromisos dentro del semáforo del contrato.
+
 ## Estado al 17 de octubre de 2026
 
 Ver [01-resumen-ejecutivo.md](01-resumen-ejecutivo.md).

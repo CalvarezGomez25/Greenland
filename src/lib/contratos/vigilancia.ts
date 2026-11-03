@@ -1,6 +1,6 @@
 // Vigilancia de un contrato: la etapa de su ruta de vida y un semáforo único (Verde, Ámbar, Rojo).
-// Vigila la etapa, el plazo, la autorización de asamblea (capa 1) y la suspensión, las pólizas y los documentos
-// del contratista (capa 2). Quedan para después los compromisos de las comunicaciones.
+// Vigila la etapa, el plazo, la autorización de asamblea (capa 1), la suspensión, las pólizas y los documentos
+// del contratista (capa 2) y los compromisos de las comunicaciones (capa 3).
 // Funciones puras (sin red). Las reglas salen de RAÍZ (hoja de reglas de negocio); los días y topes son parámetros.
 
 import { diasParaVencer } from "../actividades";
@@ -35,6 +35,7 @@ export type PolizaEntrada = {
   valorAsegurado: bigint | null; // centavos
   minimo: bigint | null; // porcentaje × base del amparo, en centavos; null si no se puede calcular
 };
+export type Compromiso = { asunto: string; fecha: string };
 export type DocumentosTercero = { tiene: boolean; vencidos: string[]; porVencer: { tipo: string; dias: number }[] };
 
 export type EntradaContrato = {
@@ -44,6 +45,7 @@ export type EntradaContrato = {
   suspendidoDesde?: string | null; // fecha de la última suspensión firmada sin reinicio
   polizas?: PolizaEntrada[]; // si no se informa, no se vigilan
   documentos?: DocumentosTercero | null; // si no se informa, no se vigilan
+  compromisos?: Compromiso[]; // compromisos abiertos de las comunicaciones del contrato (con su fecha)
   valor: bigint; // valor del contrato en centavos (2 decimales)
   autorizacionAsamblea: string | null;
   topeSmmlv?: number | null; // tope propio del contratante; si falta, el parámetro general
@@ -135,6 +137,14 @@ export function semaforoContrato(c: EntradaContrato, hoy: string, p: ParametrosV
     if (!c.documentos.tiene) ambar.push("El contratista no tiene documentos registrados");
     for (const t of c.documentos.vencidos) rojas.push(`Documento del contratista vencido: ${t}`);
     for (const t of c.documentos.porVencer) ambar.push(`Documento del contratista por vencer: ${t.tipo} (${plural(t.dias, "día", "días")})`);
+  }
+
+  if (c.compromisos && c.etapa < 9) {
+    for (const k of c.compromisos) {
+      const d = diasParaVencer(k.fecha, hoy);
+      if (d < 0) rojas.push(`Compromiso vencido hace ${plural(-d, "día", "días")}: ${k.asunto}`);
+      else if (d <= p.alertaDias) ambar.push(`Compromiso por vencer (${d === 0 ? "hoy" : `en ${plural(d, "día", "días")}`}): ${k.asunto}`);
+    }
   }
 
   const tope = topeAsamblea(p, c.topeSmmlv);

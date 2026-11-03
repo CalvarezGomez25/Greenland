@@ -53,6 +53,17 @@ export const GUIAS: Guia[] = [
     notas: ["El proyectado es siempre el EAC que calcula la plataforma; sin avance o gasto no hay proyección."],
   },
   {
+    clave: "procesos", titulo: "Procesos de contratación", quien: "Gerente del proyecto o administrador; el resto del equipo del proyecto lo consulta (la interventoría no lo ve)",
+    pasos: [
+      "Registra el proceso: objeto, tipo de servicio, fecha de invitación, cierre de propuestas y presupuesto de referencia. Mientras se prepara está «en preparación»; al invitar, pásalo a «abierta».",
+      "Registra cada oferta con su oferente (del maestro de aliados), ronda, valor, plazo, vigencia y habilitación. Cada ronda se compara por separado.",
+      "Califica la parte cualitativa con los cinco criterios (1 a 5): sin los cinco, la oferta solo tiene puntaje de precio.",
+      "El comparativo muestra puntaje de precio, cualitativo y total (el total exige oferta habilitada) y el orden de cada oferta. Los pesos son parámetros.",
+      "Adjudica la oferta ganadora (debe estar habilitada y con valor). Luego usa «Registrar contrato de esta adjudicación»: el contrato nace con los datos de la oferta y queda vinculado al proceso; sigue pendiente de aprobación del director general.",
+    ],
+    notas: ["La interventoría recomienda pero no adjudica: no ve esta pantalla.", "Un proceso adjudicado con contrato ya no se puede devolver."],
+  },
+  {
     clave: "cronograma", titulo: "Cronograma y avance", quien: "Gerente (crea las tareas); supervisor (avance reportado); interventoría (avance verificado)",
     pasos: [
       "Crea cada tarea con su semana de inicio (1 = primera semana del proyecto), su duración en semanas y su peso. Si la ligas a un elemento de la EDT que tiene capítulo en el presupuesto, el capítulo se completa solo.",
@@ -127,6 +138,7 @@ export const GUIAS: Guia[] = [
       "En «Datos contractuales» anota fecha de firma, acta de inicio, plazo y autorización de asamblea: con el acta y el plazo la plataforma calcula la fecha fin.",
       "En «Pólizas» registra una por amparo (aseguradora, número, valor asegurado, vencimiento y enlace al soporte); la plataforma calcula el mínimo exigido y avisa si está vencida, por vencer o por debajo del mínimo.",
       "En «Modificaciones» registra adiciones, otrosíes, prórrogas, suspensiones y reinicios. Mientras estén «en trámite» no cambian nada; al pasar a «firmada» mueven la fecha fin vigente o la suspensión. El valor del contrato cambia con un cambio aprobado: liga aquí ese cambio.",
+      "En «Comunicaciones y compromisos» deja constancia de lo acordado con el contratista; un compromiso abierto con fecha entra al semáforo.",
       "Los documentos del contratista (RUT, cámara de comercio, seguridad social…) se registran en su ficha de «Aliados y proveedores», como enlaces con su fecha de expedición.",
       "Mientras esté pendiente puedes corregirlo, pero no admite anticipo ni actas de pago.",
       "Aprobado, el director puede autorizar el anticipo (máximo 20 % del contrato, con su motivo).",

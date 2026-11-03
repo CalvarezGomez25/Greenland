@@ -2,6 +2,13 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.11.0] · 3 de noviembre de 2026
+### Añadido
+- **Aliados, capa 3** ([ADR-0034](decisiones/ADR-0034-aliados-capa-3-procesos-ofertas-comunicaciones.md), migración 0028): módulo «Procesos de contratación» (oculto a la interventoría) con ofertas por ronda, comparativo con puntajes de precio, cualitativo y total calculados con parámetros, adjudicación y registro del contrato desde la oferta ganadora; comunicaciones con compromisos por contrato, que entran al semáforo. 58 comprobaciones SQL y 13 pruebas unitarias nuevas.
+- Parámetros: `peso_precio`, `peso_experiencia`, `peso_capacidad`, `peso_programacion`, `peso_comercial`, `peso_sst`, `proceso_eval_dias`.
+### Cambiado
+- El semáforo del contrato suma los compromisos vencidos o por vencer.
+
 ## [3.10.0] · 3 de noviembre de 2026
 ### Añadido
 - **Aliados, capa 2** ([ADR-0033](decisiones/ADR-0033-aliados-capa-2-polizas-modificaciones-documentos.md), migración 0027): pólizas por contrato y amparo con su mínimo exigido; modificaciones (adición, otrosí, prórroga, suspensión, reinicio, cesión) en trámite o firmadas, que mueven la fecha fin vigente y la suspensión solo al firmarse; documentos del tercero con vigencia por tipo. El semáforo del contrato suma suspensión, pólizas y documentos. 52 comprobaciones SQL y 11 pruebas unitarias nuevas.

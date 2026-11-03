@@ -4,18 +4,19 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { desdeJson } from "../presupuesto/dinero";
-import { documentosDelTercero, minimoPoliza, type DocumentosTercero, type PolizaEntrada } from "./vigilancia";
+import { documentosDelTercero, minimoPoliza, type Compromiso, type DocumentosTercero, type PolizaEntrada } from "./vigilancia";
 
 export type ContratoBase = { id: string; tercero_id: string | null; valor: number | string; anticipo_valor: number | string };
-export type ExtrasContrato = { polizas: PolizaEntrada[]; documentos: DocumentosTercero | null; enTramite: number };
+export type ExtrasContrato = { polizas: PolizaEntrada[]; documentos: DocumentosTercero | null; enTramite: number; compromisos: Compromiso[] };
 
 export async function cargarExtrasVigilancia(supabase: SupabaseClient, proyectoId: string, contratos: ContratoBase[], hoy: string, alertaDias: number): Promise<Map<string, ExtrasContrato>> {
   const terceros = [...new Set(contratos.map((c) => c.tercero_id).filter((t): t is string => !!t))];
-  const [{ data: ps }, { data: ms }, { data: am }, { data: dv }] = await Promise.all([
+  const [{ data: ps }, { data: ms }, { data: am }, { data: dv }, { data: cs }] = await Promise.all([
     supabase.from("contrato_polizas").select("contrato_id, amparo, estado, fecha_vencimiento, valor_asegurado").eq("proyecto_id", proyectoId).limit(5000),
     supabase.from("contrato_modificaciones").select("contrato_id, estado").eq("proyecto_id", proyectoId).eq("estado", "en_tramite").limit(5000),
     supabase.from("poliza_amparos").select("nombre, porcentaje, base"),
     terceros.length ? supabase.rpc("terceros_documentos_vigencia", { p_terceros: terceros }) : Promise.resolve({ data: [] }),
+    supabase.from("contrato_comunicaciones").select("contrato_id, asunto, fecha_compromiso").eq("proyecto_id", proyectoId).eq("requiere_accion", true).eq("estado", "abierto").not("fecha_compromiso", "is", null).limit(5000),
   ]);
   const amparos = new Map(((am ?? []) as { nombre: string; porcentaje: number | string; base: string }[]).map((a) => [a.nombre, a]));
   const docsPorTercero = new Map<string, { tipo: string; vencimiento: string }[]>();
@@ -42,6 +43,7 @@ export async function cargarExtrasVigilancia(supabase: SupabaseClient, proyectoI
       polizas,
       documentos: c.tercero_id ? documentosDelTercero(docsPorTercero.get(c.tercero_id) ?? [], hoy, alertaDias) : null,
       enTramite: ((ms ?? []) as { contrato_id: string }[]).filter((m) => m.contrato_id === c.id).length,
+      compromisos: ((cs ?? []) as { contrato_id: string; asunto: string; fecha_compromiso: string }[]).filter((k) => k.contrato_id === c.id).map((k) => ({ asunto: k.asunto, fecha: String(k.fecha_compromiso).slice(0, 10) })),
     });
   }
   return out;
