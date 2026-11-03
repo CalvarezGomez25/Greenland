@@ -15,10 +15,10 @@ import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { AvisoResultado } from "@/components/aviso-resultado";
 import { aprobarContrato, asignarContrato, autorizarAnticipo, avanzarEtapa, borrarActa, borrarModificacion, borrarPoliza, cambiarEstadoActa, cerrarCompromiso, devolverEtapa, guardarComunicacion, borrarComunicacion, guardarDatosContractuales, guardarModificacion, guardarPoliza, liberarRetencion, quitarAsignacion, radicarActa } from "../acciones";
-import { FormularioActa, FormularioAnticipo, FormularioAsignacion, FormularioDatosContractuales, FormularioDevolverEtapa, FormularioComunicacion, FormularioModificacion, FormularioPoliza, CANALES } from "../formularios";
+import { FormularioActa, FormularioAnticipo, FormularioAsignacion, FormularioDatosContractuales, FormularioDevolverEtapa, FormularioComunicacion, FormularioModificacion, FormularioPoliza } from "../formularios";
 import { cargarExtrasVigilancia } from "@/lib/contratos/datos-vigilancia";
 import { SemaforoContrato } from "@/components/semaforo-contrato";
-import { ETAPAS, ETIQUETA_TIPO_MODIFICACION, etapaPorNumero, parametrosDeVigilancia, semaforoContrato } from "@/lib/contratos/vigilancia";
+import { CANALES, ETAPAS, ETIQUETA_TIPO_MODIFICACION, etapaPorNumero, parametrosDeVigilancia, semaforoContrato } from "@/lib/contratos/vigilancia";
 import { formatearNit } from "@/lib/aliados";
 import { formatearPesos } from "@/lib/presupuesto/dinero";
 
@@ -173,7 +173,10 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       </section>
 
       <section className="mt-8" aria-labelledby="t-datos">
-        <h2 id="t-datos" className="font-display text-2xl font-bold text-leaf-700">Datos contractuales</h2>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 id="t-datos" className="font-display text-2xl font-bold text-leaf-700">Datos contractuales</h2>
+          {permisos.gestionar && <Link href={`${base}/documento`} className={claseBoton.contorno}>Generar documento (Word)</Link>}
+        </div>
         <p className="mt-1 text-sm text-muted">
           Contratista: {tercero ? <><Link href={`/aliados/${tercero.id}`} className="font-medium text-leaf-700 hover:underline">{tercero.razon_social}</Link> · NIT {formatearNit(tercero.nit)}</> : <>{c.contratista} (texto: ligarlo al maestro de aliados con «Editar»)</>}.{" "}
           {c.fecha_fin_inicial ? <>Fecha fin inicial: <strong>{formatearFecha(c.fecha_fin_inicial)}</strong> (acta de inicio + plazo).{c.fecha_fin_vigente && c.fecha_fin_vigente !== c.fecha_fin_inicial && <> Fecha fin vigente: <strong>{formatearFecha(c.fecha_fin_vigente)}</strong> (con las prórrogas firmadas).</>}</> : "Con el acta de inicio y el plazo se calcula la fecha fin."}{c.suspendido_desde && <> <strong>Suspendido desde {formatearFecha(c.suspendido_desde)}.</strong></>}
@@ -246,6 +249,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
                       <td className="px-3 py-2 text-right align-top">
                         {permisos.gestionar && (
                           <div className="flex flex-wrap justify-end gap-3">
+                            <Link href={`${base}/documento?mod=${m.id}`} className="text-sm font-medium text-leaf-600 underline">Documento</Link>
                             <Link href={`${base}?mod=${m.id}#t-mod`} className="text-sm font-medium text-leaf-600 underline">Editar</Link>
                             {(m.estado === "en_tramite" || permisos.admin) && <form action={borrarModificacion.bind(null, id, contratoId, m.id)}><BotonEnviar className="text-sm font-medium text-danger underline" textoEnviando="…">Borrar</BotonEnviar></form>}
                           </div>

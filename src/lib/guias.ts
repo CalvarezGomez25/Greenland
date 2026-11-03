@@ -64,6 +64,16 @@ export const GUIAS: Guia[] = [
     notas: ["La interventoría recomienda pero no adjudica: no ve esta pantalla.", "Un proceso adjudicado con contrato ya no se puede devolver."],
   },
   {
+    clave: "novedades", titulo: "Novedades de campo", quien: "Supervisor, gerente e interventoría registran; el gerente o el administrador revisan",
+    pasos: [
+      "Desde el celular, abre «Novedades de campo» y pulsa «Registrar novedad».",
+      "Elige el contrato y qué pasó (acta de inicio firmada, póliza, suspensión, reinicio, comunicación u otro), la fecha y una descripción. Puedes tomar hasta 3 fotos.",
+      "La gerencia ve las novedades «por revisar». Al aplicar un acta de inicio, la fecha queda en el contrato; al aplicar una suspensión o un reinicio se registra una modificación firmada. Las demás se registran en el contrato y se marcan aplicadas.",
+      "Para descartar una novedad hay que escribir el motivo.",
+    ],
+    notas: ["Una novedad no cambia el contrato por sí sola.", "La interventoría solo ve las novedades que ella registró."],
+  },
+  {
     clave: "cronograma", titulo: "Cronograma y avance", quien: "Gerente (crea las tareas); supervisor (avance reportado); interventoría (avance verificado)",
     pasos: [
       "Crea cada tarea con su semana de inicio (1 = primera semana del proyecto), su duración en semanas y su peso. Si la ligas a un elemento de la EDT que tiene capítulo en el presupuesto, el capítulo se completa solo.",
@@ -138,6 +148,7 @@ export const GUIAS: Guia[] = [
       "En «Datos contractuales» anota fecha de firma, acta de inicio, plazo y autorización de asamblea: con el acta y el plazo la plataforma calcula la fecha fin.",
       "En «Pólizas» registra una por amparo (aseguradora, número, valor asegurado, vencimiento y enlace al soporte); la plataforma calcula el mínimo exigido y avisa si está vencida, por vencer o por debajo del mínimo.",
       "En «Modificaciones» registra adiciones, otrosíes, prórrogas, suspensiones y reinicios. Mientras estén «en trámite» no cambian nada; al pasar a «firmada» mueven la fecha fin vigente o la suspensión. El valor del contrato cambia con un cambio aprobado: liga aquí ese cambio.",
+      "Con «Generar documento (Word)» se llena una plantilla con los datos del contrato (y de una modificación). Las plantillas oficiales las sube el administrador en «Aliados y proveedores › Plantillas»; lo que falta queda como «[POR COMPLETAR]».",
       "En «Comunicaciones y compromisos» deja constancia de lo acordado con el contratista; un compromiso abierto con fecha entra al semáforo.",
       "Los documentos del contratista (RUT, cámara de comercio, seguridad social…) se registran en su ficha de «Aliados y proveedores», como enlaces con su fecha de expedición.",
       "Mientras esté pendiente puedes corregirlo, pero no admite anticipo ni actas de pago.",

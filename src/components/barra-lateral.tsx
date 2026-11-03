@@ -30,6 +30,7 @@ const ICONOS: Record<string, string> = {
   documentos: "M3 6h6l2 2h10v11H3z",
   cierre: "M12 21a9 9 0 100-18 9 9 0 000 18z M8 12l3 3 5-6",
   presupuesto: "M3 7h15a3 3 0 013 3v8H3z M3 7l2-3h11 M16 13h2",
+  novedades: "M12 3a6 6 0 00-6 6c0 4 6 12 6 12s6-8 6-12a6 6 0 00-6-6z M12 11a2 2 0 100-4 2 2 0 000 4z",
   procesos: "M5 4h14v16H5z M9 8h6 M9 12h6 M9 16h3",
   controlcostos: "M4 20V10 M10 20V4 M16 20v-8 M22 20H2 M3 8l6-4 6 5 6-5",
   balance: "M12 3v18 M5 7h14 M5 7l-2 6a3 3 0 006 0z M19 7l-2 6a3 3 0 006 0z",

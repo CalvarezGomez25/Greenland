@@ -2,6 +2,18 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.12.0] · 3 de noviembre de 2026
+### Añadido
+- **Aliados, capa 4** ([ADR-0035](decisiones/ADR-0035-aliados-capa-4-novedades-y-documentos.md), migración 0029): «Novedades de campo» (registro desde el celular con hasta 3 fotos, revisión y aplicación por la gerencia); plantillas de documentos Word subidas por el administrador y generación de documentos desde un contrato o una modificación, con campos de RAÍZ, fechas y valores en letras y «[POR COMPLETAR]» para lo que falta; dos plantillas incorporadas de ejemplo. 48 comprobaciones SQL y 22 pruebas unitarias nuevas.
+- Parámetros `minuta_*` para las cláusulas de la minuta (penal, multa diaria pendiente de revisión jurídica, confidencialidad, liquidación, avisos y plazos).
+- Dependencia `jszip` 3.10.2 declarada (ya venía incluida por `exceljs`).
+### Seguridad
+- `npm audit` (3 nov): sin avisos críticos. En producción quedan avisos moderados de `uuid`, `minimatch` y `archiver` (cadena de `exceljs`) que no se explotan con los usos actuales; los avisos altos (`zod`) y el resto son de herramientas de desarrollo (ESLint). Pendiente de revisar aparte (P42).
+### Cambiado
+- El orden de las ofertas de una ronda da una posición propia a cada oferta (S35).
+### Pendiente
+- Subir las plantillas oficiales cuando Jurídica las apruebe; evaluaciones de desempeño; correo y calendario (P41).
+
 ## [3.11.0] · 3 de noviembre de 2026
 ### Añadido
 - **Aliados, capa 3** ([ADR-0034](decisiones/ADR-0034-aliados-capa-3-procesos-ofertas-comunicaciones.md), migración 0028): módulo «Procesos de contratación» (oculto a la interventoría) con ofertas por ronda, comparativo con puntajes de precio, cualitativo y total calculados con parámetros, adjudicación y registro del contrato desde la oferta ganadora; comunicaciones con compromisos por contrato, que entran al semáforo. 58 comprobaciones SQL y 13 pruebas unitarias nuevas.

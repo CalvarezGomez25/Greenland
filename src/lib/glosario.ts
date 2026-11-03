@@ -93,6 +93,8 @@ export const GLOSARIO = {
   poliza_minimo: { titulo: "Valor mínimo de una póliza", texto: "Porcentaje del amparo (por ejemplo 30 % en cumplimiento) por el valor del contrato; en el buen manejo del anticipo, el 100 % del valor del anticipo. Una póliza asegurada por menos queda en rojo." },
   modificacion_firmada: { titulo: "Modificación firmada", texto: "Adición, otrosí, prórroga, suspensión, reinicio o cesión. Solo las firmadas mueven la fecha fin vigente y la suspensión; las que están en trámite no cambian nada. El valor del contrato cambia con un cambio aprobado." },
   puntaje_oferta: { titulo: "Puntaje de una oferta", texto: "Precio = 100 × menor valor de la ronda ÷ valor de la oferta. Cualitativo = promedio ponderado de cinco criterios (1 a 5) llevado a 100. Total = precio × 40 % + cualitativo × 60 %. Una oferta no habilitada no recibe total. Los pesos se editan en Parámetros." },
+  novedad_campo: { titulo: "Novedad de campo", texto: "Un hecho de un contrato registrado desde obra, con foto (acta de inicio firmada, póliza, suspensión…). No cambia nada por sí sola: la gerencia la revisa y la aplica o la descarta." },
+  plantilla_documento: { titulo: "Plantilla de documento", texto: "Archivo Word con campos de combinación (por ejemplo «CONTRATISTA» u «OBJETO») que sube el administrador. Con ella se genera la minuta, el otrosí o el acta de un contrato; lo que falta queda como «[POR COMPLETAR]»." },
   sobrecontratado: { titulo: "Sobrecontratado", texto: "Lo contratado (contratos aprobados) para un capítulo o adicional supera su presupuesto con indirectos." },
   gastado: { titulo: "Gastado a la fecha", texto: "Suma del gasto real registrado por mes hasta el mes de corte." },
   gasto_plan: { titulo: "Gasto frente al plan", texto: "Cuánto más o menos se ha gastado frente a lo que la curva S planeaba a esta fecha. Positivo: se ha gastado más de lo planificado." },
@@ -138,6 +140,6 @@ export const CATEGORIAS_GLOSARIO: { titulo: string; temas: TemaAyuda[] }[] = [
   { titulo: "Valor ganado e indicadores", temas: ["bac", "pv", "ev", "ac", "spi", "cpi", "sv", "cv", "eac", "etc", "tcpi", "vac", "avance_fisico", "avance_plan", "avance_financiero", "fecha_corte", "medicion", "calculo_obra"] },
   { titulo: "Semáforo, riesgos y cambios", temas: ["semaforo", "proyectos_activos", "reportado", "riesgo_puntaje", "cambios_pendientes", "nivel_cambio"] },
   { titulo: "Presupuesto y costos", temas: ["linea_base", "costo_directo", "aiu", "adicional_obra", "sobrecontratado", "corte_costos", "costo_total", "gastado", "gasto_plan", "curva_s"] },
-  { titulo: "Contratos y pagos", temas: ["facturado", "ejecutado_contrato", "saldo_contrato", "anticipo", "anticipo_pendiente", "retencion", "desembolsado", "maestro_aliados", "etapa_contrato", "semaforo_contrato", "poliza_minimo", "modificacion_firmada", "puntaje_oferta"] },
+  { titulo: "Contratos y pagos", temas: ["facturado", "ejecutado_contrato", "saldo_contrato", "anticipo", "anticipo_pendiente", "retencion", "desembolsado", "maestro_aliados", "etapa_contrato", "semaforo_contrato", "poliza_minimo", "modificacion_firmada", "puntaje_oferta", "novedad_campo", "plantilla_documento"] },
   { titulo: "Cronograma y avance", temas: ["avance_reportado", "avance_verificado", "avance_diferencia", "avance_usado", "planificado_hoy"] },
 ];

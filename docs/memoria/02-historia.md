@@ -135,6 +135,8 @@ El mismo día, el usuario pidió seguir con la capa 2 ([ADR-0033](decisiones/ADR
 
 Después, el usuario pidió las capas 3 y 4. La capa 3 ([ADR-0034](decisiones/ADR-0034-aliados-capa-3-procesos-ofertas-comunicaciones.md)) agregó los procesos de contratación con ofertas por ronda y puntaje calculado, la adjudicación (que lleva al contrato) y las comunicaciones con compromisos dentro del semáforo del contrato.
 
+La capa 4 ([ADR-0035](decisiones/ADR-0035-aliados-capa-4-novedades-y-documentos.md)) cerró el paquete: novedades de campo con foto que la gerencia revisa antes de aplicar, y generación de documentos Word a partir de plantillas subidas por el administrador (el texto jurídico no entró al repositorio). Quedaron fuera las evaluaciones de desempeño y las integraciones de correo y calendario.
+
 ## Estado al 17 de octubre de 2026
 
 Ver [01-resumen-ejecutivo.md](01-resumen-ejecutivo.md).

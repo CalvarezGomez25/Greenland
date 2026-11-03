@@ -67,3 +67,6 @@ fácil de cambiar; deben validarse con el uso real.
 
 ## Aliados, capa 3 (migración 0028, ADR-0034)
 - Los puntajes de las ofertas se calculan, no se guardan; los pesos y los días de evaluación son supuestos de RAÍZ editables (S36). El orden de la ronda y el menor valor siguen las decisiones de S35. La interventoría no ve procesos (S37).
+
+## Aliados, capa 4 (migración 0029, ADR-0035)
+- El texto jurídico de los documentos vive en plantillas que sube el administrador (S38); lo que PMO360 no guarda se escribe al generar o queda «[POR COMPLETAR]» (S39); las cláusulas de la minuta son parámetros y la multa diaria del 3 % está pendiente de revisión jurídica (S40).

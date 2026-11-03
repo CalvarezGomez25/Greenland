@@ -46,6 +46,7 @@ async function Contenido({ searchParams }: { searchParams: Promise<Record<string
         <Titulo>Aliados y proveedores</Titulo>
         <div className="flex flex-wrap gap-3">
           <Link href="/aliados/contratantes" className={claseBoton.contorno}>Contratantes</Link>
+          <Link href="/aliados/plantillas" className={claseBoton.contorno}>Plantillas de documentos</Link>
           {puedeEditar === true && <Link href="/aliados/nuevo" className={claseBoton.primario}>Agregar tercero</Link>}
         </div>
       </div>

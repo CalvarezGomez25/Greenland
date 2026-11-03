@@ -159,3 +159,6 @@ const PESO: Record<Nivel, number> = { rojo: 0, ambar: 1, verde: 2, archivado: 3 
 export function ordenarPorUrgencia<T extends { semaforo: Semaforo }>(lista: T[]): T[] {
   return [...lista].sort((a, b) => PESO[a.semaforo.nivel] - PESO[b.semaforo.nivel] || b.semaforo.diasEnEtapa - a.semaforo.diasEnEtapa);
 }
+
+// Canales de las comunicaciones de un contrato.
+export const CANALES: [string, string][] = [["correo", "Correo"], ["reunion", "Reunión"], ["llamada", "Llamada"], ["chat", "Teams / chat"], ["visita_obra", "Visita de obra"], ["comunicacion_escrita", "Comunicación escrita"], ["acta", "Acta"], ["revision_aprobacion", "Revisión / aprobación"]];

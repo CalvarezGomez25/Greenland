@@ -1,12 +1,12 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.11.0, actualizada el 3 de noviembre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.12.0, actualizada el 3 de noviembre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.11.0, única versión vigente |
+| Versión | 3.12.0, única versión vigente |
 | Última actualización | 21 de octubre de 2026 (imagen corporativa: sistema de diseño GreenLand v1.0.0 aplicado a la interfaz, las exportaciones, el informe gerencial y los correos; sección 1.1 y hito 26) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
@@ -30,6 +30,7 @@ Versión 3.11.0, actualizada el 3 de noviembre de 2026. Es la única versión vi
 | 3.9.0 | 3 de noviembre de 2026 | Aliados y proveedores, capa 1, a partir del paquete RAÍZ (ADR-0032, migración 0026, módulo S, hito 30, supuestos S27 a S31, pendiente P41) |
 | 3.10.0 | 3 de noviembre de 2026 | Aliados, capa 2: pólizas, modificaciones contractuales y documentos del tercero (ADR-0033, migración 0027, hito 31, supuestos S32 a S34) |
 | 3.11.0 | 3 de noviembre de 2026 | Aliados, capa 3: procesos de contratación, ofertas con puntaje, comunicaciones y compromisos (ADR-0034, migración 0028, hito 32, supuestos S35 a S37) |
+| 3.12.0 | 3 de noviembre de 2026 | Aliados, capa 4: novedades de campo y generación de documentos Word (ADR-0035, migración 0029, hito 33, supuestos S38 a S40, pendientes P41 y P42) |
 | 3.4.0 | 21 de octubre de 2026 | Nueva imagen corporativa: sistema de diseño GreenLand v1.0.0 en toda la interfaz (paleta verde #027001, texto #5E5E5E, tipografía Archivo, píldoras y tarjetas con muesca, sin sombras ni mayúsculas sostenidas, alertas sobrias), exportaciones PDF y Excel, informe gerencial y correos; identidad (sección 1.1), hito 26, decisión de no mantener una versión paralela y ancla de reversión (ADR-0028), supuesto S20 y pendiente P39 |
 
 ### 0.1 Estado actual de un vistazo (16 de octubre de 2026)
@@ -38,10 +39,10 @@ Versión 3.11.0, actualizada el 3 de noviembre de 2026. Es la única versión vi
 | --- | --- |
 | Hitos 1 a 11 de la sección 12 | Construidos. Todos los módulos del mapa (sección 4) están disponibles en la aplicación |
 | Extensiones posteriores | Construidas: aprobación de contratos, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial y su envío semanal, marca, menú lateral y ayuda, y los ajustes del tablero del proyecto (hito 21). Material del marco FARO producido (hito 20). Memoria del proyecto creada (hito 22). Directorio de contactos construido (hito 23). Actividades y «Mi trabajo» construidos (hito 24) |
-| Pruebas automáticas | 405 pruebas unitarias (Vitest, 41 archivos) y 802 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
+| Pruebas automáticas | 433 pruebas unitarias (Vitest, 44 archivos) y 850 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
 | Producción | El usuario instaló el SQL de la base en Supabase y desplegó en Vercel; confirmó que funciona con datos ficticios |
 | Aún no ocurrido | Ningún correo se ha enviado en producción (falta configurar el proveedor, `CRON_SECRET` y el usuario de solo lectura); no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
-| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 34 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
+| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 35 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
 | Condiciones antes de datos reales | Definir región y confidencialidad; plan de alojamiento apto para uso comercial; revisión de seguridad (pendientes P12 a P14) |
 
 ## 1. Visión, alcance y principios
@@ -471,6 +472,10 @@ Maestro de terceros y datos contractuales, tomados de la estructura de RAÍZ (pa
   - **Ofertas** por proceso y ronda, con cinco calificaciones de 1 a 5. Puntajes calculados (no guardados): precio = 100 × menor valor de la ronda ÷ valor; cualitativo = promedio ponderado de los cinco criterios a 100; total = precio × `peso_precio` + cualitativo × (1 − `peso_precio`); sin total si no está habilitada. Orden de la ronda: primero las que tienen total y luego, por precio, las demás (S35).
   - **Adjudicar:** oferta habilitada y con valor en un proceso abierto o en evaluación; el contrato se registra desde la oferta ganadora y queda vinculado al proceso.
   - **Comunicaciones y compromisos** de un contrato; un compromiso abierto vencido pone el contrato en rojo y por vencer en ámbar.
+- **Capa 4 (v3.12, ADR-0035):**
+  - **Novedades de campo** (módulo de Obra): hechos de un contrato registrados desde el celular, con hasta 3 fotos. La gerencia las revisa: «aplicar» fija el acta de inicio, o registra una suspensión o un reinicio como modificación firmada; las demás se registran a mano. Una novedad no cambia nada por sí sola; la interventoría ve solo las suyas.
+  - **Plantillas de documentos:** archivos Word con campos de combinación (MERGEFIELD) que sube el administrador o el director; el texto jurídico no está en el código. Dos plantillas incorporadas de ejemplo (acta de inicio y constancia de modificación) con texto neutro.
+  - **Generar documento** desde un contrato o una modificación: campos de RAÍZ (partes, valores en pesos y en letras, fechas en letras, plazo, cláusulas desde parámetros `minuta_*`, antecedentes de las modificaciones firmadas); lo que PMO360 no guarda se escribe al generar o queda «[POR COMPLETAR]».
 
 ## 6. Integración entre módulos: indicador, fórmula y fuente
 
@@ -591,6 +596,7 @@ Esta tabla es el contrato de datos. Define de dónde sale cada número del dashb
 | terceros, contratantes, contratos (ampliada), contrato_etapa_historial | v3.9, migración 0026: `terceros` (nit único normalizado, tipo_persona, razon_social, tipo_tercero, especialidad, municipio, contacto, representante_legal, estado, fuente), `contratantes` (codigo CT-nn, razon_social, nit, tope_smmlv, estado), `proyectos.contratante_id`, y en `contratos`: tercero_id, consecutivo, orden_servicio_sap, etapa, fecha_etapa, fecha_firma, fecha_acta_inicio, plazo_valor, plazo_unidad, fecha_fin_inicial, autorizacion_asamblea. Funciones `nit_normalizar`, `nit_digito`, `fecha_fin_plazo`, `contrato_datos_guardar`, `contrato_etapa_cambiar`, `proyecto_contratante_asignar`; `contrato_crear` y `contrato_actualizar` aceptan el tercero |
 | contrato_polizas, contrato_modificaciones, tercero_documentos, poliza_amparos, documento_tipos | v3.10, migración 0027: pólizas (único por contrato y amparo), modificaciones (consecutivo por contrato y tipo; estado en_tramite/firmada; cambio_id opcional), documentos del tercero (enlaces) y las tablas de configuración de amparos y tipos de documento. `contratos` suma `fecha_fin_vigente` y `suspendido_desde` (recalculados al cambiar las modificaciones). Funciones `poliza_guardar`, `poliza_borrar`, `modificacion_guardar`, `modificacion_borrar` y `terceros_documentos_vigencia` |
 | procesos, ofertas, contrato_comunicaciones | v3.11, migración 0028: procesos (PR-nn), ofertas (OF-nnn; único por proceso, oferente y ronda; guarda el nombre del oferente) y comunicaciones con compromisos. Funciones `proceso_guardar`, `proceso_borrar`, `oferta_guardar`, `oferta_borrar`, `proceso_adjudicar`, `proceso_contrato_vincular`, `comunicacion_guardar`, `comunicacion_borrar` |
+| contrato_novedades, plantillas_documento y depósitos novedades y plantillas | v3.12, migración 0029: novedades (estado pendiente/aplicada/descartada, hasta 3 fotos con ruta verificada), plantillas (nombre, ámbito contrato/modificación, archivo, campos) y dos depósitos privados con reglas de acceso. Funciones `novedad_crear` y `novedad_revisar`. Parámetros `minuta_*` |
 | festivos | Solo fechas excepcionales; los festivos de Colombia se calculan por función |
 | contadores | Consecutivos por proyecto que no se reutilizan (códigos de riesgos, cambios y similares) |
 | migraciones_aplicadas | Control del instalador: cada migración se aplica una sola vez |
@@ -766,6 +772,7 @@ Los hitos 1 a 11 están **construidos**, con pruebas de base de datos (`pruebas-
 | 30. Aliados y proveedores, capa 1 | Maestro de terceros y contratantes, etapa y datos contractuales de cada contrato y semáforo por contrato (0026, ADR-0032) | Construido. `t-aliados` (66 comprobaciones), `vigilancia.test.ts` (15) y revisión en navegador con datos ficticios. Capas 2 a 4 sin construir; sin datos reales |
 | 31. Aliados, capa 2 | Pólizas, modificaciones y documentos del tercero; semáforo ampliado (0027, ADR-0033) | Construido. `t-polizas-modificaciones` (52 comprobaciones), `vigilancia.test.ts` y revisión en navegador con datos ficticios. Sin datos reales |
 | 32. Aliados, capa 3 | Procesos, ofertas con puntaje, adjudicación y comunicaciones con compromisos (0028, ADR-0034) | Construido. `t-procesos` (58 comprobaciones), `ofertas.test.ts` y revisión en navegador con datos ficticios. Sin datos reales |
+| 33. Aliados, capa 4 | Novedades de campo con foto y generación de documentos Word desde plantillas (0029, ADR-0035) | Construido. `t-novedades-plantillas` (48 comprobaciones), `documentos/*.test.ts` (22) y documentos de ejemplo generados y leídos con datos ficticios. Plantillas oficiales por subir |
 
 ## 13. Casos de prueba de referencia
 
@@ -940,6 +947,9 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | S35 | Dos diferencias deliberadas con el libro de RAÍZ: el orden de la ronda da una posición propia a cada oferta (con total primero, luego por precio), y el menor valor de la ronda sigue la fórmula (excluye solo las descartadas), no el texto del documento («habilitadas y no descartadas») |
 | S36 | Los pesos de evaluación (precio 40 %; experiencia 15, capacidad 15, programación 10, comercial 10, SST 10) y los 15 días de evaluación son supuestos de diseño de RAÍZ, editables en Parámetros |
 | S37 | La interventoría no ve procesos ni ofertas: recomienda pero no adjudica (decisión de diseño del asesor, coherente con el paquete) |
+| S38 | El texto jurídico de los documentos vive en plantillas Word que sube el administrador; en el código solo hay dos plantillas de ejemplo con texto neutro. Las minutas de El Silencio GL no se copiaron al repositorio |
+| S39 | Los campos que PMO360 no guarda (actividades, forma de pago, modalidad de precio, interventor, cédulas, cláusulas de pólizas `POL_*`) no se resuelven: se escriben al generar o quedan «[POR COMPLETAR]» |
+| S40 | Las cláusulas de la minuta (penal 20 %, multa diaria 3 %, confidencialidad, liquidación, avisos) son parámetros tomados de la minuta de El Silencio GL; la multa del 3 % está **pendiente de revisión jurídica** (agota el valor del contrato en unos 33 días) |
 
 **Pendientes**
 
@@ -986,6 +996,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | P39 | **Brechas de la imagen corporativa:** (1) falta el paquete oficial `GreenLand_DS_Export_v1.0.zip`; los logotipos de `public/` y los íconos del menú lateral (trazos propios, no los 20 glifos de la biblioteca cerrada) deben revisarse contra el paquete; (2) la fuente licenciada Non Natural Grotesk Plain no está incluida (se usa Archivo); (3) la paleta de alertas y la serie de gráficos son propuestas por validar con el responsable de marca; (4) decidir si los estados pasan a llamarse Cumple, Atención y Crítico; (5) la voz y la persona gramatical («tú») siguen sin definir; (6) el material de `docs/presentacion-faro/` conserva la identidad anterior | Abierto; el usuario aporta el paquete y valida con marca |
 | P40 | **Validar la integración de contratos y costos** con el equipo y con datos reales. El usuario aceptó los supuestos S21 a S24 el 24 oct; falta contrastarlos con contratos reales: (1) ¿la base «con indirectos» y el prorrateo del A.I.U. (S21) reproducen cómo se contrata en GreenLand?; (2) ¿hace falta repartir un contrato por partidas y no solo por capítulo?; (3) la fase 1 inspirada en Casa Las Mercedes está construida (hito 28); la fase 2 (por capítulo, a la fecha) está construida (hito 29); quedan el historial por corte de cada capítulo y la fase 3 (dos líneas base, interna y contractual), **sin decidir** |
 | P41 | **Capas 2 a 4 de aliados y datos reales.** Pendientes: pólizas y documentos del tercero; modificaciones (adiciones, otrosíes, prórrogas, suspensiones) ligadas al control de cambios para no tener dos formas de cambiar el valor; procesos y ofertas; minutas y actas Word (los textos F-01 a F-12 y la multa del 3 % los decide Jurídica); entrada de campo (reutilizar la bitácora). Antes de cargar datos reales del paquete (43 terceros, 27 contratos, cédulas y valores): región, confidencialidad y plan comercial (P12 a P14), base legal de datos personales (P33) y si se cargan los 5 contratos de Casa Las Mercedes. Hoy solo 3 de 27 contratos tienen acta de inicio y 27 terceros no tienen NIT (`PEND-`): el semáforo saldrá casi todo ámbar hasta completar esos datos |
+| P42 | **Avisos de `npm audit` (3 nov 2026):** 25 avisos (24 moderados y 1 alto). En producción: moderados en `uuid`, `minimatch` y `archiver` (cadena de `exceljs`); el alto (`zod`) y el resto son de herramientas de desarrollo (ESLint). Revisar aparte, como se hizo con Next.js, antes de abrir a más usuarios |
 
 ## 15. Trazabilidad: hoja del libro a módulo
 
@@ -1118,7 +1129,7 @@ Repositorio `docs/memoria/`, creado el 14 de octubre de 2026 para explicar cómo
 | `02-historia.md` | Cronología desde los antecedentes hasta hoy, con commits |
 | `03-marco-teorico.md` | Teoría, normativa y nivel de verificación de cada afirmación |
 | `04-buenas-practicas-documentacion.md` | Investigación sobre cómo documentar proyectos, diagnóstico y brechas |
-| `decisiones/` | 34 fichas de decisión (ADR) |
+| `decisiones/` | 35 fichas de decisión (ADR) |
 | `06-trazabilidad.md` | Módulo → decisión → migración → prueba → commit |
 | `07-lecciones-aprendidas.md` | Incidentes y qué cambió |
 | `08-fuentes-y-verificacion.md` | Bibliografía con niveles N1 a N3 |

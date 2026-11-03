@@ -6,6 +6,7 @@ import { BotonEnviar } from "@/components/boton-enviar";
 import { Aviso, Campo, Selector, claseBoton } from "@/components/ui";
 import type { Estado } from "@/lib/presupuesto/estado";
 import { ETIQUETA_TIPO_CONTRATO, TIPOS_CONTRATO } from "@/lib/obra/contratos";
+import { CANALES } from "@/lib/contratos/vigilancia";
 
 type Accion = (a: Estado, d: FormData) => Promise<Estado>;
 
@@ -204,7 +205,6 @@ export function FormularioModificacion({ accion, cambios, iniciales = {}, edicio
   );
 }
 
-export const CANALES: [string, string][] = [["correo", "Correo"], ["reunion", "Reunión"], ["llamada", "Llamada"], ["chat", "Teams / chat"], ["visita_obra", "Visita de obra"], ["comunicacion_escrita", "Comunicación escrita"], ["acta", "Acta"], ["revision_aprobacion", "Revisión / aprobación"]];
 
 export function FormularioComunicacion({ accion, hoy, iniciales = {}, edicion = false, volverA }: { accion: Accion; hoy: string; iniciales?: Record<string, string>; edicion?: boolean; volverA?: string }) {
   const [estado, enviar] = useActionState(accion, {} as Estado);
