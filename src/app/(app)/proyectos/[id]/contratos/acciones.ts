@@ -27,7 +27,9 @@ function datosContrato(d: FormData): { datos: Record<string, string> } | { error
   if (!(TIPOS_CONTRATO as readonly string[]).includes(tipo)) return { error: "Elige el tipo de contrato." };
   const valor = leerNumeroColombiano(String(d.get("valor") ?? ""), 2, 13);
   if (!valor.ok) return { error: `El valor del contrato ${valor.motivo}.` };
-  return { datos: { tipo, contratista: String(d.get("contratista") ?? ""), objeto: String(d.get("objeto") ?? ""), valor: valor.valor } };
+  const tercero = String(d.get("tercero_id") ?? "").trim();
+  if (tercero && !ES_UUID.test(tercero)) return { error: "Elige un tercero de la lista." };
+  return { datos: { tipo, contratista: String(d.get("contratista") ?? ""), tercero_id: tercero, objeto: String(d.get("objeto") ?? ""), valor: valor.valor } };
 }
 
 export async function crearContrato(proyectoId: string, _p: Estado, d: FormData): Promise<Estado> {
@@ -138,4 +140,48 @@ export async function quitarAsignacion(proyectoId: string, contratoId: string, a
   const { supabase } = await cargarProyecto(proyectoId);
   const { error } = await supabase.rpc("contrato_asignacion_borrar", { p_asignacion: asignacionId });
   return terminar(proyectoId, contratoId, "asignacion_borrada", error ? mensaje(error) : undefined);
+}
+
+
+// Datos contractuales: consecutivo, orden de servicio, fechas, plazo y autorización de asamblea.
+export async function guardarDatosContractuales(proyectoId: string, contratoId: string, _p: Estado, d: FormData): Promise<Estado> {
+  if (!ES_UUID.test(contratoId)) return { error: "Dirección no válida." };
+  const { supabase } = await cargarProyecto(proyectoId);
+  const datos: Record<string, string> = {};
+  for (const k of ["consecutivo", "orden_servicio_sap", "fecha_firma", "fecha_acta_inicio", "plazo_valor", "plazo_unidad", "autorizacion_asamblea"]) datos[k] = String(d.get(k) ?? "").trim();
+  for (const k of ["fecha_firma", "fecha_acta_inicio"]) if (datos[k] && !esFechaValida(datos[k])) return { error: "Indica una fecha válida.", valores: valoresDe(d) };
+  if (datos.plazo_valor && !/^\d{1,4}$/.test(datos.plazo_valor)) return { error: "El plazo debe ser un número entero de 1 a 3650.", valores: valoresDe(d) };
+  const { error } = await supabase.rpc("contrato_datos_guardar", { p_contrato: contratoId, p_datos: datos });
+  if (error) return { error: mensaje(error), valores: valoresDe(d) };
+  return terminar(proyectoId, contratoId, "datos_contrato");
+}
+
+// Avanzar de etapa (de una en una).
+export async function avanzarEtapa(proyectoId: string, contratoId: string, etapa: number): Promise<void> {
+  if (!ES_UUID.test(contratoId)) return terminar(proyectoId, contratoId, "", "Contrato no válido.");
+  const { supabase } = await cargarProyecto(proyectoId);
+  const { error } = await supabase.rpc("contrato_etapa_cambiar", { p_contrato: contratoId, p_etapa: etapa, p_motivo: null });
+  return terminar(proyectoId, contratoId, "etapa", error ? mensaje(error) : undefined);
+}
+
+// Devolver a una etapa anterior: exige motivo y queda en el historial.
+export async function devolverEtapa(proyectoId: string, contratoId: string, _p: Estado, d: FormData): Promise<Estado> {
+  if (!ES_UUID.test(contratoId)) return { error: "Dirección no válida." };
+  const etapa = Number(d.get("etapa"));
+  if (!Number.isInteger(etapa) || etapa < 1 || etapa > 9) return { error: "Elige la etapa a la que vuelve.", valores: valoresDe(d) };
+  const { supabase } = await cargarProyecto(proyectoId);
+  const { error } = await supabase.rpc("contrato_etapa_cambiar", { p_contrato: contratoId, p_etapa: etapa, p_motivo: String(d.get("motivo") ?? "") });
+  if (error) return { error: mensaje(error), valores: valoresDe(d) };
+  return terminar(proyectoId, contratoId, "etapa");
+}
+
+// Contratante del proyecto (se elige en la pantalla de contratos).
+export async function asignarContratante(proyectoId: string, _p: Estado, d: FormData): Promise<Estado> {
+  const { supabase } = await cargarProyecto(proyectoId);
+  const c = String(d.get("contratante_id") ?? "").trim();
+  if (c && !ES_UUID.test(c)) return { error: "Elige un contratante de la lista." };
+  const { error } = await supabase.rpc("proyecto_contratante_asignar", { p_proyecto: proyectoId, p_contratante: c || null });
+  if (error) return { error: mensaje(error) };
+  revalidatePath(`/proyectos/${proyectoId}`, "layout");
+  redirect(`${base(proyectoId)}?ok=contratante_proyecto`);
 }

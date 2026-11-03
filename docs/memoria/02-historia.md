@@ -127,6 +127,10 @@ El usuario pidió ligar los contratos al presupuesto para confrontar lo presupue
 
 Ese mismo día el usuario aceptó los supuestos de diseño (P40), dijo que al gerente le basta con el EAC calculado y pidió la fase 1 del gráfico tipo Casa Las Mercedes ([ADR-0030](decisiones/ADR-0030-control-de-costos-por-cortes.md)): pantalla «Control de costos» con invertido, por invertir y proyectado corte a corte. La fase 2 (por capítulo) quedó habilitada por la asignación de contratos.
 
+## 3 de noviembre de 2026 · Aliados y proveedores
+
+El usuario compartió el paquete de migración de RAÍZ (libro de Excel de aliados, proveedores y contratos, con 14 entidades, reglas, plantillas y un plan por fases) y pidió evaluar si ampliar PMO360 o solo mostrar el tablero filtrado por proyecto. Se evaluó la brecha frente a lo que ya existía y se decidió ampliar por capas, sin grandes cambios, empezando por el maestro de terceros, los contratantes y los datos contractuales con semáforo ([ADR-0032](decisiones/ADR-0032-aliados-y-proveedores-capa-1.md)), con datos ficticios y manteniendo la regla de anticipo de PMO360. Los datos reales del paquete no se cargaron ni se guardaron en el repositorio.
+
 ## Estado al 17 de octubre de 2026
 
 Ver [01-resumen-ejecutivo.md](01-resumen-ejecutivo.md).

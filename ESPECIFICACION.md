@@ -1,12 +1,12 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.8.0, actualizada el 24 de octubre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.9.0, actualizada el 3 de noviembre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.8.0, única versión vigente |
+| Versión | 3.9.0, única versión vigente |
 | Última actualización | 21 de octubre de 2026 (imagen corporativa: sistema de diseño GreenLand v1.0.0 aplicado a la interfaz, las exportaciones, el informe gerencial y los correos; sección 1.1 y hito 26) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
@@ -27,6 +27,7 @@ Versión 3.8.0, actualizada el 24 de octubre de 2026. Es la única versión vige
 | 3.6.0 | 24 de octubre de 2026 | Integración de contratos y costos (ADR-0029, migración 0025, hito 27): costos indirectos A.I.U., adicionales de obra, asignación de contratos al presupuesto y módulo Balance de costos (secciones 5.J y 5.M, 7 y 14; supuestos S21 a S24; pendiente P40) |
 | 3.7.0 | 24 de octubre de 2026 | Control de costos por cortes, fase 1 (ADR-0030, hito 28, módulo J, supuesto S25); se aceptan S21 a S24 (P40 parcialmente resuelto) |
 | 3.8.0 | 24 de octubre de 2026 | Control de costos por capítulo, fase 2 (ADR-0031, hito 29, supuesto S26) |
+| 3.9.0 | 3 de noviembre de 2026 | Aliados y proveedores, capa 1, a partir del paquete RAÍZ (ADR-0032, migración 0026, módulo S, hito 30, supuestos S27 a S31, pendiente P41) |
 | 3.4.0 | 21 de octubre de 2026 | Nueva imagen corporativa: sistema de diseño GreenLand v1.0.0 en toda la interfaz (paleta verde #027001, texto #5E5E5E, tipografía Archivo, píldoras y tarjetas con muesca, sin sombras ni mayúsculas sostenidas, alertas sobrias), exportaciones PDF y Excel, informe gerencial y correos; identidad (sección 1.1), hito 26, decisión de no mantener una versión paralela y ancla de reversión (ADR-0028), supuesto S20 y pendiente P39 |
 
 ### 0.1 Estado actual de un vistazo (16 de octubre de 2026)
@@ -35,10 +36,10 @@ Versión 3.8.0, actualizada el 24 de octubre de 2026. Es la única versión vige
 | --- | --- |
 | Hitos 1 a 11 de la sección 12 | Construidos. Todos los módulos del mapa (sección 4) están disponibles en la aplicación |
 | Extensiones posteriores | Construidas: aprobación de contratos, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial y su envío semanal, marca, menú lateral y ayuda, y los ajustes del tablero del proyecto (hito 21). Material del marco FARO producido (hito 20). Memoria del proyecto creada (hito 22). Directorio de contactos construido (hito 23). Actividades y «Mi trabajo» construidos (hito 24) |
-| Pruebas automáticas | 355 pruebas unitarias (Vitest, 38 archivos) y 626 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
+| Pruebas automáticas | 380 pruebas unitarias (Vitest, 40 archivos) y 692 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
 | Producción | El usuario instaló el SQL de la base en Supabase y desplegó en Vercel; confirmó que funciona con datos ficticios |
 | Aún no ocurrido | Ningún correo se ha enviado en producción (falta configurar el proveedor, `CRON_SECRET` y el usuario de solo lectura); no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
-| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 31 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
+| Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 32 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
 | Condiciones antes de datos reales | Definir región y confidencialidad; plan de alojamiento apto para uso comercial; revisión de seguridad (pendientes P12 a P14) |
 
 ## 1. Visión, alcance y principios
@@ -448,6 +449,17 @@ Objetivo: que el equipo reparta y siga el trabajo diario en una sola herramienta
 - **Permisos** (aplicados en la base de datos; ver sección 8): ven quienes ya ven el proyecto; crean, editan y borran administrador, gerente del proyecto, director general y analista PMO; la persona responsable solo cambia el estado; la interventoría ve solo lo que le asignaron o creó y se asigna únicamente a sí misma.
 - **Fuera de este mínimo:** comentarios y menciones, adjuntos, avisos por correo o dentro de la plataforma, reordenar tarjetas dentro de una columna, subtareas, tareas recurrentes, plantillas, liga a cambios e hitos y aporte de las vencidas al semáforo y al resumen diario.
 
+### S. Aliados y proveedores (capa 1; v3.9, ADR-0032)
+
+Maestro de terceros y datos contractuales, tomados de la estructura de RAÍZ (paquete del 2 de noviembre de 2026). Sin cambiar anticipo, aprobación, actas ni control de cambios.
+
+- **Terceros:** NIT o cédula como llave única, normalizado y con dígito de verificación validado (módulo 11 de la DIAN). Identificador temporal `PEND-NOMBRE` hasta recibir el RUT. Tipo de tercero (contratista, proveedor, consultor, interventor u otro), especialidad, municipio, contacto y nombre del representante legal. No se guardan cédulas ni documentos, solo un enlace al soporte. No se borran: se inactivan.
+- **Contratantes:** sociedades del grupo (código CT-nn), con tope de contratación sin asamblea propio o el parámetro general. Cada proyecto tiene un contratante.
+- **Contrato:** tercero, consecutivo, orden de servicio SAP, etapa de la ruta de 9 etapas (Preparación, Revisión del contratista, Aprobación Greenland, Firmas, Garantías e inicio, Ejecución, Liquidación, Garantías postcontractuales, Archivado), fecha de firma, acta de inicio, plazo (días calendario, hábiles o meses), fecha fin inicial calculada y autorización de asamblea. La etapa avanza de una en una; devolverse exige motivo y queda en el historial; se archiva solo desde la etapa 8; un contrato sin aprobar no pasa de la etapa 3, y al aprobarse pasa a la 4.
+- **Semáforo por contrato** (capa 1): rojo si la etapa excede sus días máximos o el plazo de ejecución venció; ámbar si el plazo vence en 30 días o menos, falta el dato para calcular el fin, o el valor supera el tope de asamblea (SMMLV × tope) sin autorización registrada entre las etapas 3 y 7; verde en los demás casos; archivado sale del tablero. Pólizas, documentos del contratista, compromisos y suspensiones llegan en la capa 2.
+- **Quién ve y edita:** ve el maestro todo el portafolio (administrador, director general, analista PMO y finanzas) y los gerentes de proyecto. Edita terceros el administrador, el director y los gerentes; edita contratantes el administrador y el director. En un proyecto solo se ven sus contratos.
+- **Parámetros** (editables en Parámetros): `smmlv_cop`, `tope_asamblea_smmlv` (600), `alerta_ambar_dias` (30) y `etapa_dias_max_1`…`5` y `_7`.
+
 ## 6. Integración entre módulos: indicador, fórmula y fuente
 
 Esta tabla es el contrato de datos. Define de dónde sale cada número del dashboard.
@@ -564,6 +576,7 @@ Esta tabla es el contrato de datos. Define de dónde sale cada número del dashb
 | contratos | Nuevas columnas: estado_aprobacion (pendiente, aprobado), aprobado_por, aprobado_en. Los contratos existentes quedan aprobados |
 | capitulos | `wbs_id` en uso: liga opcional a la EDT, con funciones `capitulos_desde_edt` y `capitulos_vincular_edt` y herencia de capítulo en las tareas |
 | costos_adicionales, adicionales, contrato_asignaciones | v3.6, migración 0025: `costos_adicionales` (historico del nombre; en pantalla «costos indirectos») suma `categoria` (administracion, imprevistos, utilidad, impuestos, otro). Tabla `adicionales` (codigo AD-nnn, descripcion, origen no_contemplado/anadidura, wbs_id, valor_directo, aplica_indirectos, cambio_id, nota). Tabla `contrato_asignaciones` (contrato_id, capitulo_id o adicional_id, valor; exactamente uno de los dos destinos). Funciones `adicional_guardar`, `adicional_borrar`, `contrato_asignar`, `contrato_asignacion_borrar`; `presupuesto_importar` conserva y re-liga las asignaciones por nombre de capítulo y bloquea retirar un capítulo con contratos asignados. Acceso de lectura con `puede_ver_proyecto` (interventoría excluida) |
+| terceros, contratantes, contratos (ampliada), contrato_etapa_historial | v3.9, migración 0026: `terceros` (nit único normalizado, tipo_persona, razon_social, tipo_tercero, especialidad, municipio, contacto, representante_legal, estado, fuente), `contratantes` (codigo CT-nn, razon_social, nit, tope_smmlv, estado), `proyectos.contratante_id`, y en `contratos`: tercero_id, consecutivo, orden_servicio_sap, etapa, fecha_etapa, fecha_firma, fecha_acta_inicio, plazo_valor, plazo_unidad, fecha_fin_inicial, autorizacion_asamblea. Funciones `nit_normalizar`, `nit_digito`, `fecha_fin_plazo`, `contrato_datos_guardar`, `contrato_etapa_cambiar`, `proyecto_contratante_asignar`; `contrato_crear` y `contrato_actualizar` aceptan el tercero |
 | festivos | Solo fechas excepcionales; los festivos de Colombia se calculan por función |
 | contadores | Consecutivos por proyecto que no se reutilizan (códigos de riesgos, cambios y similares) |
 | migraciones_aplicadas | Control del instalador: cada migración se aplica una sola vez |
@@ -736,6 +749,7 @@ Los hitos 1 a 11 están **construidos**, con pruebas de base de datos (`pruebas-
 | 27. Integración de contratos y costos | Costos indirectos A.I.U. con tipo, adicionales de obra, asignación de contratos a capítulos y adicionales, y módulo Balance de costos (0025, ADR-0029) | Construido. `t-contratos-costos` (40 comprobaciones) y pruebas unitarias de `calculos` y `balance`. **No validado con datos reales** |
 | 28. Control de costos por cortes (fase 1) | Pantalla, gráfico y tabla por corte a partir de las mediciones de valor ganado (sin migración, ADR-0030) | Construido. `cortes.test.ts` (5 pruebas); revisado en navegador con datos ficticios. Fases 2 (por capítulo) y 3 (dos líneas base) sin construir |
 | 29. Control de costos por capítulo (fase 2) | Tabla por capítulo con avance, invertido, proyectado y comparación con presupuesto y contrato (ADR-0031) | Construido. `proyeccion-capitulos.test.ts` (3 pruebas); revisado en navegador con datos ficticios. Historial por corte por capítulo y fase 3 sin construir |
+| 30. Aliados y proveedores, capa 1 | Maestro de terceros y contratantes, etapa y datos contractuales de cada contrato y semáforo por contrato (0026, ADR-0032) | Construido. `t-aliados` (66 comprobaciones), `vigilancia.test.ts` (15) y revisión en navegador con datos ficticios. Capas 2 a 4 sin construir; sin datos reales |
 
 ## 13. Casos de prueba de referencia
 
@@ -899,6 +913,11 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | S24 | El estado de un adicional se deriva del estado del cambio que lo respalda; los adicionales no modifican el BAC por sí solos |
 | S25 | En el control de costos por cortes, el «proyectado» es siempre el EAC calculado (BAC × AC / EV); el gerente no escribe una estimación propia (decisión del usuario; ADR-0030) |
 | S26 | En el control por capítulo, el invertido es el facturado de los contratos asignados (el gasto mensual no se lleva por capítulo); el avance sale de las tareas ligadas al capítulo (ADR-0031) |
+| S27 | Se mantiene la regla de anticipo de PMO360 (discrecional del director, máximo 20 %), no la del paquete RAÍZ (solo obra mayor de $350 millones). Decisión del usuario |
+| S28 | Los días máximos por etapa (7, 5, 7, 5, 15 y 60), los 30 días de alerta y los pesos que traiga el paquete siguen siendo **supuestos de diseño** de RAÍZ, editables como parámetros; no se han validado con la práctica de Greenland |
+| S29 | SMMLV 2026 = $1.750.905 (Decreto 1469 de 2025), confirmado el 3 de nov de 2026 en fuentes secundarias; hay reportes sin verificar de una suspensión judicial del decreto: revisar la vigencia antes de usar el tope. El tope de 600 SMMLV sin asamblea sale de certificados de existencia según el paquete: confirmar con Jurídica |
+| S30 | La etapa inicial de los contratos que ya existían es un punto de partida (pendientes = 3; con actas = 6; el resto = 4); el gerente la ajusta |
+| S31 | El maestro de terceros no guarda cédulas de representantes ni documentos: minimización de datos hasta resolver la base legal (P33) y si se necesitan para las minutas |
 
 **Pendientes**
 
@@ -944,6 +963,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | P38 | **Ramas secundarias.** `prueba/gestor-colaborativo` no tiene trabajo propio (todo su contenido ya está en la rama principal): se puede archivar o borrar cuando el usuario lo decida. `vercel/install-vercel-web-analytics-x313y1` tiene 1 commit creado por Vercel («Install Vercel Web Analytics», 17 de octubre de 2026) que **no está en la rama principal** y quedó 13 commits atrás; no se integró porque no fue solicitado. Decidir si se integra o se descarta | Abierto; decide el usuario |
 | P39 | **Brechas de la imagen corporativa:** (1) falta el paquete oficial `GreenLand_DS_Export_v1.0.zip`; los logotipos de `public/` y los íconos del menú lateral (trazos propios, no los 20 glifos de la biblioteca cerrada) deben revisarse contra el paquete; (2) la fuente licenciada Non Natural Grotesk Plain no está incluida (se usa Archivo); (3) la paleta de alertas y la serie de gráficos son propuestas por validar con el responsable de marca; (4) decidir si los estados pasan a llamarse Cumple, Atención y Crítico; (5) la voz y la persona gramatical («tú») siguen sin definir; (6) el material de `docs/presentacion-faro/` conserva la identidad anterior | Abierto; el usuario aporta el paquete y valida con marca |
 | P40 | **Validar la integración de contratos y costos** con el equipo y con datos reales. El usuario aceptó los supuestos S21 a S24 el 24 oct; falta contrastarlos con contratos reales: (1) ¿la base «con indirectos» y el prorrateo del A.I.U. (S21) reproducen cómo se contrata en GreenLand?; (2) ¿hace falta repartir un contrato por partidas y no solo por capítulo?; (3) la fase 1 inspirada en Casa Las Mercedes está construida (hito 28); la fase 2 (por capítulo, a la fecha) está construida (hito 29); quedan el historial por corte de cada capítulo y la fase 3 (dos líneas base, interna y contractual), **sin decidir** |
+| P41 | **Capas 2 a 4 de aliados y datos reales.** Pendientes: pólizas y documentos del tercero; modificaciones (adiciones, otrosíes, prórrogas, suspensiones) ligadas al control de cambios para no tener dos formas de cambiar el valor; procesos y ofertas; minutas y actas Word (los textos F-01 a F-12 y la multa del 3 % los decide Jurídica); entrada de campo (reutilizar la bitácora). Antes de cargar datos reales del paquete (43 terceros, 27 contratos, cédulas y valores): región, confidencialidad y plan comercial (P12 a P14), base legal de datos personales (P33) y si se cargan los 5 contratos de Casa Las Mercedes. Hoy solo 3 de 27 contratos tienen acta de inicio y 27 terceros no tienen NIT (`PEND-`): el semáforo saldrá casi todo ámbar hasta completar esos datos |
 
 ## 15. Trazabilidad: hoja del libro a módulo
 
@@ -1076,7 +1096,7 @@ Repositorio `docs/memoria/`, creado el 14 de octubre de 2026 para explicar cómo
 | `02-historia.md` | Cronología desde los antecedentes hasta hoy, con commits |
 | `03-marco-teorico.md` | Teoría, normativa y nivel de verificación de cada afirmación |
 | `04-buenas-practicas-documentacion.md` | Investigación sobre cómo documentar proyectos, diagnóstico y brechas |
-| `decisiones/` | 31 fichas de decisión (ADR) |
+| `decisiones/` | 32 fichas de decisión (ADR) |
 | `06-trazabilidad.md` | Módulo → decisión → migración → prueba → commit |
 | `07-lecciones-aprendidas.md` | Incidentes y qué cambió |
 | `08-fuentes-y-verificacion.md` | Bibliografía con niveles N1 a N3 |

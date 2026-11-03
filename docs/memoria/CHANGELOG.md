@@ -2,6 +2,15 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.9.0] · 3 de noviembre de 2026
+### Añadido
+- **Aliados y proveedores, capa 1** ([ADR-0032](decisiones/ADR-0032-aliados-y-proveedores-capa-1.md), migración 0026), a partir del paquete RAÍZ: maestro de terceros con NIT validado (`PEND-` temporal), contratantes y contratante de cada proyecto; en cada contrato, tercero, etapa (1 a 9) con historial, fechas, plazo con fecha fin calculada, autorización de asamblea, consecutivo y orden de servicio; semáforo por contrato en la lista del proyecto (ordenada por urgencia) y en el detalle. Pantallas `/aliados` y `/aliados/contratantes`. 66 comprobaciones SQL y 15+ pruebas unitarias nuevas.
+- Parámetros nuevos: `smmlv_cop`, `tope_asamblea_smmlv`, `alerta_ambar_dias` y `etapa_dias_max_N`.
+### Cambiado
+- La regla de anticipo de PMO360 se mantiene frente a la del paquete (decisión del usuario).
+### Pendiente
+- Capas 2 a 4 (pólizas, documentos del tercero y modificaciones; procesos y ofertas; minutas y campo), y condiciones antes de cargar datos reales (P41).
+
 ## [3.8.0] · 24 de octubre de 2026
 ### Añadido
 - **Control de costos por capítulo (fase 2)** ([ADR-0031](decisiones/ADR-0031-control-de-costos-por-capitulo.md)): en la pantalla Control de costos, tabla «Por capítulo, a la fecha» con presupuesto, avance de las tareas del capítulo, invertido (facturado asignado), por invertir, proyectado (EAC) y comparación con el presupuesto y con lo contratado. Sin migración. 3 pruebas unitarias.

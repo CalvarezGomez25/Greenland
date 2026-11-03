@@ -37,5 +37,6 @@ Una ficha por decisión importante, con el formato propuesto por Michael Nygard 
 | [ADR-0029](ADR-0029-integracion-contratos-y-costos.md) | Integración de contratos y costos: costos indirectos (A.I.U.), adicionales de obra y balance | 2026-10-24 | Vigente (a validar con el equipo) |
 | [ADR-0030](ADR-0030-control-de-costos-por-cortes.md) | Control de costos por cortes (fase 1) y aceptación de los supuestos de contratos y costos | 2026-10-24 | Vigente |
 | [ADR-0031](ADR-0031-control-de-costos-por-capitulo.md) | Control de costos por capítulo (fase 2): cómo se proyecta un capítulo | 2026-10-24 | Vigente (a validar) |
+| [ADR-0032](ADR-0032-aliados-y-proveedores-capa-1.md) | Aliados y proveedores (capa 1): maestro de terceros, contratantes y datos contractuales | 2026-11-03 | Vigente (capa 1) |
 
 Las decisiones de detalle (supuestos S1–S13, P1–P11, D2, etc.) siguen en `docs/SUPUESTOS.md` y en la sección 14 de `ESPECIFICACION.md`.

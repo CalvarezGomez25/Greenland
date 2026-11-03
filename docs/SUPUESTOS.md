@@ -57,3 +57,7 @@ fácil de cambiar; deben validarse con el uso real.
 - «Costos adicionales» pasa a llamarse **costos indirectos (A.I.U.)**; cada concepto tiene tipo (administración, imprevistos, utilidad, impuestos, otro). Los porcentajes los define el proyecto; la plataforma no fija tasas legales (S21 a S24 en la sección 14 de `ESPECIFICACION.md`).
 - Los **adicionales de obra** son trabajos no contemplados en la EDT original o añadidos durante la ejecución; su estado sale del cambio que los respalda y no modifican el BAC por sí solos.
 - Los contratos se reparten entre capítulos y adicionales; el balance compara contra el presupuesto **con indirectos** (A.I.U. prorrateado por costo directo). Es una propuesta a validar con el equipo (P40).
+
+## Aliados y proveedores, capa 1 (migración 0026, ADR-0032)
+- El maestro de terceros usa el NIT (validado con el dígito de verificación) como llave; `PEND-` es temporal. No se guardan cédulas ni documentos (S31).
+- Se mantiene la regla de anticipo de PMO360 (S27). Días por etapa, alerta de 30 días y tope de asamblea son parámetros; los de RAÍZ son supuestos de diseño (S28, S29). La etapa inicial de los contratos existentes es un punto de partida (S30).

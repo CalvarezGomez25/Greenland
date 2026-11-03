@@ -121,7 +121,10 @@ export const GUIAS: Guia[] = [
   {
     clave: "contratos", titulo: "Contratos y pagos", quien: "Gerente o administrador registra; el director general aprueba",
     pasos: [
-      "Registra el contrato (tipo, contratista, objeto y valor). Queda «Pendiente de aprobación» del director general.",
+      "Antes, registra al contratista en «Aliados y proveedores» (menú Administración): NIT o cédula, nombre y tipo. Se escribe una sola vez para todos los proyectos; sin RUT todavía, usa PEND-NOMBRE.",
+      "Registra el contrato (tipo, contratista elegido del maestro, objeto y valor). Queda «Pendiente de aprobación» del director general.",
+      "En el detalle del contrato, «Ruta del contrato» muestra su etapa y su semáforo (etapa vencida, plazo vencido o por vencer, tope de asamblea). Avanza de etapa de una en una; para devolverla escribe el motivo.",
+      "En «Datos contractuales» anota fecha de firma, acta de inicio, plazo y autorización de asamblea: con el acta y el plazo la plataforma calcula la fecha fin.",
       "Mientras esté pendiente puedes corregirlo, pero no admite anticipo ni actas de pago.",
       "Aprobado, el director puede autorizar el anticipo (máximo 20 % del contrato, con su motivo).",
       "Radica cada acta de pago con su fecha y su valor bruto: la plataforma calcula la amortización del anticipo, la retención de garantía y el neto a pagar.",

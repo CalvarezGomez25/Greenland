@@ -13,8 +13,11 @@ import { ETIQUETA_ESTADO_ACTA, ETIQUETA_TIPO_CONTRATO, resumenContrato } from "@
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { AvisoResultado } from "@/components/aviso-resultado";
-import { aprobarContrato, asignarContrato, autorizarAnticipo, borrarActa, cambiarEstadoActa, liberarRetencion, quitarAsignacion, radicarActa } from "../acciones";
-import { FormularioActa, FormularioAnticipo, FormularioAsignacion } from "../formularios";
+import { aprobarContrato, asignarContrato, autorizarAnticipo, avanzarEtapa, borrarActa, cambiarEstadoActa, devolverEtapa, guardarDatosContractuales, liberarRetencion, quitarAsignacion, radicarActa } from "../acciones";
+import { FormularioActa, FormularioAnticipo, FormularioAsignacion, FormularioDatosContractuales, FormularioDevolverEtapa } from "../formularios";
+import { SemaforoContrato } from "@/components/semaforo-contrato";
+import { ETAPAS, etapaPorNumero, parametrosDeVigilancia, semaforoContrato } from "@/lib/contratos/vigilancia";
+import { formatearNit } from "@/lib/aliados";
 import { formatearPesos } from "@/lib/presupuesto/dinero";
 
 type Acta = { id: string; numero: number; fecha: string; valor_bruto: number | string; amortizacion: number | string; retencion: number | string; neto: number | string; estado: string };
@@ -39,6 +42,25 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
     supabase.from("capitulos").select("id, codigo, nombre").eq("proyecto_id", id).order("orden"),
     supabase.from("adicionales").select("id, codigo, descripcion").eq("proyecto_id", id).order("codigo"),
   ]);
+  // Etapa, semáforo y datos contractuales (capa 1 de aliados): el tercero, el contratante del proyecto y el historial de etapas.
+  const [{ data: ter }, { data: hist }, { data: proyC }] = await Promise.all([
+    c.tercero_id ? supabase.from("terceros").select("id, nit, razon_social").eq("id", c.tercero_id).maybeSingle() : Promise.resolve({ data: null }),
+    supabase.from("contrato_etapa_historial").select("id, etapa_anterior, etapa_nueva, motivo, creado_en").eq("contrato_id", contratoId).order("creado_en", { ascending: false }).limit(20),
+    supabase.from("proyectos").select("contratante_id").eq("id", id).maybeSingle(),
+  ]);
+  const { data: contr } = (proyC as { contratante_id: string | null } | null)?.contratante_id
+    ? await supabase.from("contratantes").select("tope_smmlv").eq("id", (proyC as { contratante_id: string }).contratante_id).maybeSingle()
+    : { data: null };
+  const tercero = ter as { id: string; nit: string; razon_social: string } | null;
+  const historial = (hist ?? []) as { id: number; etapa_anterior: number | null; etapa_nueva: number; motivo: string | null; creado_en: string }[];
+  const parametrosV = parametrosDeVigilancia((pars ?? []) as FilaParametro[], id);
+  const sem = semaforoContrato({ etapa: c.etapa, fechaEtapa: c.fecha_etapa, fechaFin: c.fecha_fin_inicial, valor: desdeJson(c.valor, 2), autorizacionAsamblea: c.autorizacion_asamblea, topeSmmlv: (contr as { tope_smmlv: number | null } | null)?.tope_smmlv }, hoyColombia(), parametrosV);
+  const etapaActual = etapaPorNumero(c.etapa);
+  const siguiente = c.etapa < 9 && !(c.estado_aprobacion === "pendiente" && c.etapa >= 3) ? ETAPAS[c.etapa] : null;
+  const datosIniciales: Record<string, string> = {
+    consecutivo: c.consecutivo ?? "", orden_servicio_sap: c.orden_servicio_sap ?? "", fecha_firma: c.fecha_firma ?? "", fecha_acta_inicio: c.fecha_acta_inicio ?? "",
+    plazo_valor: c.plazo_valor ? String(c.plazo_valor) : "", plazo_unidad: c.plazo_unidad ?? "", autorizacion_asamblea: c.autorizacion_asamblea ?? "",
+  };
   const asignaciones = (asigs ?? []) as { id: string; capitulo_id: string | null; adicional_id: string | null; valor: number | string }[];
   const capitulos = (caps ?? []) as { id: string; codigo: string; nombre: string }[];
   const adicionales = (adis ?? []) as { id: string; codigo: string; descripcion: string }[];
@@ -102,6 +124,49 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
         <Dato t="Anticipo" v={Number(c.anticipo_pct) > 0 ? `${Number(c.anticipo_pct).toLocaleString("es-CO")} % — autorizado por ${nombres.get(c.anticipo_autorizado_por) ?? "—"}${c.anticipo_autorizado_en ? ` el ${formatearFechaHora(c.anticipo_autorizado_en)}` : ""}. Motivo: ${c.anticipo_motivo ?? "—"}` : "Sin anticipo"} />
       </dl>
 
+
+      <section className="mt-8" aria-labelledby="t-ruta">
+        <h2 id="t-ruta" className="font-display text-2xl font-bold text-leaf-700">Ruta del contrato</h2>
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <SemaforoContrato nivel={sem.nivel} />
+          <span className="text-sm"><strong>Etapa {c.etapa}. {etapaActual.nombre}</strong>{sem.nivel !== "archivado" && ` · ${sem.diasEnEtapa} ${sem.diasEnEtapa === 1 ? "día" : "días"} en esta etapa`}</span>
+        </div>
+        {[...sem.rojas, ...sem.ambar].length > 0 && (
+          <ul className="mt-2 list-disc pl-5 text-sm">{[...sem.rojas, ...sem.ambar].map((t) => <li key={t}>{t}</li>)}</ul>
+        )}
+        <p className="mt-2 text-sm text-muted"><strong>Responsable:</strong> {etapaActual.responsable}. <strong>Siguiente acción:</strong> {etapaActual.accion}.</p>
+        <p className="mt-1 text-xs text-muted">El semáforo vigila la etapa, el plazo y la autorización de asamblea; las pólizas y los documentos del contratista se sumarán en la siguiente fase.</p>
+        <ol className="mt-3 flex flex-wrap gap-1.5 text-xs" aria-label="Etapas">
+          {ETAPAS.map((e) => <li key={e.n} className={`rounded-full border px-2.5 py-0.5 ${e.n === c.etapa ? "border-leaf-600 bg-leaf-600 font-medium text-white" : e.n < c.etapa ? "border-leaf-400 bg-leaf-100 text-leaf-800" : "border-soil-border text-muted"}`}>{e.n}. {e.nombre}</li>)}
+        </ol>
+        {permisos.gestionar && (
+          <div className="mt-4 flex flex-col gap-4 rounded-card bg-leaf-50 p-5">
+            {siguiente && (
+              <form action={avanzarEtapa.bind(null, id, contratoId, siguiente.n)}><BotonEnviar className={claseBoton.primario} textoEnviando="Avanzando…">Avanzar a la etapa {siguiente.n}: {siguiente.nombre}</BotonEnviar></form>
+            )}
+            {pendiente && <p className="text-sm text-muted">El contrato no pasa de la etapa 3 hasta que el director general lo apruebe.</p>}
+            {c.etapa > 1 && <FormularioDevolverEtapa accion={devolverEtapa.bind(null, id, contratoId)} opciones={ETAPAS.filter((e) => e.n < c.etapa).map((e) => ({ n: e.n, nombre: e.nombre }))} />}
+          </div>
+        )}
+        {historial.length > 0 && (
+          <details className="mt-3 text-sm"><summary className="cursor-pointer font-medium text-leaf-700">Historial de etapas ({historial.length})</summary>
+            <ul className="mt-2 space-y-1">{historial.map((h) => <li key={h.id}>{formatearFechaHora(h.creado_en)} · de {h.etapa_anterior ?? "—"} a {h.etapa_nueva}{h.motivo ? ` · ${h.motivo}` : ""}</li>)}</ul>
+          </details>
+        )}
+      </section>
+
+      <section className="mt-8" aria-labelledby="t-datos">
+        <h2 id="t-datos" className="font-display text-2xl font-bold text-leaf-700">Datos contractuales</h2>
+        <p className="mt-1 text-sm text-muted">
+          Contratista: {tercero ? <><Link href={`/aliados/${tercero.id}`} className="font-medium text-leaf-700 hover:underline">{tercero.razon_social}</Link> · NIT {formatearNit(tercero.nit)}</> : <>{c.contratista} (texto: ligarlo al maestro de aliados con «Editar»)</>}.{" "}
+          {c.fecha_fin_inicial ? <>Fecha fin inicial: <strong>{formatearFecha(c.fecha_fin_inicial)}</strong> (acta de inicio + plazo).</> : "Con el acta de inicio y el plazo se calcula la fecha fin."}
+        </p>
+        {permisos.gestionar ? (
+          <div className="mt-3 rounded-card bg-leaf-50 p-5"><FormularioDatosContractuales accion={guardarDatosContractuales.bind(null, id, contratoId)} iniciales={datosIniciales} /></div>
+        ) : (
+          <p className="mt-2 text-sm text-muted">Firma: {c.fecha_firma ? formatearFecha(c.fecha_firma) : "—"} · Acta de inicio: {c.fecha_acta_inicio ? formatearFecha(c.fecha_acta_inicio) : "—"} · Consecutivo: {c.consecutivo ?? "—"} · Orden de servicio: {c.orden_servicio_sap ?? "—"}</p>
+        )}
+      </section>
 
       {!permisos.interventor && (
         <section className="mt-8" aria-labelledby="t-asig">

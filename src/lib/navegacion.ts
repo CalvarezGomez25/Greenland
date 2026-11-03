@@ -44,11 +44,19 @@ export function puedeUsarDirectorio(rolGlobal: RolGlobal | null, roles: Iterable
   return false;
 }
 
-export function enlacesAdministracion(rolGlobal: RolGlobal | null, conDirectorio = false): NavEnlace[] {
+// El maestro de aliados y proveedores lo ve todo el portafolio (administrador, director general, analista PMO y finanzas) y quien sea gerente de algún proyecto.
+export function puedeVerAliados(rolGlobal: RolGlobal | null, roles: Iterable<RolProyecto>): boolean {
+  if (rolGlobal === "administrador" || rolGlobal === "director_general" || rolGlobal === "analista_pmo" || rolGlobal === "finanzas") return true;
+  for (const r of roles) if (r === "gerente") return true;
+  return false;
+}
+
+export function enlacesAdministracion(rolGlobal: RolGlobal | null, conDirectorio = false, conAliados = false): NavEnlace[] {
   const out: NavEnlace[] = [];
   if (rolGlobal === "administrador") out.push({ href: "/usuarios", titulo: "Usuarios" }, { href: "/organizacion", titulo: "Organización" });
   if (rolGlobal) out.push({ href: "/parametros", titulo: "Parámetros" });
   if (rolGlobal === "administrador" || rolGlobal === "director_general") out.push({ href: "/auditoria", titulo: "Auditoría" });
+  if (conAliados) out.push({ href: "/aliados", titulo: "Aliados y proveedores" });
   if (conDirectorio) out.push({ href: "/directorio", titulo: "Directorio de contactos" });
   return out;
 }

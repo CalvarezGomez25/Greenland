@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { armarProyectosNav, enlacesAdministracion, ordenarPorCodigo, proyectoDeRuta, puedeUsarDirectorio, rutaDeInicio, rutaDelTablero, esSoloInterventoria, mostrarMisProyectos } from "./navegacion";
+import { armarProyectosNav, enlacesAdministracion, ordenarPorCodigo, proyectoDeRuta, puedeUsarDirectorio, puedeVerAliados, rutaDeInicio, rutaDelTablero, esSoloInterventoria, mostrarMisProyectos } from "./navegacion";
 
 const ID = "8e6e8184-2e51-41ee-a903-2396c5a42212";
 const p = (usa_obra: boolean | null = true) => [{ id: ID, nombre: "Obra", codigo: "GL-001", estado: "activo", usa_obra }];
@@ -77,5 +77,17 @@ describe("menú lateral", () => {
       { codigo: "GL-001", nombre: "Muy tarde" }, { codigo: "GL-002", nombre: "Beta" },
     ]);
     expect(l.map((x) => `${x.codigo ?? "—"} ${x.nombre}`)).toEqual(["GL-001 Muy tarde", "GL-002 Beta", "GL-002 Zeta", "GL-010 Alfa", "— Sin código"]);
+  });
+});
+
+describe("aliados y proveedores", () => {
+  it("lo ve todo el portafolio y quien sea gerente de algún proyecto", () => {
+    for (const r of ["administrador", "director_general", "analista_pmo", "finanzas"] as const) expect(puedeVerAliados(r, [])).toBe(true);
+    expect(puedeVerAliados(null, ["supervisor", "gerente"])).toBe(true);
+    expect(puedeVerAliados(null, ["supervisor", "consulta", "interventoria", "patrocinador"])).toBe(false);
+  });
+  it("el enlace aparece solo cuando corresponde", () => {
+    expect(enlacesAdministracion("finanzas", false, true).map((e) => e.href)).toContain("/aliados");
+    expect(enlacesAdministracion("finanzas", false, false).map((e) => e.href)).not.toContain("/aliados");
   });
 });

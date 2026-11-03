@@ -9,7 +9,9 @@ import { ETIQUETA_TIPO_CONTRATO, TIPOS_CONTRATO } from "@/lib/obra/contratos";
 
 type Accion = (a: Estado, d: FormData) => Promise<Estado>;
 
-export function FormularioContrato({ accion, iniciales, volverA }: { accion: Accion; iniciales: Record<string, string>; volverA: string }) {
+export type OpcionTercero = { id: string; etiqueta: string };
+
+export function FormularioContrato({ accion, iniciales, volverA, terceros }: { accion: Accion; iniciales: Record<string, string>; volverA: string; terceros: OpcionTercero[] }) {
   const [estado, enviar] = useActionState(accion, {} as Estado);
   const v = (k: string) => estado.valores?.[k] ?? iniciales[k] ?? "";
   return (
@@ -18,8 +20,17 @@ export function FormularioContrato({ accion, iniciales, volverA }: { accion: Acc
         <Selector etiqueta="Tipo de contrato" name="tipo" required defaultValue={v("tipo") || "obra"}>
           {TIPOS_CONTRATO.map((t) => <option key={t} value={t}>{ETIQUETA_TIPO_CONTRATO[t]}</option>)}
         </Selector>
-        <Campo etiqueta="Contratista / proveedor" name="contratista" required maxLength={200} defaultValue={v("contratista")} />
+        <div className="flex flex-col gap-1.5">
+          <Selector etiqueta="Contratista / proveedor (maestro de aliados)" name="tercero_id" required={!iniciales.contratista} defaultValue={v("tercero_id")}>
+            <option value="">{iniciales.contratista ? "Sin ligar al maestro" : "Elige un tercero…"}</option>
+            {terceros.map((t) => <option key={t.id} value={t.id}>{t.etiqueta}</option>)}
+          </Selector>
+          <span className="text-xs text-muted">¿No está en la lista? <Link href="/aliados/nuevo" className="font-medium text-leaf-600 underline">Agrégalo al maestro</Link> y vuelve.</span>
+        </div>
       </div>
+      {iniciales.contratista && !iniciales.tercero_id && (
+        <Campo etiqueta="Contratista (texto de un contrato anterior)" name="contratista" required maxLength={200} defaultValue={v("contratista")} ayuda="Elige arriba un tercero del maestro para reemplazar este texto." />
+      )}
       <label className="flex flex-col gap-1.5">
         <span className="text-[13px] font-medium text-leaf-800">Objeto del contrato</span>
         <textarea name="objeto" rows={3} required maxLength={1000} defaultValue={v("objeto")} className="w-full rounded-[10px] border border-soil-border bg-white px-3.5 py-2.5 text-[15px] font-light text-leaf-900 focus:border-leaf-500 focus:outline-none focus:ring-[3px] focus:ring-leaf-500/30" />
@@ -70,6 +81,61 @@ export function FormularioAsignacion({ accion, destinos, sinAsignar }: { accion:
       </Selector>
       <Campo etiqueta="Valor asignado (COP)" name="valor" required inputMode="decimal" defaultValue={v("valor")} ayuda={`Sin asignar: ${sinAsignar}. Si ya existe, reemplaza el valor.`} />
       <BotonEnviar className={claseBoton.primario} textoEnviando="Guardando…">Asignar</BotonEnviar>
+      {estado.error && <div className="w-full"><Aviso>{estado.error}</Aviso></div>}
+    </form>
+  );
+}
+
+export function FormularioDatosContractuales({ accion, iniciales }: { accion: Accion; iniciales: Record<string, string> }) {
+  const [estado, enviar] = useActionState(accion, {} as Estado);
+  const v = (k: string) => estado.valores?.[k] ?? iniciales[k] ?? "";
+  return (
+    <form action={enviar} key={estado.valores ? JSON.stringify(estado.valores) : "i"} className="flex max-w-3xl flex-col gap-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Campo etiqueta="Consecutivo (plataforma de contratos)" name="consecutivo" maxLength={60} defaultValue={v("consecutivo")} />
+        <Campo etiqueta="Orden de servicio SAP" name="orden_servicio_sap" maxLength={60} defaultValue={v("orden_servicio_sap")} />
+        <Campo etiqueta="Fecha de firma" name="fecha_firma" type="date" defaultValue={v("fecha_firma")} />
+        <Campo etiqueta="Fecha del acta de inicio" name="fecha_acta_inicio" type="date" defaultValue={v("fecha_acta_inicio")} />
+        <Campo etiqueta="Plazo (número)" name="plazo_valor" inputMode="numeric" maxLength={4} defaultValue={v("plazo_valor")} />
+        <Selector etiqueta="Unidad del plazo" name="plazo_unidad" defaultValue={v("plazo_unidad")}>
+          <option value="">Sin plazo</option>
+          <option value="dias_calendario">Días calendario</option>
+          <option value="dias_habiles">Días hábiles</option>
+          <option value="meses">Meses</option>
+        </Selector>
+      </div>
+      <Campo etiqueta="Autorización de asamblea (acta y fecha)" name="autorizacion_asamblea" maxLength={200} defaultValue={v("autorizacion_asamblea")} ayuda="Se necesita cuando el valor supera el tope de contratación sin asamblea del contratante." />
+      {estado.error && <Aviso>{estado.error}</Aviso>}
+      <div><BotonEnviar className={claseBoton.primario} textoEnviando="Guardando…">Guardar datos contractuales</BotonEnviar></div>
+    </form>
+  );
+}
+
+export function FormularioDevolverEtapa({ accion, opciones }: { accion: Accion; opciones: { n: number; nombre: string }[] }) {
+  const [estado, enviar] = useActionState(accion, {} as Estado);
+  const v = (k: string) => estado.valores?.[k] ?? "";
+  return (
+    <form action={enviar} key={estado.valores ? JSON.stringify(estado.valores) : "i"} className="flex flex-wrap items-end gap-3">
+      <Selector etiqueta="Devolver a la etapa" name="etapa" required defaultValue={v("etapa")}>
+        <option value="">Elige…</option>
+        {opciones.map((o) => <option key={o.n} value={o.n}>{o.n}. {o.nombre}</option>)}
+      </Selector>
+      <Campo etiqueta="Motivo (obligatorio)" name="motivo" required minLength={3} maxLength={500} defaultValue={v("motivo")} className="min-w-[240px] flex-1" />
+      <BotonEnviar className={claseBoton.contorno} textoEnviando="Guardando…">Devolver</BotonEnviar>
+      {estado.error && <div className="w-full"><Aviso>{estado.error}</Aviso></div>}
+    </form>
+  );
+}
+
+export function FormularioContratanteProyecto({ accion, actual, opciones }: { accion: Accion; actual: string; opciones: { id: string; etiqueta: string }[] }) {
+  const [estado, enviar] = useActionState(accion, {} as Estado);
+  return (
+    <form action={enviar} className="flex flex-wrap items-end gap-3">
+      <Selector etiqueta="Contratante del proyecto" name="contratante_id" defaultValue={actual}>
+        <option value="">Sin contratante</option>
+        {opciones.map((o) => <option key={o.id} value={o.id}>{o.etiqueta}</option>)}
+      </Selector>
+      <BotonEnviar className={claseBoton.contorno} textoEnviando="Guardando…">Guardar</BotonEnviar>
       {estado.error && <div className="w-full"><Aviso>{estado.error}</Aviso></div>}
     </form>
   );
