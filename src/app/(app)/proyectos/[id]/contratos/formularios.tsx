@@ -23,7 +23,7 @@ export function FormularioContrato({ accion, iniciales, volverA, terceros }: { a
           {TIPOS_CONTRATO.map((t) => <option key={t} value={t}>{ETIQUETA_TIPO_CONTRATO[t]}</option>)}
         </Selector>
         <div className="flex flex-col gap-1.5">
-          <Selector etiqueta="Contratista / proveedor (maestro de aliados)" name="tercero_id" required={!iniciales.contratista} defaultValue={v("tercero_id")}>
+          <Selector etiqueta="Contratista / proveedor (maestro de aliados)" tema="maestro_aliados" name="tercero_id" required={!iniciales.contratista} defaultValue={v("tercero_id")}>
             <option value="">{iniciales.contratista ? "Sin ligar al maestro" : "Elige un tercero…"}</option>
             {terceros.map((t) => <option key={t.id} value={t.id}>{t.etiqueta}</option>)}
           </Selector>
@@ -50,7 +50,7 @@ export function FormularioAnticipo({ accion, pctActual, maximo }: { accion: Acci
   return (
     <form action={enviar} className="flex flex-wrap items-end gap-3">
       <Campo etiqueta={`Anticipo (% del valor, máximo ${maximo} %)`} name="pct" required inputMode="decimal" defaultValue={v("pct", pctActual)} />
-      <Campo etiqueta="Motivo (urgencia o necesidad)" name="motivo" maxLength={500} defaultValue={v("motivo", "")} className="min-w-[260px] flex-1" />
+      <Campo etiqueta="Motivo (urgencia o necesidad)" tema="anticipo" name="motivo" maxLength={500} defaultValue={v("motivo", "")} className="min-w-[260px] flex-1" />
       <BotonEnviar className={claseBoton.secundario} textoEnviando="Guardando…">Autorizar anticipo</BotonEnviar>
       {estado.error && <div className="w-full"><Aviso>{estado.error}</Aviso></div>}
     </form>
@@ -106,7 +106,7 @@ export function FormularioDatosContractuales({ accion, iniciales }: { accion: Ac
           <option value="meses">Meses</option>
         </Selector>
       </div>
-      <Campo etiqueta="Autorización de asamblea (acta y fecha)" name="autorizacion_asamblea" maxLength={200} defaultValue={v("autorizacion_asamblea")} ayuda="Se necesita cuando el valor supera el tope de contratación sin asamblea del contratante." />
+      <Campo etiqueta="Autorización de asamblea (acta y fecha)" tema="tope_asamblea" name="autorizacion_asamblea" maxLength={200} defaultValue={v("autorizacion_asamblea")} ayuda="Se necesita cuando el valor supera el tope de contratación sin asamblea del contratante." />
       {estado.error && <Aviso>{estado.error}</Aviso>}
       <div><BotonEnviar className={claseBoton.primario} textoEnviando="Guardando…">Guardar datos contractuales</BotonEnviar></div>
     </form>
@@ -118,7 +118,7 @@ export function FormularioDevolverEtapa({ accion, opciones }: { accion: Accion; 
   const v = (k: string) => estado.valores?.[k] ?? "";
   return (
     <form action={enviar} key={estado.valores ? JSON.stringify(estado.valores) : "i"} className="flex flex-wrap items-end gap-3">
-      <Selector etiqueta="Devolver a la etapa" name="etapa" required defaultValue={v("etapa")}>
+      <Selector etiqueta="Devolver a la etapa" tema="etapa_contrato" name="etapa" required defaultValue={v("etapa")}>
         <option value="">Elige…</option>
         {opciones.map((o) => <option key={o.n} value={o.n}>{o.n}. {o.nombre}</option>)}
       </Selector>
@@ -133,7 +133,7 @@ export function FormularioContratanteProyecto({ accion, actual, opciones }: { ac
   const [estado, enviar] = useActionState(accion, {} as Estado);
   return (
     <form action={enviar} className="flex flex-wrap items-end gap-3">
-      <Selector etiqueta="Contratante del proyecto" name="contratante_id" defaultValue={actual}>
+      <Selector etiqueta="Contratante del proyecto" tema="contratante" name="contratante_id" defaultValue={actual}>
         <option value="">Sin contratante</option>
         {opciones.map((o) => <option key={o.id} value={o.id}>{o.etiqueta}</option>)}
       </Selector>
@@ -149,7 +149,7 @@ export function FormularioPoliza({ accion, amparos, iniciales = {} }: { accion: 
   return (
     <form action={enviar} key={estado.valores ? JSON.stringify(estado.valores) : "i"} className="flex max-w-3xl flex-col gap-4">
       <div className="grid gap-4 sm:grid-cols-2">
-        <Selector etiqueta="Amparo" name="amparo" required defaultValue={v("amparo")} ayuda="Si el amparo ya tiene póliza, este formulario la corrige.">
+        <Selector etiqueta="Amparo" tema="poliza_minimo" name="amparo" required defaultValue={v("amparo")} ayuda="Si el amparo ya tiene póliza, este formulario la corrige.">
           <option value="">Elige…</option>
           {amparos.map((a) => <option key={a} value={a}>{a}</option>)}
         </Selector>
@@ -186,8 +186,8 @@ export function FormularioModificacion({ accion, cambios, iniciales = {}, edicio
           <option value="firmada">Firmada</option>
         </Selector>
         <Campo etiqueta="Fecha de firma" name="fecha_firma" type="date" defaultValue={v("fecha_firma")} />
-        <Campo etiqueta="Nueva fecha fin (prórroga u otrosí)" name="nueva_fecha_fin" type="date" defaultValue={v("nueva_fecha_fin")} />
-        <Campo etiqueta="Valor de la modificación (COP, opcional)" name="valor" inputMode="decimal" defaultValue={v("valor")} ayuda="Informativo: el valor vigente del contrato cambia con un cambio aprobado." />
+        <Campo etiqueta="Nueva fecha fin (prórroga u otrosí)" tema="modificacion_firmada" name="nueva_fecha_fin" type="date" defaultValue={v("nueva_fecha_fin")} />
+        <Campo etiqueta="Valor de la modificación (COP, opcional)" tema="modificacion_firmada" name="valor" inputMode="decimal" defaultValue={v("valor")} ayuda="Informativo: el valor vigente del contrato cambia con un cambio aprobado." />
         <Selector etiqueta="Cambio que la originó (opcional)" name="cambio_id" defaultValue={v("cambio_id")}>
           <option value="">Sin cambio ligado</option>
           {cambios.map((c) => <option key={c.id} value={c.id}>{c.etiqueta}</option>)}

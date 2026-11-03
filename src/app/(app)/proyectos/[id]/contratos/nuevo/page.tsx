@@ -34,7 +34,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       <Link href={`/proyectos/${id}/contratos`} className="text-sm font-medium text-leaf-600 hover:underline">← Volver a los contratos</Link>
       <div className="mt-4"><Titulo>Registrar contrato</Titulo></div>
       {origen && <p className="mt-3 rounded-card bg-leaf-50 p-3 text-sm">Datos tomados de la adjudicación del proceso <strong>{origen}</strong>: revísalos antes de guardar. Al guardar, el contrato queda vinculado al proceso.</p>}
-      <p className="mt-3 text-sm text-muted">El contratista se elige del maestro de aliados y proveedores. El contrato de interventoría se registra aquí como cualquier otro; su valor puede entrar al presupuesto como un rubro.</p>
+      <p className="mt-3 text-sm text-muted">El contratista se elige del maestro de aliados de RAIZ. El contrato de interventoría se registra aquí como cualquier otro; su valor puede entrar al presupuesto como un rubro.</p>
       <div className="mt-6"><FormularioContrato accion={crearContrato.bind(null, id)} iniciales={iniciales} volverA={`/proyectos/${id}/contratos`} terceros={terceros} /></div>
     </>
   );

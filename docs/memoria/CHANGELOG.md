@@ -2,6 +2,16 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.13.0] · 3 de noviembre de 2026
+### Añadido
+- **Página «Acerca de FARO»** (`/faro`), con enlace en el menú lateral y en Ayuda: significado de PMO360, los cuatro pasos de FARO con lo que la plataforma hace hoy, origen del marco y límites declarados ([ADR-0036](decisiones/ADR-0036-raiz-nombre-ayuda-y-faro-en-la-plataforma.md)).
+- Ayuda: 15 términos nuevos en el glosario (categoría «RAIZ, procesos y novedades», más `faro`), íconos «?» en los campos y títulos de RAIZ, contratos, procesos, novedades y plantillas, y guía paso a paso de RAIZ.
+- Materiales: guía PDF con la parte 4 (figuras 33 a 41, ahora 42 figuras), tarjeta de 6 caras, tabla de módulos con las filas 24 a 28 y correos actualizados.
+### Cambiado
+- El módulo «Aliados y proveedores» se llama **RAIZ** (Registro de Aliados e Información centraliZada); el menú lateral usa «RAIZ». La ruta sigue siendo `/aliados`.
+### Corregido
+- Ayuda del semáforo del contrato y nota de la «Ruta del contrato»: decían que las pólizas, los documentos y los compromisos no contaban, y ya cuentan.
+
 ## [3.12.0] · 3 de noviembre de 2026
 ### Añadido
 - **Aliados, capa 4** ([ADR-0035](decisiones/ADR-0035-aliados-capa-4-novedades-y-documentos.md), migración 0029): «Novedades de campo» (registro desde el celular con hasta 3 fotos, revisión y aplicación por la gerencia); plantillas de documentos Word subidas por el administrador y generación de documentos desde un contrato o una modificación, con campos de RAÍZ, fechas y valores en letras y «[POR COMPLETAR]» para lo que falta; dos plantillas incorporadas de ejemplo. 48 comprobaciones SQL y 22 pruebas unitarias nuevas.

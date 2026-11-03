@@ -143,7 +143,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
 
 
       <section className="mt-8" aria-labelledby="t-ruta">
-        <h2 id="t-ruta" className="font-display text-2xl font-bold text-leaf-700">Ruta del contrato</h2>
+        <h2 id="t-ruta" className="font-display text-2xl font-bold text-leaf-700">Ruta del contrato <Ayuda tema="semaforo_contrato" /></h2>
         <div className="mt-3 flex flex-wrap items-center gap-3">
           <SemaforoContrato nivel={sem.nivel} />
           <span className="text-sm"><strong>Etapa {c.etapa}. {etapaActual.nombre}</strong>{sem.nivel !== "archivado" && ` · ${sem.diasEnEtapa} ${sem.diasEnEtapa === 1 ? "día" : "días"} en esta etapa`}</span>
@@ -152,7 +152,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           <ul className="mt-2 list-disc pl-5 text-sm">{[...sem.rojas, ...sem.ambar].map((t) => <li key={t}>{t}</li>)}</ul>
         )}
         <p className="mt-2 text-sm text-muted"><strong>Responsable:</strong> {etapaActual.responsable}. <strong>Siguiente acción:</strong> {etapaActual.accion}.</p>
-        <p className="mt-1 text-xs text-muted">El semáforo vigila la etapa, el plazo (con prórrogas y suspensiones firmadas), la autorización de asamblea, las pólizas y los documentos del contratista. Los compromisos de las comunicaciones llegarán después.</p>
+        <p className="mt-1 text-xs text-muted">El semáforo vigila la etapa, el plazo (con prórrogas y suspensiones firmadas), la autorización de asamblea, las pólizas y los documentos del contratista. También cuentan los compromisos abiertos de las comunicaciones.</p>
         <ol className="mt-3 flex flex-wrap gap-1.5 text-xs" aria-label="Etapas">
           {ETAPAS.map((e) => <li key={e.n} className={`rounded-full border px-2.5 py-0.5 ${e.n === c.etapa ? "border-leaf-600 bg-leaf-600 font-medium text-white" : e.n < c.etapa ? "border-leaf-400 bg-leaf-100 text-leaf-800" : "border-soil-border text-muted"}`}>{e.n}. {e.nombre}</li>)}
         </ol>
@@ -189,7 +189,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       </section>
 
       <section className="mt-8" aria-labelledby="t-pol">
-        <h2 id="t-pol" className="font-display text-2xl font-bold text-leaf-700">Pólizas</h2>
+        <h2 id="t-pol" className="font-display text-2xl font-bold text-leaf-700">Pólizas <Ayuda tema="poliza_minimo" /></h2>
         <p className="mt-1 text-sm text-muted">Una póliza por amparo. El mínimo exigido es el porcentaje del amparo sobre el valor del contrato (o del anticipo). Rojo: vencida o por debajo del mínimo; ámbar: vence en {parametrosV.alertaDias} días o menos, o falta un dato. Se guardan enlaces al soporte, no archivos.</p>
         {polizas.length === 0 ? (
           <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Aún no hay pólizas registradas para este contrato.</p>
@@ -227,7 +227,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       </section>
 
       <section className="mt-8" aria-labelledby="t-mod">
-        <h2 id="t-mod" className="font-display text-2xl font-bold text-leaf-700">Modificaciones del contrato</h2>
+        <h2 id="t-mod" className="font-display text-2xl font-bold text-leaf-700">Modificaciones del contrato <Ayuda tema="modificacion_firmada" /></h2>
         <p className="mt-1 text-sm text-muted">Adiciones, otrosíes, prórrogas, suspensiones, reinicios y cesiones. Solo las <strong>firmadas</strong> mueven la fecha fin vigente y la suspensión. El valor vigente del contrato cambia con un cambio aprobado: liga aquí el cambio que originó la modificación.</p>
         {modificaciones.length === 0 ? (
           <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Este contrato no tiene modificaciones.</p>
@@ -364,7 +364,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       )}
 
       <section className="mt-8" aria-labelledby="t-anticipo">
-        <h2 id="t-anticipo" className="font-display text-2xl font-bold text-leaf-700">Anticipo</h2>
+        <h2 id="t-anticipo" className="font-display text-2xl font-bold text-leaf-700">Anticipo <Ayuda tema="anticipo" /></h2>
         <p className="mt-1 text-sm text-muted">Es discrecional: lo autoriza el director general según la urgencia o necesidad. Nunca supera el {maxAnticipo} % del contrato. Lo normal es no darlo en contratos menores a la referencia.</p>
         {puedeAnticipo ? (
           <div className="mt-3 rounded-card bg-leaf-50 p-5"><FormularioAnticipo accion={autorizarAnticipo.bind(null, id, contratoId)} pctActual={Number(c.anticipo_pct) > 0 ? String(Number(c.anticipo_pct)).replace(".", ",") : ""} maximo={String(maxAnticipo)} /></div>
@@ -411,7 +411,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       </section>
 
       <section className="mt-8" aria-labelledby="t-ret">
-        <h2 id="t-ret" className="font-display text-2xl font-bold text-leaf-700">Retención de garantía</h2>
+        <h2 id="t-ret" className="font-display text-2xl font-bold text-leaf-700">Retención de garantía <Ayuda tema="retencion" /></h2>
         <p className="mt-1 text-sm text-muted">Se libera solo al ejecutar el 100 % del contrato; la liberación puede revertirse.</p>
         {permisos.gestionar && (
           <div className="mt-3">

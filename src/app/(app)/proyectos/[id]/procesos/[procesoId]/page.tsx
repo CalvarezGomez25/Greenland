@@ -14,6 +14,7 @@ import { AvisoResultado } from "@/components/aviso-resultado";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { adjudicarOferta, borrarOferta, borrarProceso, guardarOferta, guardarProceso } from "../acciones";
 import { FormularioOferta, FormularioProceso } from "../formularios";
+import { Ayuda } from "@/components/ayuda";
 
 const PUNTO = { rojo: "bg-red-600", ambar: "bg-amber-500", verde: "bg-leaf-500" } as const;
 const ETIQ = { rojo: "Rojo", ambar: "Ámbar", verde: "Verde" } as const;
@@ -72,7 +73,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
       )}
 
       <section className="mt-8" aria-labelledby="t-comp">
-        <h2 id="t-comp" className="font-display text-2xl font-bold text-leaf-700">Comparativo de ofertas</h2>
+        <h2 id="t-comp" className="font-display text-2xl font-bold text-leaf-700">Comparativo de ofertas <Ayuda tema="puntaje_oferta" /></h2>
         <p className="mt-1 max-w-3xl text-sm text-muted">Puntaje de precio = 100 × menor valor de la ronda ÷ valor de la oferta. Cualitativo = promedio de los cinco criterios (1 a 5) llevado a 100. Total = precio × {Math.round(pesos.precio * 100)} % + cualitativo × {Math.round((1 - pesos.precio) * 100)} %; una oferta no habilitada no recibe total. Los pesos son parámetros. Cada ronda se compara por separado. Una oferta por encima de {tope ? formatearPesos(tope * 10_000n) : "—"} necesita autorización de asamblea.</p>
         {ofertas.length === 0 ? <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Aún no hay ofertas. Registra a los invitados con el formulario de abajo.</p> : rondas.map((r) => (
           <div key={r} className="mt-4">
@@ -131,7 +132,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
 
       {permisos.gestionar && (
         <section className="mt-8" aria-labelledby="t-edit">
-          <h2 id="t-edit" className="font-display text-2xl font-bold text-leaf-700">Datos del proceso</h2>
+          <h2 id="t-edit" className="font-display text-2xl font-bold text-leaf-700">Datos del proceso <Ayuda tema="proceso_contratacion" /></h2>
           <details className="mt-3 rounded-card bg-leaf-50 p-5"><summary className="cursor-pointer font-medium text-leaf-700">Editar el proceso</summary>
             <div className="mt-3"><FormularioProceso accion={guardarProceso.bind(null, id, procesoId)} iniciales={inicialesProceso} volverA={base} /></div>
           </details>

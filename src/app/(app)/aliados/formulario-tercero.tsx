@@ -14,14 +14,14 @@ export function FormularioTercero({ accion, iniciales, soloLectura = false }: { 
     <form action={enviar} key={estado.valores ? JSON.stringify(estado.valores) : "inicial"} className="flex max-w-2xl flex-col gap-4">
       <fieldset disabled={soloLectura} className="flex flex-col gap-4">
         <div className="grid gap-4 sm:grid-cols-2">
-          <Campo etiqueta="NIT o cédula" name="nit" required maxLength={30} defaultValue={v("nit")} ayuda="Con o sin puntos; con el dígito de verificación si lo tiene (901519601-4). Sin RUT todavía: PEND-NOMBRE." />
+          <Campo etiqueta="NIT o cédula" tema="nit_tercero" name="nit" required maxLength={30} defaultValue={v("nit")} ayuda="Con o sin puntos; con el dígito de verificación si lo tiene (901519601-4). Sin RUT todavía: PEND-NOMBRE." />
           <Selector etiqueta="Tipo de persona" name="tipo_persona" required defaultValue={v("tipo_persona") || "juridica"}>
             {Object.entries(ETIQUETA_TIPO_PERSONA).map(([k, t]) => <option key={k} value={k}>{t}</option>)}
           </Selector>
         </div>
         <Campo etiqueta="Razón social o nombre" name="razon_social" required maxLength={200} defaultValue={v("razon_social")} />
         <div className="grid gap-4 sm:grid-cols-2">
-          <Selector etiqueta="Tipo de tercero" name="tipo_tercero" required defaultValue={v("tipo_tercero") || "contratista"}>
+          <Selector etiqueta="Tipo de tercero" tema="tipo_tercero" name="tipo_tercero" required defaultValue={v("tipo_tercero") || "contratista"}>
             {Object.entries(ETIQUETA_TIPO_TERCERO).map(([k, t]) => <option key={k} value={k}>{t}</option>)}
           </Selector>
           <Campo etiqueta="Especialidad (opcional)" name="especialidad" maxLength={200} defaultValue={v("especialidad")} />

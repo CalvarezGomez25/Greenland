@@ -11,7 +11,7 @@ export function FormularioDocumento({ accion, tipos }: { accion: (a: Estado, d: 
   return (
     <form action={enviar} key={estado.valores ? JSON.stringify(estado.valores) : "i"} className="flex max-w-3xl flex-col gap-4">
       <div className="grid gap-4 sm:grid-cols-2">
-        <Selector etiqueta="Tipo de documento" name="tipo" required defaultValue={v("tipo")} ayuda="La vigencia sale del tipo; un documento nuevo del mismo tipo reemplaza al anterior.">
+        <Selector etiqueta="Tipo de documento" tema="doc_contratista" name="tipo" required defaultValue={v("tipo")} ayuda="La vigencia sale del tipo; un documento nuevo del mismo tipo reemplaza al anterior.">
           <option value="">Elige…</option>
           {tipos.map((t) => <option key={t.nombre} value={t.nombre}>{t.nombre}{t.vigencia_dias >= 36500 ? "" : ` (${t.vigencia_dias} días)`}</option>)}
         </Selector>

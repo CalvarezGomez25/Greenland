@@ -9,6 +9,7 @@ import { numeroParametro, type FilaParametro } from "@/lib/pmo/parametros";
 import { ETIQUETA_ESTADO_PROCESO, ETIQUETA_TIPO_SERVICIO, calcularOfertas, pesosDeOfertas, semaforoProceso, type EstadoOferta, type EstadoProceso } from "@/lib/contratos/ofertas";
 import { Aviso, Titulo, claseBoton } from "@/components/ui";
 import { AvisoResultado } from "@/components/aviso-resultado";
+import { Ayuda } from "@/components/ayuda";
 
 const PUNTO = { rojo: "bg-red-600", ambar: "bg-amber-500", verde: "bg-leaf-500" } as const;
 const ETIQ = { rojo: "Rojo", ambar: "Ámbar", verde: "Verde" } as const;
@@ -34,7 +35,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
     <>
       <Link href={`/proyectos/${id}`} className="text-sm font-medium text-leaf-600 hover:underline">← Volver al proyecto</Link>
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
-        <Titulo>Procesos de contratación</Titulo>
+        <span className="inline-flex items-center gap-2"><Titulo>Procesos de contratación</Titulo><Ayuda tema="proceso_contratacion" /></span>
         {permisos.gestionar && <Link href={`/proyectos/${id}/procesos/nuevo`} className={claseBoton.primario}>Registrar proceso</Link>}
       </div>
       <p className="mt-3 text-sm text-muted">{proyecto.nombre} · invitaciones, ofertas por ronda y comparativo con puntaje. La interventoría recomienda pero no adjudica: por eso no ve esta pantalla.</p>

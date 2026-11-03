@@ -137,6 +137,9 @@ Después, el usuario pidió las capas 3 y 4. La capa 3 ([ADR-0034](decisiones/AD
 
 La capa 4 ([ADR-0035](decisiones/ADR-0035-aliados-capa-4-novedades-y-documentos.md)) cerró el paquete: novedades de campo con foto que la gerencia revisa antes de aplicar, y generación de documentos Word a partir de plantillas subidas por el administrador (el texto jurídico no entró al repositorio). Quedaron fuera las evaluaciones de desempeño y las integraciones de correo y calendario.
 
+### Nombre RAIZ, ayuda y FARO en la plataforma (3 de noviembre de 2026)
+El usuario pidió usar el nombre completo **RAIZ (Registro de Aliados e Información centraliZada)** como título del módulo y «RAIZ» en el menú, actualizar la guía PDF y la tarjeta, completar la ayuda de las pantallas nuevas y pensar cómo incorporar FARO en la plataforma. Se renombró el módulo, se amplió el glosario y las guías, se agregaron íconos de ayuda a los campos, y se creó la página «Acerca de FARO» enlazada desde el menú (se descartó ponerlo en la pantalla de inicio). La guía pasó a 42 figuras y la tarjeta a 6 caras. Al revisar las pantallas se encontraron dos textos de ayuda desactualizados y se corrigieron. Decisión: [ADR-0036](decisiones/ADR-0036-raiz-nombre-ayuda-y-faro-en-la-plataforma.md).
+
 ## Estado al 17 de octubre de 2026
 
 Ver [01-resumen-ejecutivo.md](01-resumen-ejecutivo.md).

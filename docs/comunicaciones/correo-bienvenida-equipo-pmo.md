@@ -70,7 +70,7 @@ Dentro de un proyecto, en la zona **Gestión del proyecto** del menú izquierdo,
 - **Cierre y lecciones:** el acta de entrega y las lecciones aprendidas. Para cerrar un proyecto no puede haber cambios sin resolver y deben estar registradas las lecciones.
 
 ## 7. Si tu proyecto tiene obra: el módulo «Obra»
-Si el proyecto incluye construcción, al elegirlo en el menú izquierdo aparece una zona **Obra** con seis pantallas. Te recomiendo recorrerlas en este orden (en el PDF adjunto están con capturas, figuras 21 a 32):
+Si el proyecto incluye construcción, al elegirlo en el menú izquierdo aparece una zona **Obra** con ocho pantallas (las dos últimas, Procesos de contratación y Novedades de campo, se explican en el apartado 7b). Te recomiendo recorrerlas en este orden (en el PDF adjunto están con capturas, figuras 21 a 32):
 
 1. **Presupuesto** (*Obra → Presupuesto*): el presupuesto por capítulos y partidas, los **costos indirectos (A.I.U.)** (administración, imprevistos y utilidad, más impuestos si aplican) y la **línea base de costo**. Más abajo está la **Curva S**: la línea punteada es lo planificado y la continua lo gastado realmente. Con **Registrar gasto** se anota el gasto real de cada mes y con **Importar CSV** se cargan las partidas desde un archivo.
 2. **Adicionales de obra** (botón en Presupuesto): los trabajos que **no estaban contemplados en la EDT original** o que **llegaron como añadidura durante la ejecución**. No son lo mismo que los costos indirectos. Cada adicional se liga a un cambio del control de cambios y queda «Aprobado» solo cuando ese cambio se aprueba; un adicional no modifica la línea base por sí solo.
@@ -82,8 +82,17 @@ Si el proyecto incluye construcción, al elegirlo en el menú izquierdo aparece 
 
 Cuando hay presupuesto aprobado, cronograma y gasto, el **valor ganado se calcula solo** (menú *Valor ganado*): no tienes que hacer cuentas.
 
+## 7b. RAIZ, procesos de contratación, novedades y documentos
+Estas piezas se suman al módulo de Obra (en el PDF adjunto: figuras 33 a 41; los datos de las capturas son ficticios):
+- **RAIZ** (*Administración → RAIZ*, Registro de Aliados e Información centraliZada): el maestro único de contratistas, proveedores, consultores e interventores. Cada uno se escribe **una sola vez**, con su NIT o cédula (sin RUT todavía: PEND-NOMBRE) y sus documentos como enlaces, y se elige al registrar un contrato en cualquier proyecto. Lo ven administrador, director general, analista PMO, finanzas y gerentes; la interventoría no entra.
+- **Ruta y semáforo del contrato** (*Contratos y pagos → un contrato*): nueve etapas, con alertas de plazo, tope de asamblea, pólizas, documentos del contratista y compromisos; modificaciones (prórrogas, suspensiones, otrosíes) que solo cuentan cuando están firmadas.
+- **Procesos de contratación** (*Obra → Procesos de contratación*): invitaciones, ofertas por ronda y un comparativo con puntaje (precio, cualitativo y total). Al adjudicar, el contrato se registra con los datos de la oferta. La interventoría no ve esta pantalla.
+- **Novedades de campo** (*Obra → Novedades de campo*): un hecho de un contrato registrado desde obra (acta de inicio, póliza, suspensión…), con hasta 3 fotos. La gerencia lo aplica o lo descarta; nada cambia el contrato por sí solo.
+- **Documentos en Word** (botón *Generar documento (Word)* en el contrato): llena una plantilla con los datos; lo que falta queda como [POR COMPLETAR]. Las plantillas oficiales las sube el administrador o el director general; el texto jurídico lo aporta Jurídica.
+- **Acerca de FARO** (menú izquierdo): qué significa PMO360 y el marco de cuatro pasos para explicarla (Fuente única, Alerta a tiempo, Respaldo, Operación que escala).
+
 ## 8. Si tienes dudas
-Abre **Ayuda** en el menú izquierdo. Allí está el glosario (qué significan SPI, CPI, BAC y el semáforo) y una guía de diligenciamiento de cada módulo. Muchas pantallas tienen además un pequeño signo de ayuda junto a los campos. Y para consultas al vuelo, imprime la **tarjeta de referencia** adjunta (4 caras: navegación, gestión, obra y cómo leer los números). Si aun así no queda claro, anótalo: es justo lo que quiero saber.
+Abre **Ayuda** en el menú izquierdo. Allí está el glosario (qué significan SPI, CPI, BAC y el semáforo) y una guía de diligenciamiento de cada módulo. Muchas pantallas tienen además un pequeño signo de ayuda junto a los campos. Y para consultas al vuelo, imprime la **tarjeta de referencia** adjunta (6 caras: navegación, gestión, obra y cómo leer los números). Si aun así no queda claro, anótalo: es justo lo que quiero saber.
 
 ## 9. Lo que necesito de ti
 Después de recorrerla, respóndeme este correo con tus impresiones. Me sirve cualquier comentario; estas preguntas te guían:

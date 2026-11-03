@@ -41,8 +41,8 @@ export function FormularioSubidaPlantilla() {
   return (
     <form ref={formulario} onSubmit={enviar} className="flex max-w-2xl flex-col gap-4">
       <Campo etiqueta="Nombre de la plantilla" name="nombre" required maxLength={120} ayuda="Por ejemplo «Minuta de obra civil»." />
-      <Selector etiqueta="Se usa para" name="ambito" required defaultValue="contrato"><option value="contrato">Un contrato</option><option value="modificacion">Una modificación (otrosí, adición…)</option></Selector>
-      <Campo etiqueta="Archivo Word (.docx, máximo 8 MB)" name="archivo" type="file" accept=".docx" required ayuda="Debe traer campos de combinación (MERGEFIELD) con los nombres de RAÍZ, como «CONTRATISTA» u «OBJETO»." />
+      <Selector etiqueta="Se usa para" tema="plantilla_ambito" name="ambito" required defaultValue="contrato"><option value="contrato">Un contrato</option><option value="modificacion">Una modificación (otrosí, adición…)</option></Selector>
+      <Campo etiqueta="Archivo Word (.docx, máximo 8 MB)" tema="campos_combinacion" name="archivo" type="file" accept=".docx" required ayuda="Debe traer campos de combinación (MERGEFIELD) con los nombres de RAÍZ, como «CONTRATISTA» u «OBJETO»." />
       <Campo etiqueta="Nota (opcional)" name="nota" maxLength={500} ayuda="Por ejemplo, la versión y quién la aprobó." />
       {error && <Aviso>{error}</Aviso>}
       {aviso && <Aviso tipo="ok">{aviso}</Aviso>}

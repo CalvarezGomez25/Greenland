@@ -41,5 +41,6 @@ Una ficha por decisión importante, con el formato propuesto por Michael Nygard 
 | [ADR-0033](ADR-0033-aliados-capa-2-polizas-modificaciones-documentos.md) | Aliados, capa 2: pólizas, modificaciones contractuales y documentos del tercero | 2026-11-03 | Vigente |
 | [ADR-0034](ADR-0034-aliados-capa-3-procesos-ofertas-comunicaciones.md) | Aliados, capa 3: procesos de contratación, ofertas con puntaje y comunicaciones con compromisos | 2026-11-03 | Vigente |
 | [ADR-0035](ADR-0035-aliados-capa-4-novedades-y-documentos.md) | Aliados, capa 4: novedades de campo y generación de documentos Word | 2026-11-03 | Vigente |
+| [ADR-0036](ADR-0036-raiz-nombre-ayuda-y-faro-en-la-plataforma.md) | Nombre RAIZ para el módulo de aliados, ayuda ampliada y FARO dentro de la plataforma | 2026-11-03 | Vigente |
 
 Las decisiones de detalle (supuestos S1–S13, P1–P11, D2, etc.) siguen en `docs/SUPUESTOS.md` y en la sección 14 de `ESPECIFICACION.md`.

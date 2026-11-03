@@ -9,6 +9,7 @@ import { BotonEnviar } from "@/components/boton-enviar";
 import { Titulo } from "@/components/ui";
 import { borrarPlantilla, cambiarEstadoPlantilla } from "./acciones";
 import { FormularioSubidaPlantilla } from "./formulario-subida";
+import { Ayuda } from "@/components/ayuda";
 
 // Campos que PMO360 sabe llenar con los datos de un contrato y una modificación (el resto se escribe al generar el documento).
 const RESUELTOS = (() => {
@@ -28,8 +29,8 @@ async function Contenido() {
   const lista = (data ?? []) as { id: string; nombre: string; ambito: string; campos: string[]; activa: boolean; nota: string | null; tamano: number; creado_en: string }[];
   return (
     <>
-      <Link href="/aliados" className="text-sm font-medium text-leaf-600 hover:underline">← Volver a aliados y proveedores</Link>
-      <div className="mt-4"><Titulo>Plantillas de documentos</Titulo></div>
+      <Link href="/aliados" className="text-sm font-medium text-leaf-600 hover:underline">← Volver a RAIZ</Link>
+      <div className="mt-4"><span className="inline-flex items-center gap-2"><Titulo>Plantillas de documentos</Titulo><Ayuda tema="plantilla_documento" /></span></div>
       <p className="mt-3 max-w-3xl text-sm text-muted">
         Archivos Word con campos de combinación (MERGEFIELD) con los nombres de RAÍZ. El texto jurídico vive en estos archivos, no en la plataforma: Jurídica los revisa y el administrador los sube.
         Con ellos se generan minutas, otrosíes y actas desde cada contrato. Los textos del kit de formatos y de la multa del 3 % del paquete requieren revisión jurídica antes de uso general.
@@ -70,7 +71,7 @@ async function Contenido() {
         <ul className="mt-3 list-disc pl-5 text-sm">{INCORPORADAS.map((p) => <li key={p.id}>{p.nombre}: {p.ambito === "contrato" ? "contrato" : "modificación"}, {p.campos.length} campos. Texto neutro; requiere revisión jurídica.</li>)}</ul>
       </section>
       {puedeEditar === true ? (
-        <section className="mt-8" aria-labelledby="t-subir"><h2 id="t-subir" className="font-display text-2xl font-bold text-leaf-700">Subir una plantilla</h2><div className="mt-3 rounded-card bg-leaf-50 p-5"><FormularioSubidaPlantilla /></div></section>
+        <section className="mt-8" aria-labelledby="t-subir"><h2 id="t-subir" className="font-display text-2xl font-bold text-leaf-700">Subir una plantilla <Ayuda tema="campos_combinacion" /></h2><div className="mt-3 rounded-card bg-leaf-50 p-5"><FormularioSubidaPlantilla /></div></section>
       ) : <p className="mt-6 text-sm text-muted">Solo el administrador y el director general suben plantillas.</p>}
     </>
   );

@@ -27,7 +27,7 @@ Hoy abrimos **PMO360, Control integral de Proyectos**, la plataforma donde estam
 **Qué hacer en tus primeros 20 minutos**
 1. Entra a **Mi trabajo** y mueve una actividad de columna.
 2. Abre un proyecto y mira su semáforo y el **Valor ganado**.
-3. Si el proyecto tiene obra, recorre la zona **Obra** del menú en este orden: **Presupuesto**, **Balance de costos**, **Control de costos**, **Cronograma**, **Contratos y pagos** y **Bitácora**.
+3. Si el proyecto tiene obra, recorre la zona **Obra** del menú en este orden: **Presupuesto**, **Balance de costos**, **Control de costos**, **Cronograma**, **Contratos y pagos**, **Procesos de contratación**, **Novedades de campo** y **Bitácora**. Después abre **RAIZ** (menú Administración, si tu rol la ve) para ver el maestro de aliados.
 4. Si tienes dudas, abre **Ayuda** (glosario y guía de cada módulo).
 
 **Lo nuevo en Obra, en una línea cada uno**
@@ -35,10 +35,14 @@ Hoy abrimos **PMO360, Control integral de Proyectos**, la plataforma donde estam
 - **Adicionales de obra:** trabajos que no estaban en la EDT original o llegaron durante la ejecución; cuentan cuando el cambio que los respalda se aprueba.
 - **Contratos ligados al presupuesto:** cada contrato se reparte entre capítulos y adicionales, y el **Balance de costos** muestra lo presupuestado frente a lo contratado y facturado.
 - **Control de costos:** corte a corte, lo invertido, lo que falta por invertir y lo proyectado, frente al corte anterior y a la línea base.
+- **RAIZ (Registro de Aliados e Información centraliZada):** cada contratista o proveedor se escribe una sola vez, con sus documentos, y se elige en cualquier proyecto.
+- **Contratos con ruta y semáforo, procesos de contratación y novedades de campo:** alertas de plazo, pólizas y documentos; ofertas comparadas con puntaje; hechos de obra con foto que la gerencia revisa.
+- **Documentos en Word:** desde un contrato se genera el acta de inicio u otro documento a partir de una plantilla aprobada (hoy hay dos de ejemplo).
+- **Acerca de FARO** (menú izquierdo): el origen del nombre PMO360 y el marco de cuatro pasos.
 
 **Adjuntos**
 - **Guía rápida con capturas** (PDF): el paso a paso de cada pantalla, con figuras numeradas.
-- **Tarjeta de referencia** (4 caras, para imprimir a doble cara): navegación, gestión, obra y cómo leer los números.
+- **Tarjeta de referencia** (6 caras, 3 hojas a doble cara): navegación, gestión, obra, RAIZ y contratación, cómo leer los números, y PMO360 y FARO.
 
 **Tres cosas que conviene saber**
 - Recorrer no cambia nada: mira con confianza. Guarda con cuidado solo cuando registres información; los cambios quedan con quién y cuándo.

@@ -20,7 +20,7 @@ export function FormularioContratante({ accion, iniciales, soloLectura = false }
           <Campo etiqueta="Correo de facturación (opcional)" name="correo_facturacion" type="email" maxLength={200} defaultValue={v("correo_facturacion")} />
         </div>
         <Campo etiqueta="Representante legal (opcional)" name="representante_legal" maxLength={200} defaultValue={v("representante_legal")} />
-        <Campo etiqueta="Tope de contratación sin asamblea, en SMMLV (opcional)" name="tope_smmlv" inputMode="numeric" maxLength={6} defaultValue={v("tope_smmlv")} ayuda="Si lo dejas vacío se usa el parámetro general «tope_asamblea_smmlv»." />
+        <Campo etiqueta="Tope de contratación sin asamblea, en SMMLV (opcional)" tema="tope_asamblea" name="tope_smmlv" inputMode="numeric" maxLength={6} defaultValue={v("tope_smmlv")} ayuda="Si lo dejas vacío se usa el parámetro general «tope_asamblea_smmlv»." />
         <Campo etiqueta="Observaciones (opcional)" name="observaciones" maxLength={1000} defaultValue={v("observaciones")} />
         <Selector etiqueta="Estado" name="estado" defaultValue={v("estado") || "activo"}>
           <option value="activo">Activo</option>

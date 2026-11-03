@@ -8,6 +8,7 @@ import { AvisoResultado } from "@/components/aviso-resultado";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { revisarNovedad } from "./acciones";
 import { TIPOS_NOVEDAD, TIPOS_QUE_SE_APLICAN_SOLOS } from "@/lib/obra/novedades";
+import { Ayuda } from "@/components/ayuda";
 
 type N = { id: string; contrato_id: string; tipo: string; fecha: string; descripcion: string; fotos: string[]; estado: string; nota_revision: string | null; creado_en: string };
 const ETIQ_ESTADO: Record<string, string> = { pendiente: "Pendiente de revisión", aplicada: "Aplicada", descartada: "Descartada" };
@@ -70,13 +71,13 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
     <>
       <Link href={`/proyectos/${id}`} className="text-sm font-medium text-leaf-600 hover:underline">← Volver al proyecto</Link>
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
-        <Titulo>Novedades de campo</Titulo>
+        <span className="inline-flex items-center gap-2"><Titulo>Novedades de campo</Titulo><Ayuda tema="novedad_campo" /></span>
         <Link href={`/proyectos/${id}/novedades/nueva`} className={claseBoton.primario}>Registrar novedad</Link>
       </div>
       <p className="mt-3 max-w-3xl text-sm text-muted">{proyecto.nombre} · lo que pasa en obra con un contrato (acta de inicio firmada, póliza, suspensión…), con foto, desde el celular. La gerencia la revisa antes de aplicarla: una novedad nunca cambia el contrato por sí sola.</p>
       <div className="mt-4 flex flex-col gap-2"><AvisoResultado ok={ok} />{errorUrl && <Aviso>{errorUrl.slice(0, 400)}</Aviso>}</div>
       {error && <div className="mt-4"><Aviso>No se pudieron leer las novedades{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
-      <h2 className="mt-6 font-display text-2xl font-bold text-leaf-700">Por revisar ({pendientes.length})</h2>
+      <h2 className="mt-6 font-display text-2xl font-bold text-leaf-700">Por revisar ({pendientes.length}) <Ayuda tema="novedad_revision" /></h2>
       {pendientes.length === 0 ? <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">No hay novedades pendientes.</p> : <ul className="mt-3 flex flex-col gap-3">{pendientes.map((n) => tarjeta(n, true))}</ul>}
       {resto.length > 0 && <><h2 className="mt-8 font-display text-2xl font-bold text-leaf-700">Revisadas</h2><ul className="mt-3 flex flex-col gap-3">{resto.map((n) => tarjeta(n, false))}</ul></>}
     </>

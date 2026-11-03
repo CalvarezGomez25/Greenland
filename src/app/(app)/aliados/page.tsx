@@ -6,6 +6,7 @@ import { ETIQUETA_TIPO_TERCERO, TIPOS_TERCERO, esNitTemporal, formatearNit, type
 import { desdeJson, formatearPesos } from "@/lib/presupuesto/dinero";
 import { Titulo, claseBoton, claseCampo } from "@/components/ui";
 import { AvisoResultado } from "@/components/aviso-resultado";
+import { Ayuda } from "@/components/ayuda";
 
 // Quita los signos que tienen sentido especial en un filtro de PostgREST (coma, paréntesis, comodines).
 const limpiar = (t: string) => t.replace(/[,()%*\\"']/g, " ").replace(/\s+/g, " ").trim().slice(0, 80);
@@ -43,7 +44,7 @@ async function Contenido({ searchParams }: { searchParams: Promise<Record<string
   return (
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <Titulo>Aliados y proveedores</Titulo>
+        <div><Titulo>RAIZ</Titulo><p className="mt-2 text-sm font-medium text-leaf-700">Registro de Aliados e Información centraliZada <Ayuda tema="raiz" /></p></div>
         <div className="flex flex-wrap gap-3">
           <Link href="/aliados/contratantes" className={claseBoton.contorno}>Contratantes</Link>
           <Link href="/aliados/plantillas" className={claseBoton.contorno}>Plantillas de documentos</Link>

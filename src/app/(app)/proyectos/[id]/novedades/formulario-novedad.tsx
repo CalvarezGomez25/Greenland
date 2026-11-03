@@ -52,7 +52,7 @@ export function FormularioNovedad({ proyectoId, contratos, hoy }: { proyectoId: 
         <option value="">Elige…</option>
         {contratos.map((c) => <option key={c.id} value={c.id}>{c.etiqueta}</option>)}
       </Selector>
-      <Selector etiqueta="¿Qué pasó?" name="tipo" required defaultValue="otro">{TIPOS_NOVEDAD.map(([k, t]) => <option key={k} value={k}>{t}</option>)}</Selector>
+      <Selector etiqueta="¿Qué pasó?" tema="novedad_campo" name="tipo" required defaultValue="otro">{TIPOS_NOVEDAD.map(([k, t]) => <option key={k} value={k}>{t}</option>)}</Selector>
       <Campo etiqueta="Fecha del hecho" name="fecha" type="date" required defaultValue={hoy} max={hoy} />
       <label className="flex flex-col gap-1.5">
         <span className="text-[13px] font-medium text-leaf-800">Descripción</span>

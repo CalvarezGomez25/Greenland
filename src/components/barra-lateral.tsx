@@ -38,6 +38,7 @@ const ICONOS: Record<string, string> = {
   contratos: "M6 3h9l4 4v14H6z M14 3v5h5 M9 15l2 2 4-4",
   bitacora: "M4 5a2 2 0 012-2h6v18H6a2 2 0 01-2-2z M20 5a2 2 0 00-2-2h-6v18h6a2 2 0 002-2z",
   interventoria: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z M9 12l2 2 4-4",
+  faro: "M9 21l1-12h4l1 12 M8 9h8 M10 9V6l2-2 2 2v3 M3 6l4 1 M21 6l-4 1 M5 21h14",
   glosario: "M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z M4 21V5 M9 8h6 M9 12h6",
   actividades: "M4 5h4v4H4z M4 15h4v4H4z M12 7h8 M12 17h8 M5 7l1 1 2-2",
   mitrabajo: "M9 12l2 2 4-4 M12 21a9 9 0 100-18 9 9 0 000 18z",
@@ -149,6 +150,7 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, conPortafo
             </>
           )}
           <Link href="/glosario" aria-current={ruta === "/glosario" ? "page" : undefined} className={claseEnlace(ruta === "/glosario")}><Icono clave="glosario" /> Ayuda</Link>
+          <Link href="/faro" aria-current={ruta === "/faro" ? "page" : undefined} className={claseEnlace(ruta === "/faro")}><Icono clave="faro" /> Acerca de FARO</Link>
 
           <div className="relative mt-2">
             <button type="button" onClick={() => setSelector((v) => !v)} aria-expanded={selector} aria-haspopup="listbox" className="flex w-full items-center gap-3 rounded-xl border border-soil-border bg-leaf-50/60 px-3 py-2.5 text-left hover:bg-leaf-50">

@@ -20,7 +20,7 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string
 
   return (
     <>
-      <Link href="/aliados" className="text-sm font-medium text-leaf-600 hover:underline">← Volver a aliados y proveedores</Link>
+      <Link href="/aliados" className="text-sm font-medium text-leaf-600 hover:underline">← Volver a RAIZ</Link>
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
         <Titulo>Contratantes</Titulo>
         {puedeEditar === true && <Link href="/aliados/contratantes/nuevo" className={claseBoton.primario}>Agregar contratante</Link>}

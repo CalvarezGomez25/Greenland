@@ -8,6 +8,7 @@ import { cargarDatosDocumento } from "@/lib/documentos/datos";
 import { INCORPORADAS } from "@/lib/documentos/incorporadas";
 import { Aviso, Campo, Titulo, claseBoton } from "@/components/ui";
 import { ETIQUETA_TIPO_MODIFICACION } from "@/lib/contratos/vigilancia";
+import { Ayuda } from "@/components/ayuda";
 
 type Plantilla = { id: string; nombre: string; ambito: string; campos: string[]; incorporada: boolean };
 
@@ -38,7 +39,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   return (
     <>
       <Link href={volver} className="text-sm font-medium text-leaf-600 hover:underline">← Volver al contrato</Link>
-      <div className="mt-4"><Titulo>Generar documento</Titulo></div>
+      <div className="mt-4"><span className="inline-flex items-center gap-2"><Titulo>Generar documento</Titulo><Ayuda tema="campos_combinacion" /></span></div>
       <p className="mt-3 max-w-3xl text-sm text-muted">
         {datos.proyecto.nombre} · {datos.contrato.contratista}{modificacion ? ` · ${ETIQUETA_TIPO_MODIFICACION[modificacion.tipo]} N.° ${modificacion.numero}` : ""}. Se llena el archivo Word con los datos de PMO360; lo que aún no se guarda
         (actividades, forma de pago, cédulas…) lo escribes aquí o queda como «[POR COMPLETAR]». Los textos jurídicos viven en las plantillas que sube el administrador, no en la plataforma.

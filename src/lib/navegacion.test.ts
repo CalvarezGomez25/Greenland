@@ -80,7 +80,7 @@ describe("menú lateral", () => {
   });
 });
 
-describe("aliados y proveedores", () => {
+describe("RAIZ (aliados y proveedores)", () => {
   it("lo ve todo el portafolio y quien sea gerente de algún proyecto", () => {
     for (const r of ["administrador", "director_general", "analista_pmo", "finanzas"] as const) expect(puedeVerAliados(r, [])).toBe(true);
     expect(puedeVerAliados(null, ["supervisor", "gerente"])).toBe(true);
@@ -89,5 +89,8 @@ describe("aliados y proveedores", () => {
   it("el enlace aparece solo cuando corresponde", () => {
     expect(enlacesAdministracion("finanzas", false, true).map((e) => e.href)).toContain("/aliados");
     expect(enlacesAdministracion("finanzas", false, false).map((e) => e.href)).not.toContain("/aliados");
+  });
+  it("el menú lo llama con el nombre corto RAIZ", () => {
+    expect(enlacesAdministracion("finanzas", false, true).find((e) => e.href === "/aliados")?.titulo).toBe("RAIZ");
   });
 });

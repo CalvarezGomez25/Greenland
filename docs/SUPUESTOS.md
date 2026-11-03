@@ -70,3 +70,6 @@ fácil de cambiar; deben validarse con el uso real.
 
 ## Aliados, capa 4 (migración 0029, ADR-0035)
 - El texto jurídico de los documentos vive en plantillas que sube el administrador (S38); lo que PMO360 no guarda se escribe al generar o queda «[POR COMPLETAR]» (S39); las cláusulas de la minuta son parámetros y la multa diaria del 3 % está pendiente de revisión jurídica (S40).
+
+## Nombre RAIZ, ayuda y FARO (ADR-0036)
+- El módulo de aliados se llama RAIZ; la ruta técnica sigue siendo `/aliados` (S41). FARO se explica en una página propia enlazada desde el menú y la Ayuda, no en el inicio ni en el ingreso (S42).

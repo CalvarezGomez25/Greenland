@@ -56,7 +56,7 @@ export function enlacesAdministracion(rolGlobal: RolGlobal | null, conDirectorio
   if (rolGlobal === "administrador") out.push({ href: "/usuarios", titulo: "Usuarios" }, { href: "/organizacion", titulo: "Organización" });
   if (rolGlobal) out.push({ href: "/parametros", titulo: "Parámetros" });
   if (rolGlobal === "administrador" || rolGlobal === "director_general") out.push({ href: "/auditoria", titulo: "Auditoría" });
-  if (conAliados) out.push({ href: "/aliados", titulo: "Aliados y proveedores" });
+  if (conAliados) out.push({ href: "/aliados", titulo: "RAIZ" });
   if (conDirectorio) out.push({ href: "/directorio", titulo: "Directorio de contactos" });
   return out;
 }

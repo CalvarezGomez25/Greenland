@@ -16,6 +16,7 @@ import { AvisoResultado } from "@/components/aviso-resultado";
 import { diasParaVencer, hoyColombia } from "@/lib/actividades";
 import { BotonEnviar } from "@/components/boton-enviar";
 import { formatearFecha } from "@/lib/formato";
+import { Ayuda } from "@/components/ayuda";
 
 async function Contenido({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ ok?: string | string[] }> }) {
   const { id } = await params;
@@ -69,7 +70,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
 
       {!nuevo && (
         <section className="mt-10" aria-labelledby="t-docs">
-          <h2 id="t-docs" className="font-display text-2xl font-bold text-leaf-700">Documentos del tercero</h2>
+          <h2 id="t-docs" className="font-display text-2xl font-bold text-leaf-700">Documentos del tercero <Ayuda tema="doc_contratista" /></h2>
           <p className="mt-1 max-w-3xl text-sm text-muted">Solo enlaces a los soportes (no se guardan archivos ni cédulas). El vencimiento sale de la fecha de expedición y la vigencia del tipo de documento; cuenta el más reciente de cada tipo. Rojo: vencido; ámbar: vence pronto. Un tercero sin documentos queda en ámbar en el semáforo de sus contratos.</p>
           {documentos.length === 0 ? (
             <p className="mt-3 rounded-card bg-leaf-50 p-5 text-sm text-muted">Aún no hay documentos registrados.</p>
