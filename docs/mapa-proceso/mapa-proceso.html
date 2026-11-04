@@ -65,7 +65,7 @@ h1 span{display:inline-block;border-bottom:2px solid var(--earth);padding-bottom
 .sheet .node .us{font-size:12.5px;line-height:1.28;-webkit-line-clamp:2}
 .sheet .gate{font-size:16px;top:6px;right:9px}
 .sheet .node .hd{padding-right:20px}
-.sheet .etapa .n{font-size:12px}.sheet .etapa .t{font-size:22px}.sheet .etapa .s{font-size:13px}
+.sheet .etapa .n{font-size:12px}.sheet .etapa .t{font-size:22px;white-space:nowrap}.sheet .etapa .s{font-size:13px}
 .sheet .lanelabel b{font-size:20px}.sheet .lanelabel i{font-size:13px}
 .node .us{font-size:11px;line-height:1.25;color:var(--muted);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .node.sel{box-shadow:0 0 0 3px color-mix(in srgb,var(--lc) 45%,transparent);background:var(--lt)}
@@ -130,13 +130,45 @@ body.lam .poster{display:block}
 .gt{color:var(--earth);font-size:12px;margin-right:6px}
 @media print{
   @page{size:594mm 420mm;margin:0}
-  html,body{background:#fff!important;height:420mm!important;overflow:hidden!important}
+  html,body{background:#fff!important;height:var(--hh)!important;overflow:hidden!important}
   body{padding:0!important}
   body .app{display:none!important}
   body .poster{display:block!important}
-  .posterhost{width:594mm!important;height:420mm!important;margin:0!important;overflow:hidden;position:relative}
-  .poster .sheet{transform:scale(.9354)!important}
+  .posterhost{width:var(--hw)!important;height:var(--hh)!important;margin:0!important;overflow:hidden;position:relative}
+  .poster .sheet{transform:scale(var(--ps))!important}
 }
+
+/* ---------- Controles, mapa de metro y versión resumida ---------- */
+.ctl{display:flex;flex-wrap:wrap;gap:10px 22px;margin:16px 0 4px;align-items:center}
+.grp{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.grp>b{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-right:4px}
+.cap{font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--accent);margin:14px 0 6px}
+.cap:first-child{margin-top:0}
+.band{position:absolute;pointer-events:none}
+.band.b2{background:color-mix(in srgb,var(--surface) 70%,transparent)}
+.linebadge{position:absolute;display:flex;align-items:center;gap:8px;background:var(--lc);color:var(--bg);border-radius:999px;padding:4px 12px 4px 4px;z-index:3}
+.linebadge i{font-style:normal;flex:none;width:24px;height:24px;border-radius:50%;background:var(--bg);color:var(--lc);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+.linebadge b{font-family:var(--font-display);font-size:13.5px;line-height:1.05;font-weight:700}
+.sheet .linebadge b{font-size:16px}.sheet .linebadge i{width:28px;height:28px;font-size:15px}
+.canvas svg.metro,.sheet svg.metro{z-index:0}
+svg.metro .trk{fill:none;stroke-width:8;stroke-linecap:round;stroke-linejoin:round}
+svg.metro .trk.ghost{opacity:.32;stroke-width:5;stroke-dasharray:1 10}
+svg.metro .term{fill:var(--bg);stroke-width:4}
+svg.metro .st{fill:var(--bg);transition:opacity .15s}
+svg.metro .st.dim,svg.metro .st.lv0{opacity:.3}
+svg.metro .st.lvV{stroke-dasharray:4 3}
+svg.metro .st.sel{fill:var(--surface2)}
+.node.mlabel{background:transparent!important;border:0!important;border-radius:8px;padding:25px 3px 0 3px;box-shadow:none!important;overflow:visible;text-shadow:0 0 2px var(--bg),0 0 3px var(--bg),0 0 5px var(--bg)}
+.node.mlabel.sel{background:color-mix(in srgb,var(--lc) 14%,transparent)!important}
+.node.mlabel .us{-webkit-line-clamp:1}
+.node.mlabel .gate{top:3px;right:4px}
+.node.mlabel .lvl{bottom:2px;right:4px}
+.sheet .node.mlabel{padding:27px 3px 0 3px}
+.sheet .node.mlabel .us{-webkit-line-clamp:2}
+.cols.brief{grid-template-columns:2.6fr 1fr}
+.cols.brief .two{columns:3}
+.pf.bf .rc{font-size:12.5px}
+@media (max-width:620px){.ctl{gap:10px 14px}}
 </style>
 
 <div class="app">
@@ -145,15 +177,19 @@ body.lam .poster{display:block}
       <h1><span>Mapa de proceso PMO360</span></h1>
       <p class="lede">El ciclo de vida de un proyecto de punta a punta: en qué etapa se usa cada módulo, quién interviene, quién decide y cómo pasan los datos de un módulo a otro. Haz clic en un módulo para descubrirlo.</p>
     </div>
-    <div class="tools">
-      <button class="pill" id="bAll" aria-pressed="false">Ver todas las conexiones</button>
-      <button class="pill" id="bLam" aria-pressed="false">Vista de lámina (para imprimir)</button>
-    </div>
+  </div>
+  <div class="ctl">
+    <div class="grp"><b>Estilo</b><button class="pill" id="sCar" aria-pressed="true">Matriz de carriles</button><button class="pill" id="sMet" aria-pressed="false">Mapa de metro</button><button class="pill" id="bCmp" aria-pressed="false">Comparar estilos</button></div>
+    <div class="grp"><b>Detalle</b><button class="pill" id="dFull" aria-pressed="true">Completo</button><button class="pill" id="dBrief" aria-pressed="false">Resumido</button></div>
+    <div class="grp"><button class="pill" id="bAll" aria-pressed="false">Ver todas las conexiones</button><button class="pill" id="bTheme">Tema: automático</button><button class="pill" id="bLam" aria-pressed="false">Vista de lámina</button></div>
   </div>
   <div class="roles" id="roles" role="group" aria-label="Ver el mapa según el rol"></div>
   <div class="layout">
     <div>
-      <div class="mapwrap" id="mapwrap"><div class="sizer" id="sizer"><div class="canvas" id="canvas"></div></div></div>
+      <div class="cap" id="cap1" hidden></div>
+      <div class="mapwrap" id="wrap1"><div class="sizer"><div class="canvas"></div></div></div>
+      <div class="cap" id="cap2" hidden></div>
+      <div class="mapwrap" id="wrap2" hidden><div class="sizer"><div class="canvas"></div></div></div>
       <div class="legend" id="legend"></div>
     </div>
     <aside class="panel" id="panel" aria-live="polite"></aside>
@@ -161,6 +197,7 @@ body.lam .poster{display:block}
 </div>
 
 <div class="poster" id="poster"><div class="posterhost" id="posterhost"><div class="sheet" id="sheet"></div></div></div>
+<style id="pg">@page{size:594mm 420mm;margin:0}</style>
 
 <script>
 /* ===================== DATOS ===================== */
@@ -287,105 +324,177 @@ const LI=Object.fromEntries(LANES.map(l=>[l.id,l]));
 const LV={D:'decide o aprueba',H:'registra o trabaja',V:'consulta'};
 
 /* ===================== ESTADO ===================== */
-const st={sel:null,role:null,all:false,lam:location.hash==='#lamina'};
+const CORE=new Set(['acta','edt','riesgos','cambios','cierre','pres','crono','valor','cc','raiz','proc','contr','bit','nov','interv','sem','dec']);
+const SHORT={ad:'Todo: usuarios, parámetros y estructura',di:'Aprueba contratos, anticipos y cambios moderados y críticos',an:'Consolida, evalúa cambios y mantiene los tableros',ge:'Gestiona su proyecto; aprueba cambios menores y adjudica',pa:'Firma el acta y los cambios de más de 5 %',fi:'Ve presupuesto, contratos y pagos',su:'Registra bitácora, fotos y avance de obra',in:'Conceptúa y verifica; no aprueba',co:'Solo lectura'};
+const st={sel:null,role:null,all:false,lam:location.hash==='#lamina',sty:'car',det:'full',cmp:false,theme:'auto'};
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const mods=()=>st.det==='brief'?M.filter(m=>CORE.has(m.id)):M;
+const flows=()=>{const ids=new Set(mods().map(m=>m.id));return FLOWS.filter(f=>ids.has(f[0])&&ids.has(f[1]))};
+const isRel=id=>st.sel&&flows().some(f=>(f[0]===st.sel&&f[1]===id)||(f[1]===st.sel&&f[0]===id));
 
 /* ===================== GEOMETRÍA ===================== */
 function geo(cfg){
-  const g={W:cfg.W,lab:cfg.lab,pad:cfg.pad||6,mx:cfg.mx||0};
-  g.colW=(cfg.W-g.mx-cfg.lab-8)/6; g.top=cfg.top; g.spineH=cfg.spineH; g.nodeH=cfg.nodeH; g.gap=cfg.gap; g.laneGap=cfg.laneGap;
+  const ms=mods(); const g={W:cfg.W,lab:cfg.lab,pad:6,mx:cfg.mx||0,nodeH:cfg.nodeH,gap:cfg.gap,top:cfg.top,spineH:cfg.spineH,laneGap:cfg.laneGap};
+  g.colW=(cfg.W-g.mx-cfg.lab-8)/6;
+  // filas por carril: en la versión completa se respetan las definidas; en la resumida se reacomodan
+  const row={};
+  LANES.forEach(l=>{const ls=ms.filter(m=>m.l===l.id).sort((x,y)=>x.row-y.row||x.a-y.a);const placed=[];
+    ls.forEach(m=>{let r=st.det==='full'?m.row:0;if(st.det!=='full'){while(placed.some(p=>p.r===r&&!(m.b<p.a||m.a>p.b)))r++}placed.push({a:m.a,b:m.b,r});row[m.id]=r})});
   let y=g.top+g.spineH+cfg.afterSpine; g.lanes={};
-  LANES.forEach(l=>{const rows=Math.max(...M.filter(m=>m.l===l.id).map(m=>m.row))+1; const h=rows*g.nodeH+(rows-1)*g.gap+(cfg.poster?12:14); g.lanes[l.id]={y,h,rows}; y+=h+g.laneGap;});
-  g.end=y-g.laneGap; g.rect={};
-  M.forEach(m=>{const L=g.lanes[m.l]; g.rect[m.id]={x:g.lab+(m.a-1)*g.colW+g.pad,y:L.y+(cfg.poster?6:7)+m.row*(g.nodeH+g.gap),w:(m.b-m.a+1)*g.colW-g.pad*2,h:g.nodeH}});
+  LANES.forEach(l=>{const rs=ms.filter(m=>m.l===l.id).map(m=>row[m.id]);const rows=Math.max(...rs)+1;const h=rows*g.nodeH+(rows-1)*g.gap+(cfg.poster?12:14);g.lanes[l.id]={y,h,rows};y+=h+g.laneGap});
+  g.end=y-g.laneGap; g.rect={}; g.row=row;
+  ms.forEach(m=>{const L=g.lanes[m.l];g.rect[m.id]={x:g.lab+(m.a-1)*g.colW+g.pad,y:L.y+(cfg.poster?6:7)+row[m.id]*(g.nodeH+g.gap),w:(m.b-m.a+1)*g.colW-g.pad*2,h:g.nodeH}});
   return g;
 }
 let RECTS={};
 function pathFor(A,B){
-  const ac={x:A.x+A.w/2,y:A.y+A.h/2},bc={x:B.x+B.w/2,y:B.y+B.h/2}; let p0,p1,c0,c1;
+  const ac={x:A.x+A.w/2,y:A.y+A.h/2},bc={x:B.x+B.w/2,y:B.y+B.h/2};let p0,p1,c0,c1;
   if(B.x>=A.x+A.w-2){p0={x:A.x+A.w,y:ac.y};p1={x:B.x,y:bc.y};const d=Math.max(30,(p1.x-p0.x)/2);c0={x:p0.x+d,y:p0.y};c1={x:p1.x-d,y:p1.y}}
   else if(A.x>=B.x+B.w-2){p0={x:A.x,y:ac.y};p1={x:B.x+B.w,y:bc.y};const d=Math.max(30,(p0.x-p1.x)/2);c0={x:p0.x-d,y:p0.y};c1={x:p1.x+d,y:p1.y}}
   else{const lo=Math.max(A.x,B.x),hi=Math.min(A.x+A.w,B.x+B.w);const x=(lo+hi)/2;
     if(B.y>A.y){p0={x,y:A.y+A.h};p1={x,y:B.y}}else{p0={x,y:A.y};p1={x,y:B.y+B.h}}
     const d=Math.max(26,Math.abs(p1.y-p0.y)/2);c0={x:p0.x,y:p0.y+(p1.y>p0.y?d:-d)};c1={x:p1.x,y:p1.y-(p1.y>p0.y?d:-d)}}
   const at=t=>{const mt=1-t;return{x:mt**3*p0.x+3*mt*mt*t*c0.x+3*mt*t*t*c1.x+t**3*p1.x,y:mt**3*p0.y+3*mt*mt*t*c0.y+3*mt*t*t*c1.y+t**3*p1.y}};
-  // la insignia va en el tramo libre (fuera de los módulos) más cercano al centro de la flecha
   const inside=q=>Object.values(RECTS).some(r=>q.x>r.x&&q.x<r.x+r.w&&q.y>r.y&&q.y<r.y+r.h);
   let best=at(.5);
   if(inside(best)){for(let k=1;k<=40;k++){const a=at(.5+k*.0125),b=at(.5-k*.0125);if(!inside(a)){best=a;break}if(!inside(b)){best=b;break}}}
-  const mx=best.x,my=best.y;
-  return{d:`M${p0.x},${p0.y} C${c0.x},${c0.y} ${c1.x},${c1.y} ${p1.x},${p1.y}`,mx,my,end:p1,from:p0};
+  return{d:`M${p0.x},${p0.y} C${c0.x},${c0.y} ${c1.x},${c1.y} ${p1.x},${p1.y}`,mx:best.x,my:best.y};
 }
 
-/* ===================== RENDER DEL MAPA ===================== */
-function nodeHTML(m,g,cfg){
-  const r=g.rect[m.id],L=LI[m.l];
-  const gates=GATES.filter(x=>x.m===m.id);
-  let lv='';
-  if(st.role&&!cfg.poster){const v=m.ro[st.role];lv=' lv'+(v||'0')}
-  const chips=cfg.chips?`<div class="chips">${RK.filter(k=>m.ro[k]==='D'||m.ro[k]==='H').map(k=>`<span class="chip ${m.ro[k]}">${k.toUpperCase()}</span>`).join('')}</div>`:'';
-  const us=cfg.poster?m.us:m.co;
-  const cls=['node',lv.trim(),!cfg.poster&&st.sel===m.id?'sel':'',!cfg.poster&&st.sel&&st.sel!==m.id&&!rel(m.id)?'dim':'',!cfg.poster&&st.sel&&rel(m.id)&&st.sel!==m.id?'rel':''].filter(Boolean).join(' ');
-  const lvl=(!cfg.poster&&st.role&&m.ro[st.role])?`<span class="lvl">${m.ro[st.role]==='D'?'◆ DECIDE':m.ro[st.role]==='H'?'● TRABAJA':'○ CONSULTA'}</span>`:'';
-  return `<button class="${cls}" data-id="${m.id}" style="--lc:var(--l${L.c});--lt:var(--l${L.c}t);left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px" aria-label="${esc(m.nm)}: ${esc(m.co)}">
-   ${gates.length?`<span class="gate" title="Punto de decisión">◆</span>`:''}<span class="hd"><span class="nm">${esc(m.nm)}</span>${chips}</span><span class="us">${esc(us)}</span>${lvl}</button>`;
+/* ===================== PIEZAS COMUNES ===================== */
+function spineHTML(g,cfg){
+  return ETAPAS.map((e,i)=>`<div class="etapa${i===0?' first':''}" style="left:${g.lab+i*g.colW+2}px;top:${g.top}px;width:${g.colW-2}px;height:${g.spineH}px"><span class="n">Etapa ${e.n}</span><span class="t">${e.t}</span>${cfg.brief?'':`<span class="s">${e.s}</span>`}</div>`).join('');
 }
-function rel(id){if(!st.sel)return false;return FLOWS.some(f=>(f[0]===st.sel&&f[1]===id)||(f[1]===st.sel&&f[0]===id))}
-function mapHTML(g,cfg){
-  let h='';
-  const spineY=g.top;
-  ETAPAS.forEach((e,i)=>{h+=`<div class="etapa${i===0?' first':''}" style="left:${g.lab+i*g.colW+2}px;top:${spineY}px;width:${g.colW-2}px;height:${g.spineH}px"><span class="n">Etapa ${e.n}</span><span class="t" style="${cfg.poster?'font-size:20px':''}">${e.t}</span><span class="s" style="${cfg.poster?'font-size:12px':''}">${e.s}</span></div>`});
-  LANES.forEach(l=>{const L=g.lanes[l.id];
-    h+=`<div class="lane" style="--lc:var(--l${l.c});--lt:var(--l${l.c}t);left:${g.mx}px;top:${L.y}px;width:${g.W-2*g.mx}px;height:${L.h}px"></div>`;
-    h+=`<div class="lanelabel" style="--lc:var(--l${l.c});left:${g.mx+6}px;top:${L.y+8}px;width:${g.lab-g.mx-14}px;height:${L.h-16}px"><b style="${cfg.poster?'font-size:18px':''}">${l.n}</b><i style="${cfg.poster?'font-size:12px':''}">${l.s}</i></div>`;
-    for(let i=1;i<6;i++)h+=`<div class="colguide" style="left:${g.lab+i*g.colW}px;top:${L.y+3}px;height:${L.h-6}px;bottom:auto"></div>`;
-  });
-  // flechas
-  let svg=`<svg width="${g.W}" height="${g.end+10}" viewBox="0 0 ${g.W} ${g.end+10}"><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9 z" fill="var(--flow)"/></marker></defs>`;
-  RECTS=g.rect; const nums=[];
-  FLOWS.forEach((f,i)=>{const p=pathFor(g.rect[f[0]],g.rect[f[1]]);
+function textOf(m,cfg){return cfg.poster&&st.det==='full'?m.us:m.co}
+function chipsOf(m,cfg){return cfg.chips?`<span class="chips">${RK.filter(k=>m.ro[k]==='D'||m.ro[k]==='H').map(k=>`<span class="chip ${m.ro[k]}">${k.toUpperCase()}</span>`).join('')}</span>`:''}
+function stateClass(m,cfg){
+  const c=[];
+  if(!cfg.poster){
+    if(st.role)c.push('lv'+(m.ro[st.role]||'0'));
+    if(st.sel===m.id)c.push('sel'); else if(st.sel&&isRel(m.id))c.push('rel'); else if(st.sel)c.push('dim');
+  }
+  return c.join(' ');
+}
+function roleTag(m,cfg){return (!cfg.poster&&st.role&&m.ro[st.role])?`<span class="lvl">${m.ro[st.role]==='D'?'◆ DECIDE':m.ro[st.role]==='H'?'● TRABAJA':'○ CONSULTA'}</span>`:''}
+function flowsSVG(g,cfg,rectOf){
+  const fl=flows();let svg=`<svg width="${g.W}" height="${g.end+10}" viewBox="0 0 ${g.W} ${g.end+10}"><defs><marker id="ah${cfg.poster?'p':''}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9 z" fill="var(--flow)"/></marker></defs>`;
+  const nums=[];RECTS=g.rect;
+  fl.forEach((f,i)=>{const p=pathFor(rectOf(f[0]),rectOf(f[1]));
     let c='fl';
-    if(cfg.poster)c+=' all';
-    else if(st.sel&&(f[0]===st.sel||f[1]===st.sel))c+=' on sel';
-    else if(st.all)c+=' all';
-    svg+=`<path class="${c}" d="${p.d}" marker-end="url(#ah)" data-f="${i}"/>`;
-    if(cfg.poster||(st.sel&&(f[0]===st.sel||f[1]===st.sel)))nums.push([i+1,p.mx,p.my]);
+    if(cfg.poster)c+=' all'; else if(st.sel&&(f[0]===st.sel||f[1]===st.sel))c+=' on sel'; else if(st.all)c+=' all';
+    svg+=`<path class="${c}" d="${p.d}" marker-end="url(#ah${cfg.poster?'p':''})"/>`;
+    if((cfg.poster&&st.det==='full')||(!cfg.poster&&st.sel&&(f[0]===st.sel||f[1]===st.sel)))nums.push([i+1,p.mx,p.my]);
   });
   svg+='</svg>';
-  svg+=`<svg class="nums" width="${g.W}" height="${g.end+10}" viewBox="0 0 ${g.W} ${g.end+10}">`+nums.map(n=>`<circle class="flnum" cx="${n[1]}" cy="${n[2]}" r="${cfg.poster?9:9}"/><text class="flt" x="${n[1]}" y="${n[2]}" style="${cfg.poster?'font-size:10.5px':''}">${n[0]}</text>`).join('')+'</svg>';
-  return h+svg+M.map(m=>nodeHTML(m,g,cfg)).join('');
+  svg+=`<svg class="nums" width="${g.W}" height="${g.end+10}" viewBox="0 0 ${g.W} ${g.end+10}">`+nums.map(n=>`<circle class="flnum" cx="${n[1]}" cy="${n[2]}" r="9"/><text class="flt" x="${n[1]}" y="${n[2]}" style="${cfg.poster?'font-size:10.5px':''}">${n[0]}</text>`).join('')+'</svg>';
+  return svg;
 }
 
-const CFG={lab:132,W:1120,top:6,spineH:62,afterSpine:12,nodeH:72,gap:8,laneGap:10,chips:false};
-const CFGP={lab:270,W:2400,mx:28,top:112,spineH:68,afterSpine:12,nodeH:64,gap:4,laneGap:8,chips:true,poster:true};
-let G=geo(CFG);
+/* ===================== ESTILO A: MATRIZ DE CARRILES ===================== */
+function carHTML(g,cfg){
+  let h=spineHTML(g,cfg);
+  LANES.forEach(l=>{const L=g.lanes[l.id];
+    h+=`<div class="lane" style="--lc:var(--l${l.c});--lt:var(--l${l.c}t);left:${g.mx}px;top:${L.y}px;width:${g.W-2*g.mx}px;height:${L.h}px"></div>`;
+    h+=`<div class="lanelabel" style="--lc:var(--l${l.c});left:${g.mx+6}px;top:${L.y+8}px;width:${g.lab-g.mx-14}px;height:${L.h-16}px"><b>${l.n}</b>${cfg.brief?'':`<i>${l.s}</i>`}</div>`;
+    for(let i=1;i<6;i++)h+=`<div class="colguide" style="left:${g.lab+i*g.colW}px;top:${L.y+3}px;height:${L.h-6}px"></div>`;
+  });
+  h+=flowsSVG(g,cfg,id=>g.rect[id]);
+  h+=mods().map(m=>{const r=g.rect[m.id],L=LI[m.l];const gates=GATES.some(x=>x.m===m.id);
+    return `<button class="node ${stateClass(m,cfg)}" data-id="${m.id}" style="--lc:var(--l${L.c});--lt:var(--l${L.c}t);left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px" aria-label="${esc(m.nm)}: ${esc(m.co)}">${gates?'<span class="gate" title="Punto de decisión">◆</span>':''}<span class="hd"><span class="nm">${esc(m.nm)}</span>${chipsOf(m,cfg)}</span><span class="us">${esc(textOf(m,cfg))}</span>${roleTag(m,cfg)}</button>`}).join('');
+  return h;
+}
 
+/* ===================== ESTILO B: MAPA DE METRO ===================== */
+function stationRect(g,m){const r=g.rect[m.id];const ty=r.y+14;const sx=r.x+16;const ex=m.b>m.a?r.x+r.w-16:sx;return{x:sx-10,y:ty-10,w:(ex-sx)+20,h:20,sx,ex,ty}}
+function metroHTML(g,cfg){
+  let h='';
+  // bandas de etapa
+  for(let i=0;i<6;i++)h+=`<div class="band${i%2?' b2':''}" style="left:${g.lab+i*g.colW}px;top:${g.top+g.spineH+4}px;width:${g.colW}px;height:${g.end-(g.top+g.spineH+4)+8}px"></div>`;
+  h+=spineHTML(g,cfg);
+  const ms=mods(),T=g.lab-26;
+  // etiquetas de línea
+  LANES.forEach((l,i)=>{const L=g.lanes[l.id];
+    h+=`<div class="linebadge" style="--lc:var(--l${l.c});left:${g.mx+4}px;top:${L.y+4}px;width:${g.lab-g.mx-34}px"><i>${i+1}</i><b>${l.n}</b></div>`;});
+  // vías y estaciones (SVG)
+  let svg=`<svg class="metro" width="${g.W}" height="${g.end+10}" viewBox="0 0 ${g.W} ${g.end+10}">`;
+  LANES.forEach(l=>{const L=g.lanes[l.id];const lm=ms.filter(m=>m.l===l.id);const col=`var(--l${l.c})`;
+    const rowsY=[...Array(L.rows).keys()].map(r=>L.y+6+r*(g.nodeH+g.gap)+14);
+    // tronco
+    if(L.rows>1)svg+=`<path d="M${T},${rowsY[0]} V${rowsY[L.rows-1]-14}" style="stroke:${col}" class="trk"/>`;
+    for(let r=0;r<L.rows;r++){const inRow=lm.filter(m=>g.row[m.id]===r).sort((a,b)=>a.a-b.a);if(!inRow.length)continue;
+      const y=rowsY[r];const first=stationRect(g,inRow[0]).sx;const last=Math.max(...inRow.map(m=>stationRect(g,m).ex));
+      const start=r===0?`M${T},${y}`:`M${T},${y-14} L${T+14},${y}`;
+      svg+=`<path d="${start} H${first}" style="stroke:${col}" class="trk ghost"/>`;
+      svg+=`<path d="M${first},${y} H${last}" style="stroke:${col}" class="trk"/>`;
+    }
+    svg+=`<circle cx="${T}" cy="${rowsY[0]}" r="7" class="term" style="stroke:${col}"/>`;
+  });
+  ms.forEach(m=>{const s=stationRect(g,m),L=LI[m.l];const cls=['st',stateClass(m,cfg)].filter(Boolean).join(' ');
+    const lv=(!cfg.poster&&st.role)?m.ro[st.role]:null;
+    const sw=lv==='D'?6:4;
+    svg+=m.b>m.a?`<rect class="${cls}" x="${s.sx-9}" y="${s.ty-9}" width="${s.ex-s.sx+18}" height="18" rx="9" style="stroke:var(--l${L.c});stroke-width:${sw}"/>`:`<circle class="${cls}" cx="${s.sx}" cy="${s.ty}" r="9" style="stroke:var(--l${L.c});stroke-width:${sw}"/>`;
+  });
+  svg+='</svg>';
+  h+=svg;
+  h+=flowsSVG(g,cfg,id=>stationRect(g,MI[id]));
+  h+=ms.map(m=>{const r=g.rect[m.id],L=LI[m.l],sr=stationRect(g,m);const gates=GATES.some(x=>x.m===m.id);
+    return `<button class="node mlabel ${stateClass(m,cfg)}" data-id="${m.id}" style="--lc:var(--l${L.c});left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px" aria-label="${esc(m.nm)}: ${esc(m.co)}">${gates?`<span class="gate" title="Punto de decisión" style="left:${sr.ex-r.x+16}px;right:auto;top:3px">◆</span>`:''}<span class="hd"><span class="nm">${esc(m.nm)}</span>${chipsOf(m,cfg)}</span><span class="us">${esc(m.co)}</span>${roleTag(m,cfg)}</button>`}).join('');
+  return h;
+}
+
+/* ===================== CONFIGURACIONES ===================== */
+function cfgFor(sty,poster){
+  const brief=st.det==='brief';
+  if(!poster){
+    return sty==='car'?{lab:132,W:1120,top:6,spineH:brief?50:62,afterSpine:12,nodeH:brief?50:72,gap:8,laneGap:10,brief}
+                      :{lab:172,W:1120,top:6,spineH:brief?50:62,afterSpine:14,nodeH:brief?62:78,gap:6,laneGap:6,brief,metro:true};
+  }
+  if(!brief)return sty==='car'?{lab:270,W:2400,mx:28,top:112,spineH:68,afterSpine:12,nodeH:64,gap:4,laneGap:8,chips:true,poster:true}
+                              :{lab:270,W:2400,mx:28,top:112,spineH:68,afterSpine:14,nodeH:62,gap:4,laneGap:6,chips:true,poster:true,metro:true};
+  return sty==='car'?{lab:250,W:1800,mx:22,top:92,spineH:56,afterSpine:10,nodeH:54,gap:5,laneGap:8,chips:false,poster:true,brief:true}
+                    :{lab:250,W:1800,mx:22,top:92,spineH:56,afterSpine:10,nodeH:58,gap:3,laneGap:6,chips:false,poster:true,brief:true,metro:true};
+}
+const build=(sty,poster)=>{const cfg=cfgFor(sty,poster);const g=geo(cfg);return{cfg,g,html:(sty==='car'?carHTML:metroHTML)(g,cfg)}};
+
+/* ===================== MAPAS EN PANTALLA ===================== */
+const SCALE={};
+function drawMap(sty,idx){
+  const b=build(sty,false);
+  const wrap=document.getElementById('wrap'+idx);
+  wrap.querySelector('.canvas').innerHTML=b.html;
+  wrap.querySelector('.canvas').style.width=b.cfg.W+'px';wrap.querySelector('.canvas').style.height=(b.g.end+10)+'px';
+  SCALE[idx]={W:b.cfg.W,H:b.g.end+10};
+}
+function fit(){
+  [1,2].forEach(i=>{const w=document.getElementById('wrap'+i);if(!w||w.hidden||!SCALE[i])return;
+    const aw=w.clientWidth;const s=Math.max(.62,Math.min(1.3,(aw-2)/SCALE[i].W));
+    w.querySelector('.canvas').style.transform=`scale(${s})`;const z=w.querySelector('.sizer');z.style.width=SCALE[i].W*s+'px';z.style.height=SCALE[i].H*s+'px'});
+}
 function render(){
   document.body.classList.toggle('lam',st.lam);
-  $('#bLam').setAttribute('aria-pressed',st.lam?'true':'false');
-  $('#bAll').setAttribute('aria-pressed',st.all?'true':'false');
-  // roles
+  const dt=document.documentElement; if(st.theme==='auto')dt.removeAttribute('data-theme'); else dt.setAttribute('data-theme',st.theme);
+  const set=(id,on)=>{const e=document.getElementById(id);if(e)e.setAttribute('aria-pressed',on?'true':'false')};
+  set('bAll',st.all);set('bLam',st.lam);set('bCmp',st.cmp);set('sCar',st.sty==='car');set('sMet',st.sty==='met');set('dFull',st.det==='full');set('dBrief',st.det==='brief');
+  $('#bTheme').textContent='Tema: '+({auto:'automático',light:'claro',dark:'oscuro'}[st.theme]);
   $('#roles').innerHTML='<b>Ver como</b>'+['<button class="pill" data-r="" aria-pressed="'+(!st.role)+'">Sin filtro</button>'].concat(ROLES.map(r=>`<button class="pill" data-r="${r.k}" aria-pressed="${st.role===r.k}">${r.n}</button>`)).join('');
-  $('#canvas').innerHTML=mapHTML(G,CFG);
-  $('#canvas').style.width=CFG.W+'px'; $('#canvas').style.height=(G.end+10)+'px';
+  const first=st.cmp?'car':(st.sty==='car'?'car':'met');
+  $('#wrap1').hidden=false; $('#wrap2').hidden=!st.cmp;
+  $('#cap1').textContent=st.cmp?'A · Matriz de carriles':''; $('#cap1').hidden=!st.cmp;
+  $('#cap2').textContent='B · Mapa de metro';
+  drawMap(first,1); if(st.cmp)drawMap('met',2);
   fit();
   $('#legend').innerHTML=`<span><i class="k D"></i> Decide o aprueba</span><span><i class="k"></i> Registra o trabaja</span><span><i class="k V"></i> Consulta</span><span style="color:var(--earth)">◆ Punto de decisión</span><span>→ El dato pasa de un módulo a otro</span>`;
   panel();
   if(st.lam)renderPoster();
 }
-function fit(){
-  const w=$('#mapwrap').clientWidth; const s=Math.max(.62,Math.min(1.3,(w-2)/CFG.W));
-  $('#canvas').style.transform=`scale(${s})`; $('#sizer').style.width=CFG.W*s+'px'; $('#sizer').style.height=(G.end+10)*s+'px';
-}
 function rolePills(m){return RK.filter(k=>m.ro[k]).map(k=>{const r=ROLES.find(x=>x.k===k);return[r.n,m.ro[k]]})}
 function panel(){
-  const P=$('#panel');
-  if(st.sel){
+  const P=$('#panel');const FL=flows();
+  if(st.sel&&MI[st.sel]&&mods().includes(MI[st.sel])){
     const m=MI[st.sel],L=LI[m.l];
     const et=m.l==='bas'?'Todo el ciclo':(m.a===m.b?`Etapa ${m.a} · ${ETAPAS[m.a-1].t}`:`Etapas ${m.a} a ${m.b} · ${ETAPAS[m.a-1].t} a ${ETAPAS[m.b-1].t}`);
-    const ins=FLOWS.filter(f=>f[1]===m.id),outs=FLOWS.filter(f=>f[0]===m.id);
-    const gt=GATES.filter(x=>x.m===m.id);
+    const ins=FL.filter(f=>f[1]===m.id),outs=FL.filter(f=>f[0]===m.id),gt=GATES.filter(x=>x.m===m.id);
     const grp=['D','H','V'].map(v=>{const rs=rolePills(m).filter(x=>x[1]===v).map(x=>x[0]);return rs.length?`<span><b>${v==='D'?'◆ Decide':v==='H'?'● Trabaja':'○ Consulta'}</b></span><span>${rs.join(', ')}</span>`:''}).join('');
     P.style.setProperty('--lc',`var(--l${L.c})`);
     P.innerHTML=`<span class="tag">${L.n}</span><span class="tag" style="--lc:var(--muted)">${et}</span><h2>${esc(m.nm)}</h2>
@@ -397,19 +506,18 @@ function panel(){
      <h3>Dónde está en la plataforma</h3><div class="path">${esc(m.ru)}</div>
      <p style="margin-top:14px"><button class="pill" data-clear="1">Ver el mapa completo</button></p>`;
   }else if(st.role){
-    const r=ROLES.find(x=>x.k===st.role);
-    const dec=GATES.filter(x=>x.r.includes(st.role.toUpperCase()));
-    const cnt=['D','H','V'].map(v=>M.filter(m=>m.ro[st.role]===v).length);
+    const r=ROLES.find(x=>x.k===st.role);const dec=GATES.filter(x=>x.r.includes(st.role.toUpperCase()));
+    const cnt=['D','H','V'].map(v=>mods().filter(m=>m.ro[st.role]===v).length);
     P.style.setProperty('--lc','var(--accent)');
     P.innerHTML=`<span class="tag">Rol</span><h2>${r.n}</h2><p>${esc(r.p)}</p>
      <h3>En el mapa</h3><p>Decide en ${cnt[0]} módulos, trabaja en ${cnt[1]} y consulta ${cnt[2]}. Los demás no los ve.</p>
      ${dec.length?`<h3>Sus puntos de decisión</h3><ul>${dec.map(x=>`<li><span style="color:var(--earth)">◆</span> <button class="link" data-go="${x.m}">${esc(MI[x.m].nm)}</button>: ${esc(x.t)}</li>`).join('')}</ul>`:'<h3>Sus puntos de decisión</h3><p style="color:var(--muted)">Este rol no aprueba nada en la plataforma.</p>'}
-     <p class="hint">El borde grueso marca donde decide; el discontinuo, donde solo consulta; los módulos apagados no los ve.</p>`;
+     <p class="hint">El borde grueso marca donde decide; el discontinuo, donde solo consulta; lo apagado no lo ve.</p>`;
   }else{
     P.style.setProperty('--lc','var(--accent)');
     P.innerHTML=`<h2>Cómo leer el mapa</h2>
-     <p>De izquierda a derecha están las seis etapas del proyecto. Cada fila de color es un paquete de trabajo y cada pieza es un módulo, puesto en la etapa donde se usa.</p>
-     <h3>Para descubrirlo</h3><ul><li>Haz clic en un módulo: verás qué hace, quién lo usa y de dónde recibe y a dónde entrega sus datos.</li><li>Elige un rol arriba: el mapa se ilumina según lo que ese rol ve, hace y decide.</li><li>«Ver todas las conexiones» muestra las ${FLOWS.length} flechas de datos a la vez.</li></ul>
+     <p>De izquierda a derecha están las seis etapas del proyecto. Cada paquete de trabajo es una fila de color y cada módulo se ubica en la etapa donde se usa.</p>
+     <h3>Para descubrirlo</h3><ul><li>Haz clic en un módulo: verás qué hace, quién lo usa y de dónde recibe y a dónde entrega sus datos.</li><li>Elige un rol arriba: el mapa se ilumina según lo que ese rol ve, hace y decide.</li><li>«Ver todas las conexiones» muestra las ${FL.length} flechas de datos a la vez.</li><li>Cambia entre la <b>matriz de carriles</b> y el <b>mapa de metro</b>, o ponlos lado a lado con «Comparar estilos».</li><li>La versión <b>resumida</b> deja los ${mods().length>20?CORE.size:mods().length} módulos esenciales.</li></ul>
      <h3>Los puntos de decisión</h3><p>Hay ${GATES.length} (marcados con ◆) donde una persona concreta aprueba algo: firmar el acta, aprobar contratos y anticipos, cambios según su nivel, adjudicar, aplicar novedades y cerrar.</p>
      <p class="hint">La etapa en que se ubica cada módulo es una guía de uso, no una restricción: la plataforma deja registrar en cualquier momento lo que el rol permite.</p>`;
   }
@@ -417,30 +525,51 @@ function panel(){
 
 /* ===================== LÁMINA ===================== */
 function renderPoster(){
-  const g=geo(CFGP);
-  let h=`<div class="ph"><div><h1><span>Mapa de proceso PMO360</span></h1><p>Ciclo de vida del proyecto, paquetes de trabajo, módulos, roles y puntos de decisión. Control integral de Proyectos · GreenLand</p></div><div style="font-size:12px;color:var(--muted);text-align:right;line-height:1.5">Nov. 2026 · Borrador para revisión<br>Los datos de la plataforma son ficticios hasta el piloto</div></div>`;
-  h+=mapHTML(g,CFGP);
-  const fy=g.end+16;
-  h+=`<div class="pf" style="top:${fy}px"><h4>Quién puede qué</h4><div class="rgrid">${ROLES.map(r=>`<div class="rc"><b>${r.n}<em>${r.k.toUpperCase()}</em></b>${esc(r.p)}</div>`).join('')}</div>
-   <div class="cols"><div><h4>Puntos de decisión ◆</h4><ul>${GATES.map(x=>`<li><span class="gt">◆</span><span><b>${esc(MI[x.m].nm)}</b> · ${x.r}: ${esc(x.t)}</span></li>`).join('')}</ul></div>
-   <div><h4>Cómo se conectan los módulos</h4><ol class="two">${FLOWS.map((f,i)=>`<li><span class="nb">${i+1}</span><span>${esc(MI[f[0]].nm)} → ${esc(MI[f[1]].nm)}: ${esc(f[2])}</span></li>`).join('')}</ol></div>
-   <div><h4>Cómo leerlo</h4><ul><li><span class="gt">◆</span> Punto de decisión</li><li><span class="chip D" style="margin-right:6px">AD</span> Decide o aprueba</li><li><span class="chip H" style="margin-right:6px;--lc:#4c700b">AD</span> Registra o trabaja</li><li><span class="nb">1</span> Flecha numerada: el dato pasa de un módulo a otro</li><li>Cada módulo está en la etapa donde se usa; el rol que lo consulta no aparece en las siglas</li></ul></div></div></div>`;
-  $('#sheet').innerHTML=h;
-  const w=Math.min(window.innerWidth-24,1700), s=w/2400;
-  $('#sheet').style.transform=`scale(${s})`; $('#posterhost').style.width=2400*s+'px'; $('#posterhost').style.height=1697*s+'px';
-  $('#posterhost').style.margin='12px auto';
+  const brief=st.det==='brief';const W=brief?1800:2400,H=brief?1273:1697;
+  const b=build(st.sty,true);const g=b.g;
+  const titulo=`${brief?'Versión resumida':'Versión completa'} · ${st.sty==='car'?'Matriz de carriles':'Mapa de metro'}`;
+  let h=`<div class="ph"><div><h1><span>Mapa de proceso PMO360</span></h1><p>Ciclo de vida del proyecto, paquetes de trabajo, módulos, roles y puntos de decisión · Control integral de Proyectos · GreenLand · ${titulo}</p></div><div style="font-size:12px;color:var(--muted);text-align:right;line-height:1.5">Nov. 2026 · Borrador para revisión<br>Los datos de la plataforma son ficticios hasta el piloto</div></div>`;
+  h+=b.html;
+  const fy=g.end+(brief?14:16);
+  const FL=flows();
+  if(!brief){
+    h+=`<div class="pf" style="top:${fy}px"><h4>Quién puede qué</h4><div class="rgrid">${ROLES.map(r=>`<div class="rc"><b>${r.n}<em>${r.k.toUpperCase()}</em></b>${esc(r.p)}</div>`).join('')}</div>
+     <div class="cols"><div><h4>Puntos de decisión ◆</h4><ul>${GATES.map(x=>`<li><span class="gt">◆</span><span><b>${esc(MI[x.m].nm)}</b> · ${x.r}: ${esc(x.t)}</span></li>`).join('')}</ul></div>
+     <div><h4>Cómo se conectan los módulos</h4><ol class="two">${FL.map((f,i)=>`<li><span class="nb">${i+1}</span><span>${esc(MI[f[0]].nm)} → ${esc(MI[f[1]].nm)}: ${esc(f[2])}</span></li>`).join('')}</ol></div>
+     <div><h4>Cómo leerlo</h4><ul><li><span class="gt">◆</span> Punto de decisión</li><li><span class="chip D" style="margin-right:6px">AD</span> Decide o aprueba</li><li><span class="chip H" style="margin-right:6px;--lc:#4c700b">AD</span> Registra o trabaja</li><li><span class="nb">1</span> Flecha numerada: el dato pasa de un módulo a otro</li><li>Cada módulo está en la etapa donde se usa; quien solo consulta no aparece en las siglas</li></ul></div></div></div>`;
+  }else{
+    h+=`<div class="pf bf" style="top:${fy}px"><h4>Quién puede qué</h4><div class="rgrid">${ROLES.map(r=>`<div class="rc"><b>${r.n}<em>${r.k.toUpperCase()}</em></b>${esc(SHORT[r.k])}</div>`).join('')}</div>
+     <div class="cols brief"><div><h4>Puntos de decisión ◆</h4><ul class="two">${GATES.map(x=>`<li><span class="gt">◆</span><span><b>${esc(MI[x.m].nm)}</b> · ${x.r}: ${esc(x.t)}</span></li>`).join('')}</ul></div>
+     <div><h4>Cómo leerlo</h4><ul><li><span class="gt">◆</span> Punto de decisión</li><li><span class="chip D" style="margin-right:6px">AD</span> Decide o aprueba</li><li><span class="chip H" style="margin-right:6px;--lc:#4c700b">AD</span> Registra o trabaja</li><li>→ El dato pasa de un módulo a otro</li></ul></div></div></div>`;
+  }
+  const sheet=$('#sheet');sheet.innerHTML=h;sheet.style.width=W+'px';sheet.style.height=H+'px';
+  const ps=(brief?420:594)/25.4*96/W; // escala a la hoja (A3 o A2)
+  const rt=document.documentElement.style;rt.setProperty('--ps',ps);rt.setProperty('--hw',brief?'420mm':'594mm');rt.setProperty('--hh',brief?'297mm':'420mm');$('#pg').textContent=`@page{size:${brief?'420mm 297mm':'594mm 420mm'};margin:0}`;
+  const w=Math.min(window.innerWidth-24,1700),s=w/W;
+  sheet.style.transform=`scale(${s})`;sheet.dataset.scr=s;$('#posterhost').style.width=W*s+'px';$('#posterhost').style.height=H*s+'px';$('#posterhost').style.margin='12px auto';
 }
 
 /* ===================== EVENTOS ===================== */
 document.addEventListener('click',e=>{
-  const n=e.target.closest('.node'); if(n&&!n.closest('.sheet')){st.sel=st.sel===n.dataset.id?null:n.dataset.id;render();return}
-  const r=e.target.closest('[data-r]'); if(r){st.role=r.dataset.r||null;render();return}
-  const go=e.target.closest('[data-go]'); if(go){st.sel=go.dataset.go;render();return}
+  const n=e.target.closest('.node');if(n&&!n.closest('.sheet')){st.sel=st.sel===n.dataset.id?null:n.dataset.id;render();return}
+  const t=e.target.closest('[data-r]');if(t){st.role=t.dataset.r||null;render();return}
+  const go=e.target.closest('[data-go]');if(go){st.sel=go.dataset.go;render();return}
   if(e.target.closest('[data-clear]')){st.sel=null;render();return}
-  if(e.target.closest('#bAll')){st.all=!st.all;render();return}
-  if(e.target.closest('#bLam')){st.lam=!st.lam;location.hash=st.lam?'lamina':'';render();return}
+  const id=e.target.closest('button')?.id;
+  if(id==='bAll'){st.all=!st.all}
+  else if(id==='bCmp'){st.cmp=!st.cmp}
+  else if(id==='sCar'){st.sty='car';st.cmp=false}
+  else if(id==='sMet'){st.sty='met';st.cmp=false}
+  else if(id==='dFull'){st.det='full'}
+  else if(id==='dBrief'){st.det='brief'}
+  else if(id==='bTheme'){st.theme={auto:'light',light:'dark',dark:'auto'}[st.theme]}
+  else if(id==='bLam'){st.lam=!st.lam;location.hash=st.lam?'lamina':''}
+  else return;
+  render();
 });
 window.addEventListener('hashchange',()=>{st.lam=location.hash==='#lamina';render()});
 window.addEventListener('resize',()=>{fit();if(st.lam)renderPoster()});
+window.__set=o=>{Object.assign(st,o);render()};
 render();
+
 </script>
