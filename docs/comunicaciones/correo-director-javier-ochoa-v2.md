@@ -58,12 +58,13 @@ Para cada elemento: qué es, qué permite y qué aporta.
 **E. Salidas**
 25. **Informe gerencial** (una página) y **exportaciones a Excel y PDF** en el tablero y en los módulos principales, generados del mismo dato.
 
-**F. RAIZ, contratación y FARO** (figuras 33 a 41 de la guía)
+**F. RAIZ, contratación, FARO y mapa de proceso** (figuras 33 a 42 de la guía)
 26. **RAIZ (Registro de Aliados e Información centraliZada).** Maestro único de contratistas, proveedores, consultores e interventores, con sus documentos, los contratantes y las plantillas de documentos. *Aporta:* cada aliado se escribe una sola vez para todos los proyectos; cada proyecto solo ve sus contratos.
 27. **Contratos con ruta y semáforo.** Nueve etapas, pólizas, documentos del contratista, compromisos y modificaciones firmadas, con alertas de plazo y de tope de asamblea. *Aporta:* avisos antes del vencimiento.
 28. **Procesos de contratación y novedades de campo.** Ofertas por ronda comparadas con puntaje, adjudicación que crea el contrato, y hechos de obra con foto que la gerencia aplica o descarta. *Aporta:* contratar con criterios comparables y evidencia desde obra.
 29. **Documentos en Word.** Desde el contrato, una plantilla aprobada se llena con los datos; lo que falta queda como [POR COMPLETAR]. El texto jurídico lo aporta Jurídica.
 30. **Acerca de FARO.** Qué significa PMO360 y los cuatro pasos del marco (Fuente única, Alerta a tiempo, Respaldo, Operación que escala).
+31. **Mapa de proceso.** El ciclo del proyecto de punta a punta en un solo plano: seis etapas, cinco paquetes de trabajo, 26 módulos, 22 flujos de datos y 9 puntos de decisión con quién decide (acta, línea base, cambios por nivel, adjudicación, contratos y anticipos, novedades, interventoría y cierre). Se puede ver por rol, en versión completa o resumida, y se imprime en A2 o A3. *Aporta:* ver dónde encaja cada módulo y quién decide, sin leer cada pantalla.
 
 ## 4. Lo que le corresponde decidir
 - **Cambios moderados y críticos** (los menores los aprueba el gerente; si supera el 5 %, firma también el patrocinador).

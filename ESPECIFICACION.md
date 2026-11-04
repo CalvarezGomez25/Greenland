@@ -1,12 +1,12 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.14.0, actualizada el 4 de noviembre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.14.2, actualizada el 4 de noviembre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.14.0, única versión vigente |
+| Versión | 3.14.2, única versión vigente |
 | Última actualización | 21 de octubre de 2026 (imagen corporativa: sistema de diseño GreenLand v1.0.0 aplicado a la interfaz, las exportaciones, el informe gerencial y los correos; sección 1.1 y hito 26) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
@@ -30,6 +30,7 @@ Versión 3.14.0, actualizada el 4 de noviembre de 2026. Es la única versión vi
 | 3.9.0 | 3 de noviembre de 2026 | Aliados y proveedores, capa 1, a partir del paquete RAÍZ (ADR-0032, migración 0026, módulo S, hito 30, supuestos S27 a S31, pendiente P41) |
 | 3.10.0 | 3 de noviembre de 2026 | Aliados, capa 2: pólizas, modificaciones contractuales y documentos del tercero (ADR-0033, migración 0027, hito 31, supuestos S32 a S34) |
 | 3.11.0 | 3 de noviembre de 2026 | Aliados, capa 3: procesos de contratación, ofertas con puntaje, comunicaciones y compromisos (ADR-0034, migración 0028, hito 32, supuestos S35 a S37) |
+| 3.14.2 | 4 de noviembre de 2026 | «Mapa de proceso»: detalle a la derecha del mapa, **oculto por defecto en pantallas horizontales pequeñas**, descarga del metro resumido para imprimir; guía PDF de 43 figuras, tarjeta de 6 caras con el mapa, tabla de 29 filas y correos al día; resumen ejecutivo de la memoria actualizado (secciones 4.1 y 17.4, supuesto S45) |
 | 3.14.0 | 4 de noviembre de 2026 | Página **«Mapa de proceso»** en el menú: etapas del ciclo, paquetes de trabajo, módulos, roles con sus puntos de decisión y flujos de datos; matriz de carriles en versión completa y resumida, y láminas PDF; el mapa de metro queda solo para impresión (sección 4.1, ADR-0037, hito 35, supuestos S43 y S44) |
 | 3.13.0 | 3 de noviembre de 2026 | Nombre **RAIZ** (Registro de Aliados e Información centraliZada) para el módulo de aliados y en el menú; ayuda ampliada (glosario, guías e íconos «?» en las pantallas nuevas); página «Acerca de FARO» dentro de la plataforma (sección 17.3, ADR-0036); guía PDF de 42 figuras, tarjeta de 6 caras y correos al día (hito 34) |
 | 3.12.0 | 3 de noviembre de 2026 | Aliados, capa 4: novedades de campo y generación de documentos Word (ADR-0035, migración 0029, hito 33, supuestos S38 a S40, pendientes P41 y P42) |
@@ -41,7 +42,7 @@ Versión 3.14.0, actualizada el 4 de noviembre de 2026. Es la única versión vi
 | --- | --- |
 | Hitos 1 a 11 de la sección 12 | Construidos. Todos los módulos del mapa (sección 4) están disponibles en la aplicación |
 | Extensiones posteriores | Construidas: aprobación de contratos, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial y su envío semanal, marca, menú lateral y ayuda, y los ajustes del tablero del proyecto (hito 21). Material del marco FARO producido (hito 20). Memoria del proyecto creada (hito 22). Directorio de contactos construido (hito 23). Actividades y «Mi trabajo» construidos (hito 24) |
-| Pruebas automáticas | 445 pruebas unitarias (Vitest, 45 archivos) y 850 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
+| Pruebas automáticas | 448 pruebas unitarias (Vitest, 45 archivos) y 850 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
 | Producción | El usuario instaló el SQL de la base en Supabase y desplegó en Vercel; confirmó que funciona con datos ficticios |
 | Aún no ocurrido | Ningún correo se ha enviado en producción (falta configurar el proveedor, `CRON_SECRET` y el usuario de solo lectura); no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
 | Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 35 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
@@ -199,12 +200,12 @@ En la parte superior de cada pantalla de proyecto se muestra su nombre y código
 Página `/mapa-proceso` («Mapa de proceso» en el menú izquierdo, junto a «Ayuda» y «Acerca de FARO»), visible para todos los roles: no muestra datos de proyectos.
 
 - **Qué muestra:** las seis etapas del ciclo (Inicio, Planeación, Contratación, Ejecución, Seguimiento y control, Cierre) como encabezado; cinco paquetes de trabajo como carriles (Gestión del proyecto, Obra: costo y tiempo, Contratación y RAIZ, Campo e interventoría, Control y administración); 26 módulos ubicados en la etapa donde se usan; 22 flujos de datos entre módulos; 9 puntos de decisión (◆) con quién decide; y los 9 roles con lo que ven, hacen y aprueban.
-- **Disposición:** el detalle (ficha del módulo o del rol, fondo verde) va a la derecha del mapa, fijo al desplazarse; el mapa se escala al ancho restante y el botón «Panel de detalle» lo oculta para darle todo el ancho. En pantallas muy angostas (menos de 820 px) el detalle se fija al pie mientras haya algo elegido.
+- **Disposición:** el detalle (ficha del módulo o del rol, fondo verde) va a la derecha del mapa, fijo al desplazarse, cuando el contenido mide 1000 px o más. En **pantallas horizontales pequeñas** (menos de 1000 px) el panel está **oculto por defecto** para que el mapa se lea más grande; al elegir un módulo o un rol el detalle aparece fijo al pie, y el botón «Panel de detalle» lo muestra a la derecha o lo oculta (la elección de la persona manda). En menos de 820 px nunca hay panel lateral. El mapa se escala al ancho disponible (entre 50 % y 130 % de su tamaño).
 - **Cómo se usa:** clic en un módulo abre su ficha (qué hace, quién lo usa, de dónde recibe y a dónde entrega datos, decisiones, y dónde está en la plataforma); «Ver como» ilumina el mapa según un rol (decide, trabaja, consulta o no ve); «Ver todas las conexiones» dibuja los 22 flujos.
 - **Estilo en la plataforma:** solo la **matriz de carriles**: franjas verticales de etapa que bajan desde el encabezado como un velo gris neutro que no altera el color de los carriles, y una marca de etapa en el borde de cada carril (nombre completo en el primero y solo el número en los demás). El **mapa de metro** (una línea de color por paquete, estaciones por módulo) existe solo como lámina impresa y en el artefacto de diseño; decisión del usuario del 4 de noviembre de 2026: no se lleva a la plataforma.
 - **Dos niveles de detalle:** **completo** (26 módulos) y **resumido** (18 módulos esenciales, incluido Balance de costos; sin franjas verticales ni marcas de etapa). Ambos están disponibles en la plataforma.
 - **Láminas:** en la plataforma se descargan tres PDF vectoriales (`public/mapa-proceso/`, servidos solo con sesión iniciada): carriles completa (A2), carriles resumida (A3) y **mapa de metro resumido (A3), solo para imprimir**, por decisión del usuario del 4 de noviembre de 2026. Las cuatro láminas están en `docs/mapa-proceso/`; la de metro completa no se publica en la plataforma.
-- **Datos y pruebas:** los datos viven en `src/lib/mapa/datos.ts` y la geometría en `src/lib/mapa/geometria.ts`; 11 pruebas verifican que los flujos y decisiones apuntan a módulos existentes, que cada módulo del menú del proyecto tiene su pieza en el mapa, que la interventoría no ve costos ni aprueba nada, y que ninguna pieza se superpone ni se sale del lienzo.
+- **Datos y pruebas:** los datos viven en `src/lib/mapa/datos.ts` y la geometría en `src/lib/mapa/geometria.ts`; 14 pruebas verifican que los flujos y decisiones apuntan a módulos existentes, que cada módulo del menú del proyecto tiene su pieza en el mapa, que la interventoría no ve costos ni aprueba nada, y que ninguna pieza se superpone ni se sale del lienzo.
 
 ## 5. Especificación por módulo
 
@@ -787,7 +788,7 @@ Los hitos 1 a 11 están **construidos**, con pruebas de base de datos (`pruebas-
 | 30. Aliados y proveedores, capa 1 | Maestro de terceros y contratantes, etapa y datos contractuales de cada contrato y semáforo por contrato (0026, ADR-0032) | Construido. `t-aliados` (66 comprobaciones), `vigilancia.test.ts` (15) y revisión en navegador con datos ficticios. Capas 2 a 4 sin construir; sin datos reales |
 | 31. Aliados, capa 2 | Pólizas, modificaciones y documentos del tercero; semáforo ampliado (0027, ADR-0033) | Construido. `t-polizas-modificaciones` (52 comprobaciones), `vigilancia.test.ts` y revisión en navegador con datos ficticios. Sin datos reales |
 | 32. Aliados, capa 3 | Procesos, ofertas con puntaje, adjudicación y comunicaciones con compromisos (0028, ADR-0034) | Construido. `t-procesos` (58 comprobaciones), `ofertas.test.ts` y revisión en navegador con datos ficticios. Sin datos reales |
-| 35. Mapa de proceso | Página del menú con el mapa interactivo (matriz de carriles, completo y resumido), roles con puntos de decisión y láminas PDF; el metro solo en impresión (ADR-0037) | Construido. 11 pruebas (`src/lib/mapa/mapa.test.ts`); página revisada en pantalla con sesión de gerente; PDF verificados |
+| 35. Mapa de proceso | Página del menú con el mapa interactivo (matriz de carriles, completo y resumido), roles con puntos de decisión y láminas PDF; el metro solo en impresión (ADR-0037) | Construido. 14 pruebas (`src/lib/mapa/mapa.test.ts`); página revisada en pantalla con sesión de gerente; PDF verificados |
 | 34. RAIZ, ayuda y FARO en la plataforma | Nombre RAIZ; ayuda ampliada; página «Acerca de FARO»; guía de 42 figuras, tarjeta de 6 caras, tabla y correos (ADR-0036; supuestos S41 y S42) | Construido. `navegacion.test` y `glosario.test`; páginas revisadas en pantalla con datos ficticios |
 | 33. Aliados, capa 4 | Novedades de campo con foto y generación de documentos Word desde plantillas (0029, ADR-0035) | Construido. `t-novedades-plantillas` (48 comprobaciones), `documentos/*.test.ts` (22) y documentos de ejemplo generados y leídos con datos ficticios. Plantillas oficiales por subir |
 
@@ -971,6 +972,7 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | S42 | FARO se explica en una página propia (`/faro`) enlazada desde el menú y la Ayuda, y no en el inicio ni en el ingreso | Propuesta del asesor, aplicada |
 | S43 | En el mapa de proceso, la etapa donde se ubica cada módulo es una guía de uso y no una restricción: la plataforma deja registrar en cualquier momento lo que el rol permite (ADR-0037) | Propuesta del asesor, aplicada |
 | S44 | La página del mapa la ven todos los roles y las láminas PDF se sirven solo con sesión iniciada; no contienen datos de proyectos | Propuesta del asesor, aplicada |
+| S45 | En el mapa de proceso, el panel de detalle lateral está oculto por defecto en pantallas horizontales pequeñas (menos de 1000 px de contenido) y la elección de la persona manda; los umbrales son 1000 y 820 px | Decisión del usuario (panel oculto por defecto), umbrales propuestos por el asesor |
 
 **Pendientes**
 
@@ -1147,6 +1149,18 @@ Para que la explicación no dependa de un archivo aparte, la plataforma incluye 
 - **Qué no contiene:** casos reales de infraestructura colombiana ni cifras de ahorro (sección 17).
 - **Mantenimiento:** si cambia lo que la plataforma hace, se ajusta la frase del paso correspondiente; las cifras técnicas (número de comprobaciones, límites) se redactan de forma que no queden desactualizadas («más de mil comprobaciones automáticas»).
 - Término `faro` en el glosario de la Ayuda.
+
+### 17.4 Materiales de comunicación (estado al 4 de noviembre de 2026)
+
+Se guardan en `docs/comunicaciones/` y se rehacen cuando cambia la plataforma (las capturas salen de la propia plataforma con datos ficticios).
+
+| Pieza | Estado actual |
+| --- | --- |
+| Guía rápida con capturas (PDF) | 43 figuras en 47 páginas, en cuatro partes: recorrido general, Gestión, Obra, y RAIZ, contratación, novedades, documentos, FARO y Mapa de proceso (figuras 33 a 42); el celular es la figura 43 |
+| Tarjeta de referencia (PDF) | 6 caras (3 hojas a doble cara): navegación, gestión, obra, RAIZ y contratación, cómo leer los números, y PMO360, FARO, mapa de proceso y ayuda |
+| Tabla de módulos (PDF) | Una página, elementos 7 a 29, con la figura de la guía de cada módulo |
+| Correos | Bienvenida (largo y corto), lanzamiento para el equipo y director v2 (recorrido completo, 31 elementos); el correo del director v1 no se actualiza |
+| Láminas del mapa de proceso | Cuatro PDF en `docs/mapa-proceso/` (carriles y metro, completa A2 y resumida A3); tres se descargan desde la plataforma |
 
 ## 18. Memoria del proyecto (trazabilidad e historia)
 

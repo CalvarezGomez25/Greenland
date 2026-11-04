@@ -82,14 +82,15 @@ Si el proyecto incluye construcción, al elegirlo en el menú izquierdo aparece 
 
 Cuando hay presupuesto aprobado, cronograma y gasto, el **valor ganado se calcula solo** (menú *Valor ganado*): no tienes que hacer cuentas.
 
-## 7b. RAIZ, procesos de contratación, novedades y documentos
-Estas piezas se suman al módulo de Obra (en el PDF adjunto: figuras 33 a 41; los datos de las capturas son ficticios):
+## 7b. RAIZ, procesos de contratación, novedades, documentos y mapa de proceso
+Estas piezas se suman al módulo de Obra (en el PDF adjunto: figuras 33 a 42; los datos de las capturas son ficticios):
 - **RAIZ** (*Administración → RAIZ*, Registro de Aliados e Información centraliZada): el maestro único de contratistas, proveedores, consultores e interventores. Cada uno se escribe **una sola vez**, con su NIT o cédula (sin RUT todavía: PEND-NOMBRE) y sus documentos como enlaces, y se elige al registrar un contrato en cualquier proyecto. Lo ven administrador, director general, analista PMO, finanzas y gerentes; la interventoría no entra.
 - **Ruta y semáforo del contrato** (*Contratos y pagos → un contrato*): nueve etapas, con alertas de plazo, tope de asamblea, pólizas, documentos del contratista y compromisos; modificaciones (prórrogas, suspensiones, otrosíes) que solo cuentan cuando están firmadas.
 - **Procesos de contratación** (*Obra → Procesos de contratación*): invitaciones, ofertas por ronda y un comparativo con puntaje (precio, cualitativo y total). Al adjudicar, el contrato se registra con los datos de la oferta. La interventoría no ve esta pantalla.
 - **Novedades de campo** (*Obra → Novedades de campo*): un hecho de un contrato registrado desde obra (acta de inicio, póliza, suspensión…), con hasta 3 fotos. La gerencia lo aplica o lo descarta; nada cambia el contrato por sí solo.
 - **Documentos en Word** (botón *Generar documento (Word)* en el contrato): llena una plantilla con los datos; lo que falta queda como [POR COMPLETAR]. Las plantillas oficiales las sube el administrador o el director general; el texto jurídico lo aporta Jurídica.
 - **Acerca de FARO** (menú izquierdo): qué significa PMO360 y el marco de cuatro pasos para explicarla (Fuente única, Alerta a tiempo, Respaldo, Operación que escala).
+- **Mapa de proceso** (menú izquierdo): todo el ciclo del proyecto en un solo plano. Las seis etapas (Inicio, Planeación, Contratación, Ejecución, Seguimiento y control, Cierre), los paquetes de trabajo en filas de color, los 26 módulos en la etapa donde se usan, las flechas por donde pasan los datos y los puntos de decisión (◆). Haz clic en un módulo para ver qué hace, quién lo usa y de dónde recibe y a dónde entrega; con «Ver como» eliges un rol y el mapa se ilumina según lo que ve, hace y decide. «Completo» o «Resumido» cambia el nivel de detalle; en pantallas horizontales pequeñas el panel de detalle está oculto por defecto para que el mapa se lea más grande. Al pie hay láminas en PDF para imprimir (A2 y A3). La etapa de cada módulo es una guía de uso, no una restricción.
 
 ## 8. Si tienes dudas
 Abre **Ayuda** en el menú izquierdo. Allí está el glosario (qué significan SPI, CPI, BAC y el semáforo) y una guía de diligenciamiento de cada módulo. Muchas pantallas tienen además un pequeño signo de ayuda junto a los campos. Y para consultas al vuelo, imprime la **tarjeta de referencia** adjunta (6 caras: navegación, gestión, obra y cómo leer los números). Si aun así no queda claro, anótalo: es justo lo que quiero saber.

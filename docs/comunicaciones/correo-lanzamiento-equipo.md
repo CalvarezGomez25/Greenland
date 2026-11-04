@@ -39,6 +39,7 @@ Hoy abrimos **PMO360, Control integral de Proyectos**, la plataforma donde estam
 - **Contratos con ruta y semáforo, procesos de contratación y novedades de campo:** alertas de plazo, pólizas y documentos; ofertas comparadas con puntaje; hechos de obra con foto que la gerencia revisa.
 - **Documentos en Word:** desde un contrato se genera el acta de inicio u otro documento a partir de una plantilla aprobada (hoy hay dos de ejemplo).
 - **Acerca de FARO** (menú izquierdo): el origen del nombre PMO360 y el marco de cuatro pasos.
+- **Mapa de proceso** (menú izquierdo): todo el ciclo del proyecto en un plano, con los módulos en la etapa donde se usan, los roles y los puntos de decisión; versión completa y resumida, y láminas PDF para imprimir.
 
 **Adjuntos**
 - **Guía rápida con capturas** (PDF): el paso a paso de cada pantalla, con figuras numeradas.

@@ -2,6 +2,16 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.14.2] · 4 de noviembre de 2026
+### Cambiado
+- «Mapa de proceso»: el panel de detalle queda **oculto por defecto en pantallas horizontales pequeñas** (menos de 1000 px de ancho de contenido) para que el mapa se lea más grande; al elegir un módulo o un rol el detalle aparece fijo al pie, y el botón «Panel de detalle» lo muestra a la derecha. Con 1000 px o más sigue visible a la derecha. En pantallas de menos de 820 px nunca hay panel lateral. 3 pruebas nuevas (14 en total del mapa; 448 unitarias).
+### Materiales
+- **Guía PDF** de 43 figuras (47 páginas): nueva figura 42 «Mapa de proceso»; el celular pasa a la figura 43.
+- **Tarjeta** de 6 caras: el Mapa de proceso entra en el menú de la cara 1 y en la cara 6 (bloque 5).
+- **Tabla de módulos**: fila 29 «Mapa de proceso».
+- **Correos** (bienvenida largo y corto, lanzamiento y director v2) con el Mapa de proceso; figuras 33 a 42.
+- **Resumen ejecutivo** de la memoria al día (versión 3.14.2, 448 pruebas unitarias, 850 de base de datos, 29 migraciones).
+
 ## [3.14.1] · 4 de noviembre de 2026
 ### Cambiado
 - «Mapa de proceso»: el detalle del módulo (fondo verde) vuelve a la derecha del mapa, más angosto (270 a 300 px) y fijo al desplazarse, para no subir y bajar la página; el mapa se escala al ancho que queda (hasta 50 %) y un botón «Panel de detalle» lo oculta para dar todo el ancho. Solo en pantallas muy angostas (menos de 820 px) el detalle se fija al pie.

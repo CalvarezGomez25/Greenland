@@ -76,3 +76,4 @@ fácil de cambiar; deben validarse con el uso real.
 
 ## Mapa de proceso (ADR-0037)
 - La etapa en que se ubica cada módulo es una guía de uso, no una restricción (S43). La página la ven todos los roles y las láminas PDF solo con sesión iniciada (S44).
+- El panel de detalle lateral del mapa está oculto por defecto en pantallas horizontales pequeñas (menos de 1000 px de contenido); la elección de la persona manda; en menos de 820 px nunca hay panel lateral (S45).

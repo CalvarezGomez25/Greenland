@@ -6,7 +6,7 @@ import {
   CARRILES, CARRIL_POR_ID, DECISIONES, ESENCIALES, ETAPAS, MODULO_POR_ID, RK, ROLES,
   type ModuloMapa, type Nivel, type RolClave,
 } from "@/lib/mapa/datos";
-import { configuracion, curva, disponer, flujosVisibles, modulosVisibles, type Detalle, type Disposicion, type Rect } from "@/lib/mapa/geometria";
+import { configuracion, curva, disponer, flujosVisibles, modulosVisibles, panelLateral, type Detalle, type Disposicion, type Rect } from "@/lib/mapa/geometria";
 
 type Estado = { sel: string | null; rol: RolClave | null; todas: boolean; det: Detalle };
 const vars = (o: Record<string, string | number>) => o as CSSProperties;
@@ -197,7 +197,7 @@ const LAMINAS = [
 
 export function MapaProceso() {
   const [e, setE] = useState<Estado>({ sel: null, rol: null, todas: false, det: "full" });
-  const [panel, setPanel] = useState(true);
+  const [eleccion, setEleccion] = useState<boolean | null>(null); // null: lo decide el ancho de la pantalla
   const raiz = useRef<HTMLDivElement>(null);
   const [ancho, setAncho] = useState(0);
   useEffect(() => {
@@ -209,8 +209,9 @@ export function MapaProceso() {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
-  const angosto = ancho > 0 && ancho < 820; // solo en pantallas muy angostas el detalle baja al pie
-  const anchoPanel = ancho < 1100 ? 270 : 300;
+  const lateral = panelLateral(ancho, eleccion);
+  const hoja = !lateral && !!(e.sel || e.rol); // sin panel lateral, el detalle se fija al pie mientras haya algo elegido
+  const anchoPanel = ancho < 1150 ? 270 : 300;
   const set = (p: Partial<Estado>) => setE((x) => ({ ...x, ...p }));
   const elegir = (id: string) => setE((x) => ({ ...x, sel: x.sel === id ? null : id }));
   const a: Acciones = { elegir };
@@ -221,14 +222,14 @@ export function MapaProceso() {
           <button type="button" className="mp-pill" aria-pressed={e.det === "full"} onClick={() => set({ det: "full" })}>Completo</button>
           <button type="button" className="mp-pill" aria-pressed={e.det === "brief"} onClick={() => set({ det: "brief" })}>Resumido</button>
         </div>
-        <div className="mp-grp"><button type="button" className="mp-pill" aria-pressed={e.todas} onClick={() => set({ todas: !e.todas })}>Ver todas las conexiones</button><button type="button" className="mp-pill" aria-pressed={panel} onClick={() => setPanel((v) => !v)}>Panel de detalle</button></div>
+        <div className="mp-grp"><button type="button" className="mp-pill" aria-pressed={e.todas} onClick={() => set({ todas: !e.todas })}>Ver todas las conexiones</button><button type="button" className="mp-pill" aria-pressed={lateral} onClick={() => setEleccion(!lateral)}>Panel de detalle</button></div>
       </div>
       <div className="mp-rolesbar" role="group" aria-label="Ver el mapa según el rol">
         <b>Ver como</b>
         <button type="button" className="mp-pill" aria-pressed={!e.rol} onClick={() => set({ rol: null })}>Sin filtro</button>
         {ROLES.map((r) => <button key={r.k} type="button" className="mp-pill" aria-pressed={e.rol === r.k} onClick={() => set({ rol: r.k })}>{r.n}</button>)}
       </div>
-      <div className={`mp-layout${panel && !angosto ? "" : " mp-solo"}${angosto ? " mp-narrow" : ""}`} style={vars({ "--mp-pw": `${anchoPanel}px` })}>
+      <div className={`mp-layout${lateral ? "" : " mp-solo"}${hoja ? " mp-narrow" : ""}`} style={vars({ "--mp-pw": `${anchoPanel}px` })}>
         <div>
           <Mapa e={e} a={a} />
           <div className="mp-legend">
@@ -236,7 +237,7 @@ export function MapaProceso() {
             <span style={{ color: "var(--mp-earth)" }}>◆ Punto de decisión</span><span>→ El dato pasa de un módulo a otro</span>
           </div>
         </div>
-        {panel && (!angosto || e.sel || e.rol) && <Panel e={e} ir={(id) => set({ sel: id })} limpiar={() => set({ sel: null })} />}
+        {(lateral || hoja) && <Panel e={e} ir={(id) => set({ sel: id })} limpiar={() => set({ sel: null })} />}
       </div>
       <section className="mp-down" aria-labelledby="mp-lam">
         <h2 id="mp-lam">Láminas para imprimir</h2>

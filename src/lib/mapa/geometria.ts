@@ -91,3 +91,12 @@ export function curva(A: Rect, B: Rect, ocupados: Rect[]): { d: string; mx: numb
   }
   return { d: `M${p0.x},${p0.y} C${c0.x},${c0.y} ${c1.x},${c1.y} ${p1.x},${p1.y}`, mx: mejor.x, my: mejor.y };
 }
+
+// Dónde va el detalle del módulo según el ancho de la página. Por defecto, en pantallas horizontales pequeñas el panel
+// lateral queda oculto para que el mapa se lea más grande; ahí el detalle aparece fijo al pie solo mientras haya algo elegido.
+export const ANCHO_PANEL_LATERAL = 1000; // desde este ancho el panel lateral está visible por defecto
+export const ANCHO_MUY_ANGOSTO = 820; // por debajo de este ancho nunca hay panel lateral
+export function panelLateral(ancho: number, eleccion: boolean | null): boolean {
+  if (ancho > 0 && ancho < ANCHO_MUY_ANGOSTO) return false;
+  return eleccion ?? ancho >= ANCHO_PANEL_LATERAL;
+}

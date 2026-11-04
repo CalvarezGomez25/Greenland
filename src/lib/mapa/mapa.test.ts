@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CARRILES, DECISIONES, ESENCIALES, ETAPAS, FLUJOS, MODULOS_MAPA, MODULO_POR_ID, ROLES, ROL_CORTO, RK } from "./datos";
 import { MODULOS } from "../modulos";
-import { configuracion, curva, disponer, flujosVisibles, modulosVisibles, type Detalle } from "./geometria";
+import { configuracion, curva, disponer, flujosVisibles, modulosVisibles, panelLateral, type Detalle } from "./geometria";
 
 describe("datos del mapa de proceso", () => {
   it("las seis etapas, cinco carriles y nueve roles están completos", () => {
@@ -94,5 +94,21 @@ describe("geometría del mapa", () => {
       expect(c.d.startsWith("M")).toBe(true);
       expect(Number.isFinite(c.mx) && Number.isFinite(c.my)).toBe(true);
     }
+  });
+});
+
+describe("detalle lateral según el ancho", () => {
+  it("en pantallas horizontales pequeñas el panel lateral está oculto por defecto", () => {
+    expect(panelLateral(892, null)).toBe(false);
+    expect(panelLateral(999, null)).toBe(false);
+  });
+  it("en pantallas amplias está visible por defecto", () => {
+    expect(panelLateral(1000, null)).toBe(true);
+    expect(panelLateral(1400, null)).toBe(true);
+  });
+  it("la elección de la persona manda, salvo en pantallas muy angostas", () => {
+    expect(panelLateral(900, true)).toBe(true);
+    expect(panelLateral(1400, false)).toBe(false);
+    expect(panelLateral(700, true)).toBe(false);
   });
 });
