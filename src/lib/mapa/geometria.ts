@@ -4,7 +4,6 @@
 import { CARRILES, FLUJOS, ESENCIALES, MODULOS_MAPA, type CarrilId, type Flujo, type ModuloMapa } from "./datos";
 
 export type Detalle = "full" | "brief";
-export type Estilo = "car" | "met";
 export type Rect = { x: number; y: number; w: number; h: number };
 export type Cfg = { lab: number; W: number; top: number; spineH: number; afterSpine: number; nodeH: number; gap: number; laneGap: number };
 export type Disposicion = {
@@ -19,12 +18,10 @@ export const flujosVisibles = (det: Detalle): Flujo[] => {
   return FLUJOS.filter((f) => ids.has(f[0]) && ids.has(f[1]));
 };
 
-// Medidas de cada estilo y nivel de detalle (en píxeles del lienzo; la pantalla lo escala al ancho disponible).
-export function configuracion(est: Estilo, det: Detalle): Cfg {
+// Medidas de la matriz de carriles según el detalle (en píxeles del lienzo; la pantalla lo escala al ancho disponible).
+export function configuracion(det: Detalle): Cfg {
   const brief = det === "brief";
-  return est === "car"
-    ? { lab: 128, W: 980, top: 6, spineH: brief ? 50 : 62, afterSpine: 12, nodeH: brief ? 50 : 72, gap: 8, laneGap: 10 }
-    : { lab: 150, W: 980, top: 6, spineH: brief ? 50 : 62, afterSpine: 14, nodeH: brief ? 62 : 78, gap: 6, laneGap: 6 };
+  return { lab: 138, W: 980, top: 6, spineH: brief ? 50 : 62, afterSpine: 12, nodeH: brief ? 62 : 72, gap: 8, laneGap: 10 };
 }
 
 // En la versión completa se respetan las filas definidas; en la resumida se reacomodan al quitar módulos.
@@ -56,15 +53,6 @@ export function disponer(cfg: Cfg, det: Detalle): Disposicion {
     rect[m.id] = { x: cfg.lab + (m.a - 1) * colW + pad, y: lanes[m.l].y + 7 + row[m.id] * (cfg.nodeH + cfg.gap), w: (m.b - m.a + 1) * colW - pad * 2, h: cfg.nodeH };
   });
   return { cfg, colW, end: y - cfg.laneGap, pad, lanes, rect, row };
-}
-
-// Estación del mapa de metro: círculo si el módulo se usa en una etapa, cápsula si abarca varias.
-export function estacion(d: Disposicion, m: ModuloMapa): Rect & { sx: number; ex: number; ty: number } {
-  const r = d.rect[m.id];
-  const ty = r.y + 14;
-  const sx = r.x + 16;
-  const ex = m.b > m.a ? r.x + r.w - 16 : sx;
-  return { x: sx - 10, y: ty - 10, w: ex - sx + 20, h: 20, sx, ex, ty };
 }
 
 // Curva de un flujo entre dos piezas y el mejor punto para su número (en un tramo libre, fuera de los módulos).

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CARRILES, DECISIONES, ESENCIALES, ETAPAS, FLUJOS, MODULOS_MAPA, MODULO_POR_ID, ROLES, ROL_CORTO, RK } from "./datos";
 import { MODULOS } from "../modulos";
-import { configuracion, curva, disponer, estacion, flujosVisibles, modulosVisibles, type Detalle, type Estilo } from "./geometria";
+import { configuracion, curva, disponer, flujosVisibles, modulosVisibles, type Detalle } from "./geometria";
 
 describe("datos del mapa de proceso", () => {
   it("las seis etapas, cinco carriles y nueve roles están completos", () => {
@@ -59,10 +59,10 @@ describe("datos del mapa de proceso", () => {
 });
 
 describe("geometría del mapa", () => {
-  const combos: [Estilo, Detalle][] = [["car", "full"], ["car", "brief"], ["met", "full"], ["met", "brief"]];
-  for (const [est, det] of combos) {
-    it(`${est}/${det}: ningún módulo se superpone con otro del mismo carril y todos caben en el lienzo`, () => {
-      const cfg = configuracion(est, det);
+  const detalles: Detalle[] = ["full", "brief"];
+  for (const det of detalles) {
+    it(`${det}: ningún módulo se superpone con otro del mismo carril y todos caben en el lienzo`, () => {
+      const cfg = configuracion(det);
       const d = disponer(cfg, det);
       const ms = modulosVisibles(det);
       for (const m of ms) {
@@ -85,18 +85,8 @@ describe("geometría del mapa", () => {
     const ids = new Set(modulosVisibles("brief").map((m) => m.id));
     for (const f of flujosVisibles("brief")) { expect(ids.has(f[0])).toBe(true); expect(ids.has(f[1])).toBe(true); }
   });
-  it("la estación de metro queda dentro de su pieza", () => {
-    const cfg = configuracion("met", "full");
-    const d = disponer(cfg, "full");
-    for (const m of modulosVisibles("full")) {
-      const s = estacion(d, m), r = d.rect[m.id];
-      expect(s.sx).toBeGreaterThanOrEqual(r.x);
-      expect(s.ex).toBeLessThanOrEqual(r.x + r.w);
-      expect(s.ty).toBeGreaterThanOrEqual(r.y);
-    }
-  });
   it("la curva sale y llega a las piezas y pone su número fuera de los módulos cuando hay espacio", () => {
-    const cfg = configuracion("car", "full");
+    const cfg = configuracion("full");
     const d = disponer(cfg, "full");
     const rects = Object.values(d.rect);
     for (const [o, t] of flujosVisibles("full")) {

@@ -6,7 +6,7 @@ import {
   CARRILES, CARRIL_POR_ID, DECISIONES, ESENCIALES, ETAPAS, MODULO_POR_ID, RK, ROLES,
   type ModuloMapa, type Nivel, type RolClave,
 } from "@/lib/mapa/datos";
-import { configuracion, curva, disponer, estacion, flujosVisibles, modulosVisibles, type Detalle, type Disposicion, type Estilo, type Rect } from "@/lib/mapa/geometria";
+import { configuracion, curva, disponer, flujosVisibles, modulosVisibles, type Detalle, type Disposicion, type Rect } from "@/lib/mapa/geometria";
 
 type Estado = { sel: string | null; rol: RolClave | null; todas: boolean; det: Detalle };
 const vars = (o: Record<string, string | number>) => o as CSSProperties;
@@ -60,7 +60,7 @@ function Flujos({ d, e, rectDe }: { d: Disposicion; e: Estado; rectDe: (id: stri
 type Acciones = { elegir: (id: string) => void };
 
 function Carriles({ det, e, a }: { det: Detalle; e: Estado; a: Acciones }) {
-  const cfg = configuracion("car", det);
+  const cfg = configuracion(det);
   const d = useMemo(() => disponer(cfg, det), [cfg.W, det]); // eslint-disable-line react-hooks/exhaustive-deps
   const brief = det === "brief";
   const fl = flujosVisibles(det);
@@ -108,80 +108,8 @@ function Carriles({ det, e, a }: { det: Detalle; e: Estado; a: Acciones }) {
   );
 }
 
-function Metro({ det, e, a }: { det: Detalle; e: Estado; a: Acciones }) {
-  const cfg = configuracion("met", det);
-  const d = useMemo(() => disponer(cfg, det), [cfg.W, det]); // eslint-disable-line react-hooks/exhaustive-deps
-  const brief = det === "brief";
-  const ms = modulosVisibles(det);
-  const fl = flujosVisibles(det);
-  const rel = (id: string) => !!e.sel && fl.some((f) => (f[0] === e.sel && f[1] === id) || (f[1] === e.sel && f[0] === id));
-  const T = cfg.lab - 26;
-  const alto = d.end + 10;
-  return (
-    <>
-      {!brief && ETAPAS.map((et, i) => (
-        <div key={et.n} className={`mp-band${i % 2 ? " mp-b2" : ""}`} style={{ left: cfg.lab + i * d.colW, top: cfg.top + cfg.spineH + 4, width: d.colW, height: d.end - (cfg.top + cfg.spineH + 4) + 8 }} />
-      ))}
-      <Etapas d={d} brief={brief} />
-      {CARRILES.map((l, i) => (
-        <div key={l.id} className="mp-badge" style={vars({ "--lc": `var(--l${l.c})`, left: 4, top: d.lanes[l.id].y + 4, width: cfg.lab - 34 })}><i>{i + 1}</i><b>{l.n}</b></div>
-      ))}
-      <svg className="mp-metro" width={cfg.W} height={alto} viewBox={`0 0 ${cfg.W} ${alto}`} aria-hidden>
-        {CARRILES.map((l) => {
-          const L = d.lanes[l.id];
-          const lm = ms.filter((m) => m.l === l.id);
-          const col = `var(--l${l.c})`;
-          const filasY = Array.from({ length: L.rows }, (_, r) => L.y + 6 + r * (cfg.nodeH + cfg.gap) + 14);
-          return (
-            <g key={l.id}>
-              {L.rows > 1 && <path className="mp-trk" d={`M${T},${filasY[0]} V${filasY[L.rows - 1] - 14}`} style={{ stroke: col }} />}
-              {filasY.map((y, r) => {
-                const enFila = lm.filter((m) => d.row[m.id] === r).sort((p, q) => p.a - q.a);
-                if (!enFila.length) return null;
-                const primero = estacion(d, enFila[0]).sx;
-                const ultimo = Math.max(...enFila.map((m) => estacion(d, m).ex));
-                const inicio = r === 0 ? `M${T},${y}` : `M${T},${y - 14} L${T + 14},${y}`;
-                return (
-                  <g key={r}>
-                    <path className="mp-trk mp-ghost" d={`${inicio} H${primero}`} style={{ stroke: col }} />
-                    <path className="mp-trk" d={`M${primero},${y} H${ultimo}`} style={{ stroke: col }} />
-                  </g>
-                );
-              })}
-              <circle className="mp-term" cx={T} cy={filasY[0]} r={7} style={{ stroke: col }} />
-            </g>
-          );
-        })}
-        {ms.map((m) => {
-          const s = estacion(d, m), L = CARRIL_POR_ID[m.l];
-          const nivel = e.rol ? m.ro[e.rol] : undefined;
-          const cls = `mp-st ${clasesDe(m, e, rel)}`;
-          const st = { stroke: `var(--l${L.c})`, strokeWidth: nivel === "D" ? 6 : 4 };
-          return m.b > m.a
-            ? <rect key={m.id} className={cls} x={s.sx - 9} y={s.ty - 9} width={s.ex - s.sx + 18} height={18} rx={9} style={st} />
-            : <circle key={m.id} className={cls} cx={s.sx} cy={s.ty} r={9} style={st} />;
-        })}
-      </svg>
-      <Flujos d={d} e={e} rectDe={(id) => estacion(d, MODULO_POR_ID[id])} />
-      {ms.map((m) => {
-        const r = d.rect[m.id], L = CARRIL_POR_ID[m.l], sr = estacion(d, m);
-        const nivel = e.rol ? m.ro[e.rol] : undefined;
-        return (
-          <button key={m.id} type="button" className={`mp-node mp-mlabel ${clasesDe(m, e, rel)}`} data-id={m.id} onClick={() => a.elegir(m.id)}
-            style={vars({ "--lc": `var(--l${L.c})`, left: r.x, top: r.y, width: r.w, height: r.h })} aria-label={`${m.nm}: ${m.co}`}>
-            {DECISIONES.some((x) => x.m === m.id) && <span className="mp-gate" title="Punto de decisión" style={{ left: sr.ex - r.x + 16, right: "auto", top: 3 }}>◆</span>}
-            <span className="mp-hd"><span className="mp-nm">{m.nm}</span></span><span className="mp-us">{m.co}</span>
-            {e.rol && nivel && <span className="mp-lvl">{NIVEL_TEXTO[nivel]}</span>}
-          </button>
-        );
-      })}
-    </>
-  );
-}
-
-function Mapa({ est, e, a }: { est: Estilo; e: Estado; a: Acciones }) {
-  const cfg = configuracion(est, e.det);
-  const d = useMemo(() => disponer(cfg, e.det), [est, e.det]); // eslint-disable-line react-hooks/exhaustive-deps
+function Mapa({ e, a }: { e: Estado; a: Acciones }) {
+  const cfg = configuracion(e.det);
   const caja = useRef<HTMLDivElement>(null);
   const [esc, setEsc] = useState(1);
   useEffect(() => {
@@ -193,12 +121,12 @@ function Mapa({ est, e, a }: { est: Estilo; e: Estado; a: Acciones }) {
     ro.observe(el);
     return () => ro.disconnect();
   }, [cfg.W]);
-  const alto = d.end + 10;
+  const alto = disponer(cfg, e.det).end + 10;
   return (
     <div className="mp-wrap" ref={caja}>
       <div className="mp-sizer" style={{ width: cfg.W * esc, height: alto * esc }}>
         <div className="mp-canvas" style={{ width: cfg.W, height: alto, transform: `scale(${esc})` }}>
-          {est === "car" ? <Carriles det={e.det} e={e} a={a} /> : <Metro det={e.det} e={e} a={a} />}
+          <Carriles det={e.det} e={e} a={a} />
         </div>
       </div>
     </div>
@@ -252,8 +180,7 @@ function Panel({ e, ir, limpiar }: { e: Estado; ir: (id: string) => void; limpia
         <li>Haz clic en un módulo: verás qué hace, quién lo usa y de dónde recibe y a dónde entrega sus datos.</li>
         <li>Elige un rol arriba: el mapa se ilumina según lo que ese rol ve, hace y decide.</li>
         <li>«Ver todas las conexiones» muestra las {fl.length} flechas de datos a la vez.</li>
-        <li>Cambia entre la <b>matriz de carriles</b> y el <b>mapa de metro</b>, o ponlos lado a lado con «Comparar estilos».</li>
-        <li>La versión <b>resumida</b> deja los {ESENCIALES.size} módulos esenciales.</li>
+                <li>La versión <b>resumida</b> deja los {ESENCIALES.size} módulos esenciales, sin franjas ni marcas de etapa.</li>
       </ul>
       <h3>Los puntos de decisión</h3>
       <p>Hay {DECISIONES.length} (marcados con ◆) donde una persona concreta aprueba algo: firmar el acta, aprobar contratos y anticipos, cambios según su nivel, adjudicar, aplicar novedades y cerrar.</p>
@@ -263,15 +190,11 @@ function Panel({ e, ir, limpiar }: { e: Estado; ir: (id: string) => void; limpia
 }
 
 const LAMINAS = [
-  { f: "PMO360-mapa-carriles-completo-A2.pdf", t: "Matriz de carriles, completa (A2)", r: true },
-  { f: "PMO360-mapa-metro-resumido-A3.pdf", t: "Mapa de metro, resumido (A3)", r: true },
-  { f: "PMO360-mapa-carriles-resumido-A3.pdf", t: "Matriz de carriles, resumida (A3)", r: false },
-  { f: "PMO360-mapa-metro-completo-A2.pdf", t: "Mapa de metro, completo (A2)", r: false },
+  { f: "PMO360-mapa-carriles-completo-A2.pdf", t: "Completa (A2)" },
+  { f: "PMO360-mapa-carriles-resumido-A3.pdf", t: "Resumida (A3)" },
 ];
 
 export function MapaProceso() {
-  const [est, setEst] = useState<Estilo>("car");
-  const [cmp, setCmp] = useState(false);
   const [e, setE] = useState<Estado>({ sel: null, rol: null, todas: false, det: "full" });
   const set = (p: Partial<Estado>) => setE((x) => ({ ...x, ...p }));
   const elegir = (id: string) => setE((x) => ({ ...x, sel: x.sel === id ? null : id }));
@@ -279,11 +202,6 @@ export function MapaProceso() {
   return (
     <div className="mp-root">
       <div className="mp-ctl">
-        <div className="mp-grp"><b>Estilo</b>
-          <button type="button" className="mp-pill" aria-pressed={est === "car" && !cmp} onClick={() => { setEst("car"); setCmp(false); }}>Matriz de carriles</button>
-          <button type="button" className="mp-pill" aria-pressed={est === "met" && !cmp} onClick={() => { setEst("met"); setCmp(false); }}>Mapa de metro</button>
-          <button type="button" className="mp-pill" aria-pressed={cmp} onClick={() => setCmp((v) => !v)}>Comparar estilos</button>
-        </div>
         <div className="mp-grp"><b>Detalle</b>
           <button type="button" className="mp-pill" aria-pressed={e.det === "full"} onClick={() => set({ det: "full" })}>Completo</button>
           <button type="button" className="mp-pill" aria-pressed={e.det === "brief"} onClick={() => set({ det: "brief" })}>Resumido</button>
@@ -297,9 +215,7 @@ export function MapaProceso() {
       </div>
       <div className="mp-layout">
         <div>
-          {cmp && <div className="mp-cap">A · Matriz de carriles</div>}
-          <Mapa est={cmp ? "car" : est} e={e} a={a} />
-          {cmp && (<><div className="mp-cap">B · Mapa de metro</div><Mapa est="met" e={e} a={a} /></>)}
+          <Mapa e={e} a={a} />
           <div className="mp-legend">
             <span><i className="mp-k mp-kD" /> Decide o aprueba</span><span><i className="mp-k" /> Registra o trabaja</span><span><i className="mp-k mp-kV" /> Consulta</span>
             <span style={{ color: "var(--mp-earth)" }}>◆ Punto de decisión</span><span>→ El dato pasa de un módulo a otro</span>
@@ -309,8 +225,8 @@ export function MapaProceso() {
       </div>
       <section className="mp-down" aria-labelledby="mp-lam">
         <h2 id="mp-lam">Láminas para imprimir</h2>
-        <p className="mp-muted" style={{ fontSize: 14 }}>PDF de una página, en vector. Las completas están pensadas para A2 y las resumidas para A3; también se pueden reducir al tamaño de tu impresora.</p>
-        <ul>{LAMINAS.map((l) => <li key={l.f}><a href={`/mapa-proceso/${l.f}`} target="_blank" rel="noreferrer">{l.t}</a>{l.r ? " · recomendada" : ""}</li>)}</ul>
+        <p className="mp-muted" style={{ fontSize: 14 }}>PDF de una página, en vector. La completa está pensada para A2 y la resumida para A3; también se pueden reducir al tamaño de tu impresora.</p>
+        <ul>{LAMINAS.map((l) => <li key={l.f}><a href={`/mapa-proceso/${l.f}`} target="_blank" rel="noreferrer">{l.t}</a></li>)}</ul>
       </section>
     </div>
   );
