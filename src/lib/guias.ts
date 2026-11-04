@@ -155,6 +155,17 @@ export const GUIAS: Guia[] = [
     ],
   },
   {
+    clave: "calendario", titulo: "Mi calendario y borradores de correo", quien: "Todos los roles (cada quien ve lo que sus permisos le dejan ver)",
+    pasos: [
+      "Abre «Mi calendario» en el menú: lista tus actividades con fecha límite y, de los proyectos que puedes ver, los cierres de propuestas, los vencimientos de pólizas y de documentos de los contratistas, los compromisos abiertos y los fines de contrato.",
+      "Con «Descargar calendario (.ics)» obtienes un archivo que se importa en Google Calendar, Outlook o Apple Calendar. Con «Google Calendar» u «Outlook» en cada fila agregas un solo evento.",
+      "El archivo es una copia de hoy. Si cambian las fechas, vuelve a descargarlo: cada evento tiene un identificador fijo y se actualiza en lugar de repetirse.",
+      "En un proceso de contratación, «Invitar por correo» te deja elegir aliados con correo registrado y abre un borrador con el objeto, el cierre y la carpeta (sin el presupuesto de referencia). Los destinatarios van en copia oculta.",
+      "En un contrato, «Recordar por correo» aparece junto a las pólizas que vencen en 60 días o menos (o ya vencidas) y junto a los compromisos abiertos, si el contratista tiene correo en RAIZ.",
+    ],
+    notas: ["La plataforma no se conecta a tu correo ni a tu calendario y no envía mensajes: tú revisas y envías.", "Los avisos automáticos por correo (resumen diario e informe semanal) son otra función y siguen aparte."],
+  },
+  {
     clave: "contratos", titulo: "Contratos y pagos", quien: "Gerente o administrador registra; el director general aprueba",
     pasos: [
       "Antes, registra al contratista en RAIZ (menú Administración): NIT o cédula, nombre y tipo. Se escribe una sola vez para todos los proyectos; sin RUT todavía, usa PEND-NOMBRE.",

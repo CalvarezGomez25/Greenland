@@ -20,6 +20,7 @@ import { cargarExtrasVigilancia } from "@/lib/contratos/datos-vigilancia";
 import { SemaforoContrato } from "@/components/semaforo-contrato";
 import { CANALES, ETAPAS, ETIQUETA_TIPO_MODIFICACION, etapaPorNumero, parametrosDeVigilancia, semaforoContrato } from "@/lib/contratos/vigilancia";
 import { formatearNit } from "@/lib/aliados";
+import { enlaceCorreo, recordatorioCompromiso, recordatorioPoliza } from "@/lib/correo/borradores";
 import { formatearPesos } from "@/lib/presupuesto/dinero";
 
 type Acta = { id: string; numero: number; fecha: string; valor_bruto: number | string; amortizacion: number | string; retencion: number | string; neto: number | string; estado: string };
@@ -46,7 +47,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   ]);
   // Etapa, semáforo y datos contractuales (capa 1 de aliados): el tercero, el contratante del proyecto y el historial de etapas.
   const [{ data: ter }, { data: hist }, { data: proyC }] = await Promise.all([
-    c.tercero_id ? supabase.from("terceros").select("id, nit, razon_social").eq("id", c.tercero_id).maybeSingle() : Promise.resolve({ data: null }),
+    c.tercero_id ? supabase.from("terceros").select("id, nit, razon_social, correo_notificacion").eq("id", c.tercero_id).maybeSingle() : Promise.resolve({ data: null }),
     supabase.from("contrato_etapa_historial").select("id, etapa_anterior, etapa_nueva, motivo, creado_en").eq("contrato_id", contratoId).order("creado_en", { ascending: false }).limit(20),
     supabase.from("proyectos").select("contratante_id").eq("id", id).maybeSingle(),
   ]);
@@ -68,7 +69,16 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   const modificaciones = (mods ?? []) as { id: string; tipo: string; numero: number; fecha_firma: string | null; nueva_fecha_fin: string | null; valor: number | string; descripcion: string; justificacion: string | null; estado: string; cambio_id: string | null }[];
   const cambiosContrato = (cmbs ?? []) as { id: string; codigo: string; estado_flujo: string; descripcion_despues: string }[];
   const enEdicion = modEditar && ES_UUID.test(modEditar) ? modificaciones.find((m) => m.id === modEditar) : undefined;
-  const tercero = ter as { id: string; nit: string; razon_social: string } | null;
+  const tercero = ter as { id: string; nit: string; razon_social: string; correo_notificacion: string | null } | null;
+  // Borradores de correo al contratista (se abren en el programa de correo de la persona; la plataforma no envía nada).
+  const rotuloProyecto = proyecto.codigo ?? proyecto.nombre;
+  const para = tercero?.correo_notificacion ? [tercero.correo_notificacion] : [];
+  const correoPoliza = (amparo: string, vence: string | null, estado: string, dias: number | null) =>
+    permisos.gestionar && estado === "activa" && vence && dias !== null && dias <= 60
+      ? enlaceCorreo({ para, ...recordatorioPoliza({ amparo, vence, contratista: c.contratista, proyecto: rotuloProyecto, vencida: dias < 0 }) })
+      : null;
+  const correoCompromiso = (asunto: string, fecha: string | null) =>
+    permisos.gestionar && fecha ? enlaceCorreo({ para, ...recordatorioCompromiso({ asunto, fecha, contratista: c.contratista, proyecto: rotuloProyecto }) }) : null;
   const historial = (hist ?? []) as { id: number; etapa_anterior: number | null; etapa_nueva: number; motivo: string | null; creado_en: string }[];
   const parametrosV = parametrosDeVigilancia((pars ?? []) as FilaParametro[], id);
   const sem = semaforoContrato({ etapa: c.etapa, fechaEtapa: c.fecha_etapa, fechaFin: c.fecha_fin_vigente, suspendidoDesde: c.suspendido_desde, polizas: extras?.polizas, documentos: extras?.documentos, compromisos: extras?.compromisos, valor: desdeJson(c.valor, 2), autorizacionAsamblea: c.autorizacion_asamblea, topeSmmlv: (contr as { tope_smmlv: number | null } | null)?.tope_smmlv }, hoy, parametrosV);
@@ -210,7 +220,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
                       <td className="px-3 py-2 align-top tabular-nums">{e?.minimo != null ? centavos(e.minimo) : "—"}</td>
                       <td className={`whitespace-nowrap px-3 py-2 align-top ${z.estado === "activa" && dias !== null && dias < 0 ? "font-medium text-danger" : ""}`}>{z.fecha_vencimiento ? formatearFecha(z.fecha_vencimiento) : "—"}{z.estado === "activa" && dias !== null && <p className="text-xs">{dias < 0 ? `vencida hace ${-dias} d` : `en ${dias} d`}</p>}</td>
                       <td className="px-3 py-2 align-top">{z.estado === "cumplida" ? "Cumplida" : "Activa"}</td>
-                      <td className="px-3 py-2 text-right align-top">{permisos.gestionar && <form action={borrarPoliza.bind(null, id, contratoId, z.id)}><BotonEnviar className="text-sm font-medium text-danger underline" textoEnviando="…">Borrar</BotonEnviar></form>}</td>
+                      <td className="px-3 py-2 text-right align-top">{(() => { const h = correoPoliza(z.amparo, z.fecha_vencimiento, z.estado, dias); return h ? <a href={h} className="mr-3 text-sm font-medium text-leaf-600 underline">Recordar por correo</a> : null; })()}{permisos.gestionar && <form action={borrarPoliza.bind(null, id, contratoId, z.id)}><BotonEnviar className="text-sm font-medium text-danger underline" textoEnviando="…">Borrar</BotonEnviar></form>}</td>
                     </tr>
                   );
                 })}
@@ -300,6 +310,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
                         {permisos.gestionar && (
                           <div className="flex flex-wrap justify-end gap-3">
                             {m.requiere_accion && m.estado === "abierto" && <form action={cerrarCompromiso.bind(null, id, contratoId, { id: m.id, fecha: m.fecha, canal: m.canal, asunto: m.asunto, resumen: m.resumen ?? "", enlace: m.enlace ?? "", responsable: m.responsable ?? "", fecha_compromiso: m.fecha_compromiso ?? "" })}><BotonEnviar className="text-sm font-medium text-leaf-600 underline" textoEnviando="…">Cerrar</BotonEnviar></form>}
+                            {m.requiere_accion && m.estado === "abierto" && (() => { const h = correoCompromiso(m.asunto, m.fecha_compromiso); return h ? <a href={h} className="text-sm font-medium text-leaf-600 underline">Recordar por correo</a> : null; })()}
                             <Link href={`${base}?com=${m.id}#t-com`} className="text-sm font-medium text-leaf-600 underline">Editar</Link>
                             <form action={borrarComunicacion.bind(null, id, contratoId, m.id)}><BotonEnviar className="text-sm font-medium text-danger underline" textoEnviando="…">Borrar</BotonEnviar></form>
                           </div>

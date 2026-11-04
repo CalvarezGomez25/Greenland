@@ -2,6 +2,17 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.15.0] · 4 de noviembre de 2026
+### Añadido
+- **Mi calendario** (`/calendario`) y descarga `.ics` (`/calendario/descargar`): actividades, cierres de propuestas, pólizas y documentos por vencer, compromisos y fines de contrato; enlaces a Google Calendar y Outlook ([ADR-0038](decisiones/ADR-0038-calendario-y-correo-sin-conexion.md)). Sin conexión a cuentas ni cambios de base de datos.
+- **Borradores de correo:** «Invitar por correo» en los procesos (Cco, sin presupuesto de referencia) y «Recordar por correo» en pólizas y compromisos del contrato.
+- Ayuda: términos «Calendario (.ics)» y «Borrador de correo», y guía «Mi calendario y borradores de correo».
+- 17 pruebas nuevas (465 unitarias en 48 archivos).
+### Seguridad
+- **Revisión de `npm audit` (P42, [ADR-0039](decisiones/ADR-0039-revision-npm-audit.md)):** de 25 avisos (1 alto) a 23 moderados, sin altos. `zod` 4.6.7, `uuid` fijado en `^11.1.1` (`overrides`), `eslint-config-next` 16.4.5 y `typescript-eslint` 8.72.1. El resto es `minimatch`: no alcanzable en producción y de herramientas de desarrollo.
+### Pendiente
+- Guía PDF, tarjeta, tabla y correos sin actualizar con esta función. Suscripción en vivo al calendario (requiere diseño y revisión de seguridad).
+
 ## [3.14.2] · 4 de noviembre de 2026
 ### Cambiado
 - «Mapa de proceso»: el panel de detalle queda **oculto por defecto en pantallas horizontales pequeñas** (menos de 1000 px de ancho de contenido) para que el mapa se lea más grande; al elegir un módulo o un rol el detalle aparece fijo al pie, y el botón «Panel de detalle» lo muestra a la derecha. Con 1000 px o más sigue visible a la derecha. En pantallas de menos de 820 px nunca hay panel lateral. 3 pruebas nuevas (14 en total del mapa; 448 unitarias).

@@ -15,6 +15,8 @@ import { BotonEnviar } from "@/components/boton-enviar";
 import { adjudicarOferta, borrarOferta, borrarProceso, guardarOferta, guardarProceso } from "../acciones";
 import { FormularioOferta, FormularioProceso } from "../formularios";
 import { Ayuda } from "@/components/ayuda";
+import { invitacionProceso } from "@/lib/correo/borradores";
+import { InvitarPorCorreo } from "./invitar-por-correo";
 
 const PUNTO = { rojo: "bg-red-600", ambar: "bg-amber-500", verde: "bg-leaf-500" } as const;
 const ETIQ = { rojo: "Rojo", ambar: "Ámbar", verde: "Verde" } as const;
@@ -32,7 +34,7 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   const [{ data: os }, { data: pars }, { data: ts }] = await Promise.all([
     supabase.from("ofertas").select("*").eq("proceso_id", procesoId).order("ronda").order("codigo"),
     supabase.from("parametros").select("ambito, ambito_id, clave, valor"),
-    supabase.from("terceros").select("id, nit, razon_social").eq("estado", "activo").order("razon_social").limit(1000),
+    supabase.from("terceros").select("id, nit, razon_social, correo_notificacion").eq("estado", "activo").order("razon_social").limit(1000),
   ]);
   type O = { id: string; codigo: string; oferente: string; ronda: number; estado: EstadoOferta; habilitada: "si" | "no" | null; fecha_recepcion: string | null; valor_total: number | string | null; aiu_pct: number | string | null; plazo_dias: number | null; anticipo_pct: number | string | null; vigencia_hasta: string | null; incluye_polizas: boolean | null; apu_discriminado: boolean | null; crit_experiencia: number | null; crit_capacidad: number | null; crit_programacion: number | null; crit_comercial: number | null; crit_sst: number | null; enlace: string | null; observaciones: string | null };
   const ofertas = (os ?? []) as O[];
@@ -46,7 +48,10 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
   const enEdicion = ofertaEditar && ES_UUID.test(ofertaEditar) ? ofertas.find((o) => o.id === ofertaEditar) : undefined;
   const base = `/proyectos/${id}/procesos/${procesoId}`;
   const abierto = p.estado === "abierta" || p.estado === "en_evaluacion";
-  const oferentes = ((ts ?? []) as { id: string; nit: string; razon_social: string }[]).map((t) => ({ id: t.id, etiqueta: `${t.razon_social} (${formatearNit(t.nit)})` }));
+  const tercerosLista = (ts ?? []) as { id: string; nit: string; razon_social: string; correo_notificacion: string | null }[];
+  const conCorreo = tercerosLista.filter((t) => t.correo_notificacion).map((t) => ({ id: t.id, nombre: t.razon_social, correo: t.correo_notificacion as string }));
+  const invitacion = invitacionProceso({ codigo: p.codigo, objeto: p.objeto, cierre: p.cierre_propuestas, proyecto: proyecto.codigo ?? proyecto.nombre, enlaceCarpeta: p.enlace });
+  const oferentes = tercerosLista.map((t) => ({ id: t.id, etiqueta: `${t.razon_social} (${formatearNit(t.nit)})` }));
   const f = (x: number | string | null) => (x === null ? "" : formatearDecimal(aEscalado(String(x), 2), 2));
   const inicialesProceso: Record<string, string> = { objeto: p.objeto, tipo_servicio: p.tipo_servicio, modalidad: p.modalidad ?? "", gestor: p.gestor ?? "", fecha_invitacion: p.fecha_invitacion ?? "", cierre_propuestas: p.cierre_propuestas ?? "", presupuesto_referencia: f(p.presupuesto_referencia), estado: p.estado, enlace: p.enlace ?? "", observaciones: p.observaciones ?? "" };
 
@@ -119,6 +124,14 @@ async function Contenido({ params, searchParams }: { params: Promise<{ id: strin
           <p className="mt-1">Criterios y pesos dentro del cualitativo: {CRITERIOS.map((c, i) => `${c.etiqueta} ${Math.round(pesos.criterios[i] * 100)}`).join("; ")} (puntos sobre {Math.round(pesos.criterios.reduce((a, b) => a + b, 0) * 100)}). Se editan en Parámetros.</p>
         </details>
       </section>
+
+      {permisos.gestionar && p.estado !== "adjudicada" && p.estado !== "cancelada" && (
+        <section className="mt-8" aria-labelledby="t-inv">
+          <h2 id="t-inv" className="font-display text-2xl font-bold text-leaf-700">Invitar por correo <Ayuda tema="borrador_correo" /></h2>
+          <p className="mt-1 text-sm text-muted">Elige a los aliados y se abre un borrador de invitación con el objeto, el cierre de propuestas y el enlace a la carpeta. No incluye el presupuesto de referencia.</p>
+          <div className="mt-3 rounded-card bg-leaf-50 p-5"><InvitarPorCorreo terceros={conCorreo} asunto={invitacion.asunto} cuerpo={invitacion.cuerpo} /></div>
+        </section>
+      )}
 
       {permisos.gestionar && (
         <section className="mt-8" aria-labelledby="t-of">

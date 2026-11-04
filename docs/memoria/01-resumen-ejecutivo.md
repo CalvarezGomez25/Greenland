@@ -6,13 +6,13 @@
 
 | Tema | Estado al 4 de noviembre de 2026 |
 | --- | --- |
-| Alcance construido | 11 hitos de la versión 2.0, más ampliaciones (instalación, auditoría, aprobación de contratos, marca y menú, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial, directorio de contactos, **Actividades y «Mi trabajo» con tablero Kanban**, exportaciones con la identidad de la marca e inicio por rol), y desde octubre-noviembre: presupuesto con costos indirectos y adicionales, balance y control de costos por cortes, **RAIZ** (aliados, contratos con ruta y semáforo, procesos de contratación, novedades de campo y documentos Word), ayuda ampliada, páginas «Acerca de FARO» y «Mapa de proceso» |
+| Alcance construido | 11 hitos de la versión 2.0, más ampliaciones (instalación, auditoría, aprobación de contratos, marca y menú, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial, directorio de contactos, **Actividades y «Mi trabajo» con tablero Kanban**, exportaciones con la identidad de la marca e inicio por rol), y desde octubre-noviembre: presupuesto con costos indirectos y adicionales, balance y control de costos por cortes, **RAIZ** (aliados, contratos con ruta y semáforo, procesos de contratación, novedades de campo y documentos Word), ayuda ampliada, páginas «Acerca de FARO» y «Mapa de proceso», y calendario (.ics) y borradores de correo |
 | Código | 117 commits al 4 de noviembre (sin contar el de esta actualización), 29 migraciones, 23 archivos de pruebas de base de datos |
-| Verificación **hoy** | 448 pruebas unitarias correctas (45 archivos); 850 comprobaciones de base de datos correctas (PostgreSQL real en memoria), todas en la última corrida completa del 3 de noviembre de 2026 |
+| Verificación **hoy** | 465 pruebas unitarias correctas (48 archivos); 850 comprobaciones de base de datos correctas (PostgreSQL real en memoria), todas en la última corrida completa del 3 de noviembre de 2026 |
 | Producción | Instalada por el propietario con **datos ficticios**; confirmó que funciona |
 | **No ha ocurrido** | Ningún correo se ha enviado en producción; no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
 | Marco de adopción | FARO: piloto de 90 días con 3–4 de los 12 proyectos; sin cifras de ahorro porque no existen |
-| Documento raíz | `ESPECIFICACION.md` v3.14.2 |
+| Documento raíz | `ESPECIFICACION.md` v3.15.0 |
 
 ## Cinco hechos que explican el proyecto
 

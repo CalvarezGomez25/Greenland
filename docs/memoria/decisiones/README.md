@@ -43,5 +43,7 @@ Una ficha por decisión importante, con el formato propuesto por Michael Nygard 
 | [ADR-0035](ADR-0035-aliados-capa-4-novedades-y-documentos.md) | Aliados, capa 4: novedades de campo y generación de documentos Word | 2026-11-03 | Vigente |
 | [ADR-0036](ADR-0036-raiz-nombre-ayuda-y-faro-en-la-plataforma.md) | Nombre RAIZ para el módulo de aliados, ayuda ampliada y FARO dentro de la plataforma | 2026-11-03 | Vigente |
 | [ADR-0037](ADR-0037-mapa-de-proceso.md) | Mapa de proceso de PMO360 como página de la plataforma | 2026-11-04 | Vigente |
+| [ADR-0038](ADR-0038-calendario-y-correo-sin-conexion.md) | Calendario y correo sin conexión a cuentas: archivo .ics y borradores | 2026-11-04 | Vigente |
+| [ADR-0039](ADR-0039-revision-npm-audit.md) | Revisión de los avisos de npm audit (P42) | 2026-11-04 | Vigente |
 
 Las decisiones de detalle (supuestos S1–S13, P1–P11, D2, etc.) siguen en `docs/SUPUESTOS.md` y en la sección 14 de `ESPECIFICACION.md`.
