@@ -1,12 +1,12 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.15.1, actualizada el 4 de noviembre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.15.2, actualizada el 4 de noviembre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.15.1, única versión vigente |
+| Versión | 3.15.2, única versión vigente |
 | Última actualización | 21 de octubre de 2026 (imagen corporativa: sistema de diseño GreenLand v1.0.0 aplicado a la interfaz, las exportaciones, el informe gerencial y los correos; sección 1.1 y hito 26) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
@@ -30,6 +30,7 @@ Versión 3.15.1, actualizada el 4 de noviembre de 2026. Es la única versión vi
 | 3.9.0 | 3 de noviembre de 2026 | Aliados y proveedores, capa 1, a partir del paquete RAÍZ (ADR-0032, migración 0026, módulo S, hito 30, supuestos S27 a S31, pendiente P41) |
 | 3.10.0 | 3 de noviembre de 2026 | Aliados, capa 2: pólizas, modificaciones contractuales y documentos del tercero (ADR-0033, migración 0027, hito 31, supuestos S32 a S34) |
 | 3.11.0 | 3 de noviembre de 2026 | Aliados, capa 3: procesos de contratación, ofertas con puntaje, comunicaciones y compromisos (ADR-0034, migración 0028, hito 32, supuestos S35 a S37) |
+| 3.15.2 | 4 de noviembre de 2026 | Materiales al día con el calendario y los borradores de correo: guía PDF de 46 figuras, tarjeta, tabla (30 elementos) y los cuatro correos (sección 17.4) |
 | 3.15.1 | 4 de noviembre de 2026 | El calendario pasa a «Mi trabajo» (sin pantalla ni menú propios): vencimientos opcionales en la línea de tiempo y descarga .ics de los proyectos de la persona; se corrige un hito en «hoy» que se encimaba con el anterior (sección 4.2, supuestos S49 y S50) |
 | 3.15.0 | 4 de noviembre de 2026 | **Calendario y correo sin conexión a cuentas:** página «Mi calendario» con descarga .ics y enlaces a Google Calendar y Outlook, y borradores de correo para invitar a oferentes y recordar pólizas y compromisos (sección 4.2, ADR-0038, hito 36, supuestos S46 a S48). **Revisión de `npm audit`** (ADR-0039): sin avisos altos; `zod` y `uuid` actualizados; queda un aviso moderado de `minimatch` no alcanzable (P42) |
 | 3.14.2 | 4 de noviembre de 2026 | «Mapa de proceso»: detalle a la derecha del mapa, **oculto por defecto en pantallas horizontales pequeñas**, descarga del metro resumido para imprimir; guía PDF de 43 figuras, tarjeta de 6 caras con el mapa, tabla de 29 filas y correos al día; resumen ejecutivo de la memoria actualizado (secciones 4.1 y 17.4, supuesto S45) |
@@ -1174,11 +1175,10 @@ Se guardan en `docs/comunicaciones/` y se rehacen cuando cambia la plataforma (l
 
 | Pieza | Estado actual |
 | --- | --- |
-| Guía rápida con capturas (PDF) | 43 figuras en 47 páginas, en cuatro partes: recorrido general, Gestión, Obra, y RAIZ, contratación, novedades, documentos, FARO y Mapa de proceso (figuras 33 a 42); el celular es la figura 43 |
-| Tarjeta de referencia (PDF) | 6 caras (3 hojas a doble cara): navegación, gestión, obra, RAIZ y contratación, cómo leer los números, y PMO360, FARO, mapa de proceso y ayuda |
-| Tabla de módulos (PDF) | Una página, elementos 7 a 29, con la figura de la guía de cada módulo |
-| Correos | Bienvenida (largo y corto), lanzamiento para el equipo y director v2 (recorrido completo, 31 elementos); el correo del director v1 no se actualiza |
-| Calendario y correo (v3.15) | **Sin actualizar todavía** en la guía PDF, la tarjeta, la tabla y los correos; la ayuda dentro de la plataforma sí está al día |
+| Guía rápida con capturas (PDF) | 46 figuras en 50 páginas, en cuatro partes: recorrido general, Gestión, Obra, y RAIZ, contratación, novedades, documentos, FARO, Mapa de proceso, vencimientos y calendario en «Mi trabajo», invitar y recordar por correo (figuras 33 a 45); el celular es la figura 46 |
+| Tarjeta de referencia (PDF) | 6 caras (3 hojas a doble cara): navegación (con los vencimientos y el calendario de «Mi trabajo»), gestión, obra, RAIZ y contratación (con invitar y recordar por correo), cómo leer los números, y PMO360, FARO, mapa de proceso y ayuda |
+| Tabla de módulos (PDF) | Una página, elementos 7 a 30 (el 30 es «Calendario y correo»), con la figura de la guía de cada módulo |
+| Correos | Bienvenida (largo y corto), lanzamiento para el equipo y director v2 (recorrido completo, 33 elementos); todos con el mapa de proceso, el calendario y los borradores de correo; el correo del director v1 no se actualiza |
 | Láminas del mapa de proceso | Cuatro PDF en `docs/mapa-proceso/` (carriles y metro, completa A2 y resumida A3); tres se descargan desde la plataforma |
 
 ## 18. Memoria del proyecto (trazabilidad e historia)

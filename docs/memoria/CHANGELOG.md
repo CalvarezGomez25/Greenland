@@ -2,6 +2,13 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.15.2] · 4 de noviembre de 2026
+### Materiales
+- **Guía PDF** de 46 figuras (50 páginas): figura 43 «Mi trabajo · Vencimientos y calendario», 44 «Procesos · Invitar por correo» y 45 «Contratos · Recordar por correo»; el celular pasa a la figura 46. La figura 3 remite a la 43.
+- **Tarjeta** de 6 caras: la cara 1 explica los vencimientos y el calendario de «Mi trabajo»; la cara 4, invitar y recordar por correo; la cara 6, que la plataforma no se conecta a correo ni calendario.
+- **Tabla de módulos**: fila 30 «Calendario y correo».
+- **Correos** (bienvenida largo y corto, lanzamiento y director v2, que llega a 33 elementos) con el calendario y los borradores de correo.
+
 ## [3.15.1] · 4 de noviembre de 2026
 ### Cambiado
 - **El calendario pasa a «Mi trabajo»:** se elimina la pantalla y el ítem de menú «Mi calendario». La línea de tiempo tiene el botón «Vencimientos de mis proyectos (n)» (apagado por defecto, rombo hueco, solo proyectos donde estás asignado) y el botón «Agregar a mi calendario» (`/mi-trabajo/calendario.ics`). Se retiran los enlaces por evento a Google Calendar y Outlook ([ADR-0038](decisiones/ADR-0038-calendario-y-correo-sin-conexion.md), ajuste).

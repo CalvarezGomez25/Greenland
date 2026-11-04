@@ -40,6 +40,7 @@ Hoy abrimos **PMO360, Control integral de Proyectos**, la plataforma donde estam
 - **Documentos en Word:** desde un contrato se genera el acta de inicio u otro documento a partir de una plantilla aprobada (hoy hay dos de ejemplo).
 - **Acerca de FARO** (menú izquierdo): el origen del nombre PMO360 y el marco de cuatro pasos.
 - **Mapa de proceso** (menú izquierdo): todo el ciclo del proyecto en un plano, con los módulos en la etapa donde se usan, los roles y los puntos de decisión; versión completa y resumida, y láminas PDF para imprimir.
+- **Calendario y correo:** en «Mi trabajo», el botón «Vencimientos de mis proyectos» suma a tu línea de tiempo las fechas de tus contratos y «Agregar a mi calendario» descarga un archivo .ics para Google, Outlook o Apple. En un proceso puedes invitar a los oferentes y en un contrato recordar pólizas y compromisos: se abre un borrador en tu programa de correo y tú lo envías. La plataforma no se conecta a tu correo ni a tu calendario.
 
 **Adjuntos**
 - **Guía rápida con capturas** (PDF): el paso a paso de cada pantalla, con figuras numeradas.
