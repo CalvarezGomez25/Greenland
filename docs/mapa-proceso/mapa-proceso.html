@@ -138,6 +138,18 @@ body.lam .poster{display:block}
   .poster .sheet{transform:scale(var(--ps))!important}
 }
 
+/* ---------- Franjas verticales de etapa en la matriz de carriles ---------- */
+:root{--band:rgba(0,0,0,.04);--bandline:rgba(0,0,0,.14)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--band:rgba(255,255,255,.055);--bandline:rgba(255,255,255,.16)}}
+:root[data-theme="dark"]{--band:rgba(255,255,255,.055);--bandline:rgba(255,255,255,.16)}
+.sheet{--band:rgba(0,0,0,.04);--bandline:rgba(0,0,0,.14)}
+.vband{position:absolute;pointer-events:none}
+.vband.odd{background:var(--band)}
+.vline{position:absolute;width:0;border-left:1px solid var(--bandline);pointer-events:none}
+.stag{position:absolute;transform:translate(-50%,-50%);z-index:3;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;pointer-events:none;
+  background:var(--bg);color:var(--lc);border:1.5px solid var(--lc);border-radius:999px;padding:0 8px 0 2px;height:16px;font-size:9.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase}
+.stag b{display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;border-radius:50%;background:var(--lc);color:var(--bg);font-size:9px}
+.sheet .stag{height:20px;font-size:12px;padding:0 10px 0 2px;gap:5px}.sheet .stag b{width:16px;height:16px;font-size:11px}
 /* ---------- Controles, mapa de metro y versión resumida ---------- */
 .ctl{display:flex;flex-wrap:wrap;gap:10px 22px;margin:16px 0 4px;align-items:center}
 .grp{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
@@ -324,7 +336,7 @@ const LI=Object.fromEntries(LANES.map(l=>[l.id,l]));
 const LV={D:'decide o aprueba',H:'registra o trabaja',V:'consulta'};
 
 /* ===================== ESTADO ===================== */
-const CORE=new Set(['acta','edt','riesgos','cambios','cierre','pres','crono','valor','cc','raiz','proc','contr','bit','nov','interv','sem','dec']);
+const CORE=new Set(['acta','edt','riesgos','cambios','cierre','pres','crono','valor','bal','cc','raiz','proc','contr','bit','nov','interv','sem','dec']);
 const SHORT={ad:'Todo: usuarios, parámetros y estructura',di:'Aprueba contratos, anticipos y cambios moderados y críticos',an:'Consolida, evalúa cambios y mantiene los tableros',ge:'Gestiona su proyecto; aprueba cambios menores y adjudica',pa:'Firma el acta y los cambios de más de 5 %',fi:'Ve presupuesto, contratos y pagos',su:'Registra bitácora, fotos y avance de obra',in:'Conceptúa y verifica; no aprueba',co:'Solo lectura'};
 const st={sel:null,role:null,all:false,lam:location.hash==='#lamina',sty:'car',det:'full',cmp:false,theme:'auto'};
 const $=s=>document.querySelector(s);
@@ -397,7 +409,16 @@ function carHTML(g,cfg){
   LANES.forEach(l=>{const L=g.lanes[l.id];
     h+=`<div class="lane" style="--lc:var(--l${l.c});--lt:var(--l${l.c}t);left:${g.mx}px;top:${L.y}px;width:${g.W-2*g.mx}px;height:${L.h}px"></div>`;
     h+=`<div class="lanelabel" style="--lc:var(--l${l.c});left:${g.mx+6}px;top:${L.y+8}px;width:${g.lab-g.mx-14}px;height:${L.h-16}px"><b>${l.n}</b>${cfg.brief?'':`<i>${l.s}</i>`}</div>`;
-    for(let i=1;i<6;i++)h+=`<div class="colguide" style="left:${g.lab+i*g.colW}px;top:${L.y+3}px;height:${L.h-6}px"></div>`;
+  });
+  // franjas verticales de etapa: un velo muy leve sobre los carriles, que no cambia su color, y que baja desde cada etapa
+  const y0=g.top+g.spineH+3;
+  for(let i=0;i<6;i++){
+    h+=`<div class="vband${i%2===0?' odd':''}" style="left:${g.lab+i*g.colW}px;top:${y0}px;width:${g.colW}px;height:${g.end-y0+5}px"></div>`;
+    if(i>0)h+=`<div class="vline" style="left:${g.lab+i*g.colW}px;top:${y0}px;height:${g.end-y0+5}px"></div>`;
+  }
+  // marca de etapa al borde superior de cada carril, para saber en qué etapa estás sin volver al encabezado
+  LANES.forEach(l=>{const L=g.lanes[l.id];
+    ETAPAS.forEach((e,i)=>{h+=`<span class="stag" style="--lc:var(--l${l.c});left:${g.lab+i*g.colW+g.colW/2}px;top:${L.y}px"><b>${e.n}</b>${cfg.brief?'':e.t}</span>`});
   });
   h+=flowsSVG(g,cfg,id=>g.rect[id]);
   h+=mods().map(m=>{const r=g.rect[m.id],L=LI[m.l];const gates=GATES.some(x=>x.m===m.id);
