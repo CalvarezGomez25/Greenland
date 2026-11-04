@@ -1,0 +1,446 @@
+<title>Mapa de proceso PMO360</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap">
+<style>
+/* Concepto: columna vertebral de seis etapas arriba; carriles por paquete de trabajo debajo; módulos como piezas ubicadas en la etapa donde se usan; conectores de datos entre ellos.
+   Identidad: sistema de diseño GreenLand de la plataforma (hojas verdes, tierra, Baloo 2 + Roboto, esquinas redondeadas, sin degradados). */
+:root{
+  --bg:#ffffff; --fg:#164504; --muted:#555552; --line:#dcdcd8; --surface:#f4f9ea; --surface2:#e6f1d1;
+  --accent:#4c700b; --accent-fg:#ffffff; --earth:#7c401d; --flow:#4c700b; --danger:#b23a22;
+  --node:#ffffff; --dim:.38;
+  --l1:#4c700b; --l1t:#eef5dc;
+  --l2:#386631; --l2t:#e4efe1;
+  --l3:#7c401d; --l3t:#f6e9df;
+  --l4:#5d870e; --l4t:#f0f5d8;
+  --l5:#555552; --l5t:#efefec;
+  --font-display:'Baloo 2','Varela Round',system-ui,sans-serif; --font-body:'Roboto',system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1a0a; --fg:#e8f0dc; --muted:#a8b39c; --line:#2b3b24; --surface:#15240f; --surface2:#1f3318;
+  --accent:#a9c96c; --accent-fg:#0e1a0a; --earth:#d9a06f; --flow:#a9c96c; --danger:#e8806b; --node:#12200d;
+  --l1:#a9c96c; --l1t:#1b2b12; --l2:#8dbf86; --l2t:#18291a; --l3:#d9a06f; --l3t:#2a1d14; --l4:#b8d65a; --l4t:#222c10; --l5:#b3b3ad; --l5t:#1f211c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1a0a; --fg:#e8f0dc; --muted:#a8b39c; --line:#2b3b24; --surface:#15240f; --surface2:#1f3318;
+  --accent:#a9c96c; --accent-fg:#0e1a0a; --earth:#d9a06f; --flow:#a9c96c; --danger:#e8806b; --node:#12200d;
+  --l1:#a9c96c; --l1t:#1b2b12; --l2:#8dbf86; --l2t:#18291a; --l3:#d9a06f; --l3t:#2a1d14; --l4:#b8d65a; --l4t:#222c10; --l5:#b3b3ad; --l5t:#1f211c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-weight:300;font-size:15px;line-height:1.45;margin:0;
+  padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 60%,transparent);outline-offset:2px}
+h1{font-family:var(--font-display);font-weight:700;font-size:34px;line-height:1.1;margin:0;color:var(--accent);text-wrap:balance}
+h1 span{display:inline-block;border-bottom:2px solid var(--earth);padding-bottom:4px}
+.lede{max-width:68ch;color:var(--muted);margin:10px 0 0}
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pill{border:1.5px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap}
+.pill:hover{background:var(--surface)}
+.pill[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+.roles{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 6px;align-items:center}
+.roles b{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-right:6px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start;margin-top:12px}
+@media (max-width:1100px){.layout{grid-template-columns:minmax(0,1fr)}}
+.mapwrap{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--bg)}
+.sizer{position:relative}
+.canvas{position:absolute;left:0;top:0;transform-origin:0 0}
+.canvas svg,.sheet svg{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;z-index:1}.sheet svg.nums,.canvas svg.nums{z-index:4}
+.etapa{position:absolute;display:flex;flex-direction:column;justify-content:center;padding:6px 14px 6px 22px;color:var(--accent-fg);background:var(--accent);
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%,14px 50%)}
+.etapa.first{clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%)}
+.etapa .n{font-size:10px;letter-spacing:.1em;text-transform:uppercase;opacity:.85;font-weight:500}
+.etapa .t{font-family:var(--font-display);font-weight:700;font-size:16px;line-height:1.05}
+.etapa .s{font-size:10.5px;opacity:.92;line-height:1.2;margin-top:2px}
+.lane{position:absolute;border-radius:14px;background:var(--lt);border:1px solid color-mix(in srgb,var(--lc) 35%,transparent)}
+.lanelabel{position:absolute;display:flex;flex-direction:column;justify-content:center;padding:0 10px 0 14px;border-left:5px solid var(--lc);border-radius:4px}
+.lanelabel b{font-family:var(--font-display);font-weight:700;font-size:15px;line-height:1.1;color:var(--lc)}
+.lanelabel i{font-style:normal;font-size:11px;color:var(--muted);line-height:1.25;margin-top:3px}
+.colguide{position:absolute;top:0;bottom:0;border-left:1px dashed var(--line);pointer-events:none}
+.node{position:absolute;text-align:left;background:var(--node);border:1.5px solid var(--lc);border-radius:12px;padding:6px 10px 6px 11px;cursor:pointer;overflow:hidden;
+  display:flex;flex-direction:column;gap:1px;transition:opacity .15s,box-shadow .15s,transform .15s;z-index:2}
+.node:hover{transform:translateY(-1px)}
+.node .hd{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;padding-right:16px}
+.node .nm{font-weight:700;font-size:12.5px;line-height:1.15;color:var(--fg)}
+.sheet .node{padding:5px 12px 5px 13px}
+.sheet .node .nm{font-size:15.5px}
+.sheet .node .us{font-size:12.5px;line-height:1.28;-webkit-line-clamp:2}
+.sheet .gate{font-size:16px;top:6px;right:9px}
+.sheet .node .hd{padding-right:20px}
+.sheet .etapa .n{font-size:12px}.sheet .etapa .t{font-size:22px}.sheet .etapa .s{font-size:13px}
+.sheet .lanelabel b{font-size:20px}.sheet .lanelabel i{font-size:13px}
+.node .us{font-size:11px;line-height:1.25;color:var(--muted);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.node.sel{box-shadow:0 0 0 3px color-mix(in srgb,var(--lc) 45%,transparent);background:var(--lt)}
+.node.rel{box-shadow:0 0 0 2px color-mix(in srgb,var(--lc) 35%,transparent)}
+.node.dim>*{opacity:var(--dim)}.node.dim{border-color:color-mix(in srgb,var(--lc) 30%,var(--line))}
+.gate{position:absolute;top:5px;right:7px;color:var(--earth);font-size:13px;line-height:1}
+.chips{display:flex;gap:3px;flex-wrap:nowrap;flex:none}
+.chip{font-size:10.5px;font-weight:700;letter-spacing:.03em;border-radius:999px;padding:1px 6px;border:1px solid var(--lc);color:var(--lc);background:transparent;line-height:1.4}
+.chip.D{background:var(--earth);border-color:var(--earth);color:var(--bg)}
+.chip.H{background:var(--lc);color:var(--bg)}
+.lvl{position:absolute;bottom:6px;right:8px;font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--lc)}
+.node.lvD{border-width:2.5px}
+.node.lvH{border-width:1.5px}
+.node.lvV{border-style:dashed}
+.node.lv0>*{opacity:.3}.node.lv0{border-style:dotted;border-color:var(--line)}
+.fl{fill:none;stroke:var(--flow);stroke-width:1.6;opacity:.0}
+.fl.on{opacity:.8}
+.fl.all{opacity:.4}
+.fl.sel{opacity:.95;stroke-width:2.4}
+.flnum{fill:var(--bg);stroke:var(--flow);stroke-width:1.2}
+.flt{fill:var(--flow);font-size:10px;font-weight:700;text-anchor:middle;dominant-baseline:central;font-family:var(--font-body)}
+.panel{border:1px solid var(--line);border-radius:16px;padding:18px 18px 20px;background:var(--surface);position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+@media (max-width:1100px){.panel{position:static;max-height:none}}
+.panel h2{font-family:var(--font-display);font-weight:700;font-size:22px;line-height:1.1;margin:0;color:var(--accent)}
+.panel .tag{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;border:1px solid var(--lc,var(--accent));color:var(--lc,var(--accent));padding:2px 10px;margin:0 6px 8px 0}
+.panel h3{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:16px 0 6px}
+.panel p{margin:6px 0;font-size:14px}
+.panel ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+.panel li{font-size:13.5px}
+.link{background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer;font-size:13.5px;text-align:left}
+.rolelist{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13px}
+.path{font-size:12.5px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:7px 10px;color:var(--fg)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--muted);margin-top:10px;align-items:center}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.k{display:inline-block;width:18px;height:12px;border-radius:5px;border:1.5px solid var(--accent)}
+.k.D{border-width:3px}.k.V{border-style:dashed}
+.hint{font-size:13px;color:var(--muted);margin:10px 0 0}
+
+/* ---------- Lámina para imprimir ---------- */
+body.lam{padding:0;background:#e9ece4}
+body.lam .app{display:none}
+.poster{display:none}
+body.lam .poster{display:block}
+.posterhost{position:relative;margin:0 auto}
+.poster .sheet{position:absolute;left:0;top:0;width:2400px;height:1697px;transform-origin:0 0;background:#fff;color:#164504;overflow:hidden;--bg:#fff;--fg:#164504;--muted:#555552;--line:#dcdcd8;--node:#fff;--surface:#f4f9ea;--accent:#4c700b;--accent-fg:#fff;--earth:#7c401d;--flow:#4c700b;
+  --l1:#4c700b;--l1t:#eef5dc;--l2:#386631;--l2t:#e4efe1;--l3:#7c401d;--l3t:#f6e9df;--l4:#5d870e;--l4t:#f0f5d8;--l5:#555552;--l5t:#efefec}
+.sheet .ph{position:absolute;left:48px;top:14px;right:48px;display:flex;justify-content:space-between;align-items:flex-start}
+.sheet .ph h1{font-size:44px}
+.sheet .ph p{margin:4px 0 0;font-size:16px;color:var(--muted);max-width:170ch}
+.sheet .pf{position:absolute;left:56px;right:56px}
+.sheet .pf h4{font-family:var(--font-display);font-size:19px;margin:0 0 6px;color:var(--accent)}
+.rgrid{display:grid;grid-template-columns:repeat(9,1fr);gap:8px}
+.rc{border:1.5px solid var(--line);border-radius:12px;padding:8px 11px;font-size:12.5px;line-height:1.32}
+.rc b{display:block;font-family:var(--font-display);font-size:16px;color:var(--accent);line-height:1.1;margin-bottom:3px}
+.rc b em{font-style:normal;font-family:var(--font-body);font-size:10px;font-weight:700;border:1px solid var(--accent);border-radius:999px;padding:0 6px;margin-left:5px;vertical-align:1px}
+.cols{display:grid;grid-template-columns:1.1fr 2.3fr .6fr;gap:30px;margin-top:10px}
+.cols ol,.cols ul{margin:0;padding:0;list-style:none;font-size:12.5px;line-height:1.3;display:flex;flex-direction:column;gap:3px}
+.cols .two{columns:3;column-gap:26px;display:block}
+.cols .two li{break-inside:avoid;margin-bottom:3px}
+.nb{display:inline-flex;width:18px;height:18px;border-radius:50%;border:1.2px solid var(--flow);color:var(--flow);font-size:10px;font-weight:700;align-items:center;justify-content:center;margin-right:7px;flex:none;vertical-align:middle}
+.cols li{display:flex;gap:0;align-items:flex-start}
+.gt{color:var(--earth);font-size:12px;margin-right:6px}
+@media print{
+  @page{size:594mm 420mm;margin:0}
+  html,body{background:#fff!important;height:420mm!important;overflow:hidden!important}
+  body{padding:0!important}
+  body .app{display:none!important}
+  body .poster{display:block!important}
+  .posterhost{width:594mm!important;height:420mm!important;margin:0!important;overflow:hidden;position:relative}
+  .poster .sheet{transform:scale(.9354)!important}
+}
+</style>
+
+<div class="app">
+  <div class="top">
+    <div>
+      <h1><span>Mapa de proceso PMO360</span></h1>
+      <p class="lede">El ciclo de vida de un proyecto de punta a punta: en qué etapa se usa cada módulo, quién interviene, quién decide y cómo pasan los datos de un módulo a otro. Haz clic en un módulo para descubrirlo.</p>
+    </div>
+    <div class="tools">
+      <button class="pill" id="bAll" aria-pressed="false">Ver todas las conexiones</button>
+      <button class="pill" id="bLam" aria-pressed="false">Vista de lámina (para imprimir)</button>
+    </div>
+  </div>
+  <div class="roles" id="roles" role="group" aria-label="Ver el mapa según el rol"></div>
+  <div class="layout">
+    <div>
+      <div class="mapwrap" id="mapwrap"><div class="sizer" id="sizer"><div class="canvas" id="canvas"></div></div></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+</div>
+
+<div class="poster" id="poster"><div class="posterhost" id="posterhost"><div class="sheet" id="sheet"></div></div></div>
+
+<script>
+/* ===================== DATOS ===================== */
+const ETAPAS=[
+ {n:1,t:'Inicio',s:'Qué es el proyecto y quién interviene'},
+ {n:2,t:'Planeación',s:'Alcance, costo, tiempo y riesgos'},
+ {n:3,t:'Contratación',s:'Aliados, ofertas y contratos'},
+ {n:4,t:'Ejecución',s:'Obra, campo e interventoría'},
+ {n:5,t:'Seguimiento y control',s:'Medir, decidir y ajustar'},
+ {n:6,t:'Cierre',s:'Entrega, liquidación y aprendizaje'}];
+const LANES=[
+ {id:'ges',n:'Gestión del proyecto',s:'Planear, controlar y cerrar',c:1},
+ {id:'obr',n:'Obra: costo y tiempo',s:'Presupuesto, cronograma y valor ganado',c:2},
+ {id:'con',n:'Contratación y RAIZ',s:'Aliados, procesos y contratos',c:3},
+ {id:'cam',n:'Campo e interventoría',s:'Lo que pasa en obra y su verificación',c:4},
+ {id:'bas',n:'Control y administración',s:'Todo el ciclo: alertas, tableros y reglas',c:5}];
+const ROLES=[
+ {k:'ad',n:'Administrador',p:'Todo: usuarios, parámetros y estructura. Crea proyectos y asigna personas. Solo él reabre un proyecto cerrado.'},
+ {k:'di',n:'Director general',p:'Ve todo el portafolio. Aprueba los contratos nuevos y autoriza anticipos (máx. 20 %). Aprueba los cambios moderados y críticos.'},
+ {k:'an',n:'Analista PMO',p:'Ve todo el portafolio. Consolida, evalúa el impacto de los cambios y mantiene el tablero y los reportes.'},
+ {k:'ge',n:'Gerente de proyecto',p:'En sus proyectos edita acta, EDT, riesgos, presupuesto, cronograma y contratos. Aprueba cambios menores, adjudica y revisa las novedades.'},
+ {k:'pa',n:'Patrocinador',p:'Ve su proyecto. Firma el acta y los cambios de más de 5 % del presupuesto.'},
+ {k:'fi',n:'Finanzas',p:'Ve presupuesto, contratos y pagos de todo el portafolio. Hoy solo lectura.'},
+ {k:'su',n:'Supervisor de obra',p:'Registra la bitácora con fotos y el avance de sus tareas. Ve el presupuesto.'},
+ {k:'in',n:'Interventoría',p:'Ve y conceptúa en sus contratos; verifica el avance y registra hallazgos e informes. No aprueba ni edita contratos; no ve costos.'},
+ {k:'co',n:'Consulta',p:'Solo lectura en los proyectos asignados.'}];
+const RK=ROLES.map(r=>r.k);
+const GEN='ad di an ge pa fi su co', ALL=GEN+' in';
+function R(base,over){const o={};base.split(' ').forEach(k=>{if(k)o[k]='V'});(over||'').split(' ').forEach(s=>{if(s){const[k,v]=s.split(':');o[k]=v}});return o}
+// row = fila dentro del carril; a..b = etapas (1-6) donde se usa
+const M=[
+ {id:'acta',l:'ges',row:0,a:1,b:1,nm:'Acta de constitución',co:'Propósito, alcance y firmas',us:'Propósito, alcance, supuestos y firmas del proyecto.',
+  de:'Es el punto de partida acordado. Las firmas quedan con quién firmó y cuándo. Su presupuesto es solo referencia: el que vale se aprueba en Presupuesto.',ru:'Proyecto → Gestión → Acta de constitución',ro:R(GEN,'ge:H ad:H pa:D')},
+ {id:'inter',l:'ges',row:1,a:1,b:1,nm:'Interesados',co:'Poder, interés y estrategia',us:'Quién influye en el proyecto y cómo gestionarlo.',
+  de:'Poder e interés de 1 a 5; la estrategia (gestionar de cerca, mantener satisfecho o informado) se calcula sola. Los contactos se escriben una vez en el directorio.',ru:'Proyecto → Gestión → Interesados',ro:R(GEN,'ge:H ad:H')},
+ {id:'edt',l:'ges',row:0,a:2,b:2,nm:'EDT',co:'El proyecto en entregables',us:'El proyecto dividido en entregables, con responsable y estado.',
+  de:'Es la base común: de aquí se arma el presupuesto y se ligan las tareas del cronograma.',ru:'Proyecto → Gestión → EDT',ro:R(ALL,'ge:H ad:H')},
+ {id:'riesgos',l:'ges',row:1,a:2,b:6,nm:'Riesgos',co:'Puntaje y plan de respuesta',us:'Probabilidad × impacto: Crítico, Alto, Medio o Bajo, con estrategia y plan. Importa desde Excel.',
+  de:'Un riesgo crítico activo pone el semáforo del proyecto en rojo. Una acción del plan de respuesta puede volverse una actividad.',ru:'Proyecto → Gestión → Riesgos',ro:R(GEN,'ge:H ad:H')},
+ {id:'cambios',l:'ges',row:0,a:3,b:5,nm:'Control de cambios',co:'Solicitudes y aprobación por nivel',us:'Flujo por fases; la plataforma calcula el nivel (Menor, Moderado, Crítico) según el impacto en costo.',
+  de:'Un cambio aprobado ajusta la línea base y puede ligarse a un contrato (otrosí) o a un adicional de obra. Los cambios sin resolver bloquean el cierre.',ru:'Proyecto → Gestión → Control de cambios',ro:R(ALL,'ge:D ad:H di:D pa:D an:H in:H')},
+ {id:'act',l:'ges',row:2,a:1,b:3,nm:'Actividades y Mi trabajo',co:'Quién hace qué y para cuándo',us:'Tablero Kanban del trabajo diario: responsable, fecha límite y estado. No son tareas del cronograma.',
+  de:'Cada persona ve sus pendientes en «Mi trabajo», con la línea de tiempo y lo vencido. Se pueden ligar a un riesgo o a la EDT.',ru:'Proyecto → Actividades · Menú → Mi trabajo',ro:R(ALL,'ge:H ad:H di:H an:H in:H')},
+ {id:'reportes',l:'ges',row:2,a:4,b:6,nm:'Reporte semanal',co:'Indicadores y foto de la semana',us:'Indicadores de gestión con meta, hitos y reuniones; un reporte por semana con foto histórica.',
+  de:'Al enviarlo, los indicadores quedan guardados y no cambian. Si hay decisiones requeridas, el director general recibe un correo.',ru:'Proyecto → Gestión → Reporte semanal',ro:R(GEN,'ge:H ad:H an:H')},
+ {id:'docs',l:'bas',row:1,a:3,b:3,nm:'Documentos',co:'Planos, contratos, actas e informes',us:'Un repositorio con todas las versiones; define lo que ve la interventoría.',
+  de:'Se pueden ligar a un contrato u otro registro. Tamaño máximo 50 MB por archivo.',ru:'Proyecto → Gestión → Documentos',ro:R(ALL,'ge:H ad:H su:H in:H')},
+ {id:'cierre',l:'ges',row:0,a:6,b:6,nm:'Cierre y lecciones',co:'Acta de entrega y aprendizaje',us:'Acta de entrega y registro de lecciones aprendidas.',
+  de:'Los cambios sin resolver bloquean el cierre; los hitos vencidos avisan pero no lo impiden. Un proyecto cerrado sale del tablero y pasa al histórico.',ru:'Proyecto → Gestión → Cierre y lecciones',ro:R(GEN,'ge:D ad:D')},
+
+ {id:'pres',l:'obr',row:0,a:2,b:5,nm:'Presupuesto y costos',co:'Capítulos, A.I.U., adicionales y línea base',us:'Capítulos y partidas, costos indirectos (A.I.U.), adicionales de obra, línea base (BAC), gasto real y Curva S.',
+  de:'Al aprobarse, el presupuesto es la línea base de costo. Los adicionales son trabajos fuera de la EDT original y quedan aprobados cuando el cambio que los respalda se aprueba.',ru:'Proyecto → Obra → Presupuesto',ro:R(GEN,'ge:D ad:H')},
+ {id:'crono',l:'obr',row:1,a:2,b:5,nm:'Cronograma y avance',co:'Tareas con peso, Gantt y avance',us:'Tareas con semana de inicio, duración y peso (suman 100 %); Gantt; avance reportado y verificado.',
+  de:'Cada tarea se liga a un capítulo para que el control por capítulo tenga avance. La interventoría registra el avance verificado, que es el que usa el valor ganado.',ru:'Proyecto → Obra → Cronograma',ro:R(ALL,'ge:H su:H in:H ad:H')},
+ {id:'valor',l:'obr',row:2,a:4,b:4,nm:'Valor ganado',co:'SPI, CPI y proyecciones',us:'SPI, CPI y estimaciones al terminar (EAC, ETC, VAC, TCPI).',
+  de:'En proyectos de obra se calcula solo con presupuesto aprobado, cronograma y gasto. Nadie escribe las cifras a mano.',ru:'Proyecto → Gestión → Valor ganado',ro:R(GEN,'ge:H ad:H an:H')},
+ {id:'bal',l:'obr',row:2,a:3,b:3,nm:'Balance de costos',co:'Presupuestado frente a contratado',us:'Presupuesto con indirectos frente a lo contratado y facturado.',
+  de:'Avisa si hay sobrecontratación o contratos con valor sin asignar. Solo cuentan los contratos aprobados.',ru:'Proyecto → Obra → Balance de costos',ro:R(GEN)},
+ {id:'cc',l:'obr',row:2,a:5,b:5,nm:'Control de costos',co:'Invertido, por invertir, proyectado',us:'Corte a corte: invertido, por invertir y proyectado (EAC).',
+  de:'Compara cada corte con el anterior y con la línea base, y repite el control por capítulo.',ru:'Proyecto → Obra → Control de costos',ro:R(GEN)},
+
+ {id:'raiz',l:'con',row:0,a:3,b:6,nm:'RAIZ · Registro de Aliados',co:'Maestro único de aliados',us:'Contratistas, proveedores, consultores e interventores escritos una sola vez, con sus documentos, contratantes y plantillas.',
+  de:'Cada aliado se elige desde aquí en cualquier proyecto. Si falta el RUT se usa un identificador temporal (PEND-). Cada proyecto solo ve sus contratos; el maestro completo lo ven pocos roles.',ru:'Menú → Administración → RAIZ',ro:R('ad di an ge fi','ad:H di:H ge:H')},
+ {id:'proc',l:'con',row:1,a:3,b:3,nm:'Procesos de contratación',co:'Ofertas por ronda y comparativo',us:'Invitaciones, ofertas por ronda y comparativo con puntaje.',
+  de:'Una oferta no habilitada no recibe puntaje total. Al adjudicar, el contrato se registra desde la oferta ganadora. La interventoría no ve esta pantalla.',ru:'Proyecto → Obra → Procesos de contratación',ro:R(GEN,'ge:D ad:H')},
+ {id:'word',l:'con',row:1,a:4,b:4,nm:'Documentos en Word',co:'Plantillas llenas con datos',us:'Plantilla Word llena con los datos del contrato.',
+  de:'Las plantillas oficiales las sube el administrador o el director general; el texto jurídico lo aporta Jurídica.',ru:'Contrato → Generar documento (Word)',ro:R('ad di ge','ge:H ad:H di:H')},
+ {id:'contr',l:'con',row:2,a:3,b:6,nm:'Contratos y pagos',co:'Ruta de 9 etapas, pólizas y pagos',us:'Ruta de nueve etapas con semáforo, pólizas, modificaciones, anticipo, actas de pago y retención.',
+  de:'El semáforo vigila etapa, plazo, tope de asamblea, pólizas, documentos del contratista y compromisos. La plataforma registra y calcula; no ejecuta pagos.',ru:'Proyecto → Obra → Contratos y pagos',ro:R(ALL,'ge:H ad:H di:D in:H')},
+
+ {id:'bit',l:'cam',row:0,a:4,b:4,nm:'Bitácora de obra',co:'Registro diario con fotos',us:'Una entrada por día: clima, personal, actividades y fotos.',
+  de:'El avance diario que se anota se suma a la tarea del cronograma. Una entrada guardada no se edita: se agregan comentarios y visto bueno.',ru:'Proyecto → Obra → Bitácora',ro:R(ALL,'su:H ge:H in:H ad:H')},
+ {id:'nov',l:'cam',row:1,a:4,b:4,nm:'Novedades de campo',co:'Hechos de obra con foto',us:'Hecho de un contrato desde obra, con hasta 3 fotos, para aplicar o descartar.',
+  de:'Aplicar un acta de inicio, una suspensión o un reinicio actualiza el contrato. Una novedad nunca cambia el contrato por sí sola.',ru:'Proyecto → Obra → Novedades de campo',ro:R(ALL,'su:H ge:D ad:D in:H')},
+ {id:'interv',l:'cam',row:2,a:4,b:6,nm:'Interventoría',co:'Conceptos, hallazgos e informes',us:'Conceptos, hallazgos con plazos en días hábiles, diseños, evaluaciones e informes firmados.',
+  de:'La interventoría conceptúa y verifica; no aprueba ni modifica datos del contrato, y ve solo lo que se le asigna. Si vence la respuesta de un hallazgo, se escala.',ru:'Proyecto → Interventoría',ro:R(ALL,'in:H ad:D di:D')},
+
+ {id:'sem',l:'bas',row:0,a:1,b:3,nm:'Semáforo del proyecto',co:'La peor de cuatro señales',us:'Toma la peor de cuatro señales: cronograma (SPI), costo (CPI), riesgo más alto y cambios pendientes.',
+  de:'Donde falta información dice «Sin datos» en vez de mostrar un verde sin verificar. Cada contrato tiene además su propio semáforo.',ru:'Tablero de control y cada proyecto',ro:R(GEN)},
+ {id:'dec',l:'bas',row:0,a:4,b:6,nm:'Requiere decisión y alertas',co:'Quién decide y cuándo se entera',us:'Tablero «Requiere decisión», correo a quien decide y resumen diario.',
+  de:'Reúne cambios en aprobación, contratos por aprobar y decisiones pedidas en los reportes. El envío de correos está construido pero aún no se ha configurado.',ru:'Tablero de control',ro:R('ad di an ge pa','di:D')},
+ {id:'tab',l:'bas',row:1,a:1,b:2,nm:'Tablero de control y Mi trabajo',co:'Todos los proyectos o los tuyos',us:'Estado de todos los proyectos para quien ve el portafolio; «Mi trabajo» para quien trabaja en proyectos.',
+  de:'Cada persona entra a la pantalla que le corresponde según su rol; la interventoría entra por Mi trabajo.',ru:'Menú → Tablero de control · Mi trabajo',ro:R(ALL)},
+ {id:'inf',l:'bas',row:1,a:4,b:4,nm:'Informe gerencial',co:'Una página en Excel o PDF',us:'Resumen de una página del proyecto y exportaciones a Excel y PDF.',
+  de:'Se genera desde el proyecto. El envío semanal automático está construido pero aún no se ha configurado.',ru:'Proyecto → Informe gerencial',ro:R(GEN,'an:H ge:H')},
+ {id:'adm',l:'bas',row:1,a:5,b:6,nm:'Administración',co:'Usuarios, parámetros y auditoría',us:'Usuarios, organización, parámetros, festivos, directorio de contactos y registro de auditoría.',
+  de:'Los permisos se aplican en la base de datos, no solo en la pantalla. La auditoría registra quién hizo qué y cuándo.',ru:'Menú → Administración',ro:R('ad di an fi','ad:D')}
+];
+const GATES=[
+ {m:'acta',r:'GE · PA',t:'Firman el gerente y el patrocinador'},
+ {m:'pres',r:'GE',t:'Aprueba la línea base de costo'},
+ {m:'cambios',r:'GE · DI · PA',t:'Menor: gerente. Moderado y crítico: director general. Más de 5 % del presupuesto: también el patrocinador'},
+ {m:'proc',r:'GE',t:'Adjudica la oferta ganadora (habilitada y con valor)'},
+ {m:'contr',r:'DI',t:'Aprueba los contratos nuevos'},
+ {m:'contr',r:'DI',t:'Autoriza el anticipo (máximo 20 %, con su motivo)'},
+ {m:'nov',r:'GE · AD',t:'Aplica o descarta cada novedad (descartar exige motivo)'},
+ {m:'interv',r:'AD · DI',t:'Asigna la interventoría a cada contrato'},
+ {m:'cierre',r:'GE · AD',t:'Cierra el proyecto; los cambios sin resolver lo bloquean. Solo el administrador lo reabre'}];
+const FLOWS=[
+ ['edt','pres','El presupuesto se arma sobre la EDT'],
+ ['pres','crono','Cada tarea se liga a un capítulo del presupuesto'],
+ ['crono','valor','Avance físico y plan alimentan el valor ganado'],
+ ['pres','valor','Línea base y gasto real alimentan el valor ganado'],
+ ['bit','crono','El avance diario se suma a la tarea'],
+ ['interv','crono','El avance verificado reemplaza al reportado'],
+ ['valor','cc','Invertido y proyectado, corte a corte'],
+ ['pres','bal','El presupuesto se compara con lo contratado'],
+ ['contr','bal','Lo contratado y facturado llega al balance'],
+ ['raiz','proc','Los oferentes se eligen del maestro'],
+ ['raiz','contr','El contratista se elige del maestro'],
+ ['proc','contr','La adjudicación crea el contrato'],
+ ['contr','word','Los datos del contrato llenan la plantilla'],
+ ['nov','contr','Aplicar una novedad actualiza el contrato'],
+ ['cambios','contr','Un cambio aprobado mueve el valor (otrosí)'],
+ ['cambios','pres','Un cambio aprobado ajusta la línea base y los adicionales'],
+ ['riesgos','sem','Un riesgo crítico activo pone el semáforo en rojo'],
+ ['valor','sem','SPI y CPI definen el semáforo'],
+ ['sem','dec','Las alertas llegan a quien debe decidir'],
+ ['valor','reportes','Los indicadores se congelan en el reporte semanal'],
+ ['cambios','cierre','Los cambios sin resolver bloquean el cierre'],
+ ['interv','contr','Conceptos sobre actas de pago y anticipo']];
+const MI=Object.fromEntries(M.map(m=>[m.id,m]));
+const LI=Object.fromEntries(LANES.map(l=>[l.id,l]));
+const LV={D:'decide o aprueba',H:'registra o trabaja',V:'consulta'};
+
+/* ===================== ESTADO ===================== */
+const st={sel:null,role:null,all:false,lam:location.hash==='#lamina'};
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ===================== GEOMETRÍA ===================== */
+function geo(cfg){
+  const g={W:cfg.W,lab:cfg.lab,pad:cfg.pad||6,mx:cfg.mx||0};
+  g.colW=(cfg.W-g.mx-cfg.lab-8)/6; g.top=cfg.top; g.spineH=cfg.spineH; g.nodeH=cfg.nodeH; g.gap=cfg.gap; g.laneGap=cfg.laneGap;
+  let y=g.top+g.spineH+cfg.afterSpine; g.lanes={};
+  LANES.forEach(l=>{const rows=Math.max(...M.filter(m=>m.l===l.id).map(m=>m.row))+1; const h=rows*g.nodeH+(rows-1)*g.gap+(cfg.poster?12:14); g.lanes[l.id]={y,h,rows}; y+=h+g.laneGap;});
+  g.end=y-g.laneGap; g.rect={};
+  M.forEach(m=>{const L=g.lanes[m.l]; g.rect[m.id]={x:g.lab+(m.a-1)*g.colW+g.pad,y:L.y+(cfg.poster?6:7)+m.row*(g.nodeH+g.gap),w:(m.b-m.a+1)*g.colW-g.pad*2,h:g.nodeH}});
+  return g;
+}
+let RECTS={};
+function pathFor(A,B){
+  const ac={x:A.x+A.w/2,y:A.y+A.h/2},bc={x:B.x+B.w/2,y:B.y+B.h/2}; let p0,p1,c0,c1;
+  if(B.x>=A.x+A.w-2){p0={x:A.x+A.w,y:ac.y};p1={x:B.x,y:bc.y};const d=Math.max(30,(p1.x-p0.x)/2);c0={x:p0.x+d,y:p0.y};c1={x:p1.x-d,y:p1.y}}
+  else if(A.x>=B.x+B.w-2){p0={x:A.x,y:ac.y};p1={x:B.x+B.w,y:bc.y};const d=Math.max(30,(p0.x-p1.x)/2);c0={x:p0.x-d,y:p0.y};c1={x:p1.x+d,y:p1.y}}
+  else{const lo=Math.max(A.x,B.x),hi=Math.min(A.x+A.w,B.x+B.w);const x=(lo+hi)/2;
+    if(B.y>A.y){p0={x,y:A.y+A.h};p1={x,y:B.y}}else{p0={x,y:A.y};p1={x,y:B.y+B.h}}
+    const d=Math.max(26,Math.abs(p1.y-p0.y)/2);c0={x:p0.x,y:p0.y+(p1.y>p0.y?d:-d)};c1={x:p1.x,y:p1.y-(p1.y>p0.y?d:-d)}}
+  const at=t=>{const mt=1-t;return{x:mt**3*p0.x+3*mt*mt*t*c0.x+3*mt*t*t*c1.x+t**3*p1.x,y:mt**3*p0.y+3*mt*mt*t*c0.y+3*mt*t*t*c1.y+t**3*p1.y}};
+  // la insignia va en el tramo libre (fuera de los módulos) más cercano al centro de la flecha
+  const inside=q=>Object.values(RECTS).some(r=>q.x>r.x&&q.x<r.x+r.w&&q.y>r.y&&q.y<r.y+r.h);
+  let best=at(.5);
+  if(inside(best)){for(let k=1;k<=40;k++){const a=at(.5+k*.0125),b=at(.5-k*.0125);if(!inside(a)){best=a;break}if(!inside(b)){best=b;break}}}
+  const mx=best.x,my=best.y;
+  return{d:`M${p0.x},${p0.y} C${c0.x},${c0.y} ${c1.x},${c1.y} ${p1.x},${p1.y}`,mx,my,end:p1,from:p0};
+}
+
+/* ===================== RENDER DEL MAPA ===================== */
+function nodeHTML(m,g,cfg){
+  const r=g.rect[m.id],L=LI[m.l];
+  const gates=GATES.filter(x=>x.m===m.id);
+  let lv='';
+  if(st.role&&!cfg.poster){const v=m.ro[st.role];lv=' lv'+(v||'0')}
+  const chips=cfg.chips?`<div class="chips">${RK.filter(k=>m.ro[k]==='D'||m.ro[k]==='H').map(k=>`<span class="chip ${m.ro[k]}">${k.toUpperCase()}</span>`).join('')}</div>`:'';
+  const us=cfg.poster?m.us:m.co;
+  const cls=['node',lv.trim(),!cfg.poster&&st.sel===m.id?'sel':'',!cfg.poster&&st.sel&&st.sel!==m.id&&!rel(m.id)?'dim':'',!cfg.poster&&st.sel&&rel(m.id)&&st.sel!==m.id?'rel':''].filter(Boolean).join(' ');
+  const lvl=(!cfg.poster&&st.role&&m.ro[st.role])?`<span class="lvl">${m.ro[st.role]==='D'?'◆ DECIDE':m.ro[st.role]==='H'?'● TRABAJA':'○ CONSULTA'}</span>`:'';
+  return `<button class="${cls}" data-id="${m.id}" style="--lc:var(--l${L.c});--lt:var(--l${L.c}t);left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px" aria-label="${esc(m.nm)}: ${esc(m.co)}">
+   ${gates.length?`<span class="gate" title="Punto de decisión">◆</span>`:''}<span class="hd"><span class="nm">${esc(m.nm)}</span>${chips}</span><span class="us">${esc(us)}</span>${lvl}</button>`;
+}
+function rel(id){if(!st.sel)return false;return FLOWS.some(f=>(f[0]===st.sel&&f[1]===id)||(f[1]===st.sel&&f[0]===id))}
+function mapHTML(g,cfg){
+  let h='';
+  const spineY=g.top;
+  ETAPAS.forEach((e,i)=>{h+=`<div class="etapa${i===0?' first':''}" style="left:${g.lab+i*g.colW+2}px;top:${spineY}px;width:${g.colW-2}px;height:${g.spineH}px"><span class="n">Etapa ${e.n}</span><span class="t" style="${cfg.poster?'font-size:20px':''}">${e.t}</span><span class="s" style="${cfg.poster?'font-size:12px':''}">${e.s}</span></div>`});
+  LANES.forEach(l=>{const L=g.lanes[l.id];
+    h+=`<div class="lane" style="--lc:var(--l${l.c});--lt:var(--l${l.c}t);left:${g.mx}px;top:${L.y}px;width:${g.W-2*g.mx}px;height:${L.h}px"></div>`;
+    h+=`<div class="lanelabel" style="--lc:var(--l${l.c});left:${g.mx+6}px;top:${L.y+8}px;width:${g.lab-g.mx-14}px;height:${L.h-16}px"><b style="${cfg.poster?'font-size:18px':''}">${l.n}</b><i style="${cfg.poster?'font-size:12px':''}">${l.s}</i></div>`;
+    for(let i=1;i<6;i++)h+=`<div class="colguide" style="left:${g.lab+i*g.colW}px;top:${L.y+3}px;height:${L.h-6}px;bottom:auto"></div>`;
+  });
+  // flechas
+  let svg=`<svg width="${g.W}" height="${g.end+10}" viewBox="0 0 ${g.W} ${g.end+10}"><defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9 z" fill="var(--flow)"/></marker></defs>`;
+  RECTS=g.rect; const nums=[];
+  FLOWS.forEach((f,i)=>{const p=pathFor(g.rect[f[0]],g.rect[f[1]]);
+    let c='fl';
+    if(cfg.poster)c+=' all';
+    else if(st.sel&&(f[0]===st.sel||f[1]===st.sel))c+=' on sel';
+    else if(st.all)c+=' all';
+    svg+=`<path class="${c}" d="${p.d}" marker-end="url(#ah)" data-f="${i}"/>`;
+    if(cfg.poster||(st.sel&&(f[0]===st.sel||f[1]===st.sel)))nums.push([i+1,p.mx,p.my]);
+  });
+  svg+='</svg>';
+  svg+=`<svg class="nums" width="${g.W}" height="${g.end+10}" viewBox="0 0 ${g.W} ${g.end+10}">`+nums.map(n=>`<circle class="flnum" cx="${n[1]}" cy="${n[2]}" r="${cfg.poster?9:9}"/><text class="flt" x="${n[1]}" y="${n[2]}" style="${cfg.poster?'font-size:10.5px':''}">${n[0]}</text>`).join('')+'</svg>';
+  return h+svg+M.map(m=>nodeHTML(m,g,cfg)).join('');
+}
+
+const CFG={lab:132,W:1120,top:6,spineH:62,afterSpine:12,nodeH:72,gap:8,laneGap:10,chips:false};
+const CFGP={lab:270,W:2400,mx:28,top:112,spineH:68,afterSpine:12,nodeH:64,gap:4,laneGap:8,chips:true,poster:true};
+let G=geo(CFG);
+
+function render(){
+  document.body.classList.toggle('lam',st.lam);
+  $('#bLam').setAttribute('aria-pressed',st.lam?'true':'false');
+  $('#bAll').setAttribute('aria-pressed',st.all?'true':'false');
+  // roles
+  $('#roles').innerHTML='<b>Ver como</b>'+['<button class="pill" data-r="" aria-pressed="'+(!st.role)+'">Sin filtro</button>'].concat(ROLES.map(r=>`<button class="pill" data-r="${r.k}" aria-pressed="${st.role===r.k}">${r.n}</button>`)).join('');
+  $('#canvas').innerHTML=mapHTML(G,CFG);
+  $('#canvas').style.width=CFG.W+'px'; $('#canvas').style.height=(G.end+10)+'px';
+  fit();
+  $('#legend').innerHTML=`<span><i class="k D"></i> Decide o aprueba</span><span><i class="k"></i> Registra o trabaja</span><span><i class="k V"></i> Consulta</span><span style="color:var(--earth)">◆ Punto de decisión</span><span>→ El dato pasa de un módulo a otro</span>`;
+  panel();
+  if(st.lam)renderPoster();
+}
+function fit(){
+  const w=$('#mapwrap').clientWidth; const s=Math.max(.62,Math.min(1.3,(w-2)/CFG.W));
+  $('#canvas').style.transform=`scale(${s})`; $('#sizer').style.width=CFG.W*s+'px'; $('#sizer').style.height=(G.end+10)*s+'px';
+}
+function rolePills(m){return RK.filter(k=>m.ro[k]).map(k=>{const r=ROLES.find(x=>x.k===k);return[r.n,m.ro[k]]})}
+function panel(){
+  const P=$('#panel');
+  if(st.sel){
+    const m=MI[st.sel],L=LI[m.l];
+    const et=m.l==='bas'?'Todo el ciclo':(m.a===m.b?`Etapa ${m.a} · ${ETAPAS[m.a-1].t}`:`Etapas ${m.a} a ${m.b} · ${ETAPAS[m.a-1].t} a ${ETAPAS[m.b-1].t}`);
+    const ins=FLOWS.filter(f=>f[1]===m.id),outs=FLOWS.filter(f=>f[0]===m.id);
+    const gt=GATES.filter(x=>x.m===m.id);
+    const grp=['D','H','V'].map(v=>{const rs=rolePills(m).filter(x=>x[1]===v).map(x=>x[0]);return rs.length?`<span><b>${v==='D'?'◆ Decide':v==='H'?'● Trabaja':'○ Consulta'}</b></span><span>${rs.join(', ')}</span>`:''}).join('');
+    P.style.setProperty('--lc',`var(--l${L.c})`);
+    P.innerHTML=`<span class="tag">${L.n}</span><span class="tag" style="--lc:var(--muted)">${et}</span><h2>${esc(m.nm)}</h2>
+     <p>${esc(m.us)}</p><p style="color:var(--muted)">${esc(m.de)}</p>
+     ${gt.length?`<h3>Puntos de decisión</h3><ul>${gt.map(x=>`<li><span style="color:var(--earth)">◆</span> <b>${x.r}</b>: ${esc(x.t)}</li>`).join('')}</ul>`:''}
+     <h3>Quién lo usa</h3><div class="rolelist">${grp}</div>
+     ${ins.length?`<h3>Recibe de</h3><ul>${ins.map(f=>`<li><button class="link" data-go="${f[0]}">${esc(MI[f[0]].nm)}</button> <span style="color:var(--muted)">· ${esc(f[2])}</span></li>`).join('')}</ul>`:''}
+     ${outs.length?`<h3>Alimenta a</h3><ul>${outs.map(f=>`<li><button class="link" data-go="${f[1]}">${esc(MI[f[1]].nm)}</button> <span style="color:var(--muted)">· ${esc(f[2])}</span></li>`).join('')}</ul>`:''}
+     <h3>Dónde está en la plataforma</h3><div class="path">${esc(m.ru)}</div>
+     <p style="margin-top:14px"><button class="pill" data-clear="1">Ver el mapa completo</button></p>`;
+  }else if(st.role){
+    const r=ROLES.find(x=>x.k===st.role);
+    const dec=GATES.filter(x=>x.r.includes(st.role.toUpperCase()));
+    const cnt=['D','H','V'].map(v=>M.filter(m=>m.ro[st.role]===v).length);
+    P.style.setProperty('--lc','var(--accent)');
+    P.innerHTML=`<span class="tag">Rol</span><h2>${r.n}</h2><p>${esc(r.p)}</p>
+     <h3>En el mapa</h3><p>Decide en ${cnt[0]} módulos, trabaja en ${cnt[1]} y consulta ${cnt[2]}. Los demás no los ve.</p>
+     ${dec.length?`<h3>Sus puntos de decisión</h3><ul>${dec.map(x=>`<li><span style="color:var(--earth)">◆</span> <button class="link" data-go="${x.m}">${esc(MI[x.m].nm)}</button>: ${esc(x.t)}</li>`).join('')}</ul>`:'<h3>Sus puntos de decisión</h3><p style="color:var(--muted)">Este rol no aprueba nada en la plataforma.</p>'}
+     <p class="hint">El borde grueso marca donde decide; el discontinuo, donde solo consulta; los módulos apagados no los ve.</p>`;
+  }else{
+    P.style.setProperty('--lc','var(--accent)');
+    P.innerHTML=`<h2>Cómo leer el mapa</h2>
+     <p>De izquierda a derecha están las seis etapas del proyecto. Cada fila de color es un paquete de trabajo y cada pieza es un módulo, puesto en la etapa donde se usa.</p>
+     <h3>Para descubrirlo</h3><ul><li>Haz clic en un módulo: verás qué hace, quién lo usa y de dónde recibe y a dónde entrega sus datos.</li><li>Elige un rol arriba: el mapa se ilumina según lo que ese rol ve, hace y decide.</li><li>«Ver todas las conexiones» muestra las ${FLOWS.length} flechas de datos a la vez.</li></ul>
+     <h3>Los puntos de decisión</h3><p>Hay ${GATES.length} (marcados con ◆) donde una persona concreta aprueba algo: firmar el acta, aprobar contratos y anticipos, cambios según su nivel, adjudicar, aplicar novedades y cerrar.</p>
+     <p class="hint">La etapa en que se ubica cada módulo es una guía de uso, no una restricción: la plataforma deja registrar en cualquier momento lo que el rol permite.</p>`;
+  }
+}
+
+/* ===================== LÁMINA ===================== */
+function renderPoster(){
+  const g=geo(CFGP);
+  let h=`<div class="ph"><div><h1><span>Mapa de proceso PMO360</span></h1><p>Ciclo de vida del proyecto, paquetes de trabajo, módulos, roles y puntos de decisión. Control integral de Proyectos · GreenLand</p></div><div style="font-size:12px;color:var(--muted);text-align:right;line-height:1.5">Nov. 2026 · Borrador para revisión<br>Los datos de la plataforma son ficticios hasta el piloto</div></div>`;
+  h+=mapHTML(g,CFGP);
+  const fy=g.end+16;
+  h+=`<div class="pf" style="top:${fy}px"><h4>Quién puede qué</h4><div class="rgrid">${ROLES.map(r=>`<div class="rc"><b>${r.n}<em>${r.k.toUpperCase()}</em></b>${esc(r.p)}</div>`).join('')}</div>
+   <div class="cols"><div><h4>Puntos de decisión ◆</h4><ul>${GATES.map(x=>`<li><span class="gt">◆</span><span><b>${esc(MI[x.m].nm)}</b> · ${x.r}: ${esc(x.t)}</span></li>`).join('')}</ul></div>
+   <div><h4>Cómo se conectan los módulos</h4><ol class="two">${FLOWS.map((f,i)=>`<li><span class="nb">${i+1}</span><span>${esc(MI[f[0]].nm)} → ${esc(MI[f[1]].nm)}: ${esc(f[2])}</span></li>`).join('')}</ol></div>
+   <div><h4>Cómo leerlo</h4><ul><li><span class="gt">◆</span> Punto de decisión</li><li><span class="chip D" style="margin-right:6px">AD</span> Decide o aprueba</li><li><span class="chip H" style="margin-right:6px;--lc:#4c700b">AD</span> Registra o trabaja</li><li><span class="nb">1</span> Flecha numerada: el dato pasa de un módulo a otro</li><li>Cada módulo está en la etapa donde se usa; el rol que lo consulta no aparece en las siglas</li></ul></div></div></div>`;
+  $('#sheet').innerHTML=h;
+  const w=Math.min(window.innerWidth-24,1700), s=w/2400;
+  $('#sheet').style.transform=`scale(${s})`; $('#posterhost').style.width=2400*s+'px'; $('#posterhost').style.height=1697*s+'px';
+  $('#posterhost').style.margin='12px auto';
+}
+
+/* ===================== EVENTOS ===================== */
+document.addEventListener('click',e=>{
+  const n=e.target.closest('.node'); if(n&&!n.closest('.sheet')){st.sel=st.sel===n.dataset.id?null:n.dataset.id;render();return}
+  const r=e.target.closest('[data-r]'); if(r){st.role=r.dataset.r||null;render();return}
+  const go=e.target.closest('[data-go]'); if(go){st.sel=go.dataset.go;render();return}
+  if(e.target.closest('[data-clear]')){st.sel=null;render();return}
+  if(e.target.closest('#bAll')){st.all=!st.all;render();return}
+  if(e.target.closest('#bLam')){st.lam=!st.lam;location.hash=st.lam?'lamina':'';render();return}
+});
+window.addEventListener('hashchange',()=>{st.lam=location.hash==='#lamina';render()});
+window.addEventListener('resize',()=>{fit();if(st.lam)renderPoster()});
+render();
+</script>
