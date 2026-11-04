@@ -21,7 +21,7 @@ export const flujosVisibles = (det: Detalle): Flujo[] => {
 // Medidas de la matriz de carriles según el detalle (en píxeles del lienzo; la pantalla lo escala al ancho disponible).
 export function configuracion(det: Detalle): Cfg {
   const brief = det === "brief";
-  return { lab: 138, W: 980, top: 6, spineH: brief ? 50 : 62, afterSpine: 12, nodeH: brief ? 62 : 72, gap: 8, laneGap: 10 };
+  return { lab: 138, W: 980, top: 6, spineH: brief ? 54 : 72, afterSpine: 12, nodeH: brief ? 62 : 72, gap: 8, laneGap: 10 };
 }
 
 // En la versión completa se respetan las filas definidas; en la resumida se reacomodan al quitar módulos.

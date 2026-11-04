@@ -1,7 +1,7 @@
 "use client";
 
 import "./mapa.css";
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type RefObject } from "react";
 import {
   CARRILES, CARRIL_POR_ID, DECISIONES, ESENCIALES, ETAPAS, MODULO_POR_ID, RK, ROLES,
   type ModuloMapa, type Nivel, type RolClave,
@@ -133,7 +133,7 @@ function Mapa({ e, a }: { e: Estado; a: Acciones }) {
   );
 }
 
-function Panel({ e, ir, limpiar }: { e: Estado; ir: (id: string) => void; limpiar: () => void }) {
+function Panel({ e, ir, limpiar, refPanel }: { e: Estado; ir: (id: string) => void; limpiar: () => void; refPanel: RefObject<HTMLElement | null> }) {
   const fl = flujosVisibles(e.det);
   const ms = modulosVisibles(e.det);
   const m = e.sel ? MODULO_POR_ID[e.sel] : null;
@@ -143,7 +143,7 @@ function Panel({ e, ir, limpiar }: { e: Estado; ir: (id: string) => void; limpia
     const entra = fl.filter((f) => f[1] === m.id), sale = fl.filter((f) => f[0] === m.id), dec = DECISIONES.filter((x) => x.m === m.id);
     const grupos = (["D", "H", "V"] as Nivel[]).map((v) => ({ v, rs: RK.filter((k) => m.ro[k] === v).map((k) => ROLES.find((r) => r.k === k)!.n) })).filter((g) => g.rs.length);
     return (
-      <aside className="mp-panel" style={vars({ "--lc": `var(--l${L.c})` })} aria-live="polite">
+      <aside ref={refPanel} className="mp-panel" style={vars({ "--lc": `var(--l${L.c})` })} aria-live="polite">
         <span className="mp-tag">{L.n}</span><span className="mp-tag" style={vars({ "--lc": "var(--mp-muted)" })}>{etapa}</span>
         <h2>{m.nm}</h2>
         <p>{m.us}</p><p className="mp-muted">{m.de}</p>
@@ -162,7 +162,7 @@ function Panel({ e, ir, limpiar }: { e: Estado; ir: (id: string) => void; limpia
     const cuenta = (["D", "H", "V"] as Nivel[]).map((v) => ms.filter((x) => x.ro[e.rol!] === v).length);
     const decs = DECISIONES.filter((x) => x.r.includes(e.rol!.toUpperCase()));
     return (
-      <aside className="mp-panel" aria-live="polite">
+      <aside ref={refPanel} className="mp-panel" aria-live="polite">
         <span className="mp-tag">Rol</span><h2>{r.n}</h2><p>{r.p}</p>
         <h3>En el mapa</h3><p>Decide en {cuenta[0]} módulos, trabaja en {cuenta[1]} y consulta {cuenta[2]}. Los demás no los ve.</p>
         <h3>Sus puntos de decisión</h3>
@@ -172,7 +172,7 @@ function Panel({ e, ir, limpiar }: { e: Estado; ir: (id: string) => void; limpia
     );
   }
   return (
-    <aside className="mp-panel" aria-live="polite">
+    <aside ref={refPanel} className="mp-panel" aria-live="polite">
       <h2>Cómo leer el mapa</h2>
       <p>De izquierda a derecha están las seis etapas del proyecto. Cada paquete de trabajo es una fila de color y cada módulo se ubica en la etapa donde se usa.</p>
       <h3>Para descubrirlo</h3>
@@ -199,6 +199,13 @@ export function MapaProceso() {
   const set = (p: Partial<Estado>) => setE((x) => ({ ...x, ...p }));
   const elegir = (id: string) => setE((x) => ({ ...x, sel: x.sel === id ? null : id }));
   const a: Acciones = { elegir };
+  const refPanel = useRef<HTMLElement | null>(null);
+  const refMapa = useRef<HTMLDivElement | null>(null);
+  // El detalle queda debajo del mapa; al elegir un módulo o un rol se muestra sin perder el mapa de vista por completo.
+  useEffect(() => {
+    if (!e.sel && !e.rol) return;
+    refPanel.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [e.sel, e.rol]);
   return (
     <div className="mp-root">
       <div className="mp-ctl">
@@ -214,14 +221,14 @@ export function MapaProceso() {
         {ROLES.map((r) => <button key={r.k} type="button" className="mp-pill" aria-pressed={e.rol === r.k} onClick={() => set({ rol: r.k })}>{r.n}</button>)}
       </div>
       <div className="mp-layout">
-        <div>
+        <div ref={refMapa}>
           <Mapa e={e} a={a} />
           <div className="mp-legend">
             <span><i className="mp-k mp-kD" /> Decide o aprueba</span><span><i className="mp-k" /> Registra o trabaja</span><span><i className="mp-k mp-kV" /> Consulta</span>
             <span style={{ color: "var(--mp-earth)" }}>◆ Punto de decisión</span><span>→ El dato pasa de un módulo a otro</span>
           </div>
         </div>
-        <Panel e={e} ir={(id) => set({ sel: id })} limpiar={() => set({ sel: null })} />
+        <Panel e={e} ir={(id) => set({ sel: id })} limpiar={() => { set({ sel: null }); refMapa.current?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }} refPanel={refPanel} />
       </div>
       <section className="mp-down" aria-labelledby="mp-lam">
         <h2 id="mp-lam">Láminas para imprimir</h2>
