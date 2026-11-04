@@ -4,7 +4,8 @@ Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Correg
 
 ## [3.14.1] · 4 de noviembre de 2026
 ### Cambiado
-- «Mapa de proceso»: el detalle del módulo (fondo verde) pasa debajo del mapa y el mapa usa todo el ancho disponible, para verse mejor en horizontal; al elegir un módulo o un rol la página baja al detalle, y «Ver el mapa completo» vuelve al mapa.
+- «Mapa de proceso»: el detalle del módulo (fondo verde) vuelve a la derecha del mapa, más angosto (270 a 300 px) y fijo al desplazarse, para no subir y bajar la página; el mapa se escala al ancho que queda (hasta 50 %) y un botón «Panel de detalle» lo oculta para dar todo el ancho. Solo en pantallas muy angostas (menos de 820 px) el detalle se fija al pie.
+- El mapa de metro resumido (A3) se puede descargar desde la plataforma, solo para imprimir; el estilo de metro sigue sin existir como vista en pantalla.
 
 ## [3.14.0] · 4 de noviembre de 2026
 ### Añadido

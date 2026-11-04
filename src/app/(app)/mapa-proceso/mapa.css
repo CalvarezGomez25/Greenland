@@ -14,7 +14,8 @@
 .mp-pill:hover{background:var(--mp-surface)}
 .mp-pill[aria-pressed="true"]{background:var(--mp-accent);color:var(--mp-accent-fg)}
 .mp-rolesbar{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 6px;align-items:center}
-.mp-layout{display:flex;flex-direction:column;gap:18px;margin-top:12px}
+.mp-layout{display:grid;grid-template-columns:minmax(0,1fr) var(--mp-pw,300px);gap:16px;align-items:start;margin-top:12px}
+.mp-layout.mp-solo,.mp-layout.mp-narrow{grid-template-columns:minmax(0,1fr)}
 .mp-wrap{overflow-x:auto;border:1px solid var(--mp-line);border-radius:16px;background:var(--mp-bg)}
 .mp-sizer{position:relative}
 .mp-canvas{position:absolute;left:0;top:0;transform-origin:0 0}
@@ -59,16 +60,15 @@
 .mp-fl.mp-selfl{opacity:.95;stroke-width:2.4}
 .mp-flnum{fill:var(--mp-bg);stroke:var(--mp-flow);stroke-width:1.2}
 .mp-flt{fill:var(--mp-flow);font-size:10px;font-weight:700;text-anchor:middle;dominant-baseline:central;font-family:var(--font-body)}
-.mp-panel{border:1px solid var(--mp-line);border-radius:16px;padding:18px 22px 20px;background:var(--mp-surface);column-width:340px;column-gap:32px;scroll-margin-bottom:16px}
-.mp-panel>h2,.mp-panel>.mp-tag{column-span:none}
-.mp-panel h3{break-after:avoid}
-.mp-panel .mp-bloque{break-inside:avoid}
-.mp-panel h2{font-family:var(--font-display);font-weight:700;font-size:22px;line-height:1.1;margin:0;color:var(--mp-accent)}
+.mp-panel{border:1px solid var(--mp-line);border-radius:16px;padding:16px 16px 18px;background:var(--mp-surface);position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto}
+/* Pantalla angosta (tableta en horizontal): el mapa usa todo el ancho y el detalle se fija al pie mientras hay algo elegido */
+.mp-narrow .mp-panel{top:auto;bottom:8px;max-height:42vh;box-shadow:0 -4px 18px rgba(22,69,4,.2);z-index:5}
+.mp-panel h2{font-family:var(--font-display);font-weight:700;font-size:20px;line-height:1.1;margin:0;color:var(--mp-accent)}
 .mp-tag{display:inline-block;font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;border:1px solid var(--lc,var(--mp-accent));color:var(--lc,var(--mp-accent));padding:2px 10px;margin:0 6px 8px 0}
 .mp-panel h3{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mp-muted);font-weight:500;margin:16px 0 6px}
-.mp-panel p{margin:6px 0;font-size:14px}
+.mp-panel p{margin:6px 0;font-size:13.5px}
 .mp-panel ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
-.mp-panel li{font-size:13.5px}
+.mp-panel li{font-size:13px}
 .mp-link{background:none;border:0;padding:0;color:var(--mp-accent);text-decoration:underline;cursor:pointer;font-size:13.5px;text-align:left;font-family:inherit}
 .mp-rolelist{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13px}
 .mp-path{font-size:12.5px;background:var(--mp-bg);border:1px solid var(--mp-line);border-radius:10px;padding:7px 10px}

@@ -1,7 +1,7 @@
 "use client";
 
 import "./mapa.css";
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type RefObject } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import {
   CARRILES, CARRIL_POR_ID, DECISIONES, ESENCIALES, ETAPAS, MODULO_POR_ID, RK, ROLES,
   type ModuloMapa, type Nivel, type RolClave,
@@ -115,7 +115,7 @@ function Mapa({ e, a }: { e: Estado; a: Acciones }) {
   useEffect(() => {
     const el = caja.current;
     if (!el) return;
-    const medir = () => setEsc(Math.max(0.62, Math.min(1.3, (el.clientWidth - 2) / cfg.W)));
+    const medir = () => setEsc(Math.max(0.5, Math.min(1.3, (el.clientWidth - 2) / cfg.W)));
     medir();
     const ro = new ResizeObserver(medir);
     ro.observe(el);
@@ -133,7 +133,7 @@ function Mapa({ e, a }: { e: Estado; a: Acciones }) {
   );
 }
 
-function Panel({ e, ir, limpiar, refPanel }: { e: Estado; ir: (id: string) => void; limpiar: () => void; refPanel: RefObject<HTMLElement | null> }) {
+function Panel({ e, ir, limpiar }: { e: Estado; ir: (id: string) => void; limpiar: () => void }) {
   const fl = flujosVisibles(e.det);
   const ms = modulosVisibles(e.det);
   const m = e.sel ? MODULO_POR_ID[e.sel] : null;
@@ -143,7 +143,7 @@ function Panel({ e, ir, limpiar, refPanel }: { e: Estado; ir: (id: string) => vo
     const entra = fl.filter((f) => f[1] === m.id), sale = fl.filter((f) => f[0] === m.id), dec = DECISIONES.filter((x) => x.m === m.id);
     const grupos = (["D", "H", "V"] as Nivel[]).map((v) => ({ v, rs: RK.filter((k) => m.ro[k] === v).map((k) => ROLES.find((r) => r.k === k)!.n) })).filter((g) => g.rs.length);
     return (
-      <aside ref={refPanel} className="mp-panel" style={vars({ "--lc": `var(--l${L.c})` })} aria-live="polite">
+      <aside className="mp-panel" style={vars({ "--lc": `var(--l${L.c})` })} aria-live="polite">
         <span className="mp-tag">{L.n}</span><span className="mp-tag" style={vars({ "--lc": "var(--mp-muted)" })}>{etapa}</span>
         <h2>{m.nm}</h2>
         <p>{m.us}</p><p className="mp-muted">{m.de}</p>
@@ -162,7 +162,7 @@ function Panel({ e, ir, limpiar, refPanel }: { e: Estado; ir: (id: string) => vo
     const cuenta = (["D", "H", "V"] as Nivel[]).map((v) => ms.filter((x) => x.ro[e.rol!] === v).length);
     const decs = DECISIONES.filter((x) => x.r.includes(e.rol!.toUpperCase()));
     return (
-      <aside ref={refPanel} className="mp-panel" aria-live="polite">
+      <aside className="mp-panel" aria-live="polite">
         <span className="mp-tag">Rol</span><h2>{r.n}</h2><p>{r.p}</p>
         <h3>En el mapa</h3><p>Decide en {cuenta[0]} módulos, trabaja en {cuenta[1]} y consulta {cuenta[2]}. Los demás no los ve.</p>
         <h3>Sus puntos de decisión</h3>
@@ -172,7 +172,7 @@ function Panel({ e, ir, limpiar, refPanel }: { e: Estado; ir: (id: string) => vo
     );
   }
   return (
-    <aside ref={refPanel} className="mp-panel" aria-live="polite">
+    <aside className="mp-panel" aria-live="polite">
       <h2>Cómo leer el mapa</h2>
       <p>De izquierda a derecha están las seis etapas del proyecto. Cada paquete de trabajo es una fila de color y cada módulo se ubica en la etapa donde se usa.</p>
       <h3>Para descubrirlo</h3>
@@ -190,49 +190,57 @@ function Panel({ e, ir, limpiar, refPanel }: { e: Estado; ir: (id: string) => vo
 }
 
 const LAMINAS = [
-  { f: "PMO360-mapa-carriles-completo-A2.pdf", t: "Completa (A2)" },
-  { f: "PMO360-mapa-carriles-resumido-A3.pdf", t: "Resumida (A3)" },
+  { f: "PMO360-mapa-carriles-completo-A2.pdf", t: "Matriz de carriles, completa (A2)" },
+  { f: "PMO360-mapa-carriles-resumido-A3.pdf", t: "Matriz de carriles, resumida (A3)" },
+  { f: "PMO360-mapa-metro-resumido-A3.pdf", t: "Mapa de metro, resumido (A3), solo para imprimir" },
 ];
 
 export function MapaProceso() {
   const [e, setE] = useState<Estado>({ sel: null, rol: null, todas: false, det: "full" });
+  const [panel, setPanel] = useState(true);
+  const raiz = useRef<HTMLDivElement>(null);
+  const [ancho, setAncho] = useState(0);
+  useEffect(() => {
+    const el = raiz.current;
+    if (!el) return;
+    const medir = () => setAncho(el.clientWidth);
+    medir();
+    const ro = new ResizeObserver(medir);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const angosto = ancho > 0 && ancho < 820; // solo en pantallas muy angostas el detalle baja al pie
+  const anchoPanel = ancho < 1100 ? 270 : 300;
   const set = (p: Partial<Estado>) => setE((x) => ({ ...x, ...p }));
   const elegir = (id: string) => setE((x) => ({ ...x, sel: x.sel === id ? null : id }));
   const a: Acciones = { elegir };
-  const refPanel = useRef<HTMLElement | null>(null);
-  const refMapa = useRef<HTMLDivElement | null>(null);
-  // El detalle queda debajo del mapa; al elegir un módulo o un rol se muestra sin perder el mapa de vista por completo.
-  useEffect(() => {
-    if (!e.sel && !e.rol) return;
-    refPanel.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
-  }, [e.sel, e.rol]);
   return (
-    <div className="mp-root">
+    <div className="mp-root" ref={raiz}>
       <div className="mp-ctl">
         <div className="mp-grp"><b>Detalle</b>
           <button type="button" className="mp-pill" aria-pressed={e.det === "full"} onClick={() => set({ det: "full" })}>Completo</button>
           <button type="button" className="mp-pill" aria-pressed={e.det === "brief"} onClick={() => set({ det: "brief" })}>Resumido</button>
         </div>
-        <div className="mp-grp"><button type="button" className="mp-pill" aria-pressed={e.todas} onClick={() => set({ todas: !e.todas })}>Ver todas las conexiones</button></div>
+        <div className="mp-grp"><button type="button" className="mp-pill" aria-pressed={e.todas} onClick={() => set({ todas: !e.todas })}>Ver todas las conexiones</button><button type="button" className="mp-pill" aria-pressed={panel} onClick={() => setPanel((v) => !v)}>Panel de detalle</button></div>
       </div>
       <div className="mp-rolesbar" role="group" aria-label="Ver el mapa según el rol">
         <b>Ver como</b>
         <button type="button" className="mp-pill" aria-pressed={!e.rol} onClick={() => set({ rol: null })}>Sin filtro</button>
         {ROLES.map((r) => <button key={r.k} type="button" className="mp-pill" aria-pressed={e.rol === r.k} onClick={() => set({ rol: r.k })}>{r.n}</button>)}
       </div>
-      <div className="mp-layout">
-        <div ref={refMapa}>
+      <div className={`mp-layout${panel && !angosto ? "" : " mp-solo"}${angosto ? " mp-narrow" : ""}`} style={vars({ "--mp-pw": `${anchoPanel}px` })}>
+        <div>
           <Mapa e={e} a={a} />
           <div className="mp-legend">
             <span><i className="mp-k mp-kD" /> Decide o aprueba</span><span><i className="mp-k" /> Registra o trabaja</span><span><i className="mp-k mp-kV" /> Consulta</span>
             <span style={{ color: "var(--mp-earth)" }}>◆ Punto de decisión</span><span>→ El dato pasa de un módulo a otro</span>
           </div>
         </div>
-        <Panel e={e} ir={(id) => set({ sel: id })} limpiar={() => { set({ sel: null }); refMapa.current?.scrollIntoView({ block: "nearest", behavior: "smooth" }); }} refPanel={refPanel} />
+        {panel && (!angosto || e.sel || e.rol) && <Panel e={e} ir={(id) => set({ sel: id })} limpiar={() => set({ sel: null })} />}
       </div>
       <section className="mp-down" aria-labelledby="mp-lam">
         <h2 id="mp-lam">Láminas para imprimir</h2>
-        <p className="mp-muted" style={{ fontSize: 14 }}>PDF de una página, en vector. La completa está pensada para A2 y la resumida para A3; también se pueden reducir al tamaño de tu impresora.</p>
+        <p className="mp-muted" style={{ fontSize: 14 }}>PDF de una página, en vector. Las completas están pensadas para A2 y las resumidas para A3; también se pueden reducir al tamaño de tu impresora.</p>
         <ul>{LAMINAS.map((l) => <li key={l.f}><a href={`/mapa-proceso/${l.f}`} target="_blank" rel="noreferrer">{l.t}</a></li>)}</ul>
       </section>
     </div>
