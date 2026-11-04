@@ -2,6 +2,11 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.14.0] · 4 de noviembre de 2026
+### Añadido
+- **Página «Mapa de proceso»** (`/mapa-proceso`) con enlace en el menú izquierdo y desde Ayuda ([ADR-0037](decisiones/ADR-0037-mapa-de-proceso.md)): las seis etapas del ciclo, cinco paquetes de trabajo, 26 módulos, 22 flujos de datos, 9 puntos de decisión y 9 roles; matriz de carriles y mapa de metro con comparación; versión completa y resumida; cuatro láminas PDF (A2 y A3) servidas con sesión iniciada.
+- 14 pruebas del mapa (`src/lib/mapa/mapa.test.ts`): integridad de datos, un módulo del menú sin pieza hace fallar la prueba, y geometría sin superposiciones.
+
 ## [3.13.0] · 3 de noviembre de 2026
 ### Añadido
 - **Página «Acerca de FARO»** (`/faro`), con enlace en el menú lateral y en Ayuda: significado de PMO360, los cuatro pasos de FARO con lo que la plataforma hace hoy, origen del marco y límites declarados ([ADR-0036](decisiones/ADR-0036-raiz-nombre-ayuda-y-faro-en-la-plataforma.md)).

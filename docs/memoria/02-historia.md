@@ -140,6 +140,9 @@ La capa 4 ([ADR-0035](decisiones/ADR-0035-aliados-capa-4-novedades-y-documentos.
 ### Nombre RAIZ, ayuda y FARO en la plataforma (3 de noviembre de 2026)
 El usuario pidió usar el nombre completo **RAIZ (Registro de Aliados e Información centraliZada)** como título del módulo y «RAIZ» en el menú, actualizar la guía PDF y la tarjeta, completar la ayuda de las pantallas nuevas y pensar cómo incorporar FARO en la plataforma. Se renombró el módulo, se amplió el glosario y las guías, se agregaron íconos de ayuda a los campos, y se creó la página «Acerca de FARO» enlazada desde el menú (se descartó ponerlo en la pantalla de inicio). La guía pasó a 42 figuras y la tarjeta a 6 caras. Al revisar las pantallas se encontraron dos textos de ayuda desactualizados y se corrigieron. Decisión: [ADR-0036](decisiones/ADR-0036-raiz-nombre-ayuda-y-faro-en-la-plataforma.md).
 
+### Mapa de proceso (3 y 4 de noviembre de 2026)
+El usuario pidió un mapa de proceso de todo PMO360, con las etapas del ciclo conectadas, los módulos dentro de sus paquetes de trabajo y los roles con sus poderes de decisión, interactivo y en lámina para imprimir, sin FARO. Se hizo primero como artefacto (borrador, luego versión resumida, mapa de metro, comparación y selector de tema), con ajustes del usuario: Balance de costos en la versión resumida, carriles para la lámina completa y metro para la resumida, franjas verticales de etapa en los carriles sin alterar su color, marcas de etapa reducidas y sin franjas en la resumida. Después se llevó a la plataforma como página del menú. Decisión: [ADR-0037](decisiones/ADR-0037-mapa-de-proceso.md).
+
 ## Estado al 17 de octubre de 2026
 
 Ver [01-resumen-ejecutivo.md](01-resumen-ejecutivo.md).

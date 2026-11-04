@@ -148,6 +148,7 @@ body.lam .poster{display:block}
 .vline{position:absolute;width:0;border-left:1px solid var(--bandline);pointer-events:none}
 .stag{position:absolute;transform:translate(-50%,-50%);z-index:3;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;pointer-events:none;
   background:var(--bg);color:var(--lc);border:1.5px solid var(--lc);border-radius:999px;padding:0 8px 0 2px;height:16px;font-size:9.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase}
+.stag.num{padding:0 2px 0 2px}
 .stag b{display:inline-flex;align-items:center;justify-content:center;width:12px;height:12px;border-radius:50%;background:var(--lc);color:var(--bg);font-size:9px}
 .sheet .stag{height:20px;font-size:12px;padding:0 10px 0 2px;gap:5px}.sheet .stag b{width:16px;height:16px;font-size:11px}
 /* ---------- Controles, mapa de metro y versión resumida ---------- */
@@ -412,13 +413,13 @@ function carHTML(g,cfg){
   });
   // franjas verticales de etapa: un velo muy leve sobre los carriles, que no cambia su color, y que baja desde cada etapa
   const y0=g.top+g.spineH+3;
-  for(let i=0;i<6;i++){
+  if(!cfg.brief)for(let i=0;i<6;i++){
     h+=`<div class="vband${i%2===0?' odd':''}" style="left:${g.lab+i*g.colW}px;top:${y0}px;width:${g.colW}px;height:${g.end-y0+5}px"></div>`;
     if(i>0)h+=`<div class="vline" style="left:${g.lab+i*g.colW}px;top:${y0}px;height:${g.end-y0+5}px"></div>`;
   }
   // marca de etapa al borde superior de cada carril, para saber en qué etapa estás sin volver al encabezado
-  LANES.forEach(l=>{const L=g.lanes[l.id];
-    ETAPAS.forEach((e,i)=>{h+=`<span class="stag" style="--lc:var(--l${l.c});left:${g.lab+i*g.colW+g.colW/2}px;top:${L.y}px"><b>${e.n}</b>${cfg.brief?'':e.t}</span>`});
+  if(!cfg.brief)LANES.forEach((l,li)=>{const L=g.lanes[l.id];
+    ETAPAS.forEach((e,i)=>{h+=`<span class="stag${li?' num':''}" style="--lc:var(--l${l.c});left:${g.lab+i*g.colW+g.colW/2}px;top:${L.y}px"><b>${e.n}</b>${li?'':e.t}</span>`});
   });
   h+=flowsSVG(g,cfg,id=>g.rect[id]);
   h+=mods().map(m=>{const r=g.rect[m.id],L=LI[m.l];const gates=GATES.some(x=>x.m===m.id);
@@ -431,7 +432,7 @@ function stationRect(g,m){const r=g.rect[m.id];const ty=r.y+14;const sx=r.x+16;c
 function metroHTML(g,cfg){
   let h='';
   // bandas de etapa
-  for(let i=0;i<6;i++)h+=`<div class="band${i%2?' b2':''}" style="left:${g.lab+i*g.colW}px;top:${g.top+g.spineH+4}px;width:${g.colW}px;height:${g.end-(g.top+g.spineH+4)+8}px"></div>`;
+  if(!cfg.brief)for(let i=0;i<6;i++)h+=`<div class="band${i%2?' b2':''}" style="left:${g.lab+i*g.colW}px;top:${g.top+g.spineH+4}px;width:${g.colW}px;height:${g.end-(g.top+g.spineH+4)+8}px"></div>`;
   h+=spineHTML(g,cfg);
   const ms=mods(),T=g.lab-26;
   // etiquetas de línea

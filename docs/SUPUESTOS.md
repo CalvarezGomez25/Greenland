@@ -73,3 +73,6 @@ fácil de cambiar; deben validarse con el uso real.
 
 ## Nombre RAIZ, ayuda y FARO (ADR-0036)
 - El módulo de aliados se llama RAIZ; la ruta técnica sigue siendo `/aliados` (S41). FARO se explica en una página propia enlazada desde el menú y la Ayuda, no en el inicio ni en el ingreso (S42).
+
+## Mapa de proceso (ADR-0037)
+- La etapa en que se ubica cada módulo es una guía de uso, no una restricción (S43). La página la ven todos los roles y las láminas PDF solo con sesión iniciada (S44).

@@ -14,7 +14,7 @@ export default function PaginaGlosario() {
       <p className="mt-3 max-w-3xl text-sm text-muted">
         Qué significa cada sigla e indicador y cómo diligenciar los datos de cada módulo. En las pantallas también encuentras estas explicaciones en los íconos «?».
       </p>
-      <p className="mt-2 max-w-3xl text-sm text-muted">¿Por qué se llama PMO360 y qué es FARO? <Link href="/faro" className="font-medium text-leaf-600 hover:underline">Acerca de FARO →</Link></p>
+      <p className="mt-2 max-w-3xl text-sm text-muted">¿Por qué se llama PMO360 y qué es FARO? <Link href="/faro" className="font-medium text-leaf-600 hover:underline">Acerca de FARO →</Link> · ¿Cómo encaja todo? <Link href="/mapa-proceso" className="font-medium text-leaf-600 hover:underline">Mapa de proceso →</Link></p>
       <GlosarioBuscable terminos={terminos} guias={GUIAS} />
     </>
   );
