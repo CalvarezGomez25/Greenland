@@ -2,6 +2,14 @@
 
 Formato inspirado en *Keep a Changelog* (categorías: Añadido, Cambiado, Corregido, Seguridad). Más reciente primero. Fechas en UTC según el historial de Git. Las versiones corresponden a la especificación (`ESPECIFICACION.md`): 1.0 inicial, 2.0 (9 oct), 3.0 (11 oct). La aplicación no tiene aún numeración de versión propia.
 
+## [3.15.1] · 4 de noviembre de 2026
+### Cambiado
+- **El calendario pasa a «Mi trabajo»:** se elimina la pantalla y el ítem de menú «Mi calendario». La línea de tiempo tiene el botón «Vencimientos de mis proyectos (n)» (apagado por defecto, rombo hueco, solo proyectos donde estás asignado) y el botón «Agregar a mi calendario» (`/mi-trabajo/calendario.ics`). Se retiran los enlaces por evento a Google Calendar y Outlook ([ADR-0038](decisiones/ADR-0038-calendario-y-correo-sin-conexion.md), ajuste).
+- La línea de tiempo es más alta (138 px) para que el rótulo de un hito no choque con «HOY».
+### Corregido
+- Un hito que caía en la fecha de hoy se encimaba con el hito anterior; ahora respeta la separación mínima (prueba nueva).
+- 468 pruebas unitarias.
+
 ## [3.15.0] · 4 de noviembre de 2026
 ### Añadido
 - **Mi calendario** (`/calendario`) y descarga `.ics` (`/calendario/descargar`): actividades, cierres de propuestas, pólizas y documentos por vencer, compromisos y fines de contrato; enlaces a Google Calendar y Outlook ([ADR-0038](decisiones/ADR-0038-calendario-y-correo-sin-conexion.md)). Sin conexión a cuentas ni cambios de base de datos.

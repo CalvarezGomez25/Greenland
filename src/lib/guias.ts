@@ -155,10 +155,10 @@ export const GUIAS: Guia[] = [
     ],
   },
   {
-    clave: "calendario", titulo: "Mi calendario y borradores de correo", quien: "Todos los roles (cada quien ve lo que sus permisos le dejan ver)",
+    clave: "calendario", titulo: "Calendario en Mi trabajo y borradores de correo", quien: "Todos los roles (cada quien ve lo que sus permisos le dejan ver)",
     pasos: [
-      "Abre «Mi calendario» en el menú: lista tus actividades con fecha límite y, de los proyectos que puedes ver, los cierres de propuestas, los vencimientos de pólizas y de documentos de los contratistas, los compromisos abiertos y los fines de contrato.",
-      "Con «Descargar calendario (.ics)» obtienes un archivo que se importa en Google Calendar, Outlook o Apple Calendar. Con «Google Calendar» u «Outlook» en cada fila agregas un solo evento.",
+      "En «Mi trabajo», la línea de tiempo muestra tus actividades con fecha límite. El botón «Vencimientos de mis proyectos» agrega, con rombo hueco, los cierres de propuestas, los vencimientos de pólizas y de documentos de los contratistas, los compromisos abiertos y los fines de contrato de los proyectos donde estás asignado. Vuelve a pulsarlo para ocultarlos.",
+      "«Agregar a mi calendario» descarga un archivo .ics que se importa en Google Calendar, Outlook o Apple Calendar. Incluye tus actividades y esos vencimientos.",
       "El archivo es una copia de hoy. Si cambian las fechas, vuelve a descargarlo: cada evento tiene un identificador fijo y se actualiza en lugar de repetirse.",
       "En un proceso de contratación, «Invitar por correo» te deja elegir aliados con correo registrado y abre un borrador con el objeto, el cierre y la carpeta (sin el presupuesto de referencia). Los destinatarios van en copia oculta.",
       "En un contrato, «Recordar por correo» aparece junto a las pólizas que vencen en 60 días o menos (o ya vencidas) y junto a los compromisos abiertos, si el contratista tiene correo en RAIZ.",

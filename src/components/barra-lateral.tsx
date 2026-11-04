@@ -42,7 +42,6 @@ const ICONOS: Record<string, string> = {
   mapa: "M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z M9 4v14 M15 6v14",
   glosario: "M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2z M4 21V5 M9 8h6 M9 12h6",
   actividades: "M4 5h4v4H4z M4 15h4v4H4z M12 7h8 M12 17h8 M5 7l1 1 2-2",
-  calendario: "M4 6h16v14H4z M4 10h16 M8 3v4 M16 3v4 M8 14h2 M12 14h2 M8 17h2",
   mitrabajo: "M9 12l2 2 4-4 M12 21a9 9 0 100-18 9 9 0 000 18z",
   tablero: "M3 3h7v9H3z M14 3h7v5h-7z M14 12h7v9h-7z M3 16h7v5H3z",
   usuarios: "M9 11a3 3 0 100-6 3 3 0 000 6z M3 20c0-3 3-5 6-5s6 2 6 5",
@@ -144,12 +143,10 @@ export function BarraLateral({ proyectos, administracion, puedeCrear, conPortafo
             <>
               <Link href="/" aria-current={ruta === "/" ? "page" : undefined} className={claseEnlace(ruta === "/")}><Icono clave="tablero" /> Tablero de control</Link>
               <Link href="/mi-trabajo" aria-current={ruta === "/mi-trabajo" ? "page" : undefined} className={claseEnlace(ruta === "/mi-trabajo")}><Icono clave="mitrabajo" /> Mi trabajo</Link>
-              <Link href="/calendario" aria-current={ruta === "/calendario" ? "page" : undefined} className={claseEnlace(ruta === "/calendario")}><Icono clave="calendario" /> Mi calendario</Link>
             </>
           ) : (
             <>
               <Link href="/mi-trabajo" aria-current={ruta === "/mi-trabajo" ? "page" : undefined} className={claseEnlace(ruta === "/mi-trabajo")}><Icono clave="mitrabajo" /> Mi trabajo</Link>
-              <Link href="/calendario" aria-current={ruta === "/calendario" ? "page" : undefined} className={claseEnlace(ruta === "/calendario")}><Icono clave="calendario" /> Mi calendario</Link>
               {conTableroPropio && <Link href="/tablero" aria-current={ruta === "/tablero" ? "page" : undefined} className={claseEnlace(ruta === "/tablero")}><Icono clave="tablero" /> Tablero de mis proyectos</Link>}
             </>
           )}

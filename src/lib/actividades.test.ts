@@ -85,6 +85,11 @@ describe("línea de tiempo", () => {
     expect(atrasadas.xHoy).toBeGreaterThan(atrasadas.hitos[1].x);
     expect(atrasadas.proximos).toBe(0);
   });
+  it("un hito que cae en hoy no se encima con el hito anterior", () => {
+    const l = construirLineaDeTiempo([t("2026-10-14"), t(HOY), t("2026-10-25")], HOY, { separacion: 120 });
+    expect(l.hitos[1].x).toBe(l.xHoy);
+    expect(l.hitos[1].x - l.hitos[0].x).toBeGreaterThanOrEqual(120);
+  });
   it("una actividad que vence hoy comparte posición con hoy", () => {
     const l = construirLineaDeTiempo([t(HOY), t("2026-10-25")], HOY);
     expect(l.hitos[0].x).toBe(l.xHoy);

@@ -1,12 +1,12 @@
 # Especificación técnica: Plataforma Integral de Gestión de Proyectos (PMO)
 
-Versión 3.15.0, actualizada el 4 de noviembre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
+Versión 3.15.1, actualizada el 4 de noviembre de 2026. Es la única versión vigente. Documento raíz de PMO360: qué es la plataforma, qué está construido, qué se decidió, qué se supuso y qué falta. Nació como documento base para construirla en Claude Code y ahora también registra lo construido.
 
 ## 0. Control del documento
 
 | Campo | Valor |
 | --- | --- |
-| Versión | 3.15.0, única versión vigente |
+| Versión | 3.15.1, única versión vigente |
 | Última actualización | 21 de octubre de 2026 (imagen corporativa: sistema de diseño GreenLand v1.0.0 aplicado a la interfaz, las exportaciones, el informe gerencial y los correos; sección 1.1 y hito 26) |
 | Fuentes | Libro Sistema de Gestión de Proyectos de Infraestructura, Metodología de Control de Cambios GL, prototipo SGCC, prototipo de obra (Fases 1 a 4), reglas indicadas por el usuario, normativa colombiana de supervisión e interventoría (sección 2), registro de riesgos por frente de la Planta Empacadora El Silencio (Excel, 8 de octubre de 2026), investigación de marco teórico y de buenas prácticas de documentación del 14 de octubre de 2026 (sección 2 y `docs/memoria/`) y las decisiones del usuario durante la construcción (sección 14) |
 | Decisiones confirmadas | Sección 14 |
@@ -30,6 +30,7 @@ Versión 3.15.0, actualizada el 4 de noviembre de 2026. Es la única versión vi
 | 3.9.0 | 3 de noviembre de 2026 | Aliados y proveedores, capa 1, a partir del paquete RAÍZ (ADR-0032, migración 0026, módulo S, hito 30, supuestos S27 a S31, pendiente P41) |
 | 3.10.0 | 3 de noviembre de 2026 | Aliados, capa 2: pólizas, modificaciones contractuales y documentos del tercero (ADR-0033, migración 0027, hito 31, supuestos S32 a S34) |
 | 3.11.0 | 3 de noviembre de 2026 | Aliados, capa 3: procesos de contratación, ofertas con puntaje, comunicaciones y compromisos (ADR-0034, migración 0028, hito 32, supuestos S35 a S37) |
+| 3.15.1 | 4 de noviembre de 2026 | El calendario pasa a «Mi trabajo» (sin pantalla ni menú propios): vencimientos opcionales en la línea de tiempo y descarga .ics de los proyectos de la persona; se corrige un hito en «hoy» que se encimaba con el anterior (sección 4.2, supuestos S49 y S50) |
 | 3.15.0 | 4 de noviembre de 2026 | **Calendario y correo sin conexión a cuentas:** página «Mi calendario» con descarga .ics y enlaces a Google Calendar y Outlook, y borradores de correo para invitar a oferentes y recordar pólizas y compromisos (sección 4.2, ADR-0038, hito 36, supuestos S46 a S48). **Revisión de `npm audit`** (ADR-0039): sin avisos altos; `zod` y `uuid` actualizados; queda un aviso moderado de `minimatch` no alcanzable (P42) |
 | 3.14.2 | 4 de noviembre de 2026 | «Mapa de proceso»: detalle a la derecha del mapa, **oculto por defecto en pantallas horizontales pequeñas**, descarga del metro resumido para imprimir; guía PDF de 43 figuras, tarjeta de 6 caras con el mapa, tabla de 29 filas y correos al día; resumen ejecutivo de la memoria actualizado (secciones 4.1 y 17.4, supuesto S45) |
 | 3.14.0 | 4 de noviembre de 2026 | Página **«Mapa de proceso»** en el menú: etapas del ciclo, paquetes de trabajo, módulos, roles con sus puntos de decisión y flujos de datos; matriz de carriles en versión completa y resumida, y láminas PDF; el mapa de metro queda solo para impresión (sección 4.1, ADR-0037, hito 35, supuestos S43 y S44) |
@@ -43,7 +44,7 @@ Versión 3.15.0, actualizada el 4 de noviembre de 2026. Es la única versión vi
 | --- | --- |
 | Hitos 1 a 11 de la sección 12 | Construidos. Todos los módulos del mapa (sección 4) están disponibles en la aplicación |
 | Extensiones posteriores | Construidas: aprobación de contratos, alertas por correo, presupuesto sobre la EDT, riesgos ampliados e importación, informe gerencial y su envío semanal, marca, menú lateral y ayuda, y los ajustes del tablero del proyecto (hito 21). Material del marco FARO producido (hito 20). Memoria del proyecto creada (hito 22). Directorio de contactos construido (hito 23). Actividades y «Mi trabajo» construidos (hito 24) |
-| Pruebas automáticas | 465 pruebas unitarias (Vitest, 48 archivos) y 850 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
+| Pruebas automáticas | 468 pruebas unitarias (Vitest, 48 archivos) y 850 comprobaciones de base de datos con PostgreSQL real en memoria (PGlite), todas correctas; se volvieron a ejecutar el 21 de octubre de 2026 sobre el código unido (el 14 de octubre eran 305 y 494, antes de los hitos 23 y 24) |
 | Producción | El usuario instaló el SQL de la base en Supabase y desplegó en Vercel; confirmó que funciona con datos ficticios |
 | Aún no ocurrido | Ningún correo se ha enviado en producción (falta configurar el proveedor, `CRON_SECRET` y el usuario de solo lectura); no hay datos reales; no hay revisión de seguridad independiente; no hay medición de ahorro de tiempo |
 | Memoria del proyecto | `docs/memoria/` (sección 18): historia, marco teórico, 35 fichas de decisión, trazabilidad, lecciones aprendidas y fuentes. Las conversaciones anteriores a la sesión de desarrollo no se pudieron leer (pendiente P27) |
@@ -210,10 +211,10 @@ Página `/mapa-proceso` («Mapa de proceso» en el menú izquierdo, junto a «Ay
 
 ### 4.2 Calendario y borradores de correo (v3.15, ADR-0038)
 
-Sin conectarse a ninguna cuenta de correo ni de calendario y sin guardar datos nuevos (no hay migración).
+Sin conectarse a ninguna cuenta de correo ni de calendario y sin guardar datos nuevos (no hay migración). Vive dentro de «Mi trabajo»; no hay pantalla ni ítem de menú propios (decisión del usuario del 4 de noviembre de 2026).
 
-- **Mi calendario** (`/calendario`, menú «Espacio de trabajo», todos los roles): las fechas de la persona de 30 días atrás a 365 adelante: actividades suyas pendientes con fecha límite; y, de lo que su sesión puede ver, cierres de propuestas, vencimientos de pólizas activas y de documentos del contratista, compromisos abiertos y fines de contrato. La interventoría no recibe procesos.
-- **Descarga .ics** (`/calendario/descargar`, solo con sesión): archivo RFC 5545 de eventos de día completo con recordatorio de un día antes e identificador fijo (reimportar actualiza, no duplica). Cada fila lleva enlaces para agregar un evento a **Google Calendar** u **Outlook**.
+- **Línea de tiempo de «Mi trabajo»:** además de tus actividades, un botón **«Vencimientos de mis proyectos (n)»**, apagado por defecto, agrega con **rombo hueco** los cierres de propuestas, los vencimientos de pólizas y de documentos del contratista, los compromisos abiertos y los fines de contrato de **los proyectos donde estás asignado**, de 30 días atrás a 365 adelante. Se activa con `?venc=1`. La interventoría no recibe procesos. Quien ve todo el portafolio pero no tiene asignaciones no ve vencimientos aquí (para eso están el tablero y los avisos por correo).
+- **Agregar a mi calendario** (`/mi-trabajo/calendario.ics`, solo con sesión): archivo RFC 5545 con tus actividades y esos mismos vencimientos, en eventos de día completo con recordatorio de un día antes e identificador fijo (reimportar actualiza, no duplica).
 - **Invitar por correo** (en cada proceso, para quien gestiona): se eligen aliados con correo de notificación y se abre un borrador con objeto, cierre de propuestas y carpeta; los destinatarios van en **copia oculta**; no incluye el presupuesto de referencia.
 - **Recordar por correo** (en el contrato, para quien gestiona y si el contratista tiene correo en RAIZ): junto a pólizas que vencen en 60 días o menos (o ya vencidas) y a compromisos abiertos.
 - **Qué no hace:** no envía correos, no lee el correo ni el calendario, no se suscribe en vivo. El archivo es una copia del momento de la descarga.
@@ -799,7 +800,7 @@ Los hitos 1 a 11 están **construidos**, con pruebas de base de datos (`pruebas-
 | 30. Aliados y proveedores, capa 1 | Maestro de terceros y contratantes, etapa y datos contractuales de cada contrato y semáforo por contrato (0026, ADR-0032) | Construido. `t-aliados` (66 comprobaciones), `vigilancia.test.ts` (15) y revisión en navegador con datos ficticios. Capas 2 a 4 sin construir; sin datos reales |
 | 31. Aliados, capa 2 | Pólizas, modificaciones y documentos del tercero; semáforo ampliado (0027, ADR-0033) | Construido. `t-polizas-modificaciones` (52 comprobaciones), `vigilancia.test.ts` y revisión en navegador con datos ficticios. Sin datos reales |
 | 32. Aliados, capa 3 | Procesos, ofertas con puntaje, adjudicación y comunicaciones con compromisos (0028, ADR-0034) | Construido. `t-procesos` (58 comprobaciones), `ofertas.test.ts` y revisión en navegador con datos ficticios. Sin datos reales |
-| 36. Calendario y correo | Mi calendario (.ics y enlaces a Google/Outlook) y borradores de correo en procesos y contratos, sin conexión a cuentas (ADR-0038) | Construido. 17 pruebas (`ics`, `eventos`, `borradores`); probado en navegador con datos ficticios; archivo .ics generado con los seis tipos de fecha |
+| 36. Calendario y correo | Calendario dentro de «Mi trabajo» (vencimientos opcionales y descarga .ics) y borradores de correo en procesos y contratos, sin conexión a cuentas (ADR-0038) | Construido. 20 pruebas (`ics`, `eventos`, `borradores` y línea de tiempo); probado en navegador con datos ficticios; archivo .ics generado con los seis tipos de fecha |
 | 35. Mapa de proceso | Página del menú con el mapa interactivo (matriz de carriles, completo y resumido), roles con puntos de decisión y láminas PDF; el metro solo en impresión (ADR-0037) | Construido. 14 pruebas (`src/lib/mapa/mapa.test.ts`); página revisada en pantalla con sesión de gerente; PDF verificados |
 | 34. RAIZ, ayuda y FARO en la plataforma | Nombre RAIZ; ayuda ampliada; página «Acerca de FARO»; guía de 42 figuras, tarjeta de 6 caras, tabla y correos (ADR-0036; supuestos S41 y S42) | Construido. `navegacion.test` y `glosario.test`; páginas revisadas en pantalla con datos ficticios |
 | 33. Aliados, capa 4 | Novedades de campo con foto y generación de documentos Word desde plantillas (0029, ADR-0035) | Construido. `t-novedades-plantillas` (48 comprobaciones), `documentos/*.test.ts` (22) y documentos de ejemplo generados y leídos con datos ficticios. Plantillas oficiales por subir |
@@ -988,6 +989,8 @@ Con 5 riesgos críticos activos, el estado general del proyecto es Rojo (regla d
 | S46 | El calendario se entrega como archivo .ics y enlaces por evento, sin conexión a cuentas ni suscripción en vivo; el correo, como borradores `mailto:` que la persona envía (ADR-0038) | Propuesta del asesor, aplicada |
 | S47 | Las invitaciones a varios aliados van en copia oculta y no incluyen el presupuesto de referencia | Propuesta del asesor, aplicada |
 | S48 | Los recordatorios por correo de pólizas aparecen cuando vencen en 60 días o menos o ya vencieron | Propuesta del asesor, aplicada |
+| S49 | Los vencimientos en «Mi trabajo» y en el .ics son los de los proyectos donde la persona está asignada, y en la línea de tiempo están apagados por defecto (son fechas que se vigilan, no tareas propias) | Decisión del usuario (calendario en «Mi trabajo»); alcance y opción apagada propuestos por el asesor tras discutirlo |
+| S50 | Los enlaces por evento a Google Calendar y Outlook se retiraron al eliminar la pantalla «Mi calendario»; el archivo .ics los reemplaza | Consecuencia de la decisión anterior |
 
 **Pendientes**
 

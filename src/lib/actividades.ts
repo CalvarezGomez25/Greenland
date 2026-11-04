@@ -133,7 +133,8 @@ export function construirLineaDeTiempo<T extends Pick<Actividad, "estado" | "fec
   const x = new Map<string, number>();
   let previo = -Infinity;
   for (const f of [...new Set([...fechas, hoy])].sort()) {
-    const pos = Math.max(lineal(f), previo + (f === hoy && porFecha.has(hoy) ? 0 : separacion));
+    // «Hoy» y un hito de la misma fecha son un solo punto: también respeta la separación con el anterior.
+    const pos = Math.max(lineal(f), previo + separacion);
     x.set(f, pos);
     previo = pos;
   }

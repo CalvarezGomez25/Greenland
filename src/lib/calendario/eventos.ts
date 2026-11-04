@@ -6,7 +6,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { fechaValida, type EventoCal } from "./ics";
 
 export type TipoEvento = "actividad" | "proceso" | "poliza" | "documento" | "compromiso" | "contrato";
-export type EventoPlataforma = EventoCal & { tipo: TipoEvento; proyecto: string | null };
+export type EventoPlataforma = EventoCal & { tipo: TipoEvento; proyecto: string | null; proyectoId: string | null; ruta: string };
 
 export const ETIQUETA_TIPO_EVENTO: Record<TipoEvento, string> = {
   actividad: "Actividad", proceso: "Cierre de propuestas", poliza: "Vence una póliza", documento: "Vence un documento", compromiso: "Compromiso", contrato: "Fin de contrato",
@@ -25,16 +25,21 @@ export function sumarDias(f: string, n: number): string {
   return d.toISOString().slice(0, 10);
 }
 
-export async function cargarEventos(supabase: SupabaseClient, perfilId: string, hoy: string, base = ""): Promise<EventoPlataforma[]> {
+// `proyectos`: si se indica, los vencimientos (procesos, pólizas, compromisos, contratos y documentos) se limitan a esos
+// proyectos (los de la persona); sus actividades salen siempre. Sin indicarlo, entra todo lo que su sesión puede ver.
+export async function cargarEventos(supabase: SupabaseClient, perfilId: string, hoy: string, base = "", proyectos?: string[]): Promise<EventoPlataforma[]> {
   const desde = sumarDias(hoy, -30), hasta = sumarDias(hoy, 365);
   const enVentana = (f: string) => fechaValida(f) && f >= desde && f <= hasta;
   const pr = "proyectos(codigo, nombre)";
+  const sinProyectos = proyectos !== undefined && proyectos.length === 0;
+  const solo = <Q,>(q: Q): Q => (proyectos ? (q as unknown as { in: (c: string, v: string[]) => Q }).in("proyecto_id", proyectos) : q);
+  const vacio = Promise.resolve({ data: [] as unknown[] });
   const [act, proc, pol, com, con_] = await Promise.all([
     supabase.from("actividades").select(`id, titulo, fecha_limite, proyecto_id, ${pr}`).eq("responsable_id", perfilId).neq("estado", "hecha").not("fecha_limite", "is", null).gte("fecha_limite", desde).lte("fecha_limite", hasta).limit(1000),
-    supabase.from("procesos").select(`id, codigo, objeto, cierre_propuestas, proyecto_id, ${pr}`).in("estado", ["en_preparacion", "abierta", "en_evaluacion"]).not("cierre_propuestas", "is", null).gte("cierre_propuestas", desde).lte("cierre_propuestas", hasta).limit(1000),
-    supabase.from("contrato_polizas").select(`id, contrato_id, proyecto_id, amparo, fecha_vencimiento, ${pr}`).eq("estado", "activa").not("fecha_vencimiento", "is", null).gte("fecha_vencimiento", desde).lte("fecha_vencimiento", hasta).limit(1000),
-    supabase.from("contrato_comunicaciones").select(`id, contrato_id, proyecto_id, asunto, fecha_compromiso, ${pr}`).eq("requiere_accion", true).eq("estado", "abierto").not("fecha_compromiso", "is", null).gte("fecha_compromiso", desde).lte("fecha_compromiso", hasta).limit(1000),
-    supabase.from("contratos").select(`id, proyecto_id, contratista, tercero_id, fecha_fin_vigente, ${pr}`).lt("etapa", 9).limit(1000),
+    sinProyectos ? vacio : solo(supabase.from("procesos").select(`id, codigo, objeto, cierre_propuestas, proyecto_id, ${pr}`).in("estado", ["en_preparacion", "abierta", "en_evaluacion"]).not("cierre_propuestas", "is", null).gte("cierre_propuestas", desde).lte("cierre_propuestas", hasta).limit(1000)),
+    sinProyectos ? vacio : solo(supabase.from("contrato_polizas").select(`id, contrato_id, proyecto_id, amparo, fecha_vencimiento, ${pr}`).eq("estado", "activa").not("fecha_vencimiento", "is", null).gte("fecha_vencimiento", desde).lte("fecha_vencimiento", hasta).limit(1000)),
+    sinProyectos ? vacio : solo(supabase.from("contrato_comunicaciones").select(`id, contrato_id, proyecto_id, asunto, fecha_compromiso, ${pr}`).eq("requiere_accion", true).eq("estado", "abierto").not("fecha_compromiso", "is", null).gte("fecha_compromiso", desde).lte("fecha_compromiso", hasta).limit(1000)),
+    sinProyectos ? vacio : solo(supabase.from("contratos").select(`id, proyecto_id, contratista, tercero_id, fecha_fin_vigente, ${pr}`).lt("etapa", 9).limit(1000)),
   ]);
   const contratos = (con_.data ?? []) as unknown as { id: string; proyecto_id: string; contratista: string; tercero_id: string | null; fecha_fin_vigente: string | null; proyectos: Uno<Proy> }[];
   const nombreContrato = (id: string) => contratos.find((c) => c.id === id)?.contratista ?? "contrato";
@@ -43,25 +48,25 @@ export async function cargarEventos(supabase: SupabaseClient, perfilId: string, 
 
   for (const a of (act.data ?? []) as unknown as { id: string; titulo: string; fecha_limite: string; proyecto_id: string; proyectos: Uno<Proy> }[]) {
     const p = rotulo(a.proyectos);
-    out.push({ tipo: "actividad", uid: `actividad-${a.id}`, titulo: con(p, a.titulo), fecha: dia(a.fecha_limite), categoria: "Actividad", proyecto: p, descripcion: "Fecha límite de una actividad que tienes asignada.", url: url(`/proyectos/${a.proyecto_id}/actividades`) });
+    out.push({ tipo: "actividad", uid: `actividad-${a.id}`, titulo: con(p, a.titulo), fecha: dia(a.fecha_limite), categoria: "Actividad", proyecto: p, proyectoId: a.proyecto_id, descripcion: "Fecha límite de una actividad que tienes asignada.", ruta: `/proyectos/${a.proyecto_id}/actividades`, url: url(`/proyectos/${a.proyecto_id}/actividades`) });
   }
   for (const x of (proc.data ?? []) as unknown as { id: string; codigo: string; objeto: string; cierre_propuestas: string; proyecto_id: string; proyectos: Uno<Proy> }[]) {
     const p = rotulo(x.proyectos);
-    out.push({ tipo: "proceso", uid: `proceso-${x.id}`, titulo: con(p, `Cierre de propuestas ${x.codigo}`), fecha: dia(x.cierre_propuestas), categoria: "Contratación", proyecto: p, descripcion: x.objeto, url: url(`/proyectos/${x.proyecto_id}/procesos/${x.id}`) });
+    out.push({ tipo: "proceso", uid: `proceso-${x.id}`, titulo: con(p, `Cierre de propuestas ${x.codigo}`), fecha: dia(x.cierre_propuestas), categoria: "Contratación", proyecto: p, proyectoId: x.proyecto_id, descripcion: x.objeto, ruta: `/proyectos/${x.proyecto_id}/procesos/${x.id}`, url: url(`/proyectos/${x.proyecto_id}/procesos/${x.id}`) });
   }
   for (const x of (pol.data ?? []) as unknown as { id: string; contrato_id: string; proyecto_id: string; amparo: string; fecha_vencimiento: string; proyectos: Uno<Proy> }[]) {
     const p = rotulo(x.proyectos), c = nombreContrato(x.contrato_id);
-    out.push({ tipo: "poliza", uid: `poliza-${x.id}`, titulo: con(p, `Vence póliza «${x.amparo}» de ${c}`), fecha: dia(x.fecha_vencimiento), categoria: "Contratos", proyecto: p, descripcion: "Renovar o confirmar la póliza con el contratista antes de esta fecha.", url: url(`/proyectos/${x.proyecto_id}/contratos/${x.contrato_id}`) });
+    out.push({ tipo: "poliza", uid: `poliza-${x.id}`, titulo: con(p, `Vence póliza «${x.amparo}» de ${c}`), fecha: dia(x.fecha_vencimiento), categoria: "Contratos", proyecto: p, proyectoId: x.proyecto_id, descripcion: "Renovar o confirmar la póliza con el contratista antes de esta fecha.", ruta: `/proyectos/${x.proyecto_id}/contratos/${x.contrato_id}`, url: url(`/proyectos/${x.proyecto_id}/contratos/${x.contrato_id}`) });
   }
   for (const x of (com.data ?? []) as unknown as { id: string; contrato_id: string; proyecto_id: string; asunto: string; fecha_compromiso: string; proyectos: Uno<Proy> }[]) {
     const p = rotulo(x.proyectos), c = nombreContrato(x.contrato_id);
-    out.push({ tipo: "compromiso", uid: `compromiso-${x.id}`, titulo: con(p, `Compromiso: ${x.asunto}`), fecha: dia(x.fecha_compromiso), categoria: "Contratos", proyecto: p, descripcion: `Contratista: ${c}.`, url: url(`/proyectos/${x.proyecto_id}/contratos/${x.contrato_id}`) });
+    out.push({ tipo: "compromiso", uid: `compromiso-${x.id}`, titulo: con(p, `Compromiso: ${x.asunto}`), fecha: dia(x.fecha_compromiso), categoria: "Contratos", proyecto: p, proyectoId: x.proyecto_id, descripcion: `Contratista: ${c}.`, ruta: `/proyectos/${x.proyecto_id}/contratos/${x.contrato_id}`, url: url(`/proyectos/${x.proyecto_id}/contratos/${x.contrato_id}`) });
   }
   for (const c of contratos) {
     const f = dia(c.fecha_fin_vigente);
     if (!f || !enVentana(f)) continue;
     const p = rotulo(c.proyectos);
-    out.push({ tipo: "contrato", uid: `contrato-fin-${c.id}`, titulo: con(p, `Fin del contrato de ${c.contratista}`), fecha: f, categoria: "Contratos", proyecto: p, descripcion: "Fecha fin vigente del contrato, con las prórrogas y suspensiones firmadas.", url: url(`/proyectos/${c.proyecto_id}/contratos/${c.id}`) });
+    out.push({ tipo: "contrato", uid: `contrato-fin-${c.id}`, titulo: con(p, `Fin del contrato de ${c.contratista}`), fecha: f, categoria: "Contratos", proyecto: p, proyectoId: c.proyecto_id, descripcion: "Fecha fin vigente del contrato, con las prórrogas y suspensiones firmadas.", ruta: `/proyectos/${c.proyecto_id}/contratos/${c.id}`, url: url(`/proyectos/${c.proyecto_id}/contratos/${c.id}`) });
   }
   // Vigencia de los documentos del contratista (RUT, cámara de comercio, seguridad social…): la calcula la base.
   const terceros = [...new Set(contratos.map((c) => c.tercero_id).filter((t): t is string => !!t))];
@@ -72,7 +77,7 @@ export async function cargarEventos(supabase: SupabaseClient, perfilId: string, 
       if (!enVentana(f)) continue;
       const cs = contratos.filter((c) => c.tercero_id === d.tercero_id);
       const nombre = cs[0]?.contratista ?? "contratista";
-      out.push({ tipo: "documento", uid: `documento-${d.tercero_id}-${d.tipo}`, titulo: `Vence ${d.tipo} de ${nombre}`, fecha: f, categoria: "Contratos", proyecto: null, descripcion: "Pedir al contratista el documento actualizado.", url: url("/aliados") });
+      out.push({ tipo: "documento", uid: `documento-${d.tercero_id}-${d.tipo}`, titulo: `Vence ${d.tipo} de ${nombre}`, fecha: f, categoria: "Contratos", proyecto: null, proyectoId: cs[0]?.proyecto_id ?? null, descripcion: "Pedir al contratista el documento actualizado.", ruta: "/aliados", url: url("/aliados") });
     }
   }
   return out.filter((e) => fechaValida(e.fecha)).sort((a, b) => a.fecha.localeCompare(b.fecha) || a.titulo.localeCompare(b.titulo, "es"));

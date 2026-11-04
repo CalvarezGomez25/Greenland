@@ -7,14 +7,15 @@ import { AvisoResultado } from "@/components/aviso-resultado";
 import { Aviso, Titulo } from "@/components/ui";
 import { TableroActividades } from "@/components/tablero-actividades";
 import { LineaDeTiempo, colorDeProyecto, type Proyecto } from "@/components/linea-de-tiempo";
+import { cargarEventos } from "@/lib/calendario/eventos";
 
 export const metadata = { title: "Mi trabajo · PMO360" };
 const HECHAS_VISIBLES = 8;
 type Uno<T> = T | T[] | null;
 const uno = <T,>(v: Uno<T>): T | null => (Array.isArray(v) ? (v[0] ?? null) : v);
 
-async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string | string[]; hechas?: string }> }) {
-  const { ok, hechas } = await searchParams;
+async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string | string[]; hechas?: string; venc?: string }> }) {
+  const { ok, hechas, venc } = await searchParams;
   const todasLasHechas = hechas === "todas";
   const { supabase, perfil } = await obtenerSesion();
   const { data, error } = perfil
@@ -55,6 +56,10 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string
   });
 
   const hoy = hoyColombia();
+  // Vencimientos de MIS proyectos (procesos, pólizas, documentos, compromisos y fines de contrato): se muestran en la línea de tiempo si se piden.
+  const eventos = perfil && !error ? (await cargarEventos(supabase, perfil.id, hoy, "", idsAsignados)).filter((e) => e.tipo !== "actividad") : [];
+  const verVenc = venc === "1" && eventos.length > 0;
+  const consulta = (extra: Record<string, string>) => { const q = new URLSearchParams({ ...(todasLasHechas ? { hechas: "todas" } : {}), ...extra }).toString(); return `/mi-trabajo${q ? `?${q}` : ""}`; };
   const abiertas = todas.filter((a) => a.estado !== "hecha");
   const hechasRecientes = todas.filter((a) => a.estado === "hecha").sort((x, y) => (completadaEn.get(y.id) ?? "").localeCompare(completadaEn.get(x.id) ?? ""));
   const hechasMostradas = todasLasHechas ? hechasRecientes : hechasRecientes.slice(0, HECHAS_VISIBLES);
@@ -83,7 +88,8 @@ async function Contenido({ searchParams }: { searchParams: Promise<{ ok?: string
       {error && <div className="mt-4"><Aviso>No se pudo leer tu trabajo{error.code ? ` (código ${error.code})` : ""}.</Aviso></div>}
       {!error && (
         <div className="mt-4">
-          <LineaDeTiempo items={abiertas} hoy={hoy} proyectos={proyectosLinea} />
+          <LineaDeTiempo items={abiertas} hoy={hoy} proyectos={proyectosLinea} vencimientos={verVenc ? eventos : []}
+            controles={{ vencimientos: eventos.length, verVencimientos: verVenc, hrefAlternar: consulta(verVenc ? {} : { venc: "1" }), hrefCalendario: "/mi-trabajo/calendario.ics" }} />
         </div>
       )}
       {perfil && mostrarMisProyectos(perfil.rol_global, idsAsignados.length) && (

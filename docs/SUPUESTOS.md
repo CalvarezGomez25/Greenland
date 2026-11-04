@@ -80,3 +80,4 @@ fácil de cambiar; deben validarse con el uso real.
 
 ## Calendario y correo (ADR-0038)
 - El calendario es un archivo .ics y enlaces por evento, sin conexión a cuentas (S46); las invitaciones van en copia oculta y sin presupuesto de referencia (S47); el recordatorio de pólizas aparece a 60 días o menos (S48).
+- Los vencimientos en «Mi trabajo» y en el .ics son los de los proyectos donde la persona está asignada y están apagados por defecto en la línea de tiempo (S49); los enlaces por evento a Google y Outlook se retiraron (S50).

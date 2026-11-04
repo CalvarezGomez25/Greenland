@@ -46,6 +46,20 @@ describe("eventos del calendario", () => {
     }, [{ tercero_id: "t1", tipo: "RUT", fecha_vencimiento: "2020-01-01" }]);
     expect(await cargarEventos(db, "u1", hoy)).toEqual([]);
   });
+  it("con proyectos indicados, sin ninguno solo salen las actividades; con alguno entran los vencimientos de esos proyectos", async () => {
+    const tablas = {
+      actividades: [{ id: "a1", titulo: "Entregar informe", fecha_limite: "2026-11-10", proyecto_id: "p1", proyectos: pr }],
+      procesos: [{ id: "x1", codigo: "PR-01", objeto: "Redes", cierre_propuestas: "2026-11-09", proyecto_id: "p1", proyectos: pr }],
+    };
+    expect((await cargarEventos(falso(tablas), "u1", hoy, "", [])).map((e) => e.tipo)).toEqual(["actividad"]);
+    expect((await cargarEventos(falso(tablas), "u1", hoy, "", ["p1"])).map((e) => e.tipo)).toEqual(["proceso", "actividad"]);
+  });
+  it("cada evento trae la ruta de su registro y su proyecto", async () => {
+    const ev = await cargarEventos(falso({ procesos: [{ id: "x1", codigo: "PR-01", objeto: "Redes", cierre_propuestas: "2026-11-09", proyecto_id: "p1", proyectos: pr }] }), "u1", hoy);
+    expect(ev[0].ruta).toBe("/proyectos/p1/procesos/x1");
+    expect(ev[0].proyectoId).toBe("p1");
+    expect(ev[0].url).toBeUndefined();
+  });
   it("sin base devuelve una lista vacía y no falla", async () => {
     expect(await cargarEventos(falso({}), "u1", hoy)).toEqual([]);
   });
